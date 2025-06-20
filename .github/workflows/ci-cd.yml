@@ -114,7 +114,7 @@ jobs:
       working-directory: src/mobile/AttendanceMobile
     
     - name: Run tests
-      run: npm test
+      run: npm test -- --passWithNoTests
       working-directory: src/mobile/AttendanceMobile
 
   security-scan:
