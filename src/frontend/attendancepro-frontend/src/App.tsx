@@ -3,6 +3,7 @@ import { Toaster } from 'sonner'
 import { ThemeProvider } from './components/theme-provider'
 import { AuthProvider } from './contexts/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import ErrorBoundary from './components/ErrorBoundary'
 import LoginPage from './pages/auth/LoginPage'
 import RegisterPage from './pages/auth/RegisterPage'
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
@@ -19,11 +20,12 @@ import './App.css'
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="system" storageKey="attendancepro-ui-theme">
-      <AuthProvider>
-        <Router>
-          <div className="min-h-screen bg-background">
-            <Routes>
+    <ErrorBoundary>
+      <ThemeProvider defaultTheme="system" storageKey="attendancepro-ui-theme">
+        <AuthProvider>
+          <Router>
+            <div className="min-h-screen bg-background">
+              <Routes>
               {/* Public routes */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
@@ -48,12 +50,13 @@ function App() {
               
               {/* Catch all route */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </div>
-          <Toaster position="top-right" />
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
+              </Routes>
+            </div>
+            <Toaster position="top-right" />
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   )
 }
 
