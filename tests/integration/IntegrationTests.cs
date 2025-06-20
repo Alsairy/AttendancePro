@@ -3,22 +3,130 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Authentication.Api;
+using AttendancePlatform.Shared.Domain.Entities;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Net;
 using Xunit;
+using Microsoft.Extensions.Configuration;
 
 namespace AttendancePlatform.Tests.Integration
 {
-    public class AuthenticationIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+    public class IntegrationTestFixture : IDisposable
     {
-        private readonly WebApplicationFactory<Program> _factory;
+        public WebApplicationFactory<Program> Factory { get; private set; }
+        public HttpClient Client { get; private set; }
+        public AttendancePlatformDbContext Context { get; private set; }
+        public string AuthToken { get; private set; } = string.Empty;
+        public Guid TestUserId { get; private set; }
+        public Guid TestTenantId { get; private set; }
+
+        public IntegrationTestFixture()
+        {
+            Factory = new WebApplicationFactory<Program>()
+                .WithWebHostBuilder(builder =>
+                {
+                    builder.ConfigureServices(services =>
+                    {
+                        var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<AttendancePlatformDbContext>));
+                        if (descriptor != null)
+                            services.Remove(descriptor);
+
+                        services.AddDbContext<AttendancePlatformDbContext>(options =>
+                            options.UseInMemoryDatabase("IntegrationTestDb"));
+                    });
+                });
+
+            Client = Factory.CreateClient();
+            
+            using var scope = Factory.Services.CreateScope();
+            Context = scope.ServiceProvider.GetRequiredService<AttendancePlatformDbContext>();
+            
+            SeedTestData();
+            SetupAuthentication().Wait();
+        }
+
+        private void SeedTestData()
+        {
+            TestTenantId = Guid.NewGuid();
+            TestUserId = Guid.NewGuid();
+
+            var tenant = new Tenant
+            {
+                Id = TestTenantId,
+                Name = "Integration Test Tenant",
+                Subdomain = "integration-test",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var user = new User
+            {
+                Id = TestUserId,
+                Email = "integration@test.com",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("IntegrationTest123!"),
+                FirstName = "Integration",
+                LastName = "Test",
+                IsActive = true,
+                TenantId = TestTenantId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            Context.Tenants.Add(tenant);
+            Context.Users.Add(user);
+            Context.SaveChanges();
+        }
+
+        private async Task SetupAuthentication()
+        {
+            var loginRequest = new
+            {
+                Email = "integration@test.com",
+                Password = "IntegrationTest123!",
+                TenantSubdomain = "integration-test"
+            };
+
+            var json = JsonSerializer.Serialize(loginRequest);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await Client.PostAsync("/api/auth/login", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var result = JsonSerializer.Deserialize<JsonElement>(responseContent);
+                    
+                    if (result.TryGetProperty("token", out var tokenElement))
+                    {
+                        AuthToken = tokenElement.GetString() ?? string.Empty;
+                        Client.DefaultRequestHeaders.Authorization = 
+                            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthToken);
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        public void Dispose()
+        {
+            Client.Dispose();
+            Factory.Dispose();
+        }
+    }
+
+    public class AuthenticationIntegrationTests : IClassFixture<IntegrationTestFixture>
+    {
+        private readonly IntegrationTestFixture _fixture;
         private readonly HttpClient _client;
 
-        public AuthenticationIntegrationTests(WebApplicationFactory<Program> factory)
+        public AuthenticationIntegrationTests(IntegrationTestFixture fixture)
         {
-            _factory = factory;
-            _client = _factory.CreateClient();
+            _fixture = fixture;
+            _client = _fixture.Client;
         }
 
         [Fact]
