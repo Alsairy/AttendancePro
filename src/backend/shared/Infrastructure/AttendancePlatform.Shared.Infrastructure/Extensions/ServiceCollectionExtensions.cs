@@ -5,6 +5,9 @@ using AttendancePlatform.Shared.Domain.Interfaces;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Infrastructure.Services;
 using AttendancePlatform.Shared.Infrastructure.Repositories;
+using StackExchange.Redis;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace AttendancePlatform.Shared.Infrastructure.Extensions
 {
@@ -12,10 +15,35 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Add DbContext
+            // Add DbContext with connection pooling optimization
             services.AddDbContext<AttendancePlatformDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly(typeof(AttendancePlatformDbContext).Assembly.FullName)));
+                    b => {
+                        b.MigrationsAssembly(typeof(AttendancePlatformDbContext).Assembly.FullName);
+                        b.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(5), errorNumbersToAdd: null);
+                        b.CommandTimeout(30);
+                    }), ServiceLifetime.Scoped);
+
+            services.AddDbContextPool<AttendancePlatformDbContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")), poolSize: 128);
+
+            var redisConnectionString = configuration.GetConnectionString("Redis") ?? 
+                                      configuration["Redis:ConnectionString"] ?? 
+                                      "localhost:6379";
+            
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnectionString;
+                options.InstanceName = "AttendancePlatform";
+            });
+
+            services.AddMemoryCache(options =>
+            {
+                options.SizeLimit = 1024; // Limit cache size
+                options.CompactionPercentage = 0.25; // Compact when 25% over limit
+            });
+
+            services.AddScoped<ICacheService, CacheService>();
 
             // Add repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -28,7 +56,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
             // Add HTTP context accessor
-            // services.AddHttpContextAccessor();
+            services.AddHttpContextAccessor();
 
             return services;
         }
