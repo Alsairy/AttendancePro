@@ -48,6 +48,9 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<UserBiometrics> UserBiometrics { get; set; }
         public DbSet<TenantSettings> TenantSettings { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
+        
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

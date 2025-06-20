@@ -15,6 +15,9 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // Add authentication services
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<ITwoFactorService, TwoFactorService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
 // Configure JWT authentication
 var jwtSettings = builder.Configuration.GetSection("JWT");
