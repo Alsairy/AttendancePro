@@ -1,27 +1,110 @@
 using Xunit;
 using Moq;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using AttendancePlatform.Authentication.Api.Services;
 using AttendancePlatform.Attendance.Api.Services;
 using AttendancePlatform.FaceRecognition.Api.Services;
 using AttendancePlatform.LeaveManagement.Api.Services;
+using AttendancePlatform.Collaboration.Api.Services;
+using AttendancePlatform.Analytics.Api.Services;
 using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Shared.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+using AttendancePlatform.Shared.Infrastructure.Services;
+using AttendancePlatform.Shared.Domain.Interfaces;
+using System.Linq.Expressions;
 
 namespace AttendancePlatform.Tests.Unit
 {
-    public class AuthenticationServiceTests
+    public class TestFixture : IDisposable
     {
-        private readonly Mock<ILogger<AuthenticationService>> _loggerMock;
-        private readonly Mock<IJwtTokenService> _jwtServiceMock;
-        private readonly Mock<AttendancePlatformDbContext> _contextMock;
+        public AttendancePlatformDbContext Context { get; private set; }
+        public Mock<ICacheService> CacheServiceMock { get; private set; }
+        public Mock<ILogger<AuthenticationService>> AuthLoggerMock { get; private set; }
+        public Mock<ILogger<AttendanceService>> AttendanceLoggerMock { get; private set; }
+        public Mock<ILogger<FaceRecognitionService>> FaceLoggerMock { get; private set; }
+        public Mock<ILogger<LeaveManagementService>> LeaveLoggerMock { get; private set; }
+        public Mock<ILogger<ChatService>> ChatLoggerMock { get; private set; }
+        public Mock<ILogger<Repository<User>>> RepositoryLoggerMock { get; private set; }
+        public Mock<IJwtTokenService> JwtServiceMock { get; private set; }
+        public Mock<ITwoFactorService> TwoFactorServiceMock { get; private set; }
+        public Mock<IEmailService> EmailServiceMock { get; private set; }
+        public Mock<IRefreshTokenService> RefreshTokenServiceMock { get; private set; }
 
-        public AuthenticationServiceTests()
+        public TestFixture()
         {
-            _loggerMock = new Mock<ILogger<AuthenticationService>>();
-            _jwtServiceMock = new Mock<IJwtTokenService>();
-            _contextMock = new Mock<AttendancePlatformDbContext>();
+            var options = new DbContextOptionsBuilder<AttendancePlatformDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            Context = new AttendancePlatformDbContext(options);
+            
+            CacheServiceMock = new Mock<ICacheService>();
+            AuthLoggerMock = new Mock<ILogger<AuthenticationService>>();
+            AttendanceLoggerMock = new Mock<ILogger<AttendanceService>>();
+            FaceLoggerMock = new Mock<ILogger<FaceRecognitionService>>();
+            LeaveLoggerMock = new Mock<ILogger<LeaveManagementService>>();
+            ChatLoggerMock = new Mock<ILogger<ChatService>>();
+            RepositoryLoggerMock = new Mock<ILogger<Repository<User>>>();
+            JwtServiceMock = new Mock<IJwtTokenService>();
+            TwoFactorServiceMock = new Mock<ITwoFactorService>();
+            EmailServiceMock = new Mock<IEmailService>();
+            RefreshTokenServiceMock = new Mock<IRefreshTokenService>();
+
+            SeedTestData();
+        }
+
+        private void SeedTestData()
+        {
+            var tenant = new Tenant
+            {
+                Id = Guid.NewGuid(),
+                Name = "Test Tenant",
+                Subdomain = "test",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Email = "test@example.com",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Test123!"),
+                FirstName = "Test",
+                LastName = "User",
+                IsActive = true,
+                TenantId = tenant.Id,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            Context.Tenants.Add(tenant);
+            Context.Users.Add(user);
+            Context.SaveChanges();
+        }
+
+        public void Dispose()
+        {
+            Context.Dispose();
+        }
+    }
+
+    public class AuthenticationServiceTests : IClassFixture<TestFixture>
+    {
+        private readonly TestFixture _fixture;
+        private readonly AuthenticationService _service;
+
+        public AuthenticationServiceTests(TestFixture fixture)
+        {
+            _fixture = fixture;
+            _service = new AuthenticationService(
+                _fixture.Context,
+                _fixture.JwtServiceMock.Object,
+                _fixture.AuthLoggerMock.Object,
+                _fixture.TwoFactorServiceMock.Object,
+                _fixture.EmailServiceMock.Object,
+                _fixture.RefreshTokenServiceMock.Object
+            );
         }
 
         [Fact]
