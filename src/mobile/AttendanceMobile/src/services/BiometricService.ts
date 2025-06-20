@@ -109,11 +109,11 @@ class BiometricServiceClass {
       }
     } catch (error) {
       console.error('Biometric authentication error:', error);
-      await this.logAuthenticationEvent('error', error.message);
+      await this.logAuthenticationEvent('error', error instanceof Error ? error.message : 'Unknown error');
       
       return {
         success: false,
-        error: error.message || 'Authentication error',
+        error: error instanceof Error ? error.message : 'Authentication error',
       };
     }
   }
@@ -166,11 +166,11 @@ class BiometricServiceClass {
       }
     } catch (error) {
       console.error('Biometric signature authentication error:', error);
-      await this.logAuthenticationEvent('error_signature', error.message);
+      await this.logAuthenticationEvent('error_signature', error instanceof Error ? error.message : 'Unknown error');
       
       return {
         success: false,
-        error: error.message || 'Signature authentication error',
+        error: error instanceof Error ? error.message : 'Signature authentication error',
       };
     }
   }
@@ -197,7 +197,7 @@ class BiometricServiceClass {
       console.error('Create biometric keys error:', error);
       return {
         success: false,
-        error: error.message || 'Key creation error',
+        error: error instanceof Error ? error.message : 'Key creation error',
       };
     }
   }
@@ -223,7 +223,7 @@ class BiometricServiceClass {
       console.error('Delete biometric keys error:', error);
       return {
         success: false,
-        error: error.message || 'Key deletion error',
+        error: error instanceof Error ? error.message : 'Key deletion error',
       };
     }
   }
@@ -347,11 +347,11 @@ class BiometricServiceClass {
       };
     } catch (error) {
       console.error('Biometric enrollment error:', error);
-      await this.logAuthenticationEvent('enrollment_error', error.message);
+      await this.logAuthenticationEvent('enrollment_error', error instanceof Error ? error.message : 'Unknown error');
       
       return {
         success: false,
-        error: error.message || 'Enrollment error',
+        error: error instanceof Error ? error.message : 'Enrollment error',
       };
     }
   }
@@ -369,11 +369,11 @@ class BiometricServiceClass {
       return result;
     } catch (error) {
       console.error('Biometric unenrollment error:', error);
-      await this.logAuthenticationEvent('unenrollment_error', error.message);
+      await this.logAuthenticationEvent('unenrollment_error', error instanceof Error ? error.message : 'Unknown error');
       
       return {
         success: false,
-        error: error.message || 'Unenrollment error',
+        error: error instanceof Error ? error.message : 'Unenrollment error',
       };
     }
   }
