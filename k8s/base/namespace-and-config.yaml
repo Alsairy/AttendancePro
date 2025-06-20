@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: attendancepro
+  labels:
+    name: attendancepro
+    app.kubernetes.io/name: attendancepro
+    app.kubernetes.io/version: "1.0.0"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: attendancepro-config
+  namespace: attendancepro
+data:
+  # Database configuration
+  ConnectionStrings__DefaultConnection: "Server=sql-server-service;Database=AttendancePlatform;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true"
+  
+  # JWT configuration
+  Jwt__Key: "YourSuperSecretKeyThatIsAtLeast32CharactersLong!"
+  Jwt__Issuer: "AttendancePlatform"
+  Jwt__Audience: "AttendancePlatformUsers"
+  Jwt__ExpiryMinutes: "60"
+  
+  # Redis configuration
+  Redis__ConnectionString: "redis-service:6379"
+  
+  # Logging configuration
+  Logging__LogLevel__Default: "Information"
+  Logging__LogLevel__Microsoft.AspNetCore: "Warning"
+  
+  # CORS configuration
+  AllowedHosts: "*"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: attendancepro-secrets
+  namespace: attendancepro
+type: Opaque
+data:
+  # Base64 encoded secrets
+  database-password: WW91clN0cm9uZ0BQYXNzdzByZA== # YourStrong@Passw0rd
+  jwt-key: WW91clN1cGVyU2VjcmV0S2V5VGhhdElzQXRMZWFzdDMyQ2hhcmFjdGVyc0xvbmch # YourSuperSecretKeyThatIsAtLeast32CharactersLong!
+  email-password: ""
+  sms-auth-token: ""
+  firebase-server-key: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sql-server-pvc
+  namespace: attendancepro
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: standard
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+  namespace: attendancepro
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: standard
+

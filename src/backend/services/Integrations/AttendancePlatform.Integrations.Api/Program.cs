@@ -1,0 +1,125 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Integrations.Api.Services;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+// Swagger configuration
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "AttendancePro Integrations API", 
+        Version = "v1",
+        Description = "SCIM 2.0 and HR system integrations for the AttendancePro platform"
+    });
+    
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+// Database configuration
+builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured")))
+        };
+    });
+
+// Authorization
+builder.Services.AddAuthorization();
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+// Register shared services
+builder.Services.AddSharedInfrastructure();
+
+// Register integration services
+builder.Services.AddScoped<IScimService, ScimService>();
+builder.Services.AddScoped<IHrIntegrationService, HrIntegrationService>();
+builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+builder.Services.AddScoped<IPayrollIntegrationService, PayrollIntegrationService>();
+builder.Services.AddScoped<IActiveDirectoryService, ActiveDirectoryService>();
+
+// HTTP Client for external services
+builder.Services.AddHttpClient();
+
+// Health checks
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<AttendancePlatformDbContext>();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AttendancePro Integrations API v1");
+        c.RoutePrefix = string.Empty;
+    });
+}
+
+app.UseHttpsRedirection();
+app.UseCors("AllowAll");
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+app.MapHealthChecks("/health");
+
+app.Run();
+

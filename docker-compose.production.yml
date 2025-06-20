@@ -1,0 +1,270 @@
+version: '3.8'
+
+services:
+  # Database
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Passw0rd
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - attendancepro-network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: src/backend/gateways/Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Authentication Service
+  authentication-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/Authentication/Dockerfile
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=AttendancePlatform;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Attendance Service
+  attendance-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/Attendance/Dockerfile
+    ports:
+      - "5002:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=AttendancePlatform;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Face Recognition Service
+  face-recognition-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/FaceRecognition/Dockerfile
+    ports:
+      - "5003:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=AttendancePlatform;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Leave Management Service
+  leave-management-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/LeaveManagement/Dockerfile
+    ports:
+      - "5004:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=AttendancePlatform;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Notifications Service
+  notifications-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/Notifications/Dockerfile
+    ports:
+      - "5007:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=AttendancePlatform;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Webhooks Service
+  webhooks-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/Webhooks/Dockerfile
+    ports:
+      - "5008:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=AttendancePlatform;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Integrations Service
+  integrations-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/Integrations/Dockerfile
+    ports:
+      - "5009:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sql-server;Database=AttendancePlatform;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: src/frontend/Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Monitoring - Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.enable-lifecycle'
+    networks:
+      - attendancepro-network
+
+  # Monitoring - Grafana
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - attendancepro-network
+
+volumes:
+  sql_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  attendancepro-network:
+    driver: bridge
+

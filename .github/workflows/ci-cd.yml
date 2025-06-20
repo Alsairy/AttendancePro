@@ -1,0 +1,240 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    name: Backend Tests
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: attendancepro_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: src/backend
+    
+    - name: Build
+      run: dotnet build --no-restore
+      working-directory: src/backend
+    
+    - name: Test
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      working-directory: src/backend
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./src/backend/coverage/cobertura-coverage.xml
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    name: Frontend Tests
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: src/frontend/attendance-web-app/package-lock.json
+    
+    - name: Install dependencies
+      run: npm ci
+      working-directory: src/frontend/attendance-web-app
+    
+    - name: Run tests
+      run: npm test -- --coverage --watchAll=false
+      working-directory: src/frontend/attendance-web-app
+    
+    - name: Build
+      run: npm run build
+      working-directory: src/frontend/attendance-web-app
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./src/frontend/attendance-web-app/coverage/lcov.info
+
+  test-mobile:
+    runs-on: ubuntu-latest
+    name: Mobile Tests
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: src/mobile/AttendanceMobile/package-lock.json
+    
+    - name: Install dependencies
+      run: npm ci
+      working-directory: src/mobile/AttendanceMobile
+    
+    - name: Run tests
+      run: npm test
+      working-directory: src/mobile/AttendanceMobile
+
+  security-scan:
+    runs-on: ubuntu-latest
+    name: Security Scan
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+    
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  build-images:
+    needs: [test-backend, test-frontend, test-mobile, security-scan]
+    runs-on: ubuntu-latest
+    name: Build Docker Images
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    permissions:
+      contents: read
+      packages: write
+    
+    strategy:
+      matrix:
+        service:
+          - authentication
+          - attendance
+          - face-recognition
+          - leave-management
+          - notifications
+          - integrations
+          - webhooks
+          - analytics
+          - business-intelligence
+          - workflow-engine
+          - collaboration
+          - event-sourcing
+          - api-gateway
+          - frontend
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.service }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+    
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./src/backend/services/${{ matrix.service }}/Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+  deploy-staging:
+    needs: build-images
+    runs-on: ubuntu-latest
+    name: Deploy to Staging
+    if: github.ref == 'refs/heads/develop'
+    
+    environment:
+      name: staging
+      url: https://staging.attendancepro.com
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Deploy to staging
+      run: |
+        echo "Deploying to staging environment"
+        # Add your staging deployment commands here
+
+  deploy-production:
+    needs: build-images
+    runs-on: ubuntu-latest
+    name: Deploy to Production
+    if: github.ref == 'refs/heads/main'
+    
+    environment:
+      name: production
+      url: https://attendancepro.com
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Deploy to production
+      run: |
+        echo "Deploying to production environment"
+        # Add your production deployment commands here
+
