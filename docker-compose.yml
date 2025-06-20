@@ -33,7 +33,7 @@ services:
     container_name: attendance-rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=admin123
+      - RABBITMQ_DEFAULT_PASS=${ADMIN_PASSWORD}
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -52,7 +52,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AttendancePlatform;User Id=sa;Password=AttendanceP@ssw0rd123;TrustServerCertificate=true
       - Redis__ConnectionString=redis:6379
-      - RabbitMQ__ConnectionString=amqp://admin:admin123@rabbitmq:5672
+      - RabbitMQ__ConnectionString=amqp://admin:${ADMIN_PASSWORD}@rabbitmq:5672
     ports:
       - "5000:8080"
     depends_on:
@@ -72,7 +72,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AttendancePlatform;User Id=sa;Password=AttendanceP@ssw0rd123;TrustServerCertificate=true
       - Redis__ConnectionString=redis:6379
-      - JWT__SecretKey=YourSuperSecretKeyForJWTTokenGeneration123456789
+      - JWT__SecretKey=${JWT_SECRET_KEY}
     ports:
       - "5001:8080"
     depends_on:

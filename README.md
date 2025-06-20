@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
+[![Security Score](https://img.shields.io/badge/security-91%2F100-brightgreen.svg)](./SECURITY_VALIDATION_REPORT.md)
 [![React](https://img.shields.io/badge/React-18.0-blue.svg)](https://reactjs.org/)
 [![React Native](https://img.shields.io/badge/React%20Native-0.72-blue.svg)](https://reactnative.dev/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
