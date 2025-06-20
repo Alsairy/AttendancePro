@@ -3,6 +3,9 @@ using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Shared.Domain.DTOs;
 using AttendancePlatform.Shared.Domain.Interfaces;
 using AttendancePlatform.Shared.Infrastructure.Data;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg;
 
 namespace AttendancePlatform.Attendance.Api.Services
 {

@@ -41,9 +41,9 @@ public class Notification : BaseEntity
     [MaxLength(100)]
     public string? Source { get; set; }
 
-    public bool IsDeleted { get; set; } = false;
-
-    public DateTime? DeletedAt { get; set; }
+    public new bool IsDeleted { get; set; } = false;
+    
+    public new DateTime? DeletedAt { get; set; }
 
     [MaxLength(50)]
     public string? CorrelationId { get; set; }

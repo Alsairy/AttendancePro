@@ -21,7 +21,7 @@ public class AuditLogService : IAuditLogService
     {
         try
         {
-            _context.AuditLogs.Add(entry);
+            _context.AuditLogEntries.Add(entry);
             await _context.SaveChangesAsync();
         }
         catch (Exception ex)
@@ -52,7 +52,7 @@ public class AuditLogService : IAuditLogService
 
     public async Task<IEnumerable<AuditLogEntry>> GetAuditLogsAsync(string? entityType = null, string? entityId = null, DateTime? fromDate = null, DateTime? toDate = null, int page = 1, int pageSize = 50)
     {
-        var query = _context.AuditLogs.AsQueryable();
+        var query = _context.AuditLogEntries.AsQueryable();
 
         if (!string.IsNullOrEmpty(entityType))
             query = query.Where(x => x.EntityType == entityType);
@@ -75,7 +75,7 @@ public class AuditLogService : IAuditLogService
 
     public async Task<IEnumerable<AuditLogEntry>> GetUserAuditLogsAsync(string userId, DateTime? fromDate = null, DateTime? toDate = null, int page = 1, int pageSize = 50)
     {
-        var query = _context.AuditLogs.Where(x => x.UserId == userId);
+        var query = _context.AuditLogEntries.Where(x => x.UserId == userId);
 
         if (fromDate.HasValue)
             query = query.Where(x => x.Timestamp >= fromDate.Value);
@@ -92,7 +92,7 @@ public class AuditLogService : IAuditLogService
 
     public async Task<IEnumerable<AuditLogEntry>> GetTenantAuditLogsAsync(string tenantId, DateTime? fromDate = null, DateTime? toDate = null, int page = 1, int pageSize = 50)
     {
-        var query = _context.AuditLogs.Where(x => x.TenantId == tenantId);
+        var query = _context.AuditLogEntries.Where(x => x.TenantId == tenantId);
 
         if (fromDate.HasValue)
             query = query.Where(x => x.Timestamp >= fromDate.Value);
@@ -111,13 +111,13 @@ public class AuditLogService : IAuditLogService
     {
         try
         {
-            var oldLogs = await _context.AuditLogs
+            var oldLogs = await _context.AuditLogEntries
                 .Where(x => x.Timestamp < cutoffDate)
                 .ToListAsync();
 
             if (oldLogs.Any())
             {
-                _context.AuditLogs.RemoveRange(oldLogs);
+                _context.AuditLogEntries.RemoveRange(oldLogs);
                 await _context.SaveChangesAsync();
                 
                 _logger.LogInformation("Purged {Count} audit log entries older than {CutoffDate}", 

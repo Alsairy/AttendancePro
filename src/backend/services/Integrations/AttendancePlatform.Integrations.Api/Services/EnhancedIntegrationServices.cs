@@ -3,8 +3,8 @@ using AttendancePlatform.Shared.Infrastructure.Data;
 using System.Text.Json;
 using Microsoft.Graph;
 using Google.Apis.Calendar.v3;
-using Salesforce.Common;
-using Salesforce.Force;
+// using Salesforce.Common;
+// using Salesforce.Force;
 
 namespace AttendancePlatform.Integrations.Api.Services
 {

@@ -22,7 +22,7 @@ spec:
         - containerPort: 3000
         env:
         - name: GF_SECURITY_ADMIN_PASSWORD
-          value: "admin123"
+          value: "${GRAFANA_ADMIN_PASSWORD}"
         - name: GF_INSTALL_PLUGINS
           value: "grafana-kubernetes-app"
         volumeMounts:

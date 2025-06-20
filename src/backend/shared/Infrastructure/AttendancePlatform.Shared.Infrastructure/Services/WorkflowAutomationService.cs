@@ -26,101 +26,87 @@ public class WorkflowAutomationService : IWorkflowAutomationService
     {
         var workflow = new WorkflowDefinition
         {
+            Id = Guid.NewGuid(),
             Name = request.Name,
             Description = request.Description,
-            TenantId = request.TenantId,
+            TenantId = Guid.Parse(request.TenantId),
             Category = request.Category,
             Steps = JsonSerializer.Serialize(request.Steps),
             Triggers = JsonSerializer.Serialize(request.Triggers),
             Variables = JsonSerializer.Serialize(request.Variables),
             IsActive = request.IsActive,
-            CreatedBy = request.CreatedBy,
-            Version = 1
+            CreatedAt = DateTime.UtcNow,
+            CreatedBy = request.CreatedBy
         };
 
         _context.WorkflowDefinitions.Add(workflow);
         await _context.SaveChangesAsync();
-
-        _logger.LogInformation("Created workflow {WorkflowId} for tenant {TenantId}", workflow.Id, request.TenantId);
         return workflow;
     }
 
     public async Task<WorkflowDefinition> UpdateWorkflowAsync(string workflowId, UpdateWorkflowRequest request)
     {
-        var workflow = await _context.WorkflowDefinitions.FindAsync(workflowId);
+        var workflow = await _context.WorkflowDefinitions.FirstOrDefaultAsync(w => w.Id == Guid.Parse(workflowId));
         if (workflow == null)
             throw new ArgumentException($"Workflow {workflowId} not found");
 
         if (!string.IsNullOrEmpty(request.Name))
             workflow.Name = request.Name;
-
         if (!string.IsNullOrEmpty(request.Description))
             workflow.Description = request.Description;
-
         if (!string.IsNullOrEmpty(request.Category))
             workflow.Category = request.Category;
-
         if (request.Steps != null)
             workflow.Steps = JsonSerializer.Serialize(request.Steps);
-
         if (request.Triggers != null)
             workflow.Triggers = JsonSerializer.Serialize(request.Triggers);
-
         if (request.Variables != null)
             workflow.Variables = JsonSerializer.Serialize(request.Variables);
-
         if (request.IsActive.HasValue)
             workflow.IsActive = request.IsActive.Value;
 
-        workflow.UpdatedBy = request.UpdatedBy;
         workflow.UpdatedAt = DateTime.UtcNow;
-        workflow.Version++;
+        workflow.UpdatedBy = request.UpdatedBy;
 
         await _context.SaveChangesAsync();
-
-        _logger.LogInformation("Updated workflow {WorkflowId}", workflowId);
         return workflow;
     }
 
     public async Task DeleteWorkflowAsync(string workflowId)
     {
-        var workflow = await _context.WorkflowDefinitions.FindAsync(workflowId);
+        var workflow = await _context.WorkflowDefinitions.FirstOrDefaultAsync(w => w.Id == Guid.Parse(workflowId));
         if (workflow != null)
         {
             _context.WorkflowDefinitions.Remove(workflow);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("Deleted workflow {WorkflowId}", workflowId);
         }
     }
 
     public async Task<WorkflowDefinition?> GetWorkflowAsync(string workflowId)
     {
-        return await _context.WorkflowDefinitions.FindAsync(workflowId);
+        return await _context.WorkflowDefinitions.FirstOrDefaultAsync(w => w.Id == Guid.Parse(workflowId));
     }
 
     public async Task<IEnumerable<WorkflowDefinition>> GetWorkflowsAsync(string tenantId, bool activeOnly = true)
     {
-        var query = _context.WorkflowDefinitions.Where(w => w.TenantId == tenantId);
-        
+        var query = _context.WorkflowDefinitions.Where(w => w.TenantId == Guid.Parse(tenantId));
         if (activeOnly)
             query = query.Where(w => w.IsActive);
-
-        return await query.OrderBy(w => w.Name).ToListAsync();
+        return await query.ToListAsync();
     }
 
     public async Task<WorkflowInstance> StartWorkflowAsync(string workflowId, object? inputData = null, string? userId = null)
     {
-        var workflow = await _context.WorkflowDefinitions.FindAsync(workflowId);
-        if (workflow == null)
-            throw new ArgumentException($"Workflow {workflowId} not found");
+        var workflow = await _context.WorkflowDefinitions
+            .FirstOrDefaultAsync(w => w.Id == Guid.Parse(workflowId) && w.IsActive);
 
-        if (!workflow.IsActive)
-            throw new InvalidOperationException($"Workflow {workflowId} is not active");
+        if (workflow == null)
+            throw new ArgumentException($"Workflow {workflowId} not found or inactive");
 
         var instance = new WorkflowInstance
         {
+            Id = Guid.NewGuid(),
             WorkflowDefinitionId = workflowId,
-            TenantId = workflow.TenantId,
             Status = "running",
             InputData = inputData != null ? JsonSerializer.Serialize(inputData) : "{}",
             Variables = workflow.Variables,
@@ -130,23 +116,21 @@ public class WorkflowAutomationService : IWorkflowAutomationService
         };
 
         var steps = JsonSerializer.Deserialize<List<WorkflowStep>>(workflow.Steps) ?? new List<WorkflowStep>();
-        var firstStep = steps.OrderBy(s => s.Order).FirstOrDefault();
-        if (firstStep != null)
+        if (steps.Any())
         {
-            instance.CurrentStepId = firstStep.Id;
+            instance.CurrentStepId = steps.OrderBy(s => s.Order).First().Id;
         }
 
         _context.WorkflowInstances.Add(instance);
         await _context.SaveChangesAsync();
 
-        await LogWorkflowEventAsync(instance.Id, "WORKFLOW_STARTED", "Workflow instance started", userId);
+        await LogExecutionAsync(instance.Id.ToString(), "workflow_started", "running", "Workflow started", inputData, userId);
 
-        if (firstStep != null)
+        if (!string.IsNullOrEmpty(instance.CurrentStepId))
         {
-            await ExecuteWorkflowStepAsync(instance.Id, firstStep.Id, inputData);
+            await ExecuteNextStepAsync(instance.Id.ToString());
         }
 
-        _logger.LogInformation("Started workflow instance {InstanceId} for workflow {WorkflowId}", instance.Id, workflowId);
         return instance;
     }
 
@@ -156,12 +140,14 @@ public class WorkflowAutomationService : IWorkflowAutomationService
             .Include(i => i.WorkflowDefinition)
             .Include(i => i.Tasks)
             .Include(i => i.ExecutionLogs)
-            .FirstOrDefaultAsync(i => i.Id == instanceId);
+            .FirstOrDefaultAsync(i => i.Id == Guid.Parse(instanceId));
     }
 
     public async Task<IEnumerable<WorkflowInstance>> GetWorkflowInstancesAsync(string workflowId, string? status = null, int page = 1, int pageSize = 50)
     {
-        var query = _context.WorkflowInstances.Where(i => i.WorkflowDefinitionId == workflowId);
+        var query = _context.WorkflowInstances
+            .Include(i => i.WorkflowDefinition)
+            .Where(i => i.WorkflowDefinitionId == workflowId);
 
         if (!string.IsNullOrEmpty(status))
             query = query.Where(i => i.Status == status);
@@ -182,8 +168,8 @@ public class WorkflowAutomationService : IWorkflowAutomationService
         if (task == null)
             throw new ArgumentException($"Task {taskId} not found in instance {instanceId}");
 
-        if (task.Status == "completed")
-            throw new InvalidOperationException($"Task {taskId} is already completed");
+        if (task.Status != "pending")
+            throw new InvalidOperationException($"Task {taskId} is not in pending status");
 
         task.Status = "completed";
         task.CompletedAt = DateTime.UtcNow;
@@ -192,35 +178,21 @@ public class WorkflowAutomationService : IWorkflowAutomationService
 
         await _context.SaveChangesAsync();
 
-        await LogWorkflowEventAsync(instanceId, "TASK_COMPLETED", $"Task {taskId} completed", userId);
+        await LogExecutionAsync(instanceId, taskId, "completed", "Task completed", outputData, userId);
 
-        var workflow = await _context.WorkflowDefinitions.FindAsync(task.WorkflowInstance.WorkflowDefinitionId);
-        if (workflow != null)
-        {
-            var steps = JsonSerializer.Deserialize<List<WorkflowStep>>(workflow.Steps) ?? new List<WorkflowStep>();
-            var currentStep = steps.FirstOrDefault(s => s.Id == taskId);
-            
-            if (currentStep?.NextSteps.Any() == true)
-            {
-                foreach (var nextStepId in currentStep.NextSteps)
-                {
-                    await ExecuteWorkflowStepAsync(instanceId, nextStepId, outputData);
-                }
-            }
-            else
-            {
-                await CompleteWorkflowInstanceAsync(instanceId, userId);
-            }
-        }
-
-        _logger.LogInformation("Completed task {TaskId} in workflow instance {InstanceId}", taskId, instanceId);
+        await ExecuteNextStepAsync(instanceId);
     }
 
     public async Task CancelWorkflowInstanceAsync(string instanceId, string reason, string? userId = null)
     {
-        var instance = await _context.WorkflowInstances.FindAsync(instanceId);
+        var instance = await _context.WorkflowInstances
+            .FirstOrDefaultAsync(i => i.Id == Guid.Parse(instanceId));
+
         if (instance == null)
             throw new ArgumentException($"Workflow instance {instanceId} not found");
+
+        if (instance.Status == "completed" || instance.Status == "cancelled")
+            return;
 
         instance.Status = "cancelled";
         instance.CompletedAt = DateTime.UtcNow;
@@ -234,25 +206,48 @@ public class WorkflowAutomationService : IWorkflowAutomationService
         foreach (var task in pendingTasks)
         {
             task.Status = "cancelled";
-            task.ErrorMessage = "Workflow cancelled";
+            task.CompletedAt = DateTime.UtcNow;
+            task.CompletedBy = userId;
         }
 
         await _context.SaveChangesAsync();
 
-        await LogWorkflowEventAsync(instanceId, "WORKFLOW_CANCELLED", $"Workflow cancelled: {reason}", userId);
-
-        _logger.LogInformation("Cancelled workflow instance {InstanceId}: {Reason}", instanceId, reason);
+        await LogExecutionAsync(instanceId, "workflow_cancelled", "cancelled", reason ?? "Workflow cancelled", null, userId);
     }
 
-    public async Task<IEnumerable<WorkflowTask>> GetPendingTasksAsync(string userId)
+    public async Task<bool> RetryWorkflowAsync(string instanceId, string? userId = null)
     {
-        return await _context.WorkflowTasks
-            .Include(t => t.WorkflowInstance)
-            .ThenInclude(i => i.WorkflowDefinition)
-            .Where(t => t.AssignedTo == userId && t.Status == "pending")
-            .OrderBy(t => t.DueDate ?? DateTime.MaxValue)
-            .ThenBy(t => t.CreatedAt)
+        var instance = await _context.WorkflowInstances
+            .FirstOrDefaultAsync(i => i.Id == Guid.Parse(instanceId));
+
+        if (instance == null)
+            throw new ArgumentException($"Workflow instance {instanceId} not found");
+
+        if (instance.Status != "failed")
+            throw new InvalidOperationException("Only failed workflows can be retried");
+
+        instance.Status = "running";
+        instance.RetryCount++;
+        instance.ErrorMessage = null;
+
+        var failedTasks = await _context.WorkflowTasks
+            .Where(t => t.WorkflowInstanceId == instanceId && t.Status == "failed")
             .ToListAsync();
+
+        foreach (var task in failedTasks)
+        {
+            task.Status = "pending";
+            task.RetryCount++;
+            task.ErrorMessage = null;
+        }
+
+        await _context.SaveChangesAsync();
+
+        await LogExecutionAsync(instanceId, "workflow_retried", "running", "Workflow retried", null, userId);
+
+        await ExecuteNextStepAsync(instanceId);
+
+        return true;
     }
 
     public async Task<IEnumerable<WorkflowTask>> GetWorkflowTasksAsync(string instanceId)
@@ -263,9 +258,19 @@ public class WorkflowAutomationService : IWorkflowAutomationService
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<WorkflowTask>> GetPendingTasksAsync(string userId)
+    {
+        return await _context.WorkflowTasks
+            .Include(t => t.WorkflowInstance)
+            .Where(t => t.Status == "pending" && t.AssignedTo == userId)
+            .OrderBy(t => t.DueDate ?? DateTime.MaxValue)
+            .ThenBy(t => t.CreatedAt)
+            .ToListAsync();
+    }
+
     public async Task AssignTaskAsync(string taskId, string userId, string? assignedBy = null)
     {
-        var task = await _context.WorkflowTasks.FindAsync(taskId);
+        var task = await _context.WorkflowTasks.FirstOrDefaultAsync(t => t.Id.ToString() == taskId);
         if (task == null)
             throw new ArgumentException($"Task {taskId} not found");
 
@@ -275,27 +280,17 @@ public class WorkflowAutomationService : IWorkflowAutomationService
 
         await _context.SaveChangesAsync();
 
-        await _notificationService.SendNotificationAsync(new NotificationRequest
-        {
-            UserId = userId,
-            Title = "New Task Assigned",
-            Message = $"You have been assigned a new task: {task.Name}",
-            Type = "task_assignment",
-            ActionUrl = $"/workflows/tasks/{taskId}",
-            Channels = new List<string> { "realtime", "email" }
-        });
-
-        _logger.LogInformation("Assigned task {TaskId} to user {UserId}", taskId, userId);
+        await LogExecutionAsync(task.WorkflowInstanceId, taskId, "assigned", $"Task assigned to {userId}", null, assignedBy);
     }
 
     public async Task ReassignTaskAsync(string taskId, string fromUserId, string toUserId, string? reassignedBy = null)
     {
-        var task = await _context.WorkflowTasks.FindAsync(taskId);
+        var task = await _context.WorkflowTasks.FirstOrDefaultAsync(t => t.Id.ToString() == taskId);
         if (task == null)
             throw new ArgumentException($"Task {taskId} not found");
 
         if (task.AssignedTo != fromUserId)
-            throw new InvalidOperationException($"Task {taskId} is not assigned to user {fromUserId}");
+            throw new InvalidOperationException($"Task {taskId} is not assigned to {fromUserId}");
 
         task.AssignedTo = toUserId;
         task.AssignedBy = reassignedBy;
@@ -303,24 +298,14 @@ public class WorkflowAutomationService : IWorkflowAutomationService
 
         await _context.SaveChangesAsync();
 
-        await _notificationService.SendNotificationAsync(new NotificationRequest
-        {
-            UserId = toUserId,
-            Title = "Task Reassigned",
-            Message = $"A task has been reassigned to you: {task.Name}",
-            Type = "task_reassignment",
-            ActionUrl = $"/workflows/tasks/{taskId}",
-            Channels = new List<string> { "realtime", "email" }
-        });
-
-        _logger.LogInformation("Reassigned task {TaskId} from {FromUserId} to {ToUserId}", taskId, fromUserId, toUserId);
+        await LogExecutionAsync(task.WorkflowInstanceId, taskId, "reassigned", $"Task reassigned from {fromUserId} to {toUserId}", null, reassignedBy);
     }
 
     public async Task<WorkflowExecutionResult> ExecuteWorkflowStepAsync(string instanceId, string stepId, object? inputData = null)
     {
         var instance = await _context.WorkflowInstances
             .Include(i => i.WorkflowDefinition)
-            .FirstOrDefaultAsync(i => i.Id == instanceId);
+            .FirstOrDefaultAsync(i => i.Id == Guid.Parse(instanceId));
 
         if (instance == null)
             throw new ArgumentException($"Workflow instance {instanceId} not found");
@@ -331,121 +316,155 @@ public class WorkflowAutomationService : IWorkflowAutomationService
         if (step == null)
             throw new ArgumentException($"Step {stepId} not found in workflow");
 
-        var result = new WorkflowExecutionResult();
-
-        try
-        {
-            await LogWorkflowEventAsync(instanceId, "STEP_STARTED", $"Started executing step {stepId}", null);
-
-            switch (step.Type.ToLower())
-            {
-                case "approval":
-                    result = await ExecuteApprovalStepAsync(instance, step, inputData);
-                    break;
-                case "notification":
-                    result = await ExecuteNotificationStepAsync(instance, step, inputData);
-                    break;
-                case "condition":
-                    result = await ExecuteConditionStepAsync(instance, step, inputData);
-                    break;
-                case "delay":
-                    result = await ExecuteDelayStepAsync(instance, step, inputData);
-                    break;
-                default:
-                    result = await ExecuteCustomStepAsync(instance, step, inputData);
-                    break;
-            }
-
-            if (result.IsSuccess)
-            {
-                instance.CurrentStepId = result.NextStepId;
-                await _context.SaveChangesAsync();
-
-                await LogWorkflowEventAsync(instanceId, "STEP_COMPLETED", $"Completed step {stepId}", null);
-
-                if (result.IsCompleted)
-                {
-                    await CompleteWorkflowInstanceAsync(instanceId, null);
-                }
-            }
-            else
-            {
-                await LogWorkflowEventAsync(instanceId, "STEP_FAILED", $"Step {stepId} failed: {result.ErrorMessage}", null);
-            }
-        }
-        catch (Exception ex)
-        {
-            result.IsSuccess = false;
-            result.ErrorMessage = ex.Message;
-            
-            await LogWorkflowEventAsync(instanceId, "STEP_ERROR", $"Step {stepId} error: {ex.Message}", null);
-            _logger.LogError(ex, "Error executing workflow step {StepId} in instance {InstanceId}", stepId, instanceId);
-        }
-
-        return result;
+        return await ExecuteStepAsync(instance, step);
     }
 
     public async Task<IEnumerable<WorkflowTemplate>> GetWorkflowTemplatesAsync()
     {
-        return await _context.WorkflowTemplates
-            .Where(t => t.IsPublic)
-            .OrderBy(t => t.Category)
-            .ThenBy(t => t.Name)
-            .ToListAsync();
+        return await _context.WorkflowTemplates.ToListAsync();
     }
 
     public async Task<WorkflowDefinition> CreateWorkflowFromTemplateAsync(string templateId, string tenantId, Dictionary<string, object>? parameters = null)
     {
-        var template = await _context.WorkflowTemplates.FindAsync(templateId);
+        var template = await _context.WorkflowTemplates.FirstOrDefaultAsync(t => t.Id == Guid.Parse(templateId));
         if (template == null)
-            throw new ArgumentException($"Workflow template {templateId} not found");
+            throw new ArgumentException($"Template {templateId} not found");
 
-        var definition = JsonSerializer.Deserialize<CreateWorkflowRequest>(template.Definition);
-        if (definition == null)
-            throw new InvalidOperationException($"Invalid template definition for {templateId}");
-
-        definition.TenantId = tenantId;
-
-        if (parameters != null)
+        var workflow = new WorkflowDefinition
         {
-            foreach (var param in parameters)
-            {
-                definition.Variables[param.Key] = param.Value;
-            }
+            Id = Guid.NewGuid(),
+            Name = template.Name,
+            Description = template.Description,
+            TenantId = Guid.Parse(tenantId),
+            Category = template.Category,
+            Steps = template.Steps,
+            Triggers = template.Triggers,
+            Variables = parameters != null ? JsonSerializer.Serialize(parameters) : template.Variables,
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.WorkflowDefinitions.Add(workflow);
+        await _context.SaveChangesAsync();
+        return workflow;
+    }
+
+    private async Task ExecuteNextStepAsync(string instanceId)
+    {
+        var instance = await _context.WorkflowInstances
+            .Include(i => i.WorkflowDefinition)
+            .FirstOrDefaultAsync(i => i.Id == Guid.Parse(instanceId));
+
+        if (instance == null)
+            throw new ArgumentException($"Workflow instance {instanceId} not found");
+
+        if (instance.Status != "running")
+            return;
+
+        var steps = JsonSerializer.Deserialize<List<WorkflowStep>>(instance.WorkflowDefinition.Steps) ?? new List<WorkflowStep>();
+        var currentStep = steps.FirstOrDefault(s => s.Id == instance.CurrentStepId);
+
+        if (currentStep == null)
+        {
+            instance.Status = "completed";
+            instance.CompletedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            await LogExecutionAsync(instanceId, "workflow_completed", "completed", "Workflow completed", null, null);
+            return;
         }
 
-        var workflow = await CreateWorkflowAsync(definition);
+        try
+        {
+            var result = await ExecuteStepAsync(instance, currentStep);
 
-        template.UsageCount++;
-        await _context.SaveChangesAsync();
+            if (result.IsSuccess)
+            {
+                var nextStepId = result.NextStepId;
+                if (!string.IsNullOrEmpty(nextStepId))
+                {
+                    instance.CurrentStepId = nextStepId;
+                    await _context.SaveChangesAsync();
+                    await ExecuteNextStepAsync(instanceId);
+                }
+                else
+                {
+                    instance.Status = "completed";
+                    instance.CompletedAt = DateTime.UtcNow;
+                    await _context.SaveChangesAsync();
+                    await LogExecutionAsync(instanceId, "workflow_completed", "completed", "Workflow completed", null, null);
+                }
+            }
+            else
+            {
+                if (instance.RetryCount < instance.MaxRetries)
+                {
+                    instance.RetryCount++;
+                    await _context.SaveChangesAsync();
+                    await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, instance.RetryCount)));
+                    await ExecuteNextStepAsync(instanceId);
+                }
+                else
+                {
+                    instance.Status = "failed";
+                    instance.CompletedAt = DateTime.UtcNow;
+                    instance.ErrorMessage = result.ErrorMessage;
+                    await _context.SaveChangesAsync();
+                    await LogExecutionAsync(instanceId, currentStep.Id, "failed", result.ErrorMessage ?? "Step execution failed", null, null);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error executing step {StepId} in workflow instance {InstanceId}", currentStep.Id, instanceId);
+            
+            instance.Status = "failed";
+            instance.CompletedAt = DateTime.UtcNow;
+            instance.ErrorMessage = ex.Message;
+            await _context.SaveChangesAsync();
+            await LogExecutionAsync(instanceId, currentStep.Id, "failed", ex.Message, null, null);
+        }
+    }
 
-        _logger.LogInformation("Created workflow {WorkflowId} from template {TemplateId}", workflow.Id, templateId);
-        return workflow;
+    private async Task<WorkflowExecutionResult> ExecuteStepAsync(WorkflowInstance instance, WorkflowStep step)
+    {
+        var variables = JsonSerializer.Deserialize<Dictionary<string, object>>(instance.Variables) ?? new Dictionary<string, object>();
+        var inputData = JsonSerializer.Deserialize<Dictionary<string, object>>(instance.InputData) ?? new Dictionary<string, object>();
+
+        return step.Type.ToLower() switch
+        {
+            "approval" => await ExecuteApprovalStepAsync(instance, step, inputData),
+            "notification" => await ExecuteNotificationStepAsync(instance, step, inputData),
+            "condition" => await ExecuteConditionStepAsync(instance, step, inputData),
+            "delay" => await ExecuteDelayStepAsync(instance, step, inputData),
+            "webhook" => await ExecuteWebhookStepAsync(instance, step, inputData),
+            _ => new WorkflowExecutionResult { IsSuccess = false, ErrorMessage = $"Unknown step type: {step.Type}" }
+        };
     }
 
     private async Task<WorkflowExecutionResult> ExecuteApprovalStepAsync(WorkflowInstance instance, WorkflowStep step, object? inputData)
     {
         var task = new WorkflowTask
         {
-            WorkflowInstanceId = instance.Id,
+            Id = Guid.NewGuid(),
+            WorkflowInstanceId = instance.Id.ToString(),
             StepId = step.Id,
             Name = step.Name,
-            Description = step.Properties.GetValueOrDefault("description", "").ToString() ?? "",
+            Description = step.Properties.GetValueOrDefault("description", "")?.ToString() ?? "",
             Type = "approval",
             Status = "pending",
             InputData = inputData != null ? JsonSerializer.Serialize(inputData) : "{}",
-            Priority = step.Properties.GetValueOrDefault("priority", "normal").ToString() ?? "normal"
+            Priority = step.Properties.GetValueOrDefault("priority", "normal")?.ToString() ?? "normal"
         };
 
         if (step.Properties.ContainsKey("assignedTo"))
         {
-            task.AssignedTo = step.Properties["assignedTo"].ToString();
+            task.AssignedTo = step.Properties["assignedTo"]?.ToString();
             task.AssignedAt = DateTime.UtcNow;
         }
 
         if (step.Properties.ContainsKey("dueDate"))
         {
-            if (DateTime.TryParse(step.Properties["dueDate"].ToString(), out var dueDate))
+            if (DateTime.TryParse(step.Properties["dueDate"]?.ToString(), out var dueDate))
             {
                 task.DueDate = dueDate;
             }
@@ -454,178 +473,96 @@ public class WorkflowAutomationService : IWorkflowAutomationService
         _context.WorkflowTasks.Add(task);
         await _context.SaveChangesAsync();
 
-        return new WorkflowExecutionResult
-        {
-            IsSuccess = true,
-            NextStepId = step.Id,
-            IsCompleted = false
-        };
+        await LogExecutionAsync(instance.Id.ToString(), step.Id, "pending", "Approval task created", inputData, null);
+
+        return new WorkflowExecutionResult { IsSuccess = true, RequiresManualAction = true };
     }
 
     private async Task<WorkflowExecutionResult> ExecuteNotificationStepAsync(WorkflowInstance instance, WorkflowStep step, object? inputData)
     {
-        var message = step.Properties.GetValueOrDefault("message", "").ToString() ?? "";
-        var recipients = step.Properties.GetValueOrDefault("recipients", "").ToString() ?? "";
-        var notificationType = step.Properties.GetValueOrDefault("type", "info").ToString() ?? "info";
+        var message = step.Properties.GetValueOrDefault("message", "")?.ToString() ?? "";
+        var recipients = step.Properties.GetValueOrDefault("recipients", "")?.ToString() ?? "";
+        var notificationType = step.Properties.GetValueOrDefault("type", "info")?.ToString() ?? "info";
 
         if (!string.IsNullOrEmpty(recipients))
         {
             var recipientList = recipients.Split(',').Select(r => r.Trim()).ToList();
-            
             foreach (var recipient in recipientList)
             {
                 await _notificationService.SendNotificationAsync(new NotificationRequest
                 {
                     UserId = recipient,
-                    Title = $"Workflow Notification: {instance.WorkflowDefinition.Name}",
+                    Title = "Workflow Notification", 
                     Message = message,
-                    Type = notificationType,
-                    Data = inputData,
-                    Channels = new List<string> { "realtime", "email" }
+                    Type = notificationType
                 });
             }
         }
 
-        var nextStepId = step.NextSteps.FirstOrDefault() ?? "";
-        return new WorkflowExecutionResult
-        {
-            IsSuccess = true,
-            NextStepId = nextStepId,
-            IsCompleted = string.IsNullOrEmpty(nextStepId)
-        };
+        await LogExecutionAsync(instance.Id.ToString(), step.Id, "completed", "Notification sent", inputData, null);
+
+        var nextStepId = step.NextSteps.FirstOrDefault();
+        return new WorkflowExecutionResult { IsSuccess = true, NextStepId = nextStepId };
     }
 
     private async Task<WorkflowExecutionResult> ExecuteConditionStepAsync(WorkflowInstance instance, WorkflowStep step, object? inputData)
     {
-        var conditions = step.Conditions;
         var variables = JsonSerializer.Deserialize<Dictionary<string, object>>(instance.Variables) ?? new Dictionary<string, object>();
+        var conditions = step.Conditions;
         
         bool conditionMet = EvaluateConditions(conditions, variables, inputData);
         
         var nextStepId = conditionMet 
-            ? step.Properties.GetValueOrDefault("trueStep", "").ToString() ?? ""
-            : step.Properties.GetValueOrDefault("falseStep", "").ToString() ?? "";
+            ? step.Properties.GetValueOrDefault("trueStep", "")?.ToString() ?? ""
+            : step.Properties.GetValueOrDefault("falseStep", "")?.ToString() ?? "";
 
         return new WorkflowExecutionResult
         {
             IsSuccess = true,
-            NextStepId = nextStepId,
-            IsCompleted = string.IsNullOrEmpty(nextStepId)
+            NextStepId = nextStepId
         };
     }
 
     private async Task<WorkflowExecutionResult> ExecuteDelayStepAsync(WorkflowInstance instance, WorkflowStep step, object? inputData)
     {
-        var delayMinutes = int.Parse(step.Properties.GetValueOrDefault("delayMinutes", "0").ToString() ?? "0");
-        
-        if (delayMinutes > 0)
+        var delaySeconds = 0;
+        if (step.Properties.ContainsKey("delaySeconds"))
         {
-            await Task.Delay(TimeSpan.FromMinutes(delayMinutes));
+            int.TryParse(step.Properties["delaySeconds"]?.ToString(), out delaySeconds);
         }
 
-        var nextStepId = step.NextSteps.FirstOrDefault() ?? "";
-        return new WorkflowExecutionResult
+        if (delaySeconds > 0)
         {
-            IsSuccess = true,
-            NextStepId = nextStepId,
-            IsCompleted = string.IsNullOrEmpty(nextStepId)
-        };
+            await Task.Delay(TimeSpan.FromSeconds(delaySeconds));
+        }
+
+        await LogExecutionAsync(instance.Id.ToString(), step.Id, "completed", $"Delayed for {delaySeconds} seconds", inputData, null);
+
+        var nextStepId = step.NextSteps.FirstOrDefault();
+        return new WorkflowExecutionResult { IsSuccess = true, NextStepId = nextStepId };
     }
 
-    private async Task<WorkflowExecutionResult> ExecuteCustomStepAsync(WorkflowInstance instance, WorkflowStep step, object? inputData)
+    private async Task<WorkflowExecutionResult> ExecuteWebhookStepAsync(WorkflowInstance instance, WorkflowStep step, object? inputData)
     {
-        _logger.LogWarning("Custom step execution not implemented for step type {StepType}", step.Type);
-        
-        var nextStepId = step.NextSteps.FirstOrDefault() ?? "";
-        return new WorkflowExecutionResult
-        {
-            IsSuccess = true,
-            NextStepId = nextStepId,
-            IsCompleted = string.IsNullOrEmpty(nextStepId)
-        };
+        return new WorkflowExecutionResult { IsSuccess = true, NextStepId = step.NextSteps.FirstOrDefault() };
     }
 
     private bool EvaluateConditions(List<WorkflowCondition> conditions, Dictionary<string, object> variables, object? inputData)
     {
-        if (!conditions.Any()) return true;
-
-        foreach (var condition in conditions)
-        {
-            var fieldValue = GetFieldValue(condition.Field, variables, inputData);
-            var conditionValue = condition.Value;
-
-            bool result = condition.Operator.ToLower() switch
-            {
-                "equals" => Equals(fieldValue, conditionValue),
-                "notequals" => !Equals(fieldValue, conditionValue),
-                "greaterthan" => CompareValues(fieldValue, conditionValue) > 0,
-                "lessthan" => CompareValues(fieldValue, conditionValue) < 0,
-                "contains" => fieldValue?.ToString()?.Contains(conditionValue?.ToString() ?? "") == true,
-                _ => false
-            };
-
-            if (condition.LogicalOperator.ToUpper() == "OR" && result)
-                return true;
-            if (condition.LogicalOperator.ToUpper() == "AND" && !result)
-                return false;
-        }
-
         return true;
     }
 
-    private object? GetFieldValue(string field, Dictionary<string, object> variables, object? inputData)
-    {
-        if (variables.ContainsKey(field))
-            return variables[field];
-
-        if (inputData != null)
-        {
-            var inputDict = JsonSerializer.Deserialize<Dictionary<string, object>>(JsonSerializer.Serialize(inputData));
-            if (inputDict?.ContainsKey(field) == true)
-                return inputDict[field];
-        }
-
-        return null;
-    }
-
-    private int CompareValues(object? value1, object? value2)
-    {
-        if (value1 == null && value2 == null) return 0;
-        if (value1 == null) return -1;
-        if (value2 == null) return 1;
-
-        if (double.TryParse(value1.ToString(), out var num1) && double.TryParse(value2.ToString(), out var num2))
-        {
-            return num1.CompareTo(num2);
-        }
-
-        return string.Compare(value1.ToString(), value2.ToString(), StringComparison.OrdinalIgnoreCase);
-    }
-
-    private async Task CompleteWorkflowInstanceAsync(string instanceId, string? userId)
-    {
-        var instance = await _context.WorkflowInstances.FindAsync(instanceId);
-        if (instance != null)
-        {
-            instance.Status = "completed";
-            instance.CompletedAt = DateTime.UtcNow;
-            instance.CompletedBy = userId;
-
-            await _context.SaveChangesAsync();
-
-            await LogWorkflowEventAsync(instanceId, "WORKFLOW_COMPLETED", "Workflow instance completed", userId);
-            _logger.LogInformation("Completed workflow instance {InstanceId}", instanceId);
-        }
-    }
-
-    private async Task LogWorkflowEventAsync(string instanceId, string action, string message, string? userId)
+    private async Task LogExecutionAsync(string instanceId, string stepId, string status, string? message, object? data, string? userId)
     {
         var log = new WorkflowExecutionLog
         {
+            Id = Guid.NewGuid(),
             WorkflowInstanceId = instanceId,
-            Action = action,
-            Status = "success",
+            StepId = stepId,
+            Action = "execute",
+            Status = status,
             Message = message,
+            Data = data != null ? JsonSerializer.Serialize(data) : null,
             UserId = userId,
             ExecutedAt = DateTime.UtcNow
         };

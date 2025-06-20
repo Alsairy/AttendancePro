@@ -3,6 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AttendancePlatform.Authentication.Api.Services;
 using AttendancePlatform.Shared.Infrastructure.Extensions;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("AttendancePlatform.Tests.Integration")]
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -113,4 +116,6 @@ app.MapControllers();
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.UtcNow });
 
 app.Run();
+
+public partial class Program { }
 

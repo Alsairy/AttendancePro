@@ -25,7 +25,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
             _redis = redis;
         }
 
-        public async Task<T?> GetAsync<T>(string key) where T : class
+        public async Task<T?> GetAsync<T>(string key)
         {
             try
             {
@@ -47,16 +47,16 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
                 }
 
                 _logger.LogDebug("Cache miss: {Key}", key);
-                return null;
+                return default(T);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving from cache: {Key}", key);
-                return null;
+                return default(T);
             }
         }
 
-        public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null) where T : class
+        public async Task SetAsync<T>(string key, T value, TimeSpan? expiration = null)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
             }
         }
 
-        public async Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> getItem, TimeSpan? expiration = null) where T : class
+        public async Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> getItem, TimeSpan? expiration = null)
         {
             var cachedValue = await GetAsync<T>(key);
             if (cachedValue != null)

@@ -57,7 +57,6 @@ public static class TelemetryExtensions
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddRuntimeInstrumentation()
-                    .AddProcessInstrumentation()
                     .AddPrometheusExporter();
             });
 

@@ -37,7 +37,7 @@ namespace AttendancePlatform.Authentication.Api.Services
             {
                 rng.GetBytes(key);
             }
-            return Convert.ToBase32String(key);
+            return Base32.ToBase32String(key);
         }
 
         public async Task<bool> ValidateCodeAsync(string secret, string code)
@@ -47,7 +47,7 @@ namespace AttendancePlatform.Authentication.Api.Services
 
             try
             {
-                var secretBytes = Convert.FromBase32String(secret);
+                var secretBytes = Base32.FromBase32String(secret);
                 var unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 var timestep = unixTimestamp / 30;
 
@@ -225,16 +225,5 @@ namespace AttendancePlatform.Authentication.Api.Services
         }
     }
 
-    public static class ConvertExtensions
-    {
-        public static string ToBase32String(this Convert convert, byte[] input)
-        {
-            return Base32.ToBase32String(input);
-        }
 
-        public static byte[] FromBase32String(this Convert convert, string input)
-        {
-            return Base32.FromBase32String(input);
-        }
-    }
 }

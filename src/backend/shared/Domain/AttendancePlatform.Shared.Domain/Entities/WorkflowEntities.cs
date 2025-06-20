@@ -27,10 +27,10 @@ public class WorkflowDefinition : TenantEntity
     public int Version { get; set; } = 1;
 
     [MaxLength(50)]
-    public string? CreatedBy { get; set; }
+    public new string? CreatedBy { get; set; }
 
     [MaxLength(50)]
-    public string? UpdatedBy { get; set; }
+    public new string? UpdatedBy { get; set; }
 
     public DateTime? LastExecutedAt { get; set; }
 
@@ -184,13 +184,19 @@ public class WorkflowTemplate : BaseEntity
     public string Category { get; set; } = string.Empty;
 
     public string Definition { get; set; } = string.Empty;
+    
+    public string Steps { get; set; } = string.Empty;
+    
+    public string Triggers { get; set; } = string.Empty;
+    
+    public string Variables { get; set; } = "{}";
 
     public string Parameters { get; set; } = "{}";
 
     public bool IsPublic { get; set; } = false;
 
     [MaxLength(50)]
-    public string? CreatedBy { get; set; }
+    public new string? CreatedBy { get; set; }
 
     public int UsageCount { get; set; } = 0;
 

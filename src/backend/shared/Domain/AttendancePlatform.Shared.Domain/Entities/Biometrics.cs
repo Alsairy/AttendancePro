@@ -11,37 +11,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         Palm = 5
     }
 
-    public class BiometricTemplate : TenantEntity
-    {
-        [Required]
-        public Guid UserId { get; set; }
-        
-        [Required]
-        public BiometricType Type { get; set; }
-        
-        [Required]
-        public string TemplateData { get; set; } = string.Empty; // Base64 encoded template
-        
-        public double Quality { get; set; } // Quality score 0.0 - 1.0
-        
-        public string? ImageUrl { get; set; } // URL to original image (for face)
-        
-        public DateTime EnrollmentDate { get; set; }
-        
-        public bool IsActive { get; set; } = true;
-        
-        public string? DeviceId { get; set; }
-        
-        public string? DeviceType { get; set; }
-        
-        public string? DeviceModel { get; set; }
-        
-        public string? EnrollmentNotes { get; set; }
-        
-        // Navigation properties
-        public virtual User User { get; set; } = null!;
-        public virtual ICollection<BiometricVerificationLog> VerificationLogs { get; set; } = new List<BiometricVerificationLog>();
-    }
+
 
     public class BiometricVerificationLog : TenantEntity
     {
@@ -178,7 +148,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public string? CustomBrandingColors { get; set; } // JSON
         
         // Navigation properties
-        public virtual Tenant Tenant { get; set; } = null!;
+        public override Tenant Tenant { get; set; } = null!;
     }
 }
 

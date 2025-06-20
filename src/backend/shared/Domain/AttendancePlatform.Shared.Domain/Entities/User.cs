@@ -69,6 +69,10 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public virtual ICollection<PermissionRequest> PermissionRequests { get; set; } = new List<PermissionRequest>();
         public virtual UserBiometrics? Biometrics { get; set; }
         
+        public string? NotificationPreferences { get; set; }
+        
+        public virtual ICollection<Role> Roles => UserRoles.Select(ur => ur.Role).ToList();
+        
         public string FullName => $"{FirstName} {LastName}";
     }
     

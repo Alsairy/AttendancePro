@@ -55,5 +55,6 @@ public class WorkflowExecutionResult
     public object? OutputData { get; set; }
     public string NextStepId { get; set; } = string.Empty;
     public bool IsCompleted { get; set; }
+    public bool RequiresManualAction { get; set; }
     public Dictionary<string, object> Variables { get; set; } = new();
 }

@@ -91,8 +91,8 @@ public class NotificationService : INotificationService
             if (!string.IsNullOrEmpty(request.TenantId))
             {
                 var tenantUsers = await _context.Users
-                    .Where(u => u.TenantId == request.TenantId)
-                    .Select(u => u.Id)
+                    .Where(u => u.TenantId == Guid.Parse(request.TenantId))
+                    .Select(u => u.Id.ToString())
                     .ToListAsync();
                 userIds.AddRange(tenantUsers);
             }
@@ -100,8 +100,8 @@ public class NotificationService : INotificationService
             if (!string.IsNullOrEmpty(request.Role))
             {
                 var roleUsers = await _context.Users
-                    .Where(u => u.Roles.Contains(request.Role))
-                    .Select(u => u.Id)
+                    .Where(u => u.UserRoles.Any(ur => ur.Role.Name == request.Role))
+                    .Select(u => u.Id.ToString())
                     .ToListAsync();
                 userIds.AddRange(roleUsers);
             }
@@ -219,7 +219,7 @@ public class NotificationService : INotificationService
     public async Task MarkNotificationAsReadAsync(string notificationId, string userId)
     {
         var notification = await _context.Notifications
-            .FirstOrDefaultAsync(n => n.Id == notificationId && n.UserId == userId);
+            .FirstOrDefaultAsync(n => n.Id == Guid.Parse(notificationId) && n.UserId == userId);
 
         if (notification != null && !notification.IsRead)
         {
@@ -251,7 +251,7 @@ public class NotificationService : INotificationService
     public async Task DeleteNotificationAsync(string notificationId, string userId)
     {
         var notification = await _context.Notifications
-            .FirstOrDefaultAsync(n => n.Id == notificationId && n.UserId == userId);
+            .FirstOrDefaultAsync(n => n.Id == Guid.Parse(notificationId) && n.UserId == userId);
 
         if (notification != null)
         {
@@ -263,7 +263,7 @@ public class NotificationService : INotificationService
 
     public async Task<NotificationPreferences> GetNotificationPreferencesAsync(string userId)
     {
-        var user = await _context.Users.FindAsync(userId);
+        var user = await _context.Users.FindAsync(Guid.Parse(userId));
         if (user?.NotificationPreferences != null)
         {
             return JsonSerializer.Deserialize<NotificationPreferences>(user.NotificationPreferences) ?? new NotificationPreferences { UserId = userId };
@@ -274,7 +274,7 @@ public class NotificationService : INotificationService
 
     public async Task UpdateNotificationPreferencesAsync(string userId, NotificationPreferences preferences)
     {
-        var user = await _context.Users.FindAsync(userId);
+        var user = await _context.Users.FindAsync(Guid.Parse(userId));
         if (user != null)
         {
             user.NotificationPreferences = JsonSerializer.Serialize(preferences);
@@ -318,7 +318,7 @@ public class NotificationService : INotificationService
 
     public async Task CancelScheduledNotificationAsync(string scheduledNotificationId)
     {
-        var scheduledNotification = await _context.ScheduledNotifications.FindAsync(scheduledNotificationId);
+        var scheduledNotification = await _context.ScheduledNotifications.FindAsync(Guid.Parse(scheduledNotificationId));
         if (scheduledNotification != null)
         {
             scheduledNotification.Status = "cancelled";
@@ -328,7 +328,7 @@ public class NotificationService : INotificationService
 
     private async Task<string> GetUserEmailAsync(string userId)
     {
-        var user = await _context.Users.FindAsync(userId);
+        var user = await _context.Users.FindAsync(Guid.Parse(userId));
         return user?.Email ?? string.Empty;
     }
 }

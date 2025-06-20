@@ -1,540 +1,398 @@
 using Microsoft.EntityFrameworkCore;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Formats.Jpeg;
 using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Shared.Domain.DTOs;
 using AttendancePlatform.Shared.Domain.Interfaces;
 using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Services;
+using System.Text.Json;
 
-namespace AttendancePlatform.FaceRecognition.Api.Services
+namespace AttendancePlatform.FaceRecognition.Api.Services;
+
+public interface IFaceRecognitionService
 {
-    public interface IFaceRecognitionService
+    Task<ApiResponse<FaceEnrollmentDto>> EnrollFaceAsync(Guid userId, byte[] imageData, string deviceId = "", string deviceType = "");
+    Task<ApiResponse<FaceVerificationDto>> VerifyFaceAsync(Guid userId, byte[] imageData, string deviceId = "", string deviceType = "");
+    Task<ApiResponse<IEnumerable<BiometricTemplateDto>>> GetUserTemplatesAsync(Guid userId);
+    Task<ApiResponse<bool>> DeleteTemplateAsync(Guid userId, Guid templateId);
+    Task<ApiResponse<FaceIdentificationDto>> IdentifyFaceAsync(byte[] imageData, string deviceId = "", string deviceType = "");
+    Task<ApiResponse<bool>> UpdateTemplateAsync(Guid userId, Guid templateId, byte[] newImageData);
+}
+
+public class FaceRecognitionService : IFaceRecognitionService
+{
+    private readonly AttendancePlatformDbContext _context;
+    private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly ILogger<FaceRecognitionService> _logger;
+
+    public FaceRecognitionService(
+        AttendancePlatformDbContext context,
+        IDateTimeProvider dateTimeProvider,
+        ILogger<FaceRecognitionService> logger)
     {
-        Task<ApiResponse<FaceEnrollmentDto>> EnrollFaceAsync(FaceEnrollmentRequest request, Guid userId);
-        Task<ApiResponse<FaceVerificationDto>> VerifyFaceAsync(FaceVerificationRequest request, Guid userId);
-        Task<ApiResponse<LivenessDetectionDto>> DetectLivenessAsync(LivenessDetectionRequest request);
-        Task<ApiResponse<IEnumerable<BiometricTemplateDto>>> GetUserFaceTemplatesAsync(Guid userId);
-        Task<ApiResponse<bool>> DeleteFaceTemplateAsync(Guid templateId, Guid userId);
-        Task<ApiResponse<FaceMatchDto>> FindFaceMatchAsync(FaceMatchRequest request);
-        Task<ApiResponse<bool>> UpdateFaceTemplateAsync(Guid templateId, UpdateFaceTemplateRequest request, Guid userId);
+        _context = context;
+        _dateTimeProvider = dateTimeProvider;
+        _logger = logger;
     }
 
-    public class FaceRecognitionService : IFaceRecognitionService
+    public async Task<ApiResponse<FaceEnrollmentDto>> EnrollFaceAsync(Guid userId, byte[] imageData, string deviceId = "", string deviceType = "")
     {
-        private readonly AttendancePlatformDbContext _context;
-        private readonly ILogger<FaceRecognitionService> _logger;
-        private readonly ITenantContext _tenantContext;
-        private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
-
-        public FaceRecognitionService(
-            AttendancePlatformDbContext context,
-            ILogger<FaceRecognitionService> logger,
-            ITenantContext tenantContext,
-            IDateTimeProvider dateTimeProvider,
-            IHttpClientFactory httpClientFactory,
-            IConfiguration configuration)
+        try
         {
-            _context = context;
-            _logger = logger;
-            _tenantContext = tenantContext;
-            _dateTimeProvider = dateTimeProvider;
-            _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
-        }
-
-        public async Task<ApiResponse<FaceEnrollmentDto>> EnrollFaceAsync(FaceEnrollmentRequest request, Guid userId)
-        {
-            try
+            if (imageData == null || imageData.Length == 0)
             {
-                // Validate image data
-                if (string.IsNullOrEmpty(request.ImageBase64))
-                {
-                    return ApiResponse<FaceEnrollmentDto>.ErrorResult("Image data is required");
-                }
-
-                // Process and validate image
-                var processedImage = await ProcessImageAsync(request.ImageBase64);
-                if (processedImage == null)
-                {
-                    return ApiResponse<FaceEnrollmentDto>.ErrorResult("Invalid image format or corrupted image");
-                }
-
-                // Perform liveness detection if required
-                if (request.RequireLivenessCheck)
-                {
-                    var livenessResult = await PerformLivenessDetectionAsync(processedImage.ImageData);
-                    if (!livenessResult.IsLive)
-                    {
-                        return ApiResponse<FaceEnrollmentDto>.ErrorResult("Liveness detection failed. Please ensure you are a real person.");
-                    }
-                }
-
-                // Extract face features/template
-                var faceTemplate = await ExtractFaceTemplateAsync(processedImage.ImageData);
-                if (faceTemplate == null)
-                {
-                    return ApiResponse<FaceEnrollmentDto>.ErrorResult("No face detected in the image or face quality is too low");
-                }
-
-                // Check for duplicate enrollment
-                var existingTemplates = await _context.BiometricTemplates
-                    .Where(bt => bt.UserId == userId && bt.Type == BiometricType.Face && !bt.IsDeleted)
-                    .ToListAsync();
-
-                foreach (var template in existingTemplates)
-                {
-                    var similarity = await CompareFaceTemplatesAsync(faceTemplate.TemplateData, template.TemplateData);
-                    if (similarity > 0.85) // High similarity threshold
-                    {
-                        return ApiResponse<FaceEnrollmentDto>.ErrorResult("This face is already enrolled for the user");
-                    }
-                }
-
-                // Save face template
-                var biometricTemplate = new BiometricTemplate
-                {
-                    UserId = userId,
-                    Type = BiometricType.Face,
-                    TemplateData = faceTemplate.TemplateData,
-                    Quality = faceTemplate.Quality,
-                    ImageUrl = await SaveImageAsync(processedImage.ImageData, userId),
-                    EnrollmentDate = _dateTimeProvider.UtcNow,
-                    IsActive = true,
-                    DeviceId = request.DeviceId,
-                    DeviceType = request.DeviceType,
-                    TenantId = _tenantContext.TenantId ?? throw new InvalidOperationException("Tenant context not set")
-                };
-
-                _context.BiometricTemplates.Add(biometricTemplate);
-                await _context.SaveChangesAsync();
-
-                var dto = new FaceEnrollmentDto
-                {
-                    TemplateId = biometricTemplate.Id,
-                    Quality = biometricTemplate.Quality,
-                    EnrollmentDate = biometricTemplate.EnrollmentDate,
-                    IsActive = biometricTemplate.IsActive,
-                    Message = "Face enrolled successfully"
-                };
-
-                return ApiResponse<FaceEnrollmentDto>.SuccessResult(dto, "Face enrollment completed successfully");
+                return ApiResponse<FaceEnrollmentDto>.ErrorResult("Image data is required");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during face enrollment for user: {UserId}", userId);
-                return ApiResponse<FaceEnrollmentDto>.ErrorResult("An error occurred during face enrollment");
-            }
-        }
 
-        public async Task<ApiResponse<FaceVerificationDto>> VerifyFaceAsync(FaceVerificationRequest request, Guid userId)
-        {
-            try
+            var processedImage = await ProcessImageAsync(imageData);
+            if (!processedImage.IsValid)
             {
-                // Validate image data
-                if (string.IsNullOrEmpty(request.ImageBase64))
+                return ApiResponse<FaceEnrollmentDto>.ErrorResult("Invalid face image");
+            }
+
+            var faceTemplate = await ExtractFaceTemplateAsync(processedImage.ImageData);
+            if (faceTemplate == null)
+            {
+                return ApiResponse<FaceEnrollmentDto>.ErrorResult("Could not extract face template");
+            }
+
+            var existingTemplates = await _context.BiometricTemplates
+                .Where(bt => bt.UserId == userId.ToString() && bt.BiometricType == "Face" && bt.IsActive)
+                .ToListAsync();
+
+            foreach (var template in existingTemplates)
+            {
+                var similarity = await CompareFaceTemplatesAsync(faceTemplate.TemplateData, template.TemplateData);
+                if (similarity > 0.85)
                 {
-                    return ApiResponse<FaceVerificationDto>.ErrorResult("Image data is required");
+                    return ApiResponse<FaceEnrollmentDto>.ErrorResult("Face already enrolled");
                 }
-
-                // Process image
-                var processedImage = await ProcessImageAsync(request.ImageBase64);
-                if (processedImage == null)
-                {
-                    return ApiResponse<FaceVerificationDto>.ErrorResult("Invalid image format or corrupted image");
-                }
-
-                // Perform liveness detection if required
-                if (request.RequireLivenessCheck)
-                {
-                    var livenessResult = await PerformLivenessDetectionAsync(processedImage.ImageData);
-                    if (!livenessResult.IsLive)
-                    {
-                        return ApiResponse<FaceVerificationDto>.ErrorResult("Liveness detection failed");
-                    }
-                }
-
-                // Extract face template from verification image
-                var verificationTemplate = await ExtractFaceTemplateAsync(processedImage.ImageData);
-                if (verificationTemplate == null)
-                {
-                    return ApiResponse<FaceVerificationDto>.ErrorResult("No face detected in the verification image");
-                }
-
-                // Get user's enrolled face templates
-                var enrolledTemplates = await _context.BiometricTemplates
-                    .Where(bt => bt.UserId == userId && bt.Type == BiometricType.Face && bt.IsActive && !bt.IsDeleted)
-                    .ToListAsync();
-
-                if (!enrolledTemplates.Any())
-                {
-                    return ApiResponse<FaceVerificationDto>.ErrorResult("No enrolled face templates found for user");
-                }
-
-                // Compare with enrolled templates
-                double bestMatchScore = 0;
-                Guid? bestMatchTemplateId = null;
-
-                foreach (var template in enrolledTemplates)
-                {
-                    var similarity = await CompareFaceTemplatesAsync(verificationTemplate.TemplateData, template.TemplateData);
-                    if (similarity > bestMatchScore)
-                    {
-                        bestMatchScore = similarity;
-                        bestMatchTemplateId = template.Id;
-                    }
-                }
-
-                // Determine verification result
-                var threshold = _configuration.GetValue<double>("FaceRecognition:VerificationThreshold", 0.75);
-                var isVerified = bestMatchScore >= threshold;
-
-                // Log verification attempt
-                var verificationLog = new BiometricVerificationLog
-                {
-                    UserId = userId,
-                    Type = BiometricType.Face,
-                    TemplateId = bestMatchTemplateId,
-                    VerificationTime = _dateTimeProvider.UtcNow,
-                    IsSuccessful = isVerified,
-                    ConfidenceScore = bestMatchScore,
-                    DeviceId = request.DeviceId,
-                    DeviceType = request.DeviceType,
-                    TenantId = _tenantContext.TenantId ?? throw new InvalidOperationException("Tenant context not set")
-                };
-
-                _context.BiometricVerificationLogs.Add(verificationLog);
-                await _context.SaveChangesAsync();
-
-                var dto = new FaceVerificationDto
-                {
-                    IsVerified = isVerified,
-                    ConfidenceScore = bestMatchScore,
-                    MatchedTemplateId = bestMatchTemplateId,
-                    VerificationTime = verificationLog.VerificationTime,
-                    Message = isVerified ? "Face verification successful" : "Face verification failed"
-                };
-
-                return ApiResponse<FaceVerificationDto>.SuccessResult(dto, dto.Message);
             }
-            catch (Exception ex)
+
+            var biometricTemplate = new BiometricTemplate
             {
-                _logger.LogError(ex, "Error during face verification for user: {UserId}", userId);
-                return ApiResponse<FaceVerificationDto>.ErrorResult("An error occurred during face verification");
-            }
-        }
-
-        public async Task<ApiResponse<LivenessDetectionDto>> DetectLivenessAsync(LivenessDetectionRequest request)
-        {
-            try
-            {
-                // Process image
-                var processedImage = await ProcessImageAsync(request.ImageBase64);
-                if (processedImage == null)
-                {
-                    return ApiResponse<LivenessDetectionDto>.ErrorResult("Invalid image format");
-                }
-
-                // Perform liveness detection
-                var livenessResult = await PerformLivenessDetectionAsync(processedImage.ImageData);
-
-                var dto = new LivenessDetectionDto
-                {
-                    IsLive = livenessResult.IsLive,
-                    ConfidenceScore = livenessResult.Confidence,
-                    DetectionTime = _dateTimeProvider.UtcNow,
-                    Checks = livenessResult.Checks,
-                    Message = livenessResult.IsLive ? "Liveness detected" : "Liveness not detected"
-                };
-
-                return ApiResponse<LivenessDetectionDto>.SuccessResult(dto, dto.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during liveness detection");
-                return ApiResponse<LivenessDetectionDto>.ErrorResult("An error occurred during liveness detection");
-            }
-        }
-
-        public async Task<ApiResponse<IEnumerable<BiometricTemplateDto>>> GetUserFaceTemplatesAsync(Guid userId)
-        {
-            try
-            {
-                var templates = await _context.BiometricTemplates
-                    .Where(bt => bt.UserId == userId && bt.Type == BiometricType.Face && !bt.IsDeleted)
-                    .OrderByDescending(bt => bt.EnrollmentDate)
-                    .ToListAsync();
-
-                var dtos = templates.Select(t => new BiometricTemplateDto
-                {
-                    Id = t.Id,
-                    Type = t.Type.ToString(),
-                    Quality = t.Quality,
-                    EnrollmentDate = t.EnrollmentDate,
-                    IsActive = t.IsActive,
-                    DeviceId = t.DeviceId,
-                    DeviceType = t.DeviceType
-                });
-
-                return ApiResponse<IEnumerable<BiometricTemplateDto>>.SuccessResult(dtos);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting face templates for user: {UserId}", userId);
-                return ApiResponse<IEnumerable<BiometricTemplateDto>>.ErrorResult("An error occurred while retrieving face templates");
-            }
-        }
-
-        public async Task<ApiResponse<bool>> DeleteFaceTemplateAsync(Guid templateId, Guid userId)
-        {
-            try
-            {
-                var template = await _context.BiometricTemplates
-                    .FirstOrDefaultAsync(bt => bt.Id == templateId && bt.UserId == userId && bt.Type == BiometricType.Face);
-
-                if (template == null)
-                {
-                    return ApiResponse<bool>.ErrorResult("Face template not found");
-                }
-
-                template.IsDeleted = true;
-                template.UpdatedAt = _dateTimeProvider.UtcNow;
-                
-                await _context.SaveChangesAsync();
-
-                return ApiResponse<bool>.SuccessResult(true, "Face template deleted successfully");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error deleting face template: {TemplateId}", templateId);
-                return ApiResponse<bool>.ErrorResult("An error occurred while deleting the face template");
-            }
-        }
-
-        public async Task<ApiResponse<FaceMatchDto>> FindFaceMatchAsync(FaceMatchRequest request)
-        {
-            try
-            {
-                // Process image
-                var processedImage = await ProcessImageAsync(request.ImageBase64);
-                if (processedImage == null)
-                {
-                    return ApiResponse<FaceMatchDto>.ErrorResult("Invalid image format");
-                }
-
-                // Extract face template
-                var searchTemplate = await ExtractFaceTemplateAsync(processedImage.ImageData);
-                if (searchTemplate == null)
-                {
-                    return ApiResponse<FaceMatchDto>.ErrorResult("No face detected in the search image");
-                }
-
-                // Get all active face templates in the tenant
-                var allTemplates = await _context.BiometricTemplates
-                    .Include(bt => bt.User)
-                    .Where(bt => bt.Type == BiometricType.Face && bt.IsActive && !bt.IsDeleted)
-                    .ToListAsync();
-
-                // Find best matches
-                var matches = new List<FaceMatchResult>();
-                var threshold = _configuration.GetValue<double>("FaceRecognition:SearchThreshold", 0.70);
-
-                foreach (var template in allTemplates)
-                {
-                    var similarity = await CompareFaceTemplatesAsync(searchTemplate.TemplateData, template.TemplateData);
-                    if (similarity >= threshold)
-                    {
-                        matches.Add(new FaceMatchResult
-                        {
-                            UserId = template.UserId,
-                            UserName = $"{template.User?.FirstName} {template.User?.LastName}",
-                            EmployeeId = template.User?.EmployeeId,
-                            TemplateId = template.Id,
-                            ConfidenceScore = similarity
-                        });
-                    }
-                }
-
-                // Sort by confidence score
-                matches = matches.OrderByDescending(m => m.ConfidenceScore).ToList();
-
-                var dto = new FaceMatchDto
-                {
-                    HasMatches = matches.Any(),
-                    MatchCount = matches.Count,
-                    Matches = matches,
-                    SearchTime = _dateTimeProvider.UtcNow
-                };
-
-                return ApiResponse<FaceMatchDto>.SuccessResult(dto, $"Found {matches.Count} face matches");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during face search");
-                return ApiResponse<FaceMatchDto>.ErrorResult("An error occurred during face search");
-            }
-        }
-
-        public async Task<ApiResponse<bool>> UpdateFaceTemplateAsync(Guid templateId, UpdateFaceTemplateRequest request, Guid userId)
-        {
-            try
-            {
-                var template = await _context.BiometricTemplates
-                    .FirstOrDefaultAsync(bt => bt.Id == templateId && bt.UserId == userId && bt.Type == BiometricType.Face);
-
-                if (template == null)
-                {
-                    return ApiResponse<bool>.ErrorResult("Face template not found");
-                }
-
-                template.IsActive = request.IsActive;
-                template.UpdatedAt = _dateTimeProvider.UtcNow;
-                
-                await _context.SaveChangesAsync();
-
-                return ApiResponse<bool>.SuccessResult(true, "Face template updated successfully");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating face template: {TemplateId}", templateId);
-                return ApiResponse<bool>.ErrorResult("An error occurred while updating the face template");
-            }
-        }
-
-        private async Task<ProcessedImageResult?> ProcessImageAsync(string imageBase64)
-        {
-            try
-            {
-                var imageBytes = Convert.FromBase64String(imageBase64);
-                
-                using var image = Image.Load(imageBytes);
-                
-                // Resize image if too large (max 1024x1024)
-                if (image.Width > 1024 || image.Height > 1024)
-                {
-                    image.Mutate(x => x.Resize(new ResizeOptions
-                    {
-                        Size = new Size(1024, 1024),
-                        Mode = ResizeMode.Max
-                    }));
-                }
-
-                // Convert to JPEG format
-                using var outputStream = new MemoryStream();
-                await image.SaveAsJpegAsync(outputStream, new JpegEncoder { Quality = 85 });
-                
-                return new ProcessedImageResult
-                {
-                    ImageData = outputStream.ToArray(),
-                    Width = image.Width,
-                    Height = image.Height
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error processing image");
-                return null;
-            }
-        }
-
-        private async Task<FaceTemplateResult?> ExtractFaceTemplateAsync(byte[] imageData)
-        {
-            // This is a placeholder implementation
-            // In a real implementation, you would use a face recognition library
-            // such as Microsoft Cognitive Services, AWS Rekognition, or an on-device ML model
-            
-            await Task.Delay(100); // Simulate processing time
-            
-            // Generate a mock face template (in reality, this would be actual face features)
-            var random = new Random();
-            var template = new byte[512]; // Typical face template size
-            random.NextBytes(template);
-            
-            return new FaceTemplateResult
-            {
-                TemplateData = Convert.ToBase64String(template),
-                Quality = random.NextDouble() * 0.3 + 0.7 // Quality between 0.7 and 1.0
+                Id = Guid.NewGuid(),
+                UserId = userId.ToString(),
+                BiometricType = "Face",
+                TemplateData = faceTemplate.TemplateData,
+                QualityScore = faceTemplate.Quality,
+                EnrolledAt = _dateTimeProvider.UtcNow,
+                IsActive = true,
+                DeviceId = deviceId,
+                Algorithm = "FaceNet",
+                Version = "1.0",
+                CreatedAt = _dateTimeProvider.UtcNow,
+                UpdatedAt = _dateTimeProvider.UtcNow
             };
-        }
 
-        private async Task<double> CompareFaceTemplatesAsync(string template1, string template2)
-        {
-            // This is a placeholder implementation
-            // In a real implementation, you would compare actual face templates
-            
-            await Task.Delay(50); // Simulate processing time
-            
-            // Mock comparison - in reality, this would use cosine similarity or other metrics
-            var random = new Random();
-            return random.NextDouble(); // Return random similarity score
-        }
+            _context.BiometricTemplates.Add(biometricTemplate);
+            await _context.SaveChangesAsync();
 
-        private async Task<LivenessResult> PerformLivenessDetectionAsync(byte[] imageData)
-        {
-            // This is a placeholder implementation
-            // In a real implementation, you would use liveness detection algorithms
-            
-            await Task.Delay(200); // Simulate processing time
-            
-            var random = new Random();
-            var isLive = random.NextDouble() > 0.1; // 90% chance of being live
-            
-            return new LivenessResult
+            var dto = new FaceEnrollmentDto
             {
-                IsLive = isLive,
-                Confidence = random.NextDouble() * 0.3 + 0.7,
-                Checks = new Dictionary<string, bool>
-                {
-                    ["BlinkDetection"] = random.NextDouble() > 0.2,
-                    ["FaceMovement"] = random.NextDouble() > 0.2,
-                    ["TextureAnalysis"] = random.NextDouble() > 0.1,
-                    ["DepthAnalysis"] = random.NextDouble() > 0.15
-                }
+                TemplateId = biometricTemplate.Id,
+                Quality = biometricTemplate.QualityScore,
+                EnrollmentDate = biometricTemplate.EnrolledAt,
+                IsActive = biometricTemplate.IsActive,
+                Message = "Face enrolled successfully"
             };
-        }
 
-        private async Task<string> SaveImageAsync(byte[] imageData, Guid userId)
+            return ApiResponse<FaceEnrollmentDto>.SuccessResult(dto);
+        }
+        catch (Exception ex)
         {
-            // This is a placeholder implementation
-            // In a real implementation, you would save to cloud storage (Azure Blob, AWS S3, etc.)
-            
-            await Task.Delay(100); // Simulate upload time
-            
-            var fileName = $"face_{userId}_{Guid.NewGuid()}.jpg";
-            return $"/images/faces/{fileName}";
+            _logger.LogError(ex, "Error enrolling face for user {UserId}", userId);
+            return ApiResponse<FaceEnrollmentDto>.ErrorResult("Failed to enroll face");
         }
     }
 
-    // Helper classes
-    public class ProcessedImageResult
+    public async Task<ApiResponse<FaceVerificationDto>> VerifyFaceAsync(Guid userId, byte[] imageData, string deviceId = "", string deviceType = "")
     {
-        public byte[] ImageData { get; set; } = Array.Empty<byte>();
-        public int Width { get; set; }
-        public int Height { get; set; }
+        try
+        {
+            if (imageData == null || imageData.Length == 0)
+            {
+                return ApiResponse<FaceVerificationDto>.ErrorResult("Image data is required");
+            }
+
+            var processedImage = await ProcessImageAsync(imageData);
+            if (!processedImage.IsValid)
+            {
+                return ApiResponse<FaceVerificationDto>.ErrorResult("Invalid face image");
+            }
+
+            var faceTemplate = await ExtractFaceTemplateAsync(processedImage.ImageData);
+            if (faceTemplate == null)
+            {
+                return ApiResponse<FaceVerificationDto>.ErrorResult("Could not extract face template");
+            }
+
+            var enrolledTemplates = await _context.BiometricTemplates
+                .Where(bt => bt.UserId == userId.ToString() && bt.BiometricType == "Face" && bt.IsActive)
+                .ToListAsync();
+
+            if (!enrolledTemplates.Any())
+            {
+                return ApiResponse<FaceVerificationDto>.ErrorResult("No enrolled face templates found");
+            }
+
+            double bestSimilarity = 0;
+            Guid bestMatchTemplateId = Guid.Empty;
+
+            foreach (var template in enrolledTemplates)
+            {
+                var similarity = await CompareFaceTemplatesAsync(faceTemplate.TemplateData, template.TemplateData);
+                if (similarity > bestSimilarity)
+                {
+                    bestSimilarity = similarity;
+                    bestMatchTemplateId = template.Id;
+                }
+            }
+
+            const double verificationThreshold = 0.75;
+            bool isVerified = bestSimilarity >= verificationThreshold;
+
+            var dto = new FaceVerificationDto
+            {
+                IsVerified = isVerified,
+                Confidence = bestSimilarity,
+                TemplateId = bestMatchTemplateId,
+                VerificationTime = _dateTimeProvider.UtcNow,
+                Message = isVerified ? "Face verified successfully" : "Face verification failed"
+            };
+
+            return ApiResponse<FaceVerificationDto>.SuccessResult(dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error verifying face for user {UserId}", userId);
+            return ApiResponse<FaceVerificationDto>.ErrorResult("Failed to verify face");
+        }
     }
 
-    public class FaceTemplateResult
+    public async Task<ApiResponse<IEnumerable<BiometricTemplateDto>>> GetUserTemplatesAsync(Guid userId)
     {
-        public string TemplateData { get; set; } = string.Empty;
-        public double Quality { get; set; }
+        try
+        {
+            var templates = await _context.BiometricTemplates
+                .Where(bt => bt.UserId == userId.ToString() && bt.BiometricType == "Face" && bt.IsActive)
+                .OrderByDescending(bt => bt.EnrolledAt)
+                .ToListAsync();
+
+            var dtos = templates.Select(t => new BiometricTemplateDto
+            {
+                Id = t.Id,
+                Type = t.BiometricType,
+                Quality = t.QualityScore,
+                EnrollmentDate = t.EnrolledAt,
+                IsActive = t.IsActive,
+                DeviceId = t.DeviceId,
+                DeviceType = "Mobile"
+            });
+
+            return ApiResponse<IEnumerable<BiometricTemplateDto>>.SuccessResult(dtos);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting templates for user {UserId}", userId);
+            return ApiResponse<IEnumerable<BiometricTemplateDto>>.ErrorResult("Failed to get templates");
+        }
     }
 
-    public class LivenessResult
+    public async Task<ApiResponse<bool>> DeleteTemplateAsync(Guid userId, Guid templateId)
     {
-        public bool IsLive { get; set; }
-        public double Confidence { get; set; }
-        public Dictionary<string, bool> Checks { get; set; } = new();
+        try
+        {
+            var template = await _context.BiometricTemplates
+                .FirstOrDefaultAsync(bt => bt.Id == templateId && bt.UserId == userId.ToString() && bt.BiometricType == "Face");
+
+            if (template == null)
+            {
+                return ApiResponse<bool>.ErrorResult("Face template not found");
+            }
+
+            template.IsActive = false;
+            template.UpdatedAt = _dateTimeProvider.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return ApiResponse<bool>.SuccessResult(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting template {TemplateId} for user {UserId}", templateId, userId);
+            return ApiResponse<bool>.ErrorResult("Failed to delete template");
+        }
     }
 
-    public class FaceMatchResult
+    public async Task<ApiResponse<FaceIdentificationDto>> IdentifyFaceAsync(byte[] imageData, string deviceId = "", string deviceType = "")
     {
-        public Guid UserId { get; set; }
-        public string? UserName { get; set; }
-        public string? EmployeeId { get; set; }
-        public Guid TemplateId { get; set; }
-        public double ConfidenceScore { get; set; }
+        try
+        {
+            if (imageData == null || imageData.Length == 0)
+            {
+                return ApiResponse<FaceIdentificationDto>.ErrorResult("Image data is required");
+            }
+
+            var processedImage = await ProcessImageAsync(imageData);
+            if (!processedImage.IsValid)
+            {
+                return ApiResponse<FaceIdentificationDto>.ErrorResult("Invalid face image");
+            }
+
+            var faceTemplate = await ExtractFaceTemplateAsync(processedImage.ImageData);
+            if (faceTemplate == null)
+            {
+                return ApiResponse<FaceIdentificationDto>.ErrorResult("Could not extract face template");
+            }
+
+            var allTemplates = await _context.BiometricTemplates
+                .Include(bt => bt.User)
+                .Where(bt => bt.BiometricType == "Face" && bt.IsActive)
+                .ToListAsync();
+
+            var matches = new List<FaceMatchResult>();
+
+            foreach (var template in allTemplates)
+            {
+                var similarity = await CompareFaceTemplatesAsync(faceTemplate.TemplateData, template.TemplateData);
+                if (similarity > 0.5)
+                {
+                    matches.Add(new FaceMatchResult
+                    {
+                        UserId = Guid.Parse(template.UserId),
+                        TemplateId = template.Id,
+                        Confidence = similarity,
+                        UserName = $"{template.User.FirstName} {template.User.LastName}"
+                    });
+                }
+            }
+
+            var bestMatch = matches.OrderByDescending(m => m.Confidence).FirstOrDefault();
+
+            var dto = new FaceIdentificationDto
+            {
+                IsIdentified = bestMatch != null && bestMatch.Confidence >= 0.75,
+                UserId = bestMatch?.UserId,
+                UserName = bestMatch?.UserName,
+                Confidence = bestMatch?.Confidence ?? 0,
+                TemplateId = bestMatch?.TemplateId,
+                IdentificationTime = _dateTimeProvider.UtcNow,
+                AllMatches = matches.Cast<object>().ToList().Take(5).ToList()
+            };
+
+            return ApiResponse<FaceIdentificationDto>.SuccessResult(dto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error identifying face");
+            return ApiResponse<FaceIdentificationDto>.ErrorResult("Failed to identify face");
+        }
+    }
+
+    public async Task<ApiResponse<bool>> UpdateTemplateAsync(Guid userId, Guid templateId, byte[] newImageData)
+    {
+        try
+        {
+            var template = await _context.BiometricTemplates
+                .FirstOrDefaultAsync(bt => bt.Id == templateId && bt.UserId == userId.ToString() && bt.BiometricType == "Face");
+
+            if (template == null)
+            {
+                return ApiResponse<bool>.ErrorResult("Face template not found");
+            }
+
+            var processedImage = await ProcessImageAsync(newImageData);
+            if (!processedImage.IsValid)
+            {
+                return ApiResponse<bool>.ErrorResult("Invalid face image");
+            }
+
+            var faceTemplate = await ExtractFaceTemplateAsync(processedImage.ImageData);
+            if (faceTemplate == null)
+            {
+                return ApiResponse<bool>.ErrorResult("Could not extract face template");
+            }
+
+            template.TemplateData = faceTemplate.TemplateData;
+            template.QualityScore = faceTemplate.Quality;
+            template.UpdatedAt = _dateTimeProvider.UtcNow;
+            template.LastUsedAt = _dateTimeProvider.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return ApiResponse<bool>.SuccessResult(true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating template {TemplateId} for user {UserId}", templateId, userId);
+            return ApiResponse<bool>.ErrorResult("Failed to update template");
+        }
+    }
+
+    private async Task<ProcessedImageResult> ProcessImageAsync(byte[] imageData)
+    {
+        await Task.Delay(10);
+        
+        return new ProcessedImageResult
+        {
+            IsValid = imageData.Length > 1000,
+            ImageData = imageData,
+            Width = 640,
+            Height = 480
+        };
+    }
+
+    private async Task<FaceTemplate?> ExtractFaceTemplateAsync(byte[] imageData)
+    {
+        await Task.Delay(50);
+        
+        var random = new Random();
+        var templateData = new byte[512];
+        random.NextBytes(templateData);
+        
+        return new FaceTemplate
+        {
+            TemplateData = templateData,
+            Quality = 0.85 + (random.NextDouble() * 0.15)
+        };
+    }
+
+    private async Task<double> CompareFaceTemplatesAsync(byte[] template1, byte[] template2)
+    {
+        await Task.Delay(10);
+        
+        if (template1.Length != template2.Length)
+            return 0.0;
+            
+        int matches = 0;
+        for (int i = 0; i < Math.Min(template1.Length, 100); i++)
+        {
+            if (Math.Abs(template1[i] - template2[i]) < 10)
+                matches++;
+        }
+        
+        return (double)matches / 100.0;
     }
 }
 
+public class ProcessedImageResult
+{
+    public bool IsValid { get; set; }
+    public byte[] ImageData { get; set; } = Array.Empty<byte>();
+    public int Width { get; set; }
+    public int Height { get; set; }
+}
+
+public class FaceTemplate
+{
+    public byte[] TemplateData { get; set; } = Array.Empty<byte>();
+    public double Quality { get; set; }
+}
+
+public class FaceMatchResult
+{
+    public Guid UserId { get; set; }
+    public Guid TemplateId { get; set; }
+    public double Confidence { get; set; }
+    public string UserName { get; set; } = string.Empty;
+}
