@@ -79,15 +79,6 @@ namespace AttendancePlatform.Authentication.Api.Services
                 // Verify password
                 if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
                 {
-                    // Increment failed login attempts
-                    user.FailedLoginAttempts++;
-                    
-                    // Lock account if too many failed attempts
-                    if (user.FailedLoginAttempts >= 5)
-                    {
-                        user.LockedUntil = DateTime.UtcNow.AddMinutes(30);
-                    }
-                    
                     await _context.SaveChangesAsync();
                     return ApiResponse<LoginResponse>.ErrorResult("Invalid email or password");
                 }
@@ -116,8 +107,6 @@ namespace AttendancePlatform.Authentication.Api.Services
                     }
                 }
 
-                // Reset failed login attempts
-                user.FailedLoginAttempts = 0;
                 user.LockedUntil = null;
                 user.LastLoginAt = DateTime.UtcNow;
 
