@@ -82,7 +82,7 @@ jobs:
       working-directory: src/frontend/attendancepro-frontend
     
     - name: Run tests
-      run: npm test -- --coverage --watchAll=false
+      run: npm test -- --coverage
       working-directory: src/frontend/attendancepro-frontend
     
     - name: Build
