@@ -14,10 +14,10 @@ metadata:
   namespace: attendancepro
 data:
   # Database configuration
-  ConnectionStrings__DefaultConnection: "Server=sql-server-service;Database=AttendancePlatform;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true"
+  ConnectionStrings__DefaultConnection: "Server=sql-server-service;Database=AttendancePlatform;User Id=sa;Password=$(DB_PASSWORD);TrustServerCertificate=true"
   
   # JWT configuration
-  Jwt__Key: "YourSuperSecretKeyThatIsAtLeast32CharactersLong!"
+  Jwt__Key: "$(JWT_SECRET_KEY)"
   Jwt__Issuer: "AttendancePlatform"
   Jwt__Audience: "AttendancePlatformUsers"
   Jwt__ExpiryMinutes: "60"
@@ -40,8 +40,8 @@ metadata:
 type: Opaque
 data:
   # Base64 encoded secrets
-  database-password: WW91clN0cm9uZ0BQYXNzdzByZA== # YourStrong@Passw0rd
-  jwt-key: WW91clN1cGVyU2VjcmV0S2V5VGhhdElzQXRMZWFzdDMyQ2hhcmFjdGVyc0xvbmch # YourSuperSecretKeyThatIsAtLeast32CharactersLong!
+  database-password: $(echo -n "${DB_PASSWORD}" | base64)
+  jwt-key: $(echo -n "${JWT_SECRET_KEY}" | base64)
   email-password: ""
   sms-auth-token: ""
   firebase-server-key: ""

@@ -185,7 +185,7 @@ services:
 postgresql:
   enabled: true
   auth:
-    postgresPassword: "YourStrong@Passw0rd"
+    postgresPassword: "${DB_PASSWORD}"
     database: "AttendancePlatform"
   primary:
     persistence:
@@ -219,7 +219,7 @@ redis:
 # Configuration
 config:
   jwt:
-    key: "YourSuperSecretKeyThatIsAtLeast32CharactersLong!"
+    key: "${JWT_SECRET_KEY}"
     issuer: "AttendancePlatform"
     audience: "AttendancePlatformUsers"
     expiryMinutes: 60
@@ -258,7 +258,7 @@ monitoring:
     storage: "50Gi"
   grafana:
     enabled: true
-    adminPassword: "admin123"
+    adminPassword: "${GRAFANA_ADMIN_PASSWORD}"
     storage: "10Gi"
   alertmanager:
     enabled: true

@@ -3,6 +3,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AttendancePlatform.FaceRecognition.Api.Services;
 using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Shared.Infrastructure.Middleware;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("AttendancePlatform.Tests.Integration")]
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,7 @@ builder.Services.AddControllers();
 
 // Add infrastructure services
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddSecurityServices(builder.Configuration);
 
 // Add face recognition services
 builder.Services.AddScoped<IFaceRecognitionService, FaceRecognitionService>();
@@ -103,6 +108,9 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
+app.UseMiddleware<RateLimitingMiddleware>();
+app.UseMiddleware<AuditLoggingMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -112,4 +120,6 @@ app.MapControllers();
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.UtcNow });
 
 app.Run();
+
+public partial class Program { }
 

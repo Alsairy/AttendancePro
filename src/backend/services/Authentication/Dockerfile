@@ -20,7 +20,7 @@ RUN dotnet restore "src/backend/services/Authentication/AttendancePlatform.Authe
 COPY . .
 
 # Build the application
-WORKDIR "/src/src/backend/services/Authentication/AttendancePlatform.Authentication.Api"
+WORKDIR "src/backend/services/Authentication/AttendancePlatform.Authentication.Api"
 RUN dotnet build "AttendancePlatform.Authentication.Api.csproj" -c Release -o /app/build
 
 # Publish stage

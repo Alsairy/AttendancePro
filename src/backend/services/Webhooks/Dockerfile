@@ -20,7 +20,7 @@ RUN dotnet restore "src/backend/services/Webhooks/AttendancePlatform.Webhooks.Ap
 COPY . .
 
 # Build the application
-WORKDIR "/src/src/backend/services/Webhooks/AttendancePlatform.Webhooks.Api"
+WORKDIR "src/backend/services/Webhooks/AttendancePlatform.Webhooks.Api"
 RUN dotnet build "AttendancePlatform.Webhooks.Api.csproj" -c Release -o /app/build
 
 # Publish stage

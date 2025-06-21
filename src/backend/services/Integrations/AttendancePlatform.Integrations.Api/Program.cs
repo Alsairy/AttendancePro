@@ -85,6 +85,7 @@ builder.Services.AddCors(options =>
 
 // Register shared services
 builder.Services.AddSharedInfrastructure();
+builder.Services.AddSecurityServices(builder.Configuration);
 
 // Register integration services
 builder.Services.AddScoped<IScimService, ScimService>();
@@ -115,6 +116,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+
+app.UseMiddleware<RateLimitingMiddleware>();
+app.UseMiddleware<AuditLoggingMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Analytics.Api.Services;
+using AttendancePlatform.Shared.Domain.Entities;
 
 namespace AttendancePlatform.Analytics.Api.Services
 {

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Security;
 
 namespace AttendancePlatform.Shared.Infrastructure.Data
 {
@@ -27,6 +28,10 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        
+        // Security and Compliance entities
+        public DbSet<ComplianceEvent> ComplianceEvents { get; set; }
+        public DbSet<ComplianceReport> ComplianceReports { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
 
         // Attendance entities
@@ -48,6 +53,38 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<UserBiometrics> UserBiometrics { get; set; }
         public DbSet<TenantSettings> TenantSettings { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
+        
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+        
+        // Advanced enterprise entities
+        public DbSet<AuditLogEntry> AuditLogEntries { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<ScheduledNotification> ScheduledNotifications { get; set; }
+        public DbSet<WorkflowDefinition> WorkflowDefinitions { get; set; }
+        public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
+        public DbSet<WorkflowTask> WorkflowTasks { get; set; }
+        public DbSet<WorkflowExecutionLog> WorkflowExecutionLogs { get; set; }
+        public DbSet<WorkflowTemplate> WorkflowTemplates { get; set; }
+        public DbSet<BiometricAuditLog> BiometricAuditLogs { get; set; }
+        public DbSet<BiometricBackup> BiometricBackups { get; set; }
+        public DbSet<BiometricSession> BiometricSessions { get; set; }
+        public DbSet<BiometricDevice> BiometricDevices { get; set; }
+
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<TeamMember> TeamMembers { get; set; }
+        public DbSet<TeamProject> TeamProjects { get; set; }
+        public DbSet<ProjectMember> ProjectMembers { get; set; }
+        public DbSet<VideoConference> VideoConferences { get; set; }
+        public DbSet<ConferenceParticipant> ConferenceParticipants { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<ChatChannel> ChatChannels { get; set; }
+        public DbSet<ChannelMember> ChannelMembers { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<DocumentVersion> DocumentVersions { get; set; }
+        public DbSet<ScreenSharingSession> ScreenSharingSessions { get; set; }
+        public DbSet<ScreenSharingParticipant> ScreenSharingParticipants { get; set; }
+        public DbSet<UserPresence> UserPresences { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,6 +99,8 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
             ConfigureLeaveManagement(modelBuilder);
             ConfigureSettings(modelBuilder);
             ConfigureAudit(modelBuilder);
+            ConfigureNotification(modelBuilder);
+            ConfigureCompliance(modelBuilder);
 
             // Apply global query filters for multi-tenancy
             ApplyGlobalFilters(modelBuilder);
@@ -125,6 +164,9 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.Biometrics)
                       .WithOne(e => e.User)
                       .HasForeignKey<UserBiometrics>(e => e.UserId);
+                
+                entity.Ignore("DateOfBirth");
+                entity.Ignore("FailedLoginAttempts");
             });
         }
 
@@ -410,6 +452,91 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasIndex(e => e.Timestamp);
                 entity.HasIndex(e => new { e.EntityType, e.Action });
                 entity.HasIndex(e => e.TenantId);
+            });
+        }
+
+        private void ConfigureNotification(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.UserId).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
+                entity.Property(e => e.Type).HasMaxLength(50).HasDefaultValue("info");
+                entity.Property(e => e.Data).HasColumnType("nvarchar(max)");
+                entity.Property(e => e.ActionUrl).HasMaxLength(500);
+                entity.Property(e => e.Priority).HasMaxLength(20).HasDefaultValue("normal");
+                entity.Property(e => e.Category).HasMaxLength(100);
+                entity.Property(e => e.Source).HasMaxLength(100);
+                entity.Property(e => e.CorrelationId).HasMaxLength(50);
+                entity.HasIndex(e => e.UserId);
+                entity.HasIndex(e => e.IsRead);
+                entity.HasIndex(e => e.CreatedAt);
+                entity.HasIndex(e => e.ExpiresAt);
+            });
+
+            modelBuilder.Entity<ScheduledNotification>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.UserId).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
+                entity.Property(e => e.Type).HasMaxLength(50).HasDefaultValue("info");
+                entity.Property(e => e.Data).HasColumnType("nvarchar(max)");
+                entity.Property(e => e.RecurrencePattern).HasMaxLength(100);
+                entity.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("pending");
+                entity.Property(e => e.ErrorMessage).HasMaxLength(1000);
+                entity.HasIndex(e => e.UserId);
+                entity.HasIndex(e => e.ScheduledAt);
+                entity.HasIndex(e => e.IsProcessed);
+                entity.HasIndex(e => e.Status);
+            });
+        }
+
+        private void ConfigureCompliance(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ComplianceEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasMaxLength(50);
+                entity.Property(e => e.TenantId).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.EventType).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Description).IsRequired().HasMaxLength(1000);
+                entity.Property(e => e.UserId).HasMaxLength(50);
+                entity.Ignore(e => e.Metadata);
+                entity.HasIndex(e => e.TenantId);
+                entity.HasIndex(e => e.EventType);
+                entity.HasIndex(e => e.Timestamp);
+            });
+
+            modelBuilder.Entity<ComplianceReport>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasMaxLength(50);
+                entity.Property(e => e.TenantId).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.ReportType).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Details).HasColumnType("nvarchar(max)");
+                entity.Ignore(e => e.Summary);
+                entity.HasIndex(e => e.TenantId);
+                entity.HasIndex(e => e.ReportType);
+                entity.HasIndex(e => e.GeneratedAt);
+            });
+
+            modelBuilder.Entity<ComplianceViolation>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasMaxLength(50);
+                entity.Property(e => e.TenantId).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.ViolationType).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Severity).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Description).IsRequired().HasMaxLength(1000);
+                entity.Property(e => e.UserId).HasMaxLength(50);
+                entity.Property(e => e.Status).IsRequired().HasMaxLength(50);
+                entity.HasIndex(e => e.TenantId);
+                entity.HasIndex(e => e.ViolationType);
+                entity.HasIndex(e => e.Severity);
+                entity.HasIndex(e => e.Status);
             });
         }
 

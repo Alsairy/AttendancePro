@@ -3,6 +3,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AttendancePlatform.Authentication.Api.Services;
 using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Shared.Infrastructure.Middleware;
+using AttendancePlatform.Shared.Infrastructure.Telemetry;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("AttendancePlatform.Tests.Integration")]
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +16,14 @@ builder.Services.AddControllers();
 
 // Add infrastructure services
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddSecurityServices(builder.Configuration);
 
 // Add authentication services
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<ITwoFactorService, TwoFactorService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
 // Configure JWT authentication
 var jwtSettings = builder.Configuration.GetSection("JWT");
@@ -55,6 +64,8 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+
+builder.Services.AddAttendanceProTelemetry("Authentication Service");
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -101,6 +112,9 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
+app.UseMiddleware<RateLimitingMiddleware>();
+app.UseMiddleware<AuditLoggingMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -109,5 +123,8 @@ app.MapControllers();
 // Health check endpoint
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.UtcNow });
 
+
 app.Run();
+
+public partial class Program { }
 

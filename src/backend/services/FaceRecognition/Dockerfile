@@ -20,7 +20,7 @@ RUN dotnet restore "src/backend/services/FaceRecognition/AttendancePlatform.Face
 COPY . .
 
 # Build the application
-WORKDIR "/src/src/backend/services/FaceRecognition/AttendancePlatform.FaceRecognition.Api"
+WORKDIR "src/backend/services/FaceRecognition/AttendancePlatform.FaceRecognition.Api"
 RUN dotnet build "AttendancePlatform.FaceRecognition.Api.csproj" -c Release -o /app/build
 
 # Publish stage

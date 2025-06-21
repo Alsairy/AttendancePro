@@ -198,5 +198,45 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         
         public bool IsEmergency { get; set; } = false;
     }
+
+    public class BiometricTemplateDto
+    {
+        public Guid Id { get; set; }
+        public string Type { get; set; } = string.Empty;
+        public double Quality { get; set; }
+        public DateTime EnrollmentDate { get; set; }
+        public bool IsActive { get; set; }
+        public string? DeviceId { get; set; }
+        public string? DeviceType { get; set; }
+    }
+
+    public class FaceEnrollmentDto
+    {
+        public Guid TemplateId { get; set; }
+        public double Quality { get; set; }
+        public DateTime EnrollmentDate { get; set; }
+        public bool IsActive { get; set; }
+        public string Message { get; set; } = string.Empty;
+    }
+
+    public class FaceVerificationDto
+    {
+        public bool IsVerified { get; set; }
+        public double Confidence { get; set; }
+        public Guid TemplateId { get; set; }
+        public DateTime VerificationTime { get; set; }
+        public string Message { get; set; } = string.Empty;
+    }
+
+    public class FaceIdentificationDto
+    {
+        public bool IsIdentified { get; set; }
+        public Guid? UserId { get; set; }
+        public string? UserName { get; set; }
+        public double Confidence { get; set; }
+        public Guid? TemplateId { get; set; }
+        public DateTime IdentificationTime { get; set; }
+        public List<object> AllMatches { get; set; } = new();
+    }
 }
 

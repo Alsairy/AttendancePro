@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Geolocation from '@react-native-community/geolocation';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // Screens
 import LoginScreen from './src/screens/LoginScreen';
@@ -26,6 +27,7 @@ import LeaveRequestScreen from './src/screens/LeaveRequestScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import OfflineScreen from './src/screens/OfflineScreen';
+import LoadingScreen from './src/components/LoadingScreen';
 
 // Services
 import { AuthService } from './src/services/AuthService';
@@ -40,7 +42,7 @@ import { useLocationStore } from './src/store/locationStore';
 import { useOfflineStore } from './src/store/offlineStore';
 
 // Types
-import { User } from './src/types/User';
+import { User, LoginCredentials } from './src/types/User';
 import { AppTheme } from './src/types/Theme';
 
 // Utils
@@ -176,7 +178,7 @@ function App(): JSX.Element {
     try {
       const token = await AsyncStorage.getItem('authToken');
       if (token) {
-        const userData = await AuthService.validateToken(token);
+        const userData = await AuthService.getUser();
         if (userData) {
           setUser(userData);
           setIsAuthenticated(true);
@@ -257,7 +259,7 @@ function App(): JSX.Element {
           <SafeAreaView style={styles.container}>
             <StatusBar
               barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-              backgroundColor={isDarkMode ? Colors.dark : Colors.white}
+              backgroundColor={isDarkMode ? Colors.dark.background : Colors.white}
             />
             
             <Stack.Navigator screenOptions={{ headerShown: false }}>
