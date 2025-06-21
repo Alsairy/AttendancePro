@@ -48,8 +48,10 @@ public class Notification : BaseEntity
     [MaxLength(50)]
     public string? CorrelationId { get; set; }
 
+    [NotMapped]
     public List<string> Channels { get; set; } = new();
 
+    [NotMapped]
     public Dictionary<string, object> Metadata { get; set; } = new();
 }
 
@@ -86,6 +88,7 @@ public class ScheduledNotification : BaseEntity
 
     public DateTime? NextScheduledAt { get; set; }
 
+    [NotMapped]
     public List<string> Channels { get; set; } = new();
 
     [MaxLength(50)]

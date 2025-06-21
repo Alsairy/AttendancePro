@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AttendancePlatform.Shared.Domain.Entities;
 
-[Table("AuditLogs")]
+[Table("AuditLogEntries")]
 public class AuditLogEntry : BaseEntity
 {
     [Required]
