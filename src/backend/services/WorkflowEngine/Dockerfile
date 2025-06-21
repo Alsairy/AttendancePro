@@ -20,7 +20,7 @@ RUN dotnet restore "src/backend/services/WorkflowEngine/AttendancePlatform.Workf
 COPY . .
 
 # Build the application
-WORKDIR "/src/src/backend/services/WorkflowEngine/AttendancePlatform.Workflow.Api"
+WORKDIR "src/backend/services/WorkflowEngine/AttendancePlatform.Workflow.Api"
 RUN dotnet build "AttendancePlatform.Workflow.Api.csproj" -c Release -o /app/build
 
 # Publish stage

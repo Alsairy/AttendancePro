@@ -20,7 +20,7 @@ RUN dotnet restore "src/backend/services/Collaboration/AttendancePlatform.Collab
 COPY . .
 
 # Build the application
-WORKDIR "/src/src/backend/services/Collaboration/AttendancePlatform.Collaboration.Api"
+WORKDIR "src/backend/services/Collaboration/AttendancePlatform.Collaboration.Api"
 RUN dotnet build "AttendancePlatform.Collaboration.Api.csproj" -c Release -o /app/build
 
 # Publish stage

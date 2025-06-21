@@ -20,7 +20,7 @@ RUN dotnet restore "src/backend/services/Integrations/AttendancePlatform.Integra
 COPY . .
 
 # Build the application
-WORKDIR "/src/src/backend/services/Integrations/AttendancePlatform.Integrations.Api"
+WORKDIR "src/backend/services/Integrations/AttendancePlatform.Integrations.Api"
 RUN dotnet build "AttendancePlatform.Integrations.Api.csproj" -c Release -o /app/build
 
 # Publish stage

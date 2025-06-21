@@ -20,7 +20,7 @@ RUN dotnet restore "src/backend/services/Analytics/AttendancePlatform.Analytics.
 COPY . .
 
 # Build the application
-WORKDIR "/src/src/backend/services/Analytics/AttendancePlatform.Analytics.Api"
+WORKDIR "src/backend/services/Analytics/AttendancePlatform.Analytics.Api"
 RUN dotnet build "AttendancePlatform.Analytics.Api.csproj" -c Release -o /app/build
 
 # Publish stage
