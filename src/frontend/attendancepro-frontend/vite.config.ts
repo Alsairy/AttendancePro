@@ -9,6 +9,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // @ts-ignore - Vitest extends Vite config
   test: {
     globals: true,
     environment: 'jsdom',
