@@ -68,7 +68,7 @@ export class OfflineService {
   }
 
   private static async syncSingleItem(item: any): Promise<void> {
-    const baseUrl = 'http://localhost:5000/api';
+    const baseUrl = 'https://app-hgzbalgb.fly.dev/api';
     let endpoint = '';
     
     switch (item.type) {

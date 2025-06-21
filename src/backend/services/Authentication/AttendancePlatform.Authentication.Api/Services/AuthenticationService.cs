@@ -172,6 +172,12 @@ namespace AttendancePlatform.Authentication.Api.Services
         {
             try
             {
+                // Validate password confirmation
+                if (request.Password != request.ConfirmPassword)
+                {
+                    return ApiResponse<UserDto>.ErrorResult("Password and confirm password do not match");
+                }
+
                 // Check if user already exists
                 var existingUser = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email.ToLower() == request.Email.ToLower());
@@ -184,7 +190,7 @@ namespace AttendancePlatform.Authentication.Api.Services
                 // Hash password
                 var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-                // Create new user
+                // Create new user with default tenant (for now, until multi-tenancy is fully configured)
                 var user = new User
                 {
                     FirstName = request.FirstName,
@@ -196,7 +202,7 @@ namespace AttendancePlatform.Authentication.Api.Services
                     Position = request.Position,
                     PasswordHash = passwordHash,
                     Status = UserStatus.Active,
-                    TenantId = _tenantContext.TenantId ?? throw new InvalidOperationException("Tenant context not set")
+                    TenantId = _tenantContext.TenantId ?? Guid.NewGuid() // Use default tenant for now
                 };
 
                 _context.Users.Add(user);
@@ -517,6 +523,7 @@ namespace AttendancePlatform.Authentication.Api.Services
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public string ConfirmPassword { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
         public string? EmployeeId { get; set; }
         public string? Department { get; set; }

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Database
   sql-server:
@@ -15,7 +13,7 @@ services:
     networks:
       - attendancepro-network
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${DB_PASSWORD} -Q 'SELECT 1'"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${DB_PASSWORD} -C -Q 'SELECT 1'"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -43,9 +41,15 @@ services:
       dockerfile: src/backend/gateways/Dockerfile
     ports:
       - "5000:80"
+    env_file:
+      - .env.production
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
     depends_on:
       - sql-server
       - redis
@@ -64,10 +68,15 @@ services:
       dockerfile: src/backend/services/Authentication/Dockerfile
     ports:
       - "5001:80"
+    env_file:
+      - .env.production
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
     depends_on:
       - sql-server
       - redis
@@ -86,10 +95,15 @@ services:
       dockerfile: src/backend/services/Attendance/Dockerfile
     ports:
       - "5002:80"
+    env_file:
+      - .env.production
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
     depends_on:
       - sql-server
       - redis
@@ -108,10 +122,15 @@ services:
       dockerfile: src/backend/services/FaceRecognition/Dockerfile
     ports:
       - "5003:80"
+    env_file:
+      - .env.production
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
     depends_on:
       - sql-server
       - redis
@@ -130,10 +149,15 @@ services:
       dockerfile: src/backend/services/LeaveManagement/Dockerfile
     ports:
       - "5004:80"
+    env_file:
+      - .env.production
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
     depends_on:
       - sql-server
       - redis
@@ -145,143 +169,143 @@ services:
       timeout: 10s
       retries: 3
 
-  # Analytics Service
-  analytics-service:
-    build:
-      context: .
-      dockerfile: src/backend/services/Analytics/Dockerfile
-    ports:
-      - "5005:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
-    depends_on:
-      - sql-server
-      - redis
-    networks:
-      - attendancepro-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # Analytics Service - TEMPORARILY DISABLED DUE TO COMPILATION ERRORS
+  # analytics-service:
+  #   build:
+  #     context: .
+  #     dockerfile: src/backend/services/Analytics/Dockerfile
+  #   ports:
+  #     - "5005:80"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:80
+  #     - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+  #   depends_on:
+  #     - sql-server
+  #     - redis
+  #   networks:
+  #     - attendancepro-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
-  # Notifications Service
-  notifications-service:
-    build:
-      context: .
-      dockerfile: src/backend/services/Notifications/Dockerfile
-    ports:
-      - "5007:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
-    depends_on:
-      - sql-server
-      - redis
-    networks:
-      - attendancepro-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # Notifications Service - TEMPORARILY DISABLED DUE TO COMPILATION ERRORS
+  # notifications-service:
+  #   build:
+  #     context: .
+  #     dockerfile: src/backend/services/Notifications/Dockerfile
+  #   ports:
+  #     - "5007:80"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:80
+  #     - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+  #   depends_on:
+  #     - sql-server
+  #     - redis
+  #   networks:
+  #     - attendancepro-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
-  # Webhooks Service
-  webhooks-service:
-    build:
-      context: .
-      dockerfile: src/backend/services/Webhooks/Dockerfile
-    ports:
-      - "5008:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
-    depends_on:
-      - sql-server
-      - redis
-    networks:
-      - attendancepro-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # Webhooks Service - TEMPORARILY DISABLED DUE TO COMPILATION ERRORS
+  # webhooks-service:
+  #   build:
+  #     context: .
+  #     dockerfile: src/backend/services/Webhooks/Dockerfile
+  #   ports:
+  #     - "5008:80"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:80
+  #     - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+  #   depends_on:
+  #     - sql-server
+  #     - redis
+  #   networks:
+  #     - attendancepro-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
-  # Integrations Service
-  integrations-service:
-    build:
-      context: .
-      dockerfile: src/backend/services/Integrations/Dockerfile
-    ports:
-      - "5009:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
-    depends_on:
-      - sql-server
-      - redis
-    networks:
-      - attendancepro-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # Integrations Service - TEMPORARILY DISABLED DUE TO COMPILATION ERRORS
+  # integrations-service:
+  #   build:
+  #     context: .
+  #     dockerfile: src/backend/services/Integrations/Dockerfile
+  #   ports:
+  #     - "5009:80"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:80
+  #     - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+  #   depends_on:
+  #     - sql-server
+  #     - redis
+  #   networks:
+  #     - attendancepro-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
-  # Collaboration Service
-  collaboration-service:
-    build:
-      context: .
-      dockerfile: src/backend/services/Collaboration/Dockerfile
-    ports:
-      - "5010:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
-    depends_on:
-      - sql-server
-      - redis
-    networks:
-      - attendancepro-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # Collaboration Service - TEMPORARILY DISABLED DUE TO COMPILATION ERRORS
+  # collaboration-service:
+  #   build:
+  #     context: .
+  #     dockerfile: src/backend/services/Collaboration/Dockerfile
+  #   ports:
+  #     - "5010:80"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:80
+  #     - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+  #   depends_on:
+  #     - sql-server
+  #     - redis
+  #   networks:
+  #     - attendancepro-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
-  # Workflow Engine Service
-  workflow-engine:
-    build:
-      context: .
-      dockerfile: src/backend/services/WorkflowEngine/Dockerfile
-    ports:
-      - "5011:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
-    depends_on:
-      - sql-server
-      - redis
-    networks:
-      - attendancepro-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+  # Workflow Engine Service - TEMPORARILY DISABLED DUE TO COMPILATION ERRORS
+  # workflow-engine:
+  #   build:
+  #     context: .
+  #     dockerfile: src/backend/services/WorkflowEngine/Dockerfile
+  #   ports:
+  #     - "5011:80"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:80
+  #     - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+  #   depends_on:
+  #     - sql-server
+  #     - redis
+  #   networks:
+  #     - attendancepro-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
 
   # Frontend
   frontend:
     build:
-      context: .
-      dockerfile: src/frontend/Dockerfile
+      context: src/frontend/attendancepro-frontend
+      dockerfile: Dockerfile
     ports:
       - "3000:80"
     depends_on:
