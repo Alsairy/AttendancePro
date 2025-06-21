@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using StackExchange.Redis;
+using System.Diagnostics.Metrics;
 
 namespace AttendancePlatform.Shared.Infrastructure.Services
 {
@@ -172,6 +173,29 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
             {
                 _logger.LogError(ex, "Error refreshing cache: {Key}", key);
             }
+        }
+    }
+
+    public class CacheMetrics
+    {
+        private static readonly Meter _meter = new("AttendancePlatform.Cache");
+        private readonly Counter<long> _cacheHits = _meter.CreateCounter<long>("cache_hits_total");
+        private readonly Counter<long> _cacheMisses = _meter.CreateCounter<long>("cache_misses_total");
+        private readonly Counter<long> _cacheErrors = _meter.CreateCounter<long>("cache_errors_total");
+
+        public void RecordCacheHit(string key)
+        {
+            _cacheHits.Add(1, new KeyValuePair<string, object?>("cache_key", key));
+        }
+
+        public void RecordCacheMiss(string key)
+        {
+            _cacheMisses.Add(1, new KeyValuePair<string, object?>("cache_key", key));
+        }
+
+        public void RecordCacheError(string key)
+        {
+            _cacheErrors.Add(1, new KeyValuePair<string, object?>("cache_key", key));
         }
     }
 }

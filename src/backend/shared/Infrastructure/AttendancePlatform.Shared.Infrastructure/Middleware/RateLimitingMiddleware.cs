@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Net;
 
 namespace AttendancePlatform.Shared.Infrastructure.Middleware
@@ -16,12 +17,12 @@ namespace AttendancePlatform.Shared.Infrastructure.Middleware
             RequestDelegate next,
             IMemoryCache cache,
             ILogger<RateLimitingMiddleware> logger,
-            RateLimitOptions options)
+            IOptions<RateLimitOptions> options)
         {
             _next = next;
             _cache = cache;
             _logger = logger;
-            _options = options;
+            _options = options.Value;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -37,7 +38,12 @@ namespace AttendancePlatform.Shared.Infrastructure.Middleware
                     WindowStart = DateTime.UtcNow
                 };
 
-                _cache.Set(key, rateLimitInfo, TimeSpan.FromMinutes(_options.WindowSizeInMinutes));
+                var cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_options.WindowSizeInMinutes),
+                    Size = 1
+                };
+                _cache.Set(key, rateLimitInfo, cacheEntryOptions);
             }
             else
             {
@@ -51,7 +57,12 @@ namespace AttendancePlatform.Shared.Infrastructure.Middleware
                     rateLimitInfo.RequestCount++;
                 }
 
-                _cache.Set(key, rateLimitInfo, TimeSpan.FromMinutes(_options.WindowSizeInMinutes));
+                var cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_options.WindowSizeInMinutes),
+                    Size = 1
+                };
+                _cache.Set(key, rateLimitInfo, cacheEntryOptions);
             }
 
             if (rateLimitInfo.RequestCount > _options.MaxRequests)
