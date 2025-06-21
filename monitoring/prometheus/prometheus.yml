@@ -5,11 +5,12 @@ global:
 rule_files:
   - "alert_rules.yml"
 
-alerting:
-  alertmanagers:
-    - static_configs:
-        - targets:
-          - alertmanager:9093
+# Alerting disabled - no alertmanager deployed
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#           - alertmanager:9093
 
 scrape_configs:
   - job_name: 'prometheus'
@@ -18,55 +19,55 @@ scrape_configs:
 
   - job_name: 'authentication-service'
     static_configs:
-      - targets: ['authentication-service:8080']
+      - targets: ['authentication-service:80']
     metrics_path: '/metrics'
     scrape_interval: 10s
 
   - job_name: 'attendance-service'
     static_configs:
-      - targets: ['attendance-service:8080']
+      - targets: ['attendance-service:80']
     metrics_path: '/metrics'
     scrape_interval: 10s
 
   - job_name: 'analytics-service'
     static_configs:
-      - targets: ['analytics-service:8080']
+      - targets: ['analytics-service:80']
     metrics_path: '/metrics'
     scrape_interval: 10s
 
   - job_name: 'face-recognition-service'
     static_configs:
-      - targets: ['face-recognition-service:8080']
+      - targets: ['face-recognition-service:80']
     metrics_path: '/metrics'
     scrape_interval: 10s
 
   - job_name: 'leave-management-service'
     static_configs:
-      - targets: ['leave-management-service:8080']
+      - targets: ['leave-management-service:80']
     metrics_path: '/metrics'
     scrape_interval: 10s
 
   - job_name: 'business-intelligence-service'
     static_configs:
-      - targets: ['business-intelligence-service:8080']
+      - targets: ['business-intelligence-service:80']
     metrics_path: '/metrics'
     scrape_interval: 10s
 
   - job_name: 'integrations-service'
     static_configs:
-      - targets: ['integrations-service:8080']
+      - targets: ['integrations-service:80']
     metrics_path: '/metrics'
     scrape_interval: 10s
 
   - job_name: 'collaboration-service'
     static_configs:
-      - targets: ['collaboration-service:8080']
+      - targets: ['collaboration-service:80']
     metrics_path: '/metrics'
     scrape_interval: 10s
 
   - job_name: 'workflow-engine-service'
     static_configs:
-      - targets: ['workflow-engine-service:8080']
+      - targets: ['workflow-engine-service:80']
     metrics_path: '/metrics'
     scrape_interval: 10s
 

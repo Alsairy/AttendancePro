@@ -145,6 +145,28 @@ services:
       timeout: 10s
       retries: 3
 
+  # Analytics Service
+  analytics-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/Analytics/Dockerfile
+    ports:
+      - "5005:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # Notifications Service
   notifications-service:
     build:
@@ -211,6 +233,50 @@ services:
       timeout: 10s
       retries: 3
 
+  # Collaboration Service
+  collaboration-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/Collaboration/Dockerfile
+    ports:
+      - "5010:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Workflow Engine Service
+  workflow-engine:
+    build:
+      context: .
+      dockerfile: src/backend/services/WorkflowEngine/Dockerfile
+    ports:
+      - "5011:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # Frontend
   frontend:
     build:
@@ -234,7 +300,8 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -255,6 +322,8 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
     networks:
       - attendancepro-network
 

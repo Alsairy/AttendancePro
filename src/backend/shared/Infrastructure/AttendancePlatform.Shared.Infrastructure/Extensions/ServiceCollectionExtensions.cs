@@ -5,6 +5,8 @@ using AttendancePlatform.Shared.Domain.Interfaces;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Infrastructure.Services;
 using AttendancePlatform.Shared.Infrastructure.Repositories;
+using AttendancePlatform.Shared.Infrastructure.Security;
+using AttendancePlatform.Shared.Infrastructure.Middleware;
 using StackExchange.Redis;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
@@ -15,7 +17,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Add DbContext with connection pooling optimization
+            // Add DbContext with optimized configuration
             services.AddDbContext<AttendancePlatformDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     b => {
@@ -23,9 +25,6 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
                         b.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(5), errorNumbersToAdd: null);
                         b.CommandTimeout(30);
                     }), ServiceLifetime.Scoped);
-
-            services.AddDbContextPool<AttendancePlatformDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")), poolSize: 128);
 
             var redisConnectionString = configuration.GetConnectionString("Redis") ?? 
                                       configuration["Redis:ConnectionString"] ?? 
@@ -84,6 +83,25 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
             }
 
             return serviceProvider;
+        }
+
+        public static IServiceCollection AddSecurityServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            var encryptionKey = configuration["Security:EncryptionKey"] ?? 
+                               configuration["ENCRYPTION_KEY"] ?? 
+                               throw new InvalidOperationException("Encryption key not configured");
+            
+            services.AddSingleton<IEncryptionService>(provider => new EncryptionService(encryptionKey));
+            services.AddScoped<IAuditLogService, AuditLogService>();
+            services.AddScoped<IComplianceReportingService, ComplianceReportingService>();
+            
+            services.Configure<RateLimitOptions>(options =>
+            {
+                options.MaxRequests = configuration.GetValue<int>("RateLimit:MaxRequests", 100);
+                options.WindowSizeInMinutes = configuration.GetValue<int>("RateLimit:WindowSizeInMinutes", 1);
+            });
+
+            return services;
         }
     }
 }
