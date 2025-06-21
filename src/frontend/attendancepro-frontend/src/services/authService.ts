@@ -3,8 +3,8 @@ import axios, { AxiosResponse } from 'axios'
 const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:5000/api'
 
 interface LoginResponse {
-  accessToken: string
-  refreshToken: string
+  access_token: string
+  token_type: string
   user: User
   requiresTwoFactor?: boolean
 }
@@ -57,27 +57,9 @@ class AuthService {
     this.api.interceptors.response.use(
       (response) => response,
       async (error) => {
-        const originalRequest = error.config
-        
-        if (error.response?.status === 401 && !originalRequest._retry) {
-          originalRequest._retry = true
-          
-          const refreshToken = localStorage.getItem('refreshToken')
-          if (refreshToken) {
-            try {
-              const response = await this.refreshToken(refreshToken)
-              localStorage.setItem('accessToken', response.accessToken)
-              localStorage.setItem('refreshToken', response.refreshToken)
-              
-              originalRequest.headers.Authorization = `Bearer ${response.accessToken}`
-              return this.api(originalRequest)
-            } catch (refreshError) {
-              localStorage.removeItem('accessToken')
-              localStorage.removeItem('refreshToken')
-              window.location.href = '/login'
-              return Promise.reject(refreshError)
-            }
-          }
+        if (error.response?.status === 401) {
+          localStorage.removeItem('accessToken')
+          window.location.href = '/login'
         }
         
         return Promise.reject(error)

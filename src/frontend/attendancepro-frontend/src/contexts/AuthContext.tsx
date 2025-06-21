@@ -22,7 +22,7 @@ interface AuthContextType {
   login: (email: string, password: string, twoFactorCode?: string) => Promise<{ success: boolean; requiresTwoFactor?: boolean; error?: string }>
   register: (userData: RegisterData) => Promise<{ success: boolean; error?: string }>
   logout: () => Promise<void>
-  refreshToken: () => Promise<boolean>
+
   forgotPassword: (email: string) => Promise<{ success: boolean; error?: string }>
   resetPassword: (token: string, newPassword: string) => Promise<{ success: boolean; error?: string }>
   changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>
@@ -63,7 +63,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } catch (error) {
           console.error('Failed to get current user:', error)
           localStorage.removeItem('accessToken')
-          localStorage.removeItem('refreshToken')
         }
       }
       setIsLoading(false)
@@ -80,9 +79,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: true, requiresTwoFactor: true }
       }
 
-      if (response.accessToken && response.user) {
-        localStorage.setItem('accessToken', response.accessToken)
-        localStorage.setItem('refreshToken', response.refreshToken)
+      if (response.access_token && response.user) {
+        localStorage.setItem('accessToken', response.access_token)
         setUser(response.user)
         return { success: true }
       }
@@ -111,34 +109,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Logout error:', error)
     } finally {
       localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
       setUser(null)
     }
   }
 
-  const refreshToken = async (): Promise<boolean> => {
-    try {
-      const refreshTokenValue = localStorage.getItem('refreshToken')
-      if (!refreshTokenValue) return false
 
-      const response = await authService.refreshToken(refreshTokenValue)
-      
-      if (response.accessToken && response.user) {
-        localStorage.setItem('accessToken', response.accessToken)
-        localStorage.setItem('refreshToken', response.refreshToken)
-        setUser(response.user)
-        return true
-      }
-      
-      return false
-    } catch (error) {
-      console.error('Token refresh failed:', error)
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      setUser(null)
-      return false
-    }
-  }
 
   const forgotPassword = async (email: string) => {
     try {
@@ -175,7 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     login,
     register,
     logout,
-    refreshToken,
+
     forgotPassword,
     resetPassword,
     changePassword,
