@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Security;
 
 namespace AttendancePlatform.Shared.Infrastructure.Data
 {
@@ -27,6 +28,10 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        
+        // Security and Compliance entities
+        public DbSet<ComplianceEvent> ComplianceEvents { get; set; }
+        public DbSet<ComplianceReport> ComplianceReports { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
 
         // Attendance entities
@@ -65,6 +70,21 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<BiometricBackup> BiometricBackups { get; set; }
         public DbSet<BiometricSession> BiometricSessions { get; set; }
         public DbSet<BiometricDevice> BiometricDevices { get; set; }
+
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<TeamMember> TeamMembers { get; set; }
+        public DbSet<TeamProject> TeamProjects { get; set; }
+        public DbSet<ProjectMember> ProjectMembers { get; set; }
+        public DbSet<VideoConference> VideoConferences { get; set; }
+        public DbSet<ConferenceParticipant> ConferenceParticipants { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<ChatChannel> ChatChannels { get; set; }
+        public DbSet<ChannelMember> ChannelMembers { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<DocumentVersion> DocumentVersions { get; set; }
+        public DbSet<ScreenSharingSession> ScreenSharingSessions { get; set; }
+        public DbSet<ScreenSharingParticipant> ScreenSharingParticipants { get; set; }
+        public DbSet<UserPresence> UserPresences { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

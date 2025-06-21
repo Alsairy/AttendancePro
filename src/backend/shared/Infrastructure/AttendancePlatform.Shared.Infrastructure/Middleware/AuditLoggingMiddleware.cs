@@ -2,6 +2,7 @@ using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Shared.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
@@ -12,13 +13,11 @@ public class AuditLoggingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<AuditLoggingMiddleware> _logger;
-    private readonly IAuditLogService _auditLogService;
 
-    public AuditLoggingMiddleware(RequestDelegate next, ILogger<AuditLoggingMiddleware> logger, IAuditLogService auditLogService)
+    public AuditLoggingMiddleware(RequestDelegate next, ILogger<AuditLoggingMiddleware> logger)
     {
         _next = next;
         _logger = logger;
-        _auditLogService = auditLogService;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -83,7 +82,13 @@ public class AuditLoggingMiddleware
                 auditEntry.NewValues = await ReadRequestBodyAsync(request);
             }
 
-            await _auditLogService.LogAsync(auditEntry);
+            using var scope = context.RequestServices.CreateScope();
+            var auditLogService = scope.ServiceProvider.GetService<IAuditLogService>();
+            
+            if (auditLogService != null)
+            {
+                await auditLogService.LogAsync(auditEntry);
+            }
         }
         catch (Exception ex)
         {
