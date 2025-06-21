@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Collaboration.Api.Services;
 using AttendancePlatform.Collaboration.Api.Hubs;
 
@@ -87,6 +88,7 @@ builder.Services.AddHealthChecks()
 
 // Shared Infrastructure
 builder.Services.AddSharedInfrastructure(builder.Configuration);
+builder.Services.AddSecurityServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -98,6 +100,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
+
+app.UseMiddleware<RateLimitingMiddleware>();
+app.UseMiddleware<AuditLoggingMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

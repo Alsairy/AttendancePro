@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AttendancePlatform.FaceRecognition.Api.Services;
 using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Shared.Infrastructure.Middleware;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("AttendancePlatform.Tests.Integration")]
@@ -14,6 +15,7 @@ builder.Services.AddControllers();
 
 // Add infrastructure services
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddSecurityServices(builder.Configuration);
 
 // Add face recognition services
 builder.Services.AddScoped<IFaceRecognitionService, FaceRecognitionService>();
@@ -105,6 +107,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
+
+app.UseMiddleware<RateLimitingMiddleware>();
+app.UseMiddleware<AuditLoggingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

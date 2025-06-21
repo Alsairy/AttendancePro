@@ -15,7 +15,12 @@
     <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
     <PackageReference Include="System.DirectoryServices.Protocols" Version="8.0.0" />
     <PackageReference Include="Google.Apis.Admin.Directory.directory_v1" Version="1.68.0.3421" />
+    <PackageReference Include="Google.Apis.Calendar.v3" Version="1.68.0.3421" />
+    <PackageReference Include="Microsoft.Graph" Version="5.56.0" />
+    <PackageReference Include="Microsoft.Graph.Auth" Version="1.0.0-preview.7" />
     <PackageReference Include="DotNetForce" Version="2.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.7.20" />
   </ItemGroup>
 
   <ItemGroup>
