@@ -30,7 +30,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         
         public DateTime? HireDate { get; set; }
         
-        public DateTime? DateOfBirth { get; set; }
+        // public DateTime? DateOfBirth { get; set; }
         
         public string? ProfilePictureUrl { get; set; }
         
@@ -50,7 +50,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         
         public bool RequirePasswordChange { get; set; } = false;
         
-        public int FailedLoginAttempts { get; set; } = 0;
+        // public int FailedLoginAttempts { get; set; } = 0;
         
         public DateTime? LockedUntil { get; set; }
         

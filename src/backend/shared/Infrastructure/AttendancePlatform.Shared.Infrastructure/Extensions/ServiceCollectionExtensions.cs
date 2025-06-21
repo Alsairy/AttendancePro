@@ -97,8 +97,20 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
             
             services.Configure<RateLimitOptions>(options =>
             {
-                options.MaxRequests = configuration.GetValue<int>("RateLimit:MaxRequests", 100);
-                options.WindowSizeInMinutes = configuration.GetValue<int>("RateLimit:WindowSizeInMinutes", 1);
+                options.MaxRequests = configuration.GetValue<int>("RATE_LIMIT_REQUESTS_PER_MINUTE", 100);
+                options.WindowSizeInMinutes = 1;
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    var origins = configuration["CORS_ORIGINS"]?.Split(',') ?? new[] { "https://localhost:3000" };
+                    builder.WithOrigins(origins)
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();
+                });
             });
 
             return services;

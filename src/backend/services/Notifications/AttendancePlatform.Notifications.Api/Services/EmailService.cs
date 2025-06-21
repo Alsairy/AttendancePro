@@ -1,5 +1,7 @@
 using System.Net.Mail;
 using System.Net;
+using Microsoft.EntityFrameworkCore;
+using AttendancePlatform.Shared.Infrastructure.Data;
 
 namespace AttendancePlatform.Notifications.Api.Services
 {
