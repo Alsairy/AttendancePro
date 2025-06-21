@@ -180,6 +180,125 @@ class AuthService {
       throw new Error(error.response?.data?.message || 'Failed to disable 2FA')
     }
   }
+
+  async loginWithBiometric(biometricData: string, userId?: string): Promise<LoginResponse> {
+    try {
+      const response: AxiosResponse<LoginResponse> = await this.api.post('/auth/biometric-login', {
+        biometricData,
+        userId,
+      })
+      return response.data
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Biometric login failed')
+    }
+  }
+
+  async enrollBiometric(userId: string, biometricData: string, biometricType: 'face' | 'fingerprint'): Promise<void> {
+    try {
+      await this.api.post('/auth/enroll-biometric', {
+        userId,
+        biometricData,
+        biometricType,
+      })
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Biometric enrollment failed')
+    }
+  }
+
+  async verifyBiometric(userId: string, biometricData: string, biometricType: 'face' | 'fingerprint'): Promise<boolean> {
+    try {
+      const response = await this.api.post('/auth/verify-biometric', {
+        userId,
+        biometricData,
+        biometricType,
+      })
+      return response.data.isValid
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Biometric verification failed')
+    }
+  }
+
+  async registerDevice(deviceToken: string, platform: 'ios' | 'android' | 'web', userId: string): Promise<void> {
+    try {
+      await this.api.post('/auth/register-device', {
+        deviceToken,
+        platform,
+        userId,
+      })
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Device registration failed')
+    }
+  }
+
+  async unregisterDevice(deviceToken: string, userId: string): Promise<void> {
+    try {
+      await this.api.post('/auth/unregister-device', {
+        deviceToken,
+        userId,
+      })
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Device unregistration failed')
+    }
+  }
+
+  async getDevices(userId: string): Promise<Array<{
+    id: string;
+    deviceToken: string;
+    platform: string;
+    isActive: boolean;
+    registeredAt: string;
+    lastUsed?: string;
+  }>> {
+    try {
+      const response = await this.api.get(`/auth/devices/${userId}`)
+      return response.data
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch devices')
+    }
+  }
+
+  async revokeDevice(deviceId: string, userId: string): Promise<void> {
+    try {
+      await this.api.delete(`/auth/devices/${deviceId}`, {
+        data: { userId }
+      })
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to revoke device')
+    }
+  }
+
+  async getSecuritySettings(userId: string): Promise<{
+    twoFactorEnabled: boolean;
+    biometricEnabled: boolean;
+    lastPasswordChange: string;
+    activeDevices: number;
+    recentLogins: Array<{
+      timestamp: string;
+      ipAddress: string;
+      userAgent: string;
+      location?: string;
+    }>;
+  }> {
+    try {
+      const response = await this.api.get(`/auth/security-settings/${userId}`)
+      return response.data
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch security settings')
+    }
+  }
+
+  async updateSecuritySettings(userId: string, settings: {
+    requireTwoFactor?: boolean;
+    requireBiometric?: boolean;
+    sessionTimeout?: number;
+    allowMultipleDevices?: boolean;
+  }): Promise<void> {
+    try {
+      await this.api.put(`/auth/security-settings/${userId}`, settings)
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to update security settings')
+    }
+  }
 }
 
 export const authService = new AuthService()

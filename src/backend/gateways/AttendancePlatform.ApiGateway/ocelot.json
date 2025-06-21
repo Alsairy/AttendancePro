@@ -5,8 +5,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "authentication-service",
-          "Port": 80
+          "Host": "attendance-auth-service",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/auth/{everything}",
@@ -17,8 +17,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "attendance-service",
-          "Port": 80
+          "Host": "attendance-attendance-service",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/api/attendance/{everything}",
@@ -53,8 +53,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "authentication-service",
-          "Port": 80
+          "Host": "attendance-auth-service",
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/health",

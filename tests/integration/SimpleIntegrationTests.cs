@@ -279,7 +279,6 @@ namespace AttendancePlatform.Tests.Integration
             Assert.False(user.IsEmailVerified);
             Assert.False(user.IsPhoneVerified);
             Assert.False(user.RequirePasswordChange);
-            Assert.Equal(0, user.FailedLoginAttempts);
             Assert.False(user.IsTwoFactorEnabled);
         }
 

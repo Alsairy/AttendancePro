@@ -7,7 +7,15 @@ import {
   CheckCircle, 
   XCircle,
   AlertCircle,
-  MapPin
+  MapPin,
+  Bell,
+  Settings,
+  Activity,
+  Smartphone,
+  BarChart3,
+  Wifi,
+  WifiOff,
+  RefreshCw
 } from 'lucide-react'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
@@ -16,6 +24,12 @@ import { Badge } from '../../components/ui/badge'
 import { Progress } from '../../components/ui/progress'
 import { useAuth } from '../../contexts/AuthContext'
 import { toast } from 'sonner'
+import analyticsService from '../../services/analyticsService'
+import notificationService from '../../services/notificationService'
+import realTimeService from '../../services/realTimeService'
+import WorkforceHealthDashboard from '../../components/analytics/WorkforceHealthDashboard'
+import ProductivityMetricsVisualization from '../../components/analytics/ProductivityMetricsVisualization'
+import NotificationCenter from '../../components/notifications/NotificationCenter'
 
 interface AttendanceStats {
   totalEmployees: number
@@ -45,6 +59,10 @@ const Dashboard: React.FC = () => {
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [unreadNotifications, setUnreadNotifications] = useState(0)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [realTimeUpdates, setRealTimeUpdates] = useState(true)
+  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'reconnecting' | 'error'>('disconnected')
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -55,57 +73,125 @@ const Dashboard: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    const loadDashboardData = async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        setAttendanceStats({
-          totalEmployees: 150,
-          presentToday: 142,
-          absentToday: 5,
-          lateToday: 3,
-          attendanceRate: 94.7,
-        })
-
-        setRecentActivity([
-          {
-            id: '1',
-            employeeName: 'Sarah Johnson',
-            action: 'check-in',
-            time: '09:15 AM',
-            location: 'Main Office'
-          },
-          {
-            id: '2',
-            employeeName: 'Mike Chen',
-            action: 'check-out',
-            time: '05:30 PM',
-            location: 'Remote'
-          },
-          {
-            id: '3',
-            employeeName: 'Emily Davis',
-            action: 'late',
-            time: '09:45 AM',
-            location: 'Main Office'
-          },
-          {
-            id: '4',
-            employeeName: 'John Smith',
-            action: 'check-in',
-            time: '08:30 AM',
-            location: 'Branch Office'
-          },
-        ])
-      } catch (error) {
-        toast.error('Failed to load dashboard data')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
     loadDashboardData()
-  }, [])
+    loadNotificationCount()
+    setupRealTimeConnections()
+    
+    const interval = setInterval(() => {
+      if (realTimeUpdates) {
+        loadDashboardData()
+        loadNotificationCount()
+      }
+    }, 30000) // Update every 30 seconds
+
+    return () => {
+      clearInterval(interval)
+      cleanupRealTimeConnections()
+    }
+  }, [realTimeUpdates])
+
+  const setupRealTimeConnections = () => {
+    realTimeService.on('connection-status', (status) => {
+      setConnectionStatus(status.status)
+      if (status.status === 'connected') {
+        toast.success('Real-time connection established')
+      } else if (status.status === 'disconnected') {
+        toast.error('Real-time connection lost')
+      } else if (status.status === 'reconnecting') {
+        toast.info('Reconnecting to real-time service...')
+      }
+    })
+
+    realTimeService.on('attendance-update', (update) => {
+      if (realTimeUpdates) {
+        loadDashboardData()
+        setRecentActivity(prev => [
+          {
+            id: Date.now().toString(),
+            employeeName: update.userName,
+            action: update.action,
+            time: new Date(update.timestamp).toLocaleTimeString(),
+            location: update.location || 'Unknown'
+          },
+          ...prev.slice(0, 9)
+        ])
+        toast.info(`${update.userName} ${update.action.replace('-', ' ')}`)
+      }
+    })
+
+    realTimeService.on('analytics-update', (update) => {
+      if (realTimeUpdates && update.type === 'overview') {
+        setAttendanceStats(prev => ({
+          ...prev,
+          ...update.data
+        }))
+      }
+    })
+
+    // Notification updates
+    realTimeService.on('notification-received', (notification) => {
+      setUnreadNotifications(prev => prev + 1)
+      toast.info(`New notification: ${notification.title}`)
+      notificationService.showBrowserNotification(notification)
+    })
+
+    realTimeService.on('system-alert', (alert) => {
+      toast.error(`System Alert: ${alert.message}`)
+    })
+  }
+
+  const cleanupRealTimeConnections = () => {
+    realTimeService.off('connection-status', () => {})
+    realTimeService.off('attendance-update', () => {})
+    realTimeService.off('analytics-update', () => {})
+    realTimeService.off('notification-received', () => {})
+    realTimeService.off('system-alert', () => {})
+  }
+
+  const loadDashboardData = async () => {
+    try {
+      setIsLoading(true)
+      
+      const overview = await analyticsService.getOverview()
+      
+      setAttendanceStats({
+        totalEmployees: overview.totalEmployees || 150,
+        presentToday: overview.presentToday || 142,
+        absentToday: overview.absentToday || 5,
+        lateToday: overview.lateToday || 3,
+        attendanceRate: overview.attendanceRate || 94.7,
+      })
+
+      try {
+        const recentActivityData = await analyticsService.getRecentActivity()
+        setRecentActivity(recentActivityData || [])
+      } catch (activityError) {
+        console.error('Error loading recent activity:', activityError)
+        setRecentActivity([])
+      }
+    } catch (error) {
+      console.error('Error loading dashboard data:', error)
+      toast.error('Failed to load dashboard data')
+      setAttendanceStats({
+        totalEmployees: 150,
+        presentToday: 142,
+        absentToday: 5,
+        lateToday: 3,
+        attendanceRate: 94.7,
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const loadNotificationCount = async () => {
+    try {
+      const count = await notificationService.getUnreadCount()
+      setUnreadNotifications(count)
+    } catch (error) {
+      console.error('Error loading notification count:', error)
+    }
+  }
 
   const getActionIcon = (action: RecentActivity['action']) => {
     switch (action) {
@@ -171,19 +257,81 @@ const Dashboard: React.FC = () => {
           <p className="text-muted-foreground">
             Welcome back, {user?.firstName}! Here's what's happening today.
           </p>
+          <div className="flex items-center space-x-4 mt-2">
+            <div className="flex items-center space-x-2">
+              <div className={`w-2 h-2 rounded-full ${realTimeUpdates ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+              <span className="text-sm text-muted-foreground">
+                {realTimeUpdates ? 'Live Updates' : 'Updates Paused'}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              {connectionStatus === 'connected' ? (
+                <Wifi className="h-4 w-4 text-green-500" />
+              ) : connectionStatus === 'reconnecting' ? (
+                <RefreshCw className="h-4 w-4 text-yellow-500 animate-spin" />
+              ) : (
+                <WifiOff className="h-4 w-4 text-red-500" />
+              )}
+              <span className="text-sm text-muted-foreground capitalize">{connectionStatus}</span>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setRealTimeUpdates(!realTimeUpdates)}
+            >
+              <Activity className="mr-1 h-3 w-3" />
+              {realTimeUpdates ? 'Pause' : 'Resume'}
+            </Button>
+          </div>
         </div>
-        <div className="text-right">
-          <p className="text-2xl font-bold">{currentTime.toLocaleTimeString()}</p>
-          <p className="text-sm text-muted-foreground">
-            {currentTime.toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </p>
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="outline"
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative"
+          >
+            <Bell className="mr-2 h-4 w-4" />
+            Notifications
+            {unreadNotifications > 0 && (
+              <Badge className="absolute -top-2 -right-2 px-1 min-w-[1.2rem] h-5">
+                {unreadNotifications > 99 ? '99+' : unreadNotifications}
+              </Badge>
+            )}
+          </Button>
+          <div className="text-right">
+            <p className="text-2xl font-bold">{currentTime.toLocaleTimeString()}</p>
+            <p className="text-sm text-muted-foreground">
+              {currentTime.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </p>
+          </div>
         </div>
       </div>
+
+      {/* Notification Panel */}
+      {showNotifications && (
+        <Card className="border-blue-200 bg-blue-50">
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <CardTitle className="text-lg">Notifications</CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowNotifications(false)}
+              >
+                ×
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <NotificationCenter />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -238,20 +386,54 @@ const Dashboard: React.FC = () => {
         </Card>
       </div>
 
+      {/* Advanced Analytics Section */}
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Workforce Health Dashboard</CardTitle>
+            <CardDescription>
+              Real-time workforce analytics and health metrics
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <WorkforceHealthDashboard />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Productivity Metrics</CardTitle>
+            <CardDescription>
+              Performance insights and productivity trends
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ProductivityMetricsVisualization />
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Main Content Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Recent Activity */}
         <Card className="col-span-2">
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>
-              Latest check-ins, check-outs, and attendance events
-            </CardDescription>
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle>Recent Activity</CardTitle>
+                <CardDescription>
+                  Latest check-ins, check-outs, and attendance events
+                </CardDescription>
+              </div>
+              <Badge variant="outline" className="text-xs">
+                Live Updates {realTimeUpdates ? '🟢' : '⏸️'}
+              </Badge>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-center space-x-4">
+                <div key={activity.id} className="flex items-center space-x-4 hover:bg-muted/50 p-2 rounded-lg transition-colors">
                   <div className="flex-shrink-0">
                     {getActionIcon(activity.action)}
                   </div>
@@ -290,30 +472,44 @@ const Dashboard: React.FC = () => {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
+        {/* Enhanced Quick Actions */}
         <Card>
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
             <CardDescription>
-              Common tasks and shortcuts
+              Enterprise features and shortcuts
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <Button className="w-full justify-start" variant="outline">
+              <Clock className="mr-2 h-4 w-4" />
+              Check In/Out
+              <Badge variant="secondary" className="ml-auto text-xs">GPS + Face</Badge>
+            </Button>
+            <Button className="w-full justify-start" variant="outline">
               <Calendar className="mr-2 h-4 w-4" />
-              View Attendance
+              Leave Request
+              <Badge variant="secondary" className="ml-auto text-xs">Multi-level</Badge>
             </Button>
             <Button className="w-full justify-start" variant="outline">
               <Users className="mr-2 h-4 w-4" />
-              Manage Users
+              Team View
+              <Badge variant="secondary" className="ml-auto text-xs">Real-time</Badge>
             </Button>
             <Button className="w-full justify-start" variant="outline">
-              <TrendingUp className="mr-2 h-4 w-4" />
-              View Analytics
+              <BarChart3 className="mr-2 h-4 w-4" />
+              Analytics
+              <Badge variant="secondary" className="ml-auto text-xs">AI Insights</Badge>
             </Button>
             <Button className="w-full justify-start" variant="outline">
-              <Clock className="mr-2 h-4 w-4" />
-              Generate Report
+              <Smartphone className="mr-2 h-4 w-4" />
+              Mobile App
+              <Badge variant="secondary" className="ml-auto text-xs">Offline</Badge>
+            </Button>
+            <Button className="w-full justify-start" variant="outline">
+              <Settings className="mr-2 h-4 w-4" />
+              Settings
+              <Badge variant="secondary" className="ml-auto text-xs">Enterprise</Badge>
             </Button>
           </CardContent>
         </Card>

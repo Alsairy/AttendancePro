@@ -46,7 +46,7 @@ services:
   api-gateway:
     build:
       context: .
-      dockerfile: src/backend/gateways/AttendancePlatform.ApiGateway/Dockerfile
+      dockerfile: src/backend/gateways/Dockerfile
     container_name: attendance-api-gateway
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -66,13 +66,15 @@ services:
   auth-service:
     build:
       context: .
-      dockerfile: src/backend/services/Authentication/AttendancePlatform.Authentication.Api/Dockerfile
+      dockerfile: src/backend/services/Authentication/Dockerfile
     container_name: attendance-auth-service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AttendancePlatform;User Id=sa;Password=AttendanceP@ssw0rd123;TrustServerCertificate=true
       - Redis__ConnectionString=redis:6379
       - JWT__SecretKey=${JWT_SECRET_KEY}
+      - Security__EncryptionKey=${ENCRYPTION_KEY}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
     ports:
       - "5001:8080"
     depends_on:
@@ -85,7 +87,7 @@ services:
   tenant-service:
     build:
       context: .
-      dockerfile: src/backend/services/TenantManagement/AttendancePlatform.TenantManagement.Api/Dockerfile
+      dockerfile: src/backend/services/TenantManagement/Dockerfile
     container_name: attendance-tenant-service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -103,7 +105,7 @@ services:
   user-service:
     build:
       context: .
-      dockerfile: src/backend/services/UserManagement/AttendancePlatform.UserManagement.Api/Dockerfile
+      dockerfile: src/backend/services/UserManagement/Dockerfile
     container_name: attendance-user-service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -121,12 +123,14 @@ services:
   attendance-service:
     build:
       context: .
-      dockerfile: src/backend/services/Attendance/AttendancePlatform.Attendance.Api/Dockerfile
+      dockerfile: src/backend/services/Attendance/Dockerfile
     container_name: attendance-attendance-service
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AttendancePlatform;User Id=sa;Password=AttendanceP@ssw0rd123;TrustServerCertificate=true
       - Redis__ConnectionString=redis:6379
+      - Security__EncryptionKey=${ENCRYPTION_KEY}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
     ports:
       - "5004:8080"
     depends_on:

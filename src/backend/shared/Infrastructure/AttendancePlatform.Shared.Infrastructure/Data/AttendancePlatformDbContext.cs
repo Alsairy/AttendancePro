@@ -587,14 +587,14 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
             // Seed system permissions
             var permissions = new[]
             {
-                new Permission { Id = Guid.NewGuid(), Name = "View Users", Resource = "User", Action = "Read", Description = "View user information" },
-                new Permission { Id = Guid.NewGuid(), Name = "Create Users", Resource = "User", Action = "Create", Description = "Create new users" },
-                new Permission { Id = Guid.NewGuid(), Name = "Update Users", Resource = "User", Action = "Update", Description = "Update user information" },
-                new Permission { Id = Guid.NewGuid(), Name = "Delete Users", Resource = "User", Action = "Delete", Description = "Delete users" },
-                new Permission { Id = Guid.NewGuid(), Name = "View Attendance", Resource = "Attendance", Action = "Read", Description = "View attendance records" },
-                new Permission { Id = Guid.NewGuid(), Name = "Manage Attendance", Resource = "Attendance", Action = "Manage", Description = "Manage attendance records" },
-                new Permission { Id = Guid.NewGuid(), Name = "View Reports", Resource = "Report", Action = "Read", Description = "View reports" },
-                new Permission { Id = Guid.NewGuid(), Name = "Manage Settings", Resource = "Settings", Action = "Manage", Description = "Manage system settings" }
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a6844265"), Name = "View Users", Resource = "User", Action = "Read", Description = "View user information" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a6844266"), Name = "Create Users", Resource = "User", Action = "Create", Description = "Create new users" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a6844267"), Name = "Update Users", Resource = "User", Action = "Update", Description = "Update user information" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a6844268"), Name = "Delete Users", Resource = "User", Action = "Delete", Description = "Delete users" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a6844269"), Name = "View Attendance", Resource = "Attendance", Action = "Read", Description = "View attendance records" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a684426a"), Name = "Manage Attendance", Resource = "Attendance", Action = "Manage", Description = "Manage attendance records" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a684426b"), Name = "View Reports", Resource = "Report", Action = "Read", Description = "View reports" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a684426c"), Name = "Manage Settings", Resource = "Settings", Action = "Manage", Description = "Manage system settings" }
             };
 
             modelBuilder.Entity<Permission>().HasData(permissions);
