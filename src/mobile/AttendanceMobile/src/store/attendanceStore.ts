@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { AttendanceRecord, AttendanceType, AttendanceMethod } from '../types/Attendance';
+import { AttendanceService } from '../services/AttendanceService';
+import { OfflineService } from '../services/OfflineService';
 
 interface AttendanceState {
   records: AttendanceRecord[];
@@ -103,31 +105,63 @@ export const useAttendanceStore = create<AttendanceState>((set, get) => ({
   checkIn: async (method: AttendanceMethod, location?: any, photo?: string) => {
     set({ isLoading: true, error: null });
     try {
-      console.log('Check in with method:', method);
-      set({ currentStatus: 'checked_in' });
+      const isOnline = await OfflineService.isOnline();
+      
+      if (isOnline) {
+        const record = await AttendanceService.checkIn(method, location, photo);
+        get().addRecord(record);
+      } else {
+        await OfflineService.storePendingData('attendance', {
+          type: 'CHECK_IN',
+          method,
+          location,
+          photoBase64: photo,
+          timestamp: new Date().toISOString(),
+        });
+        set({ currentStatus: 'checked_in' });
+      }
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'Check-in failed' });
     } finally {
       set({ isLoading: false });
     }
   },
-  
+
   checkOut: async (method: AttendanceMethod, location?: any, photo?: string) => {
     set({ isLoading: true, error: null });
     try {
-      console.log('Check out with method:', method);
-      set({ currentStatus: 'checked_out' });
+      const isOnline = await OfflineService.isOnline();
+      
+      if (isOnline) {
+        const record = await AttendanceService.checkOut(method, location, photo);
+        get().addRecord(record);
+      } else {
+        await OfflineService.storePendingData('attendance', {
+          type: 'CHECK_OUT',
+          method,
+          location,
+          photoBase64: photo,
+          timestamp: new Date().toISOString(),
+        });
+        set({ currentStatus: 'checked_out' });
+      }
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'Check-out failed' });
     } finally {
       set({ isLoading: false });
     }
   },
-  
+
   fetchTodayAttendance: async () => {
     set({ isLoading: true, error: null });
     try {
-      console.log('Fetching today attendance');
+      const today = new Date().toISOString().split('T')[0];
+      const records = await AttendanceService.getAttendanceHistory(today, today, 10);
+      
+      if (records.length > 0) {
+        set({ todayAttendance: records[0] });
+        get().setRecords(records);
+      }
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'Failed to fetch attendance' });
     } finally {

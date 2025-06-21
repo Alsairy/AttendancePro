@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { OfflineService } from '../services/OfflineService';
 
 interface OfflineData {
   id: string;
@@ -85,13 +86,22 @@ export const useOfflineStore = create<OfflineState>((set, get) => ({
   },
   
   syncPendingData: async () => {
-    const { pendingData, setSyncInProgress } = get();
+    const { pendingData, setSyncInProgress, removePendingData, incrementRetryCount, setError } = get();
     if (pendingData.length === 0) return;
     
     setSyncInProgress(true);
+    setError(null);
+    
     try {
-      console.log('Syncing pending data...');
+      await OfflineService.syncPendingData();
+      
+      const remainingData = get().pendingData;
+      if (remainingData.length === 0) {
+        set({ lastSyncTime: new Date().toISOString() });
+      }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Sync failed';
+      setError(errorMessage);
       console.error('Sync failed:', error);
     } finally {
       setSyncInProgress(false);
