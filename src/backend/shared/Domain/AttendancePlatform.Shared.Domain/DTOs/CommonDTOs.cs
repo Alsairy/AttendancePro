@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AttendancePlatform.Shared.Domain.Entities;
 
 namespace AttendancePlatform.Shared.Domain.DTOs
 {
@@ -114,18 +115,52 @@ namespace AttendancePlatform.Shared.Domain.DTOs
     
     public class CheckInRequest
     {
+        public string UserId { get; set; } = string.Empty;
+        public AttendanceMethod Method { get; set; }
+        public LocationInfo Location { get; set; } = new();
+        public string? KioskId { get; set; }
+        public string? BiometricData { get; set; }
+        public DateTime Timestamp { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public string? LocationName { get; set; }
         public string? Address { get; set; }
         public string? BeaconId { get; set; }
-        public string? BiometricData { get; set; }
         public string? PhotoBase64 { get; set; }
         public string? DeviceId { get; set; }
         public string? DeviceType { get; set; }
         public string? Notes { get; set; }
         public bool IsOffline { get; set; } = false;
         public DateTime? OfflineTimestamp { get; set; }
+    }
+
+    public class CheckOutRequest
+    {
+        public string UserId { get; set; } = string.Empty;
+        public AttendanceMethod Method { get; set; }
+        public LocationInfo Location { get; set; } = new();
+        public string? KioskId { get; set; }
+        public string? BiometricData { get; set; }
+        public DateTime Timestamp { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+        public string? LocationName { get; set; }
+        public string? Address { get; set; }
+        public string? BeaconId { get; set; }
+        public string? PhotoBase64 { get; set; }
+        public string? DeviceId { get; set; }
+        public string? DeviceType { get; set; }
+        public string? Notes { get; set; }
+        public bool IsOffline { get; set; } = false;
+        public DateTime? OfflineTimestamp { get; set; }
+    }
+
+    public class LocationInfo
+    {
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public double Accuracy { get; set; }
+        public DateTime Timestamp { get; set; }
     }
     
     public class LeaveRequestDto

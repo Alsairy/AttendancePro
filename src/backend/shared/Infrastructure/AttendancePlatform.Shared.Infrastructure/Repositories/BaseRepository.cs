@@ -150,6 +150,20 @@ namespace AttendancePlatform.Shared.Infrastructure.Repositories
         {
             return await _dbSet.FindAsync(new object[] { id }, cancellationToken) != null;
         }
+
+        public virtual async Task<T?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+        {
+            if (Guid.TryParse(id, out var guidId))
+            {
+                return await GetByIdAsync(guidId, cancellationToken);
+            }
+            return null;
+        }
+
+        public virtual IQueryable<T> Query()
+        {
+            return _dbSet.AsQueryable();
+        }
     }
 
     public class TenantRepository<T> : Repository<T>, ITenantRepository<T> 
