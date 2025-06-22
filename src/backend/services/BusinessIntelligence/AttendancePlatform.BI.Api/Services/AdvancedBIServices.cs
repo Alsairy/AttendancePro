@@ -1775,4 +1775,866 @@ namespace AttendancePlatform.BI.Api.Services
             public string Label { get; set; } = string.Empty;
             public double Value { get; set; }
         }
+    }
+
+    public class ComplianceReportingService : IComplianceReportingService
+    {
+        private readonly AttendancePlatformDbContext _context;
+        private readonly ILogger<ComplianceReportingService> _logger;
+        private readonly IAuditLogService _auditLogService;
+
+        public ComplianceReportingService(
+            AttendancePlatformDbContext context, 
+            ILogger<ComplianceReportingService> logger,
+            IAuditLogService auditLogService)
+        {
+            _context = context;
+            _logger = logger;
+            _auditLogService = auditLogService;
+        }
+
+        public async Task<ComplianceReportDto> GenerateComplianceReportAsync(ComplianceReportRequest request)
+        {
+            try
+            {
+                var report = new ComplianceReportDto
+                {
+                    Id = Guid.NewGuid(),
+                    ReportType = request.ReportType,
+                    GeneratedAt = DateTime.UtcNow,
+                    GeneratedBy = request.GeneratedBy,
+                    TenantId = request.TenantId,
+                    DateRange = request.DateRange,
+                    ComplianceMetrics = new List<ComplianceMetricDto>(),
+                    Violations = new List<ComplianceViolationDto>(),
+                    Recommendations = new List<string>()
+                };
+
+                switch (request.ReportType.ToLower())
+                {
+                    case "gdpr":
+                        await GenerateGDPRComplianceReport(report, request);
+                        break;
+                    case "sox":
+                        await GenerateSOXComplianceReport(report, request);
+                        break;
+                    case "hipaa":
+                        await GenerateHIPAAComplianceReport(report, request);
+                        break;
+                    case "labor_law":
+                        await GenerateLaborLawComplianceReport(report, request);
+                        break;
+                    case "audit_trail":
+                        await GenerateAuditTrailReport(report, request);
+                        break;
+                    case "data_retention":
+                        await GenerateDataRetentionReport(report, request);
+                        break;
+                    default:
+                        await GenerateGeneralComplianceReport(report, request);
+                        break;
+                }
+
+                await LogComplianceReportGeneration(report);
+                return report;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating compliance report for type {ReportType}", request.ReportType);
+                throw;
+            }
+        }
+
+        private async Task GenerateGDPRComplianceReport(ComplianceReportDto report, ComplianceReportRequest request)
+        {
+            var startDate = request.DateRange.StartDate;
+            var endDate = request.DateRange.EndDate;
+
+            var dataProcessingActivities = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           (a.Action.Contains("PersonalData") || a.Action.Contains("UserData")))
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Data Processing Activities",
+                Value = dataProcessingActivities,
+                Status = "Compliant",
+                Description = "Number of personal data processing activities logged"
+            });
+
+            var dataSubjectRequests = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("DataSubjectRequest"))
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Data Subject Requests",
+                Value = dataSubjectRequests,
+                Status = dataSubjectRequests > 0 ? "Requires Review" : "Compliant",
+                Description = "Number of data subject access/deletion requests"
+            });
+
+            var dataBreaches = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("SecurityBreach"))
+                .CountAsync();
+
+            if (dataBreaches > 0)
+            {
+                report.Violations.Add(new ComplianceViolationDto
+                {
+                    ViolationType = "Data Breach",
+                    Severity = "High",
+                    Description = $"{dataBreaches} potential data breach incidents detected",
+                    OccurredAt = DateTime.UtcNow,
+                    Status = "Under Investigation"
+                });
+            }
+
+            var consentWithdrawals = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("ConsentWithdrawn"))
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Consent Withdrawals",
+                Value = consentWithdrawals,
+                Status = "Compliant",
+                Description = "Number of consent withdrawals processed"
+            });
+
+            report.Recommendations.Add("Ensure all personal data processing activities are documented");
+            report.Recommendations.Add("Implement automated data subject request handling");
+            report.Recommendations.Add("Regular privacy impact assessments should be conducted");
+            if (dataBreaches > 0)
+            {
+                report.Recommendations.Add("Immediate investigation required for potential data breaches");
+            }
+        }
+
+        private async Task GenerateSOXComplianceReport(ComplianceReportDto report, ComplianceReportRequest request)
+        {
+            var startDate = request.DateRange.StartDate;
+            var endDate = request.DateRange.EndDate;
+
+            var financialDataAccess = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("FinancialData"))
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Financial Data Access Events",
+                Value = financialDataAccess,
+                Status = "Compliant",
+                Description = "Number of financial data access events logged"
+            });
+
+            var dutyViolations = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("DutyViolation"))
+                .CountAsync();
+
+            if (dutyViolations > 0)
+            {
+                report.Violations.Add(new ComplianceViolationDto
+                {
+                    ViolationType = "Segregation of Duties",
+                    Severity = "Medium",
+                    Description = $"{dutyViolations} potential duty segregation violations detected",
+                    OccurredAt = DateTime.UtcNow,
+                    Status = "Requires Review"
+                });
+            }
+
+            var unauthorizedChanges = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("UnauthorizedChange"))
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Unauthorized Changes",
+                Value = unauthorizedChanges,
+                Status = unauthorizedChanges == 0 ? "Compliant" : "Non-Compliant",
+                Description = "Number of unauthorized system changes detected"
+            });
+
+            report.Recommendations.Add("Implement automated segregation of duties controls");
+            report.Recommendations.Add("Regular review of financial data access permissions");
+            report.Recommendations.Add("Strengthen change management approval processes");
+        }
+
+        private async Task GenerateHIPAAComplianceReport(ComplianceReportDto report, ComplianceReportRequest request)
+        {
+            var startDate = request.DateRange.StartDate;
+            var endDate = request.DateRange.EndDate;
+
+            var phiAccess = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("PHI"))
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "PHI Access Events",
+                Value = phiAccess,
+                Status = "Compliant",
+                Description = "Number of Protected Health Information access events"
+            });
+
+            var unnecessaryAccess = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("UnnecessaryPHIAccess"))
+                .CountAsync();
+
+            if (unnecessaryAccess > 0)
+            {
+                report.Violations.Add(new ComplianceViolationDto
+                {
+                    ViolationType = "Minimum Necessary Rule",
+                    Severity = "Medium",
+                    Description = $"{unnecessaryAccess} potential violations of minimum necessary rule",
+                    OccurredAt = DateTime.UtcNow,
+                    Status = "Under Review"
+                });
+            }
+
+            var unencryptedTransmissions = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("UnencryptedPHI"))
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Unencrypted PHI Transmissions",
+                Value = unencryptedTransmissions,
+                Status = unencryptedTransmissions == 0 ? "Compliant" : "Non-Compliant",
+                Description = "Number of unencrypted PHI transmission attempts"
+            });
+
+            report.Recommendations.Add("Implement role-based access controls for PHI");
+            report.Recommendations.Add("Regular training on minimum necessary rule");
+            report.Recommendations.Add("Ensure all PHI transmissions are encrypted");
+        }
+
+        private async Task GenerateLaborLawComplianceReport(ComplianceReportDto report, ComplianceReportRequest request)
+        {
+            var startDate = request.DateRange.StartDate;
+            var endDate = request.DateRange.EndDate;
+
+            // Overtime Violations
+            var overtimeViolations = await _context.AttendanceRecords
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.CheckInTime >= startDate && 
+                           a.CheckInTime <= endDate &&
+                           a.OvertimeHours > 12) // Assuming 12 hours is the legal limit
+                .CountAsync();
+
+            if (overtimeViolations > 0)
+            {
+                report.Violations.Add(new ComplianceViolationDto
+                {
+                    ViolationType = "Excessive Overtime",
+                    Severity = "High",
+                    Description = $"{overtimeViolations} instances of excessive overtime detected",
+                    OccurredAt = DateTime.UtcNow,
+                    Status = "Requires Immediate Action"
+                });
+            }
+
+            var breakViolations = await _context.AttendanceRecords
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.CheckInTime >= startDate && 
+                           a.CheckInTime <= endDate &&
+                           a.TotalHours > 6 && a.BreakDuration < 30) // 30 min break required for 6+ hour shifts
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Break Time Violations",
+                Value = breakViolations,
+                Status = breakViolations == 0 ? "Compliant" : "Non-Compliant",
+                Description = "Number of mandatory break time violations"
+            });
+
+            var belowMinimumWage = await _context.Users
+                .Where(u => u.TenantId == request.TenantId && u.HourlyRate < 15.00m) // Assuming $15 minimum wage
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Below Minimum Wage",
+                Value = belowMinimumWage,
+                Status = belowMinimumWage == 0 ? "Compliant" : "Non-Compliant",
+                Description = "Number of employees below minimum wage"
+            });
+
+            report.Recommendations.Add("Implement automated overtime monitoring and alerts");
+            report.Recommendations.Add("Ensure mandatory break times are enforced");
+            report.Recommendations.Add("Regular review of wage compliance across all employees");
+        }
+
+        private async Task GenerateAuditTrailReport(ComplianceReportDto report, ComplianceReportRequest request)
+        {
+            var startDate = request.DateRange.StartDate;
+            var endDate = request.DateRange.EndDate;
+
+            var totalAuditEvents = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate)
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Total Audit Events",
+                Value = totalAuditEvents,
+                Status = "Compliant",
+                Description = "Total number of audit events logged"
+            });
+
+            var failedLogins = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("FailedLogin"))
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Failed Login Attempts",
+                Value = failedLogins,
+                Status = failedLogins < 100 ? "Normal" : "Elevated",
+                Description = "Number of failed authentication attempts"
+            });
+
+            var privilegedAccess = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("PrivilegedAccess"))
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Privileged Access Events",
+                Value = privilegedAccess,
+                Status = "Compliant",
+                Description = "Number of privileged access events"
+            });
+
+            var dataModifications = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           (a.Action.Contains("Create") || a.Action.Contains("Update") || a.Action.Contains("Delete")))
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Data Modification Events",
+                Value = dataModifications,
+                Status = "Compliant",
+                Description = "Number of data creation, update, and deletion events"
+            });
+
+            report.Recommendations.Add("Ensure audit logs are tamper-proof and regularly backed up");
+            report.Recommendations.Add("Implement real-time monitoring for suspicious activities");
+            report.Recommendations.Add("Regular review of privileged access patterns");
+        }
+
+        private async Task GenerateDataRetentionReport(ComplianceReportDto report, ComplianceReportRequest request)
+        {
+            var startDate = request.DateRange.StartDate;
+            var endDate = request.DateRange.EndDate;
+
+            var eligibleForDeletion = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp < DateTime.UtcNow.AddYears(-7)) // 7-year retention policy
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Records Eligible for Deletion",
+                Value = eligibleForDeletion,
+                Status = eligibleForDeletion > 0 ? "Action Required" : "Compliant",
+                Description = "Number of records that have exceeded retention period"
+            });
+
+            var attendanceRecords = await _context.AttendanceRecords
+                .Where(a => a.TenantId == request.TenantId)
+                .CountAsync();
+
+            var userRecords = await _context.Users
+                .Where(u => u.TenantId == request.TenantId)
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Active Attendance Records",
+                Value = attendanceRecords,
+                Status = "Compliant",
+                Description = "Number of active attendance records"
+            });
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "Active User Records",
+                Value = userRecords,
+                Status = "Compliant",
+                Description = "Number of active user records"
+            });
+
+            if (eligibleForDeletion > 0)
+            {
+                report.Recommendations.Add($"Schedule deletion of {eligibleForDeletion} records that have exceeded retention period");
+            }
+            report.Recommendations.Add("Implement automated data retention policy enforcement");
+            report.Recommendations.Add("Regular review of data retention policies and legal requirements");
+        }
+
+        private async Task GenerateGeneralComplianceReport(ComplianceReportDto report, ComplianceReportRequest request)
+        {
+            var startDate = request.DateRange.StartDate;
+            var endDate = request.DateRange.EndDate;
+
+            var systemAccess = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("Login"))
+                .CountAsync();
+
+            report.ComplianceMetrics.Add(new ComplianceMetricDto
+            {
+                MetricName = "System Access Events",
+                Value = systemAccess,
+                Status = "Compliant",
+                Description = "Number of system access events"
+            });
+
+            var policyViolations = await _context.AuditLogs
+                .Where(a => a.TenantId == request.TenantId && 
+                           a.Timestamp >= startDate && 
+                           a.Timestamp <= endDate &&
+                           a.Action.Contains("PolicyViolation"))
+                .CountAsync();
+
+            if (policyViolations > 0)
+            {
+                report.Violations.Add(new ComplianceViolationDto
+                {
+                    ViolationType = "Policy Violation",
+                    Severity = "Medium",
+                    Description = $"{policyViolations} policy violations detected",
+                    OccurredAt = DateTime.UtcNow,
+                    Status = "Under Review"
+                });
+            }
+
+            report.Recommendations.Add("Regular compliance training for all users");
+            report.Recommendations.Add("Implement automated policy enforcement mechanisms");
+            report.Recommendations.Add("Conduct periodic compliance assessments");
+        }
+
+        private async Task LogComplianceReportGeneration(ComplianceReportDto report)
+        {
+            await _auditLogService.LogAsync(new AuditLogEntry
+            {
+                TenantId = report.TenantId,
+                UserId = report.GeneratedBy,
+                Action = $"ComplianceReportGenerated_{report.ReportType}",
+                EntityType = "ComplianceReport",
+                EntityId = report.Id.ToString(),
+                Details = $"Generated {report.ReportType} compliance report",
+                Timestamp = DateTime.UtcNow,
+                IpAddress = "System",
+                UserAgent = "ComplianceReportingService"
+            });
+        }
+
+        public async Task<List<ComplianceTemplateDto>> GetComplianceTemplatesAsync(Guid tenantId)
+        {
+            try
+            {
+                return new List<ComplianceTemplateDto>
+                {
+                    new ComplianceTemplateDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "GDPR Compliance Report",
+                        Description = "General Data Protection Regulation compliance assessment",
+                        ReportType = "gdpr",
+                        RequiredFields = new List<string> { "DataProcessingActivities", "ConsentManagement", "DataSubjectRequests" },
+                        Frequency = "Monthly",
+                        IsActive = true
+                    },
+                    new ComplianceTemplateDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "SOX Compliance Report",
+                        Description = "Sarbanes-Oxley Act compliance assessment",
+                        ReportType = "sox",
+                        RequiredFields = new List<string> { "FinancialControls", "SegregationOfDuties", "ChangeManagement" },
+                        Frequency = "Quarterly",
+                        IsActive = true
+                    },
+                    new ComplianceTemplateDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "HIPAA Compliance Report",
+                        Description = "Health Insurance Portability and Accountability Act compliance",
+                        ReportType = "hipaa",
+                        RequiredFields = new List<string> { "PHIAccess", "MinimumNecessary", "Encryption" },
+                        Frequency = "Monthly",
+                        IsActive = true
+                    },
+                    new ComplianceTemplateDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Labor Law Compliance Report",
+                        Description = "Employment and labor law compliance assessment",
+                        ReportType = "labor_law",
+                        RequiredFields = new List<string> { "OvertimeCompliance", "BreakTimes", "MinimumWage" },
+                        Frequency = "Weekly",
+                        IsActive = true
+                    },
+                    new ComplianceTemplateDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Audit Trail Report",
+                        Description = "Comprehensive audit trail and access monitoring",
+                        ReportType = "audit_trail",
+                        RequiredFields = new List<string> { "AccessEvents", "DataModifications", "PrivilegedAccess" },
+                        Frequency = "Daily",
+                        IsActive = true
+                    },
+                    new ComplianceTemplateDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Data Retention Report",
+                        Description = "Data retention policy compliance assessment",
+                        ReportType = "data_retention",
+                        RequiredFields = new List<string> { "RetentionPolicies", "DataClassification", "DeletionSchedule" },
+                        Frequency = "Monthly",
+                        IsActive = true
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving compliance templates for tenant {TenantId}", tenantId);
+                throw;
+            }
+        }
+
+        public async Task<ComplianceDashboardDto> GetComplianceDashboardAsync(Guid tenantId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var dashboard = new ComplianceDashboardDto
+                {
+                    TenantId = tenantId,
+                    DateRange = new DateRangeDto { StartDate = startDate, EndDate = endDate },
+                    OverallComplianceScore = 0,
+                    ComplianceMetrics = new List<ComplianceMetricDto>(),
+                    RecentViolations = new List<ComplianceViolationDto>(),
+                    TrendData = new List<ComplianceTrendDto>(),
+                    UpcomingDeadlines = new List<ComplianceDeadlineDto>()
+                };
+
+                var totalViolations = await _context.AuditLogs
+                    .Where(a => a.TenantId == tenantId && 
+                               a.Timestamp >= startDate && 
+                               a.Timestamp <= endDate &&
+                               a.Action.Contains("Violation"))
+                    .CountAsync();
+
+                var totalAuditEvents = await _context.AuditLogs
+                    .Where(a => a.TenantId == tenantId && 
+                               a.Timestamp >= startDate && 
+                               a.Timestamp <= endDate)
+                    .CountAsync();
+
+                dashboard.OverallComplianceScore = totalAuditEvents > 0 
+                    ? Math.Max(0, 100 - (totalViolations * 100.0 / totalAuditEvents))
+                    : 100;
+
+                var recentViolations = await _context.AuditLogs
+                    .Where(a => a.TenantId == tenantId && 
+                               a.Timestamp >= startDate && 
+                               a.Timestamp <= endDate &&
+                               a.Action.Contains("Violation"))
+                    .OrderByDescending(a => a.Timestamp)
+                    .Take(10)
+                    .Select(a => new ComplianceViolationDto
+                    {
+                        ViolationType = a.Action,
+                        Severity = "Medium",
+                        Description = a.Details ?? "Compliance violation detected",
+                        OccurredAt = a.Timestamp,
+                        Status = "Under Review"
+                    })
+                    .ToListAsync();
+
+                dashboard.RecentViolations = recentViolations;
+
+                var weeklyTrends = await _context.AuditLogs
+                    .Where(a => a.TenantId == tenantId && 
+                               a.Timestamp >= startDate && 
+                               a.Timestamp <= endDate)
+                    .GroupBy(a => new { 
+                        Year = a.Timestamp.Year, 
+                        Week = EF.Functions.DatePart("week", a.Timestamp) 
+                    })
+                    .Select(g => new ComplianceTrendDto
+                    {
+                        Date = startDate.AddDays((g.Key.Week - 1) * 7),
+                        ComplianceScore = g.Count(a => !a.Action.Contains("Violation")) * 100.0 / g.Count(),
+                        ViolationCount = g.Count(a => a.Action.Contains("Violation"))
+                    })
+                    .OrderBy(t => t.Date)
+                    .ToListAsync();
+
+                dashboard.TrendData = weeklyTrends;
+
+                dashboard.UpcomingDeadlines = new List<ComplianceDeadlineDto>
+                {
+                    new ComplianceDeadlineDto
+                    {
+                        Title = "GDPR Annual Assessment",
+                        DueDate = DateTime.UtcNow.AddDays(30),
+                        Priority = "High",
+                        Status = "Pending"
+                    },
+                    new ComplianceDeadlineDto
+                    {
+                        Title = "SOX Quarterly Review",
+                        DueDate = DateTime.UtcNow.AddDays(15),
+                        Priority = "Medium",
+                        Status = "In Progress"
+                    },
+                    new ComplianceDeadlineDto
+                    {
+                        Title = "Data Retention Policy Review",
+                        DueDate = DateTime.UtcNow.AddDays(7),
+                        Priority = "High",
+                        Status = "Pending"
+                    }
+                };
+
+                return dashboard;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating compliance dashboard for tenant {TenantId}", tenantId);
+                throw;
+            }
+        }
+
+        public async Task<List<RegulatoryFrameworkDto>> GetRegulatoryFrameworksAsync()
+        {
+            try
+            {
+                return new List<RegulatoryFrameworkDto>
+                {
+                    new RegulatoryFrameworkDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "GDPR",
+                        FullName = "General Data Protection Regulation",
+                        Description = "EU regulation on data protection and privacy",
+                        Jurisdiction = "European Union",
+                        EffectiveDate = new DateTime(2018, 5, 25),
+                        RequiredReports = new List<string> { "Data Processing Activities", "Breach Notifications", "DPO Reports" },
+                        ComplianceRequirements = new List<string> 
+                        { 
+                            "Lawful basis for processing",
+                            "Data subject rights",
+                            "Privacy by design",
+                            "Data protection impact assessments"
+                        }
+                    },
+                    new RegulatoryFrameworkDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "SOX",
+                        FullName = "Sarbanes-Oxley Act",
+                        Description = "US federal law for corporate financial reporting",
+                        Jurisdiction = "United States",
+                        EffectiveDate = new DateTime(2002, 7, 30),
+                        RequiredReports = new List<string> { "Internal Controls", "Management Assessment", "Auditor Attestation" },
+                        ComplianceRequirements = new List<string> 
+                        { 
+                            "Internal control over financial reporting",
+                            "Management assessment",
+                            "Auditor attestation",
+                            "CEO/CFO certifications"
+                        }
+                    },
+                    new RegulatoryFrameworkDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "HIPAA",
+                        FullName = "Health Insurance Portability and Accountability Act",
+                        Description = "US law for healthcare data protection",
+                        Jurisdiction = "United States",
+                        EffectiveDate = new DateTime(1996, 8, 21),
+                        RequiredReports = new List<string> { "Risk Assessments", "Breach Reports", "Compliance Audits" },
+                        ComplianceRequirements = new List<string> 
+                        { 
+                            "Administrative safeguards",
+                            "Physical safeguards",
+                            "Technical safeguards",
+                            "Minimum necessary rule"
+                        }
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving regulatory frameworks");
+                throw;
+            }
+        }
+    }
+
+    public interface IComplianceReportingService
+    {
+        Task<ComplianceReportDto> GenerateComplianceReportAsync(ComplianceReportRequest request);
+        Task<List<ComplianceTemplateDto>> GetComplianceTemplatesAsync(Guid tenantId);
+        Task<ComplianceDashboardDto> GetComplianceDashboardAsync(Guid tenantId, DateTime startDate, DateTime endDate);
+        Task<List<RegulatoryFrameworkDto>> GetRegulatoryFrameworksAsync();
+    }
+
+    public class ComplianceReportDto
+    {
+        public Guid Id { get; set; }
+        public string ReportType { get; set; } = string.Empty;
+        public DateTime GeneratedAt { get; set; }
+        public Guid GeneratedBy { get; set; }
+        public Guid TenantId { get; set; }
+        public DateRangeDto DateRange { get; set; } = new();
+        public List<ComplianceMetricDto> ComplianceMetrics { get; set; } = new();
+        public List<ComplianceViolationDto> Violations { get; set; } = new();
+        public List<string> Recommendations { get; set; } = new();
+        public double OverallScore { get; set; }
+        public string Status { get; set; } = "Generated";
+    }
+
+    public class ComplianceReportRequest
+    {
+        public string ReportType { get; set; } = string.Empty;
+        public Guid TenantId { get; set; }
+        public Guid GeneratedBy { get; set; }
+        public DateRangeDto DateRange { get; set; } = new();
+        public List<string> IncludeMetrics { get; set; } = new();
+        public string OutputFormat { get; set; } = "json";
+    }
+
+    public class ComplianceMetricDto
+    {
+        public string MetricName { get; set; } = string.Empty;
+        public double Value { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Unit { get; set; } = "count";
+        public double? Threshold { get; set; }
+    }
+
+    public class ComplianceViolationDto
+    {
+        public string ViolationType { get; set; } = string.Empty;
+        public string Severity { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public DateTime OccurredAt { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string AssignedTo { get; set; } = string.Empty;
+        public DateTime? ResolvedAt { get; set; }
+    }
+
+    public class ComplianceTemplateDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string ReportType { get; set; } = string.Empty;
+        public List<string> RequiredFields { get; set; } = new();
+        public string Frequency { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? LastUsed { get; set; }
+    }
+
+    public class ComplianceDashboardDto
+    {
+        public Guid TenantId { get; set; }
+        public DateRangeDto DateRange { get; set; } = new();
+        public double OverallComplianceScore { get; set; }
+        public List<ComplianceMetricDto> ComplianceMetrics { get; set; } = new();
+        public List<ComplianceViolationDto> RecentViolations { get; set; } = new();
+        public List<ComplianceTrendDto> TrendData { get; set; } = new();
+        public List<ComplianceDeadlineDto> UpcomingDeadlines { get; set; } = new();
+    }
+
+    public class ComplianceTrendDto
+    {
+        public DateTime Date { get; set; }
+        public double ComplianceScore { get; set; }
+        public int ViolationCount { get; set; }
+        public string Period { get; set; } = "daily";
+    }
+
+    public class ComplianceDeadlineDto
+    {
+        public string Title { get; set; } = string.Empty;
+        public DateTime DueDate { get; set; }
+        public string Priority { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string AssignedTo { get; set; } = string.Empty;
+    }
+
+    public class RegulatoryFrameworkDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Jurisdiction { get; set; } = string.Empty;
+        public DateTime EffectiveDate { get; set; }
+        public List<string> RequiredReports { get; set; } = new();
+        public List<string> ComplianceRequirements { get; set; } = new();
+        public bool IsActive { get; set; } = true;
+    }
+
+    public class DateRangeDto
+    {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+    }
 

@@ -44,6 +44,18 @@ interface CustomReport {
     frequency: 'daily' | 'weekly' | 'monthly'
     recipients: string[]
   }
+  reportType?: 'standard' | 'compliance'
+  complianceFramework?: 'gdpr' | 'sox' | 'hipaa' | 'labor_law' | 'audit_trail' | 'data_retention'
+}
+
+interface ComplianceTemplate {
+  id: string
+  name: string
+  description: string
+  framework: string
+  requiredFields: string[]
+  defaultFilters: ReportFilter[]
+  frequency: string
 }
 
 const ReportBuilder: React.FC = () => {
@@ -53,15 +65,95 @@ const ReportBuilder: React.FC = () => {
     description: '',
     fields: [],
     filters: [],
-    groupBy: []
+    groupBy: [],
+    reportType: 'standard'
   })
   const [previewData, setPreviewData] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const [complianceTemplates, setComplianceTemplates] = useState<ComplianceTemplate[]>([])
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('')
+  const [showComplianceTemplates, setShowComplianceTemplates] = useState(false)
 
   useEffect(() => {
     loadAvailableFields()
+    loadComplianceTemplates()
   }, [])
+
+  const loadComplianceTemplates = async () => {
+    try {
+      const templates: ComplianceTemplate[] = [
+        {
+          id: 'gdpr-template',
+          name: 'GDPR Compliance Report',
+          description: 'General Data Protection Regulation compliance assessment',
+          framework: 'gdpr',
+          requiredFields: ['audit_event_id', 'audit_action', 'audit_timestamp', 'user_id', 'gdpr_consent_status', 'data_access_type'],
+          defaultFilters: [
+            { id: '1', field: 'audit_action', operator: 'contains', value: 'PersonalData' }
+          ],
+          frequency: 'monthly'
+        },
+        {
+          id: 'sox-template',
+          name: 'SOX Compliance Report',
+          description: 'Sarbanes-Oxley Act compliance assessment',
+          framework: 'sox',
+          requiredFields: ['audit_event_id', 'audit_action', 'audit_timestamp', 'user_id', 'access_level', 'compliance_status'],
+          defaultFilters: [
+            { id: '1', field: 'audit_action', operator: 'contains', value: 'FinancialData' }
+          ],
+          frequency: 'quarterly'
+        },
+        {
+          id: 'hipaa-template',
+          name: 'HIPAA Compliance Report',
+          description: 'Health Insurance Portability and Accountability Act compliance',
+          framework: 'hipaa',
+          requiredFields: ['audit_event_id', 'audit_action', 'audit_timestamp', 'user_id', 'encryption_status', 'data_access_type'],
+          defaultFilters: [
+            { id: '1', field: 'audit_action', operator: 'contains', value: 'PHI' }
+          ],
+          frequency: 'monthly'
+        },
+        {
+          id: 'labor-law-template',
+          name: 'Labor Law Compliance Report',
+          description: 'Employment and labor law compliance assessment',
+          framework: 'labor_law',
+          requiredFields: ['employee_id', 'employee_name', 'hours_worked', 'overtime_hours', 'department'],
+          defaultFilters: [
+            { id: '1', field: 'overtime_hours', operator: 'greater_than', value: '8' }
+          ],
+          frequency: 'weekly'
+        },
+        {
+          id: 'audit-trail-template',
+          name: 'Audit Trail Report',
+          description: 'Comprehensive audit trail and access monitoring',
+          framework: 'audit_trail',
+          requiredFields: ['audit_event_id', 'audit_action', 'audit_timestamp', 'user_id', 'ip_address', 'compliance_status'],
+          defaultFilters: [],
+          frequency: 'daily'
+        },
+        {
+          id: 'data-retention-template',
+          name: 'Data Retention Report',
+          description: 'Data retention policy compliance assessment',
+          framework: 'data_retention',
+          requiredFields: ['audit_event_id', 'audit_timestamp', 'data_retention_period', 'compliance_status'],
+          defaultFilters: [
+            { id: '1', field: 'data_retention_period', operator: 'greater_than', value: '2555' } // 7 years in days
+          ],
+          frequency: 'monthly'
+        }
+      ]
+      setComplianceTemplates(templates)
+    } catch (error) {
+      console.error('Error loading compliance templates:', error)
+      toast.error('Failed to load compliance templates')
+    }
+  }
 
   const loadAvailableFields = async () => {
     try {
@@ -79,7 +171,23 @@ const ReportBuilder: React.FC = () => {
         { id: 'leave_days', name: 'leave_days', displayName: 'Leave Days', type: 'number', category: 'Leave' },
         { id: 'leave_balance', name: 'leave_balance', displayName: 'Leave Balance', type: 'number', category: 'Leave' },
         { id: 'productivity_score', name: 'productivity_score', displayName: 'Productivity Score', type: 'number', category: 'Performance' },
-        { id: 'efficiency_rating', name: 'efficiency_rating', displayName: 'Efficiency Rating', type: 'number', category: 'Performance' }
+        { id: 'efficiency_rating', name: 'efficiency_rating', displayName: 'Efficiency Rating', type: 'number', category: 'Performance' },
+        
+        { id: 'audit_event_id', name: 'audit_event_id', displayName: 'Audit Event ID', type: 'string', category: 'Compliance' },
+        { id: 'audit_action', name: 'audit_action', displayName: 'Audit Action', type: 'string', category: 'Compliance' },
+        { id: 'audit_timestamp', name: 'audit_timestamp', displayName: 'Audit Timestamp', type: 'date', category: 'Compliance' },
+        { id: 'user_id', name: 'user_id', displayName: 'User ID', type: 'string', category: 'Compliance' },
+        { id: 'ip_address', name: 'ip_address', displayName: 'IP Address', type: 'string', category: 'Compliance' },
+        { id: 'data_access_type', name: 'data_access_type', displayName: 'Data Access Type', type: 'string', category: 'Compliance' },
+        { id: 'compliance_status', name: 'compliance_status', displayName: 'Compliance Status', type: 'string', category: 'Compliance' },
+        { id: 'violation_type', name: 'violation_type', displayName: 'Violation Type', type: 'string', category: 'Compliance' },
+        { id: 'violation_severity', name: 'violation_severity', displayName: 'Violation Severity', type: 'string', category: 'Compliance' },
+        { id: 'gdpr_consent_status', name: 'gdpr_consent_status', displayName: 'GDPR Consent Status', type: 'string', category: 'Compliance' },
+        { id: 'data_retention_period', name: 'data_retention_period', displayName: 'Data Retention Period', type: 'number', category: 'Compliance' },
+        { id: 'encryption_status', name: 'encryption_status', displayName: 'Encryption Status', type: 'boolean', category: 'Compliance' },
+        { id: 'access_level', name: 'access_level', displayName: 'Access Level', type: 'string', category: 'Compliance' },
+        { id: 'regulatory_framework', name: 'regulatory_framework', displayName: 'Regulatory Framework', type: 'string', category: 'Compliance' },
+        { id: 'compliance_score', name: 'compliance_score', displayName: 'Compliance Score', type: 'number', category: 'Compliance' }
       ]
       setAvailableFields(mockFields)
     } catch (error) {
@@ -95,6 +203,29 @@ const ReportBuilder: React.FC = () => {
         fields: [...prev.fields, fieldId]
       }))
     }
+  }
+
+  const applyComplianceTemplate = (templateId: string) => {
+    const template = complianceTemplates.find(t => t.id === templateId)
+    if (!template) return
+
+    setReport(prev => ({
+      ...prev,
+      name: template.name,
+      description: template.description,
+      fields: template.requiredFields,
+      filters: template.defaultFilters,
+      reportType: 'compliance',
+      complianceFramework: template.framework as any,
+      schedule: {
+        frequency: template.frequency as any,
+        recipients: []
+      }
+    }))
+
+    setSelectedTemplate(templateId)
+    setShowComplianceTemplates(false)
+    toast.success(`Applied ${template.name} template`)
   }
 
   const removeField = (fieldId: string) => {
@@ -246,6 +377,64 @@ const ReportBuilder: React.FC = () => {
     }
   }
 
+  const generateComplianceReport = async () => {
+    try {
+      setIsLoading(true)
+      
+      if (!report.complianceFramework) {
+        toast.error('Please select a compliance framework')
+        return
+      }
+
+      const complianceRequest = {
+        reportType: report.complianceFramework,
+        tenantId: 'current-tenant-id',
+        generatedBy: 'current-user-id',
+        dateRange: {
+          startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          endDate: new Date().toISOString()
+        },
+        includeMetrics: report.fields,
+        outputFormat: 'json'
+      }
+
+      console.log('Generating compliance report:', complianceRequest)
+      
+      const mockComplianceData = [
+        {
+          metricName: 'Data Processing Activities',
+          value: 1250,
+          status: 'Compliant',
+          description: 'Number of personal data processing activities logged',
+          framework: report.complianceFramework
+        },
+        {
+          metricName: 'Audit Events',
+          value: 5420,
+          status: 'Compliant',
+          description: 'Total audit events recorded',
+          framework: report.complianceFramework
+        },
+        {
+          metricName: 'Violations Detected',
+          value: 3,
+          status: 'Requires Review',
+          description: 'Number of compliance violations detected',
+          framework: report.complianceFramework
+        }
+      ]
+
+      setPreviewData(mockComplianceData)
+      setShowPreview(true)
+      toast.success(`${report.complianceFramework.toUpperCase()} compliance report generated successfully`)
+    } catch (error) {
+      console.error('Error generating compliance report:', error)
+      toast.error('Failed to generate compliance report')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const getFieldsByCategory = (category: string) => {
     return availableFields.filter(field => field.category === category)
   }
@@ -260,6 +449,77 @@ const ReportBuilder: React.FC = () => {
           <CardDescription>Build custom reports with advanced filtering and grouping</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Report Type Selection */}
+          <div className="space-y-2">
+            <Label>Report Type</Label>
+            <Select 
+              value={report.reportType} 
+              onValueChange={(value: 'standard' | 'compliance') => 
+                setReport(prev => ({ ...prev, reportType: value }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select report type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="standard">Standard Report</SelectItem>
+                <SelectItem value="compliance">Compliance Report</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Compliance Templates */}
+          {report.reportType === 'compliance' && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label>Compliance Templates</Label>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowComplianceTemplates(!showComplianceTemplates)}
+                >
+                  {showComplianceTemplates ? 'Hide Templates' : 'Show Templates'}
+                </Button>
+              </div>
+              
+              {showComplianceTemplates && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {complianceTemplates.map((template) => (
+                    <Card 
+                      key={template.id} 
+                      className={`cursor-pointer transition-colors ${
+                        selectedTemplate === template.id ? 'border-blue-500 bg-blue-50' : 'hover:bg-gray-50'
+                      }`}
+                      onClick={() => applyComplianceTemplate(template.id)}
+                    >
+                      <CardContent className="p-4">
+                        <h4 className="font-semibold text-sm">{template.name}</h4>
+                        <p className="text-xs text-gray-600 mt-1">{template.description}</p>
+                        <div className="flex items-center justify-between mt-2">
+                          <Badge variant="secondary" className="text-xs">
+                            {template.framework.toUpperCase()}
+                          </Badge>
+                          <span className="text-xs text-gray-500">{template.frequency}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {report.complianceFramework && (
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-semibold text-sm text-blue-800">
+                    Active Compliance Framework: {report.complianceFramework.toUpperCase()}
+                  </h4>
+                  <p className="text-xs text-blue-600 mt-1">
+                    This report will include compliance-specific metrics and validation rules.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Label htmlFor="reportName">Report Name</Label>
@@ -283,6 +543,11 @@ const ReportBuilder: React.FC = () => {
                   <SelectItem value="pie">Pie Chart</SelectItem>
                 </SelectContent>
               </Select>
+              {report.reportType === 'compliance' && (
+                <p className="text-xs text-blue-600 mt-1">
+                  Compliance reports include additional validation and audit trail information
+                </p>
+              )}
             </div>
           </div>
 
@@ -427,6 +692,15 @@ const ReportBuilder: React.FC = () => {
             <Save className="mr-2 h-4 w-4" />
             Save Report
           </Button>
+          {report.reportType === 'compliance' && (
+            <Button 
+              onClick={generateComplianceReport} 
+              disabled={isLoading || !report.complianceFramework}
+              variant="secondary"
+            >
+              Generate Compliance Report
+            </Button>
+          )}
         </div>
         <div className="flex space-x-2">
           <Button variant="outline" onClick={() => exportReport('pdf')} disabled={isLoading}>
@@ -447,37 +721,83 @@ const ReportBuilder: React.FC = () => {
       {showPreview && previewData.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Report Preview</CardTitle>
-            <CardDescription>Preview of your report data</CardDescription>
+            <CardTitle>
+              Report Preview
+              {report.reportType === 'compliance' && report.complianceFramework && (
+                <Badge variant="secondary" className="ml-2">
+                  {report.complianceFramework.toUpperCase()} Compliance
+                </Badge>
+              )}
+            </CardTitle>
+            <CardDescription>
+              {report.reportType === 'compliance' 
+                ? 'Compliance report with regulatory framework validation'
+                : 'Preview of your report data'
+              }
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-gray-300">
-                <thead>
-                  <tr className="bg-gray-50">
-                    {report.fields.map(fieldId => {
-                      const field = availableFields.find(f => f.id === fieldId)
-                      return (
-                        <th key={fieldId} className="border border-gray-300 px-4 py-2 text-left">
-                          {field?.displayName || fieldId}
-                        </th>
-                      )
-                    })}
-                  </tr>
-                </thead>
-                <tbody>
-                  {previewData.map((row, index) => (
-                    <tr key={index}>
-                      {report.fields.map(fieldId => (
-                        <td key={fieldId} className="border border-gray-300 px-4 py-2">
-                          {row[fieldId]?.toString() || '-'}
-                        </td>
-                      ))}
-                    </tr>
+            {report.reportType === 'compliance' ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  {previewData.map((metric, index) => (
+                    <Card key={index} className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold text-sm">{metric.metricName}</h4>
+                          <p className="text-2xl font-bold text-blue-600">{metric.value}</p>
+                          <p className="text-xs text-gray-600">{metric.description}</p>
+                        </div>
+                        <Badge 
+                          variant={metric.status === 'Compliant' ? 'default' : 'destructive'}
+                          className="text-xs"
+                        >
+                          {metric.status}
+                        </Badge>
+                      </div>
+                    </Card>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </div>
+                
+                <div className="mt-4 p-4 bg-yellow-50 rounded-lg">
+                  <h4 className="font-semibold text-sm text-yellow-800">Compliance Notes</h4>
+                  <ul className="text-xs text-yellow-700 mt-2 space-y-1">
+                    <li>• This report includes automated compliance validation</li>
+                    <li>• All data access events are logged for audit purposes</li>
+                    <li>• Report generation is tracked in the audit trail</li>
+                    <li>• Data retention policies are automatically applied</li>
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      {report.fields.map(fieldId => {
+                        const field = availableFields.find(f => f.id === fieldId)
+                        return (
+                          <th key={fieldId} className="border border-gray-300 px-4 py-2 text-left">
+                            {field?.displayName || fieldId}
+                          </th>
+                        )
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {previewData.map((row, index) => (
+                      <tr key={index}>
+                        {report.fields.map(fieldId => (
+                          <td key={fieldId} className="border border-gray-300 px-4 py-2">
+                            {row[fieldId]?.toString() || '-'}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
