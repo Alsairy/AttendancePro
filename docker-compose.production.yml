@@ -279,27 +279,113 @@ services:
   #     timeout: 10s
   #     retries: 3
 
-  # Workflow Engine Service - TEMPORARILY DISABLED DUE TO COMPILATION ERRORS
-  # workflow-engine:
-  #   build:
-  #     context: .
-  #     dockerfile: src/backend/services/WorkflowEngine/Dockerfile
-  #   ports:
-  #     - "5011:80"
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_URLS=http://+:80
-  #     - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
-  #   depends_on:
-  #     - sql-server
-  #     - redis
-  #   networks:
-  #     - attendancepro-network
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
+  # Workflow Engine Service
+  workflow-engine:
+    build:
+      context: .
+      dockerfile: src/backend/services/WorkflowEngine/Dockerfile
+    ports:
+      - "5010:80"
+    env_file:
+      - .env.production
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Voice Recognition Service
+  voice-recognition-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/VoiceRecognition/Dockerfile
+    ports:
+      - "5013:80"
+    env_file:
+      - .env.production
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Compliance Service
+  compliance-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/Compliance/Dockerfile
+    ports:
+      - "5014:80"
+    env_file:
+      - .env.production
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Business Intelligence Service
+  business-intelligence-service:
+    build:
+      context: .
+      dockerfile: src/backend/services/BusinessIntelligence/Dockerfile
+    ports:
+      - "5006:80"
+    env_file:
+      - .env.production
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${DB_SERVER};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=${DB_TRUST_SERVER_CERTIFICATE}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ConnectionStrings__Redis=${REDIS_CONNECTION_STRING}
+    depends_on:
+      - sql-server
+      - redis
+    networks:
+      - attendancepro-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # Frontend
   frontend:
