@@ -18,10 +18,38 @@ import ProfilePage from './pages/profile/ProfilePage'
 import SettingsPage from './pages/settings/SettingsPage'
 import './App.css'
 
+const PERSONA = import.meta.env.VITE_USER_PERSONA || 'admin'
+
+const getPersonaRoutes = () => {
+  const baseRoutes = [
+    { path: 'dashboard', element: <Dashboard />, roles: ['admin', 'manager', 'user'] },
+    { path: 'attendance', element: <AttendancePage />, roles: ['admin', 'manager', 'user'] },
+    { path: 'profile', element: <ProfilePage />, roles: ['admin', 'manager', 'user'] },
+    { path: 'settings', element: <SettingsPage />, roles: ['admin', 'manager', 'user'] }
+  ]
+
+  const adminRoutes = [
+    { path: 'analytics', element: <AnalyticsPage />, roles: ['admin', 'manager'] },
+    { path: 'users', element: <UsersPage />, roles: ['admin'] }
+  ]
+
+  switch (PERSONA) {
+    case 'admin':
+      return [...baseRoutes, ...adminRoutes]
+    case 'manager':
+      return [...baseRoutes, { path: 'analytics', element: <AnalyticsPage />, roles: ['admin', 'manager'] }]
+    case 'employee':
+    default:
+      return baseRoutes
+  }
+}
+
 function App() {
+  const personaRoutes = getPersonaRoutes()
+  
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="system" storageKey="attendancepro-ui-theme">
+      <ThemeProvider defaultTheme="system" storageKey={`attendancepro-${PERSONA}-ui-theme`}>
         <AuthProvider>
           <Router>
             <div className="min-h-screen bg-background">
@@ -33,19 +61,16 @@ function App() {
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/two-factor" element={<TwoFactorPage />} />
               
-              {/* Protected routes */}
+              {/* Protected routes - persona-specific */}
               <Route path="/" element={
                 <ProtectedRoute>
                   <DashboardLayout />
                 </ProtectedRoute>
               }>
                 <Route index element={<Navigate to="/dashboard" replace />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="attendance" element={<AttendancePage />} />
-                <Route path="analytics" element={<AnalyticsPage />} />
-                <Route path="users" element={<UsersPage />} />
-                <Route path="profile" element={<ProfilePage />} />
-                <Route path="settings" element={<SettingsPage />} />
+                {personaRoutes.map((route) => (
+                  <Route key={route.path} path={route.path} element={route.element} />
+                ))}
               </Route>
               
               {/* Catch all route */}

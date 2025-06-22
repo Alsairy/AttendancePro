@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:admin": "tsc -b && vite build --mode admin",
+    "build:manager": "tsc -b && vite build --mode manager", 
+    "build:employee": "tsc -b && vite build --mode employee",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

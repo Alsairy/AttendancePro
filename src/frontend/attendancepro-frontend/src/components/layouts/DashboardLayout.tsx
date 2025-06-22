@@ -33,12 +33,31 @@ import { useAuth } from '../../contexts/AuthContext'
 import { useTheme } from '../theme-provider'
 import { toast } from 'sonner'
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: Home },
-  { name: 'Attendance', href: '/attendance', icon: Calendar },
-  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { name: 'Users', href: '/users', icon: Users },
-]
+const PERSONA = import.meta.env.VITE_USER_PERSONA || 'admin'
+
+const getPersonaNavigation = () => {
+  const baseNavigation = [
+    { name: 'Dashboard', href: '/dashboard', icon: Home, roles: ['admin', 'manager', 'user'] },
+    { name: 'Attendance', href: '/attendance', icon: Calendar, roles: ['admin', 'manager', 'user'] },
+  ]
+
+  const adminNavigation = [
+    { name: 'Analytics', href: '/analytics', icon: BarChart3, roles: ['admin', 'manager'] },
+    { name: 'Users', href: '/users', icon: Users, roles: ['admin'] },
+  ]
+
+  switch (PERSONA) {
+    case 'admin':
+      return [...baseNavigation, ...adminNavigation]
+    case 'manager':
+      return [...baseNavigation, { name: 'Analytics', href: '/analytics', icon: BarChart3, roles: ['admin', 'manager'] }]
+    case 'employee':
+    default:
+      return baseNavigation
+  }
+}
+
+const navigation = getPersonaNavigation()
 
 const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -67,7 +86,10 @@ const DashboardLayout: React.FC = () => {
       <div className="flex h-16 shrink-0 items-center px-4">
         <div className="flex items-center space-x-2">
           <Shield className="h-8 w-8 text-primary" />
-          <span className="text-xl font-bold">AttendancePro</span>
+          <div className="flex flex-col">
+            <span className="text-xl font-bold">AttendancePro</span>
+            <span className="text-xs text-muted-foreground capitalize">{PERSONA} Portal</span>
+          </div>
         </div>
       </div>
 
