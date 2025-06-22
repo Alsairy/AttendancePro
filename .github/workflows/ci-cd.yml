@@ -75,19 +75,19 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: src/frontend/hudur-frontend/package-lock.json
+        cache-dependency-path: src/frontend/attendancepro-frontend/package-lock.json
     
     - name: Install dependencies
       run: npm ci
-      working-directory: src/frontend/hudur-frontend
+      working-directory: src/frontend/attendancepro-frontend
     
     - name: Run tests
       run: npm test -- --coverage
-      working-directory: src/frontend/hudur-frontend
+      working-directory: src/frontend/attendancepro-frontend
     
     - name: Build
       run: npm run build
-      working-directory: src/frontend/hudur-frontend
+      working-directory: src/frontend/attendancepro-frontend
     
     - name: Upload coverage
       uses: codecov/codecov-action@v3
