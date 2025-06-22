@@ -25,6 +25,8 @@ builder.Services.AddScoped<IAutomationService, AutomationService>();
 builder.Services.AddScoped<IWorkflowTemplateService, WorkflowTemplateService>();
 builder.Services.AddScoped<IWorkflowExecutionService, WorkflowExecutionService>();
 builder.Services.AddScoped<IShiftSchedulingService, ShiftSchedulingService>();
+builder.Services.AddScoped<IAdvancedWorkflowService, AdvancedWorkflowService>();
+builder.Services.AddScoped<IWorkflowExecutionEngine, WorkflowExecutionEngine>();
 
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

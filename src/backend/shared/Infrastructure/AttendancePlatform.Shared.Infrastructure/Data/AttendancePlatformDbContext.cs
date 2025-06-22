@@ -52,6 +52,12 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<RegionalSettings> RegionalSettings { get; set; }
         public DbSet<LocalizedString> LocalizedStrings { get; set; }
 
+        // Advanced workflow entities
+        public DbSet<WorkflowTemplate> WorkflowTemplates { get; set; }
+        public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
+        public DbSet<WorkflowStep> WorkflowSteps { get; set; }
+        public DbSet<WorkflowExecutionLog> WorkflowExecutionLogs { get; set; }
+
         // Leave management entities
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
         public DbSet<LeaveType> LeaveTypes { get; set; }
