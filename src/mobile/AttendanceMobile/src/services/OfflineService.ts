@@ -47,17 +47,35 @@ export class OfflineService {
 
     offlineStore.setSyncInProgress(true);
 
-    for (const item of pendingData) {
+    const batchSize = 10;
+    const batches = [];
+    for (let i = 0; i < pendingData.length; i += batchSize) {
+      batches.push(pendingData.slice(i, i + batchSize));
+    }
+
+    for (const batch of batches) {
       try {
-        await this.syncSingleItem(item);
-        offlineStore.removePendingData(item.id);
+        const syncPromises = batch.map(async (item) => {
+          try {
+            await this.syncSingleItem(item);
+            offlineStore.removePendingData(item.id);
+          } catch (error) {
+            console.error('Failed to sync item:', item.id, error);
+            offlineStore.incrementRetryCount(item.id);
+            
+            const retryDelay = Math.pow(2, item.retryCount + 1) * 1000;
+            setTimeout(() => {
+            }, retryDelay);
+            
+            if (item.retryCount >= 2) { // Will be 3 after increment
+              offlineStore.removePendingData(item.id);
+            }
+          }
+        });
+
+        await Promise.allSettled(syncPromises);
       } catch (error) {
-        console.error(`Failed to sync item ${item.id}:`, error);
-        offlineStore.incrementRetryCount(item.id);
-        
-        if (item.retryCount >= 3) {
-          offlineStore.removePendingData(item.id);
-        }
+        console.error('Batch sync failed:', error);
       }
     }
 

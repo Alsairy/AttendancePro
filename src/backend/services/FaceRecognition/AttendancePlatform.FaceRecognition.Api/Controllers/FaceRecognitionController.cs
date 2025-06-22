@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using AttendancePlatform.FaceRecognition.Api.Services;
 using AttendancePlatform.Shared.Domain.DTOs;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace AttendancePlatform.FaceRecognition.Api.Controllers
 {
@@ -160,7 +161,11 @@ namespace AttendancePlatform.FaceRecognition.Api.Controllers
                 return BadRequest(ApiResponse<bool>.ErrorResult("Invalid request data"));
             }
 
-            var imageData = new byte[0]; // Placeholder for update template
+            var imageData = await ExtractImageDataFromRequestAsync(Request);
+            if (imageData == null || imageData.Length == 0)
+            {
+                return BadRequest(ApiResponse<bool>.ErrorResult("Image data is required"));
+            }
             var result = await _faceRecognitionService.UpdateTemplateAsync(userId.Value, templateId, imageData);
             
             if (!result.Success)
@@ -227,6 +232,62 @@ namespace AttendancePlatform.FaceRecognition.Api.Controllers
             }
             
             return null;
+        }
+
+        private async Task<byte[]> ExtractImageDataFromRequestAsync(HttpRequest request)
+        {
+            try
+            {
+                if (request.HasFormContentType && request.Form.Files.Count > 0)
+                {
+                    var file = request.Form.Files[0];
+                    if (file.Length > 0)
+                    {
+                        using var memoryStream = new MemoryStream();
+                        await file.CopyToAsync(memoryStream);
+                        return memoryStream.ToArray();
+                    }
+                }
+                
+                if (request.ContentType?.Contains("application/json") == true)
+                {
+                    request.Body.Position = 0;
+                    using var reader = new StreamReader(request.Body);
+                    var json = await reader.ReadToEndAsync();
+                    
+                    if (!string.IsNullOrEmpty(json))
+                    {
+                        var jsonDoc = JsonDocument.Parse(json);
+                        if (jsonDoc.RootElement.TryGetProperty("imageData", out var imageDataElement))
+                        {
+                            var base64String = imageDataElement.GetString();
+                            if (!string.IsNullOrEmpty(base64String))
+                            {
+                                var base64Data = base64String.Contains(",") 
+                                    ? base64String.Split(',')[1] 
+                                    : base64String;
+                                
+                                return Convert.FromBase64String(base64Data);
+                            }
+                        }
+                    }
+                }
+                
+                if (request.ContentLength > 0)
+                {
+                    request.Body.Position = 0;
+                    using var memoryStream = new MemoryStream();
+                    await request.Body.CopyToAsync(memoryStream);
+                    return memoryStream.ToArray();
+                }
+                
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error extracting image data from request");
+                return null;
+            }
         }
     }
 }
