@@ -39,6 +39,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<Geofence> Geofences { get; set; }
         public DbSet<UserGeofence> UserGeofences { get; set; }
         public DbSet<Beacon> Beacons { get; set; }
+        public DbSet<Kiosk> Kiosks { get; set; }
 
         // Leave management entities
         public DbSet<LeaveRequest> LeaveRequests { get; set; }

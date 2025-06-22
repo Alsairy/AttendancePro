@@ -16,6 +16,8 @@ import AnalyticsPage from './pages/analytics/AnalyticsPage'
 import UsersPage from './pages/users/UsersPage'
 import ProfilePage from './pages/profile/ProfilePage'
 import SettingsPage from './pages/settings/SettingsPage'
+import KioskLoginPage from './pages/kiosk/KioskLoginPage'
+import KioskAttendancePage from './pages/kiosk/KioskAttendancePage'
 import './App.css'
 
 const PERSONA = import.meta.env.VITE_USER_PERSONA || 'admin'
@@ -60,6 +62,10 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/two-factor" element={<TwoFactorPage />} />
+              
+              {/* Kiosk routes */}
+              <Route path="/kiosk" element={<KioskLoginPage />} />
+              <Route path="/kiosk/attendance" element={<KioskAttendancePage />} />
               
               {/* Protected routes - persona-specific */}
               <Route path="/" element={

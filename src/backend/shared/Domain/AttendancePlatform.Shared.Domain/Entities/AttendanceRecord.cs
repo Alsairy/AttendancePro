@@ -59,6 +59,8 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public DateTime? ApprovedAt { get; set; }
         public string? ApprovalNotes { get; set; }
         
+        public string? KioskId { get; set; }
+        
         // Additional metadata
         public string? Notes { get; set; }
         public string? IpAddress { get; set; }
@@ -68,6 +70,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public virtual User User { get; set; } = null!;
         public virtual Geofence? Geofence { get; set; }
         public virtual User? ApprovedByUser { get; set; }
+        public virtual Kiosk? Kiosk { get; set; }
     }
     
     public enum AttendanceType
