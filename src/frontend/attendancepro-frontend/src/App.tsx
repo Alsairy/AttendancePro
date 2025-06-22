@@ -18,6 +18,11 @@ import ProfilePage from './pages/profile/ProfilePage'
 import SettingsPage from './pages/settings/SettingsPage'
 import KioskLoginPage from './pages/kiosk/KioskLoginPage'
 import KioskAttendancePage from './pages/kiosk/KioskAttendancePage'
+import ShiftSchedulingPage from './pages/scheduling/ShiftSchedulingPage'
+import VoiceManagementPage from './pages/voice/VoiceManagementPage'
+import WorkflowDesignerPage from './pages/workflow/WorkflowDesignerPage'
+import WorkflowMonitoringPage from './pages/workflow/WorkflowMonitoringPage'
+import ReportsPage from './pages/reports/ReportsPage'
 import './App.css'
 
 const PERSONA = import.meta.env.VITE_USER_PERSONA || 'admin'
@@ -32,14 +37,24 @@ const getPersonaRoutes = () => {
 
   const adminRoutes = [
     { path: 'analytics', element: <AnalyticsPage />, roles: ['admin', 'manager'] },
-    { path: 'users', element: <UsersPage />, roles: ['admin'] }
+    { path: 'users', element: <UsersPage />, roles: ['admin'] },
+    { path: 'reports', element: <ReportsPage />, roles: ['admin', 'manager'] },
+    { path: 'workflow/designer', element: <WorkflowDesignerPage />, roles: ['admin'] },
+    { path: 'workflow/monitoring', element: <WorkflowMonitoringPage />, roles: ['admin', 'manager'] },
+    { path: 'scheduling', element: <ShiftSchedulingPage />, roles: ['admin', 'manager'] },
+    { path: 'voice-management', element: <VoiceManagementPage />, roles: ['admin'] }
   ]
 
   switch (PERSONA) {
     case 'admin':
       return [...baseRoutes, ...adminRoutes]
     case 'manager':
-      return [...baseRoutes, { path: 'analytics', element: <AnalyticsPage />, roles: ['admin', 'manager'] }]
+      return [...baseRoutes, 
+        { path: 'analytics', element: <AnalyticsPage />, roles: ['admin', 'manager'] },
+        { path: 'reports', element: <ReportsPage />, roles: ['admin', 'manager'] },
+        { path: 'workflow/monitoring', element: <WorkflowMonitoringPage />, roles: ['admin', 'manager'] },
+        { path: 'scheduling', element: <ShiftSchedulingPage />, roles: ['admin', 'manager'] }
+      ]
     case 'employee':
     default:
       return baseRoutes
