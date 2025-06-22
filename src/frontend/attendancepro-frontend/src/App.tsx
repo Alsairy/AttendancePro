@@ -11,6 +11,9 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage'
 import TwoFactorPage from './pages/auth/TwoFactorPage'
 import DashboardLayout from './components/layouts/DashboardLayout'
 import Dashboard from './pages/dashboard/Dashboard'
+import AdminDashboard from './pages/dashboard/AdminDashboard'
+import ManagerDashboard from './pages/dashboard/ManagerDashboard'
+import EmployeeDashboard from './pages/dashboard/EmployeeDashboard'
 import AttendancePage from './pages/attendance/AttendancePage'
 import AnalyticsPage from './pages/analytics/AnalyticsPage'
 import UsersPage from './pages/users/UsersPage'
@@ -23,13 +26,29 @@ import VoiceManagementPage from './pages/voice/VoiceManagementPage'
 import WorkflowDesignerPage from './pages/workflow/WorkflowDesignerPage'
 import WorkflowMonitoringPage from './pages/workflow/WorkflowMonitoringPage'
 import ReportsPage from './pages/reports/ReportsPage'
+import WebhooksManagementPage from './pages/webhooks/WebhooksManagementPage'
+import CompliancePage from './pages/compliance/CompliancePage'
+import TenantManagementPage from './pages/tenant/TenantManagementPage'
 import './App.css'
 
 const PERSONA = import.meta.env.VITE_USER_PERSONA || 'admin'
 
 const getPersonaRoutes = () => {
+  const getDashboardComponent = () => {
+    switch (PERSONA) {
+      case 'admin':
+        return <AdminDashboard />
+      case 'manager':
+        return <ManagerDashboard />
+      case 'employee':
+        return <EmployeeDashboard />
+      default:
+        return <Dashboard />
+    }
+  }
+
   const baseRoutes = [
-    { path: 'dashboard', element: <Dashboard />, roles: ['admin', 'manager', 'user'] },
+    { path: 'dashboard', element: getDashboardComponent(), roles: ['admin', 'manager', 'user'] },
     { path: 'attendance', element: <AttendancePage />, roles: ['admin', 'manager', 'user'] },
     { path: 'profile', element: <ProfilePage />, roles: ['admin', 'manager', 'user'] },
     { path: 'settings', element: <SettingsPage />, roles: ['admin', 'manager', 'user'] }
@@ -39,6 +58,9 @@ const getPersonaRoutes = () => {
     { path: 'analytics', element: <AnalyticsPage />, roles: ['admin', 'manager'] },
     { path: 'users', element: <UsersPage />, roles: ['admin'] },
     { path: 'reports', element: <ReportsPage />, roles: ['admin', 'manager'] },
+    { path: 'webhooks', element: <WebhooksManagementPage />, roles: ['admin'] },
+    { path: 'compliance', element: <CompliancePage />, roles: ['admin'] },
+    { path: 'tenants', element: <TenantManagementPage />, roles: ['admin'] },
     { path: 'workflow/designer', element: <WorkflowDesignerPage />, roles: ['admin'] },
     { path: 'workflow/monitoring', element: <WorkflowMonitoringPage />, roles: ['admin', 'manager'] },
     { path: 'scheduling', element: <ShiftSchedulingPage />, roles: ['admin', 'manager'] },

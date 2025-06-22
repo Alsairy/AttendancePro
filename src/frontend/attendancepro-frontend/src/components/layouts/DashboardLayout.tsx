@@ -14,7 +14,15 @@ import {
   Search,
   Moon,
   Sun,
-  Monitor
+  Monitor,
+  FileText,
+  Webhook,
+  ShieldCheck,
+  Building,
+  GitBranch,
+  Activity,
+  Clock,
+  Mic
 } from 'lucide-react'
 
 import { Button } from '../ui/button'
@@ -41,16 +49,31 @@ const getPersonaNavigation = () => {
     { name: 'Attendance', href: '/attendance', icon: Calendar, roles: ['admin', 'manager', 'user'] },
   ]
 
+  const managerNavigation = [
+    { name: 'Analytics', href: '/analytics', icon: BarChart3, roles: ['admin', 'manager'] },
+    { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin', 'manager'] },
+    { name: 'Workflow Monitor', href: '/workflow/monitoring', icon: Activity, roles: ['admin', 'manager'] },
+    { name: 'Scheduling', href: '/scheduling', icon: Clock, roles: ['admin', 'manager'] },
+  ]
+
   const adminNavigation = [
     { name: 'Analytics', href: '/analytics', icon: BarChart3, roles: ['admin', 'manager'] },
     { name: 'Users', href: '/users', icon: Users, roles: ['admin'] },
+    { name: 'Reports', href: '/reports', icon: FileText, roles: ['admin', 'manager'] },
+    { name: 'Webhooks', href: '/webhooks', icon: Webhook, roles: ['admin'] },
+    { name: 'Compliance', href: '/compliance', icon: ShieldCheck, roles: ['admin'] },
+    { name: 'Tenants', href: '/tenants', icon: Building, roles: ['admin'] },
+    { name: 'Workflow Designer', href: '/workflow/designer', icon: GitBranch, roles: ['admin'] },
+    { name: 'Workflow Monitor', href: '/workflow/monitoring', icon: Activity, roles: ['admin', 'manager'] },
+    { name: 'Scheduling', href: '/scheduling', icon: Clock, roles: ['admin', 'manager'] },
+    { name: 'Voice Management', href: '/voice-management', icon: Mic, roles: ['admin'] },
   ]
 
   switch (PERSONA) {
     case 'admin':
       return [...baseNavigation, ...adminNavigation]
     case 'manager':
-      return [...baseNavigation, { name: 'Analytics', href: '/analytics', icon: BarChart3, roles: ['admin', 'manager'] }]
+      return [...baseNavigation, ...managerNavigation]
     case 'employee':
     default:
       return baseNavigation
