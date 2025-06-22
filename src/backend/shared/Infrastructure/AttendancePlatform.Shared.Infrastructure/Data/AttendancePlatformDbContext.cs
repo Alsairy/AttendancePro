@@ -1,18 +1,18 @@
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Domain.Entities;
-using Hudur.Shared.Domain.Interfaces;
-using Hudur.Shared.Infrastructure.Security;
+using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Security;
 
-namespace Hudur.Shared.Infrastructure.Data
+namespace AttendancePlatform.Shared.Infrastructure.Data
 {
-    public class HudurDbContext : DbContext
+    public class AttendancePlatformDbContext : DbContext
     {
         private readonly ITenantContext _tenantContext;
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTimeProvider _dateTimeProvider;
 
-        public HudurDbContext(
-            DbContextOptions<HudurDbContext> options,
+        public AttendancePlatformDbContext(
+            DbContextOptions<AttendancePlatformDbContext> options,
             ITenantContext tenantContext,
             ICurrentUserService currentUserService,
             IDateTimeProvider dateTimeProvider) : base(options)
@@ -31,7 +31,7 @@ namespace Hudur.Shared.Infrastructure.Data
         
         // Security and Compliance entities
         public DbSet<ComplianceEvent> ComplianceEvents { get; set; }
-        public DbSet<Hudur.Shared.Domain.Entities.ComplianceReport> ComplianceReports { get; set; }
+        public DbSet<AttendancePlatform.Shared.Domain.Entities.ComplianceReport> ComplianceReports { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
 
         // Attendance entities
@@ -523,7 +523,7 @@ namespace Hudur.Shared.Infrastructure.Data
                 entity.HasIndex(e => e.Timestamp);
             });
 
-            modelBuilder.Entity<Hudur.Shared.Domain.Entities.ComplianceReport>(entity =>
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ComplianceReport>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.TenantId).IsRequired();
@@ -535,7 +535,7 @@ namespace Hudur.Shared.Infrastructure.Data
                 entity.HasIndex(e => e.GeneratedAt);
             });
 
-            modelBuilder.Entity<Hudur.Shared.Domain.Entities.ComplianceViolation>(entity =>
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ComplianceViolation>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasMaxLength(50);
@@ -559,7 +559,7 @@ namespace Hudur.Shared.Infrastructure.Data
             {
                 if (typeof(ITenantAware).IsAssignableFrom(entityType.ClrType))
                 {
-                    var method = typeof(HudurDbContext)
+                    var method = typeof(AttendancePlatformDbContext)
                         .GetMethod(nameof(GetTenantFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
                         .MakeGenericMethod(entityType.ClrType);
                     
@@ -570,7 +570,7 @@ namespace Hudur.Shared.Infrastructure.Data
                 // Apply global query filter for soft delete
                 if (typeof(ISoftDeletable).IsAssignableFrom(entityType.ClrType))
                 {
-                    var method = typeof(HudurDbContext)
+                    var method = typeof(AttendancePlatformDbContext)
                         .GetMethod(nameof(GetSoftDeleteFilter), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
                         .MakeGenericMethod(entityType.ClrType);
                     
@@ -580,7 +580,7 @@ namespace Hudur.Shared.Infrastructure.Data
             }
         }
 
-        private static System.Linq.Expressions.LambdaExpression GetTenantFilter<TEntity>(HudurDbContext context)
+        private static System.Linq.Expressions.LambdaExpression GetTenantFilter<TEntity>(AttendancePlatformDbContext context)
             where TEntity : class, ITenantAware
         {
             System.Linq.Expressions.Expression<Func<TEntity, bool>> filter = x => x.TenantId == context._tenantContext.TenantId;
