@@ -47,6 +47,11 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<ShiftSwapRequest> ShiftSwapRequests { get; set; }
         public DbSet<ShiftConflict> ShiftConflicts { get; set; }
 
+        // Compliance entities
+        public DbSet<ComplianceReport> ComplianceReports { get; set; }
+        public DbSet<RegionalSettings> RegionalSettings { get; set; }
+        public DbSet<LocalizedString> LocalizedStrings { get; set; }
+
         // Leave management entities
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
         public DbSet<LeaveType> LeaveTypes { get; set; }

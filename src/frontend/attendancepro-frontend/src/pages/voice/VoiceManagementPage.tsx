@@ -262,7 +262,7 @@ export const VoiceManagementPage: React.FC = () => {
           <VoiceRecognitionComponent
             mode="command"
             userId={userId}
-            onVoiceCommand={(command, confidence) => {
+            onVoiceCommand={(command: string, confidence: number) => {
               toast.success(`Command "${command}" executed with ${Math.round(confidence * 100)}% confidence`);
             }}
             onVoiceAuthentication={() => {}}
@@ -276,7 +276,7 @@ export const VoiceManagementPage: React.FC = () => {
                 mode="authentication"
                 userId={userId}
                 onVoiceCommand={() => {}}
-                onVoiceAuthentication={(result) => {
+                onVoiceAuthentication={(result: any) => {
                   if (result.isAuthenticated) {
                     toast.success('Voice authentication successful');
                   } else {

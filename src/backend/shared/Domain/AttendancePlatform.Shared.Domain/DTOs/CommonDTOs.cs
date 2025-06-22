@@ -238,5 +238,79 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public DateTime IdentificationTime { get; set; }
         public List<object> AllMatches { get; set; } = new();
     }
+
+    public class ComplianceReportDto
+    {
+        public Guid TenantId { get; set; }
+        public string Region { get; set; } = string.Empty;
+        public string Language { get; set; } = string.Empty;
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public DateTime GeneratedAt { get; set; }
+        public int TotalEmployees { get; set; }
+        public int TotalWorkingDays { get; set; }
+        public double ComplianceScore { get; set; }
+        public List<ComplianceViolationDto> Violations { get; set; } = new();
+        public List<RegionalRequirementDto> RegionalRequirements { get; set; } = new();
+        public string Summary { get; set; } = string.Empty;
+        public List<string> Recommendations { get; set; } = new();
+    }
+
+    public class RegionalRequirementDto
+    {
+        public string Category { get; set; } = string.Empty;
+        public string Requirement { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public bool Mandatory { get; set; }
+        public string Region { get; set; } = string.Empty;
+    }
+
+    public class ComplianceViolationDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public Guid UserId { get; set; }
+        public string ViolationType { get; set; } = string.Empty;
+        public string Severity { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public DateTime DetectedAt { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string Region { get; set; } = string.Empty;
+    }
+
+    public class ComplianceStatusDto
+    {
+        public Guid TenantId { get; set; }
+        public string Region { get; set; } = string.Empty;
+        public bool IsCompliant { get; set; }
+        public double ComplianceScore { get; set; }
+        public DateTime LastChecked { get; set; }
+        public int ViolationCount { get; set; }
+        public int CriticalViolationCount { get; set; }
+        public DateTime NextReviewDate { get; set; }
+        public string Status { get; set; } = string.Empty;
+    }
+
+    public class RegionalSettingsDto
+    {
+        public string CountryCode { get; set; } = string.Empty;
+        public string TimeZone { get; set; } = string.Empty;
+        public string Language { get; set; } = string.Empty;
+        public string Currency { get; set; } = string.Empty;
+        public string DateFormat { get; set; } = string.Empty;
+        public string TimeFormat { get; set; } = string.Empty;
+        public int WorkingDaysPerWeek { get; set; }
+        public double StandardWorkingHours { get; set; }
+        public double OvertimeThreshold { get; set; }
+        public string ComplianceLevel { get; set; } = string.Empty;
+    }
+
+    public class LocalizedStringDto
+    {
+        public string Key { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+        public string Language { get; set; } = string.Empty;
+        public string Module { get; set; } = string.Empty;
+    }
 }
 
