@@ -40,6 +40,12 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<UserGeofence> UserGeofences { get; set; }
         public DbSet<Beacon> Beacons { get; set; }
         public DbSet<Kiosk> Kiosks { get; set; }
+        
+        public DbSet<Shift> Shifts { get; set; }
+        public DbSet<ShiftTemplate> ShiftTemplates { get; set; }
+        public DbSet<ShiftAssignment> ShiftAssignments { get; set; }
+        public DbSet<ShiftSwapRequest> ShiftSwapRequests { get; set; }
+        public DbSet<ShiftConflict> ShiftConflicts { get; set; }
 
         // Leave management entities
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
