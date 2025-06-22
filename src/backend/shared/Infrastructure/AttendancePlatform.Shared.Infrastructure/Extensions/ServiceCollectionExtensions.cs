@@ -53,9 +53,6 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
-            // Add advanced services
-            services.AddScoped<IAdvancedAnalyticsService, AdvancedAnalyticsService>();
-            services.AddScoped<IAdvancedBiometricService, AdvancedBiometricService>();
             services.AddScoped<IWorkflowAutomationService, WorkflowAutomationService>();
             services.AddScoped<INotificationService, NotificationService>();
 
@@ -121,43 +118,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
             return services;
         }
 
-        public static IServiceCollection AddWorkflowServices(this IServiceCollection services)
-        {
-            services.AddScoped<IShiftSchedulingService, ShiftSchedulingService>();
-            services.AddScoped<IAdvancedWorkflowService, AdvancedWorkflowService>();
-            services.AddScoped<IWorkflowExecutionEngine, WorkflowExecutionEngine>();
-            services.AddScoped<IWorkflowTemplateService, WorkflowTemplateService>();
-            services.AddScoped<IWorkflowExecutionService, WorkflowExecutionService>();
-            services.AddScoped<IAutomationService, AutomationService>();
-            
-            return services;
-        }
 
-        public static IServiceCollection AddVoiceRecognitionServices(this IServiceCollection services)
-        {
-            services.AddScoped<IVoiceRecognitionService, VoiceRecognitionService>();
-            services.AddScoped<IVoiceCommandProcessor, VoiceCommandProcessor>();
-            services.AddScoped<IVoiceAuthenticationService, VoiceAuthenticationService>();
-            
-            return services;
-        }
-
-        public static IServiceCollection AddComplianceServices(this IServiceCollection services)
-        {
-            services.AddScoped<IComplianceService, ComplianceService>();
-            services.AddScoped<IComplianceAuditService, ComplianceAuditService>();
-            services.AddScoped<IComplianceReportingService, ComplianceReportingService>();
-            
-            return services;
-        }
-
-        public static IServiceCollection AddKioskServices(this IServiceCollection services)
-        {
-            services.AddScoped<IKioskService, KioskService>();
-            services.AddScoped<IKioskAuthenticationService, KioskAuthenticationService>();
-            
-            return services;
-        }
     }
 }
 

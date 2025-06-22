@@ -12,7 +12,7 @@ namespace AttendancePlatform.Attendance.Api.Services
     public interface IAttendanceService
     {
         Task<ApiResponse<AttendanceRecordDto>> CheckInAsync(CheckInRequest request, Guid userId);
-        Task<ApiResponse<AttendanceRecordDto>> CheckOutAsync(CheckInRequest request, Guid userId);
+        Task<ApiResponse<AttendanceRecordDto>> CheckOutAsync(CheckOutRequest request, Guid userId);
         Task<ApiResponse<IEnumerable<AttendanceRecordDto>>> GetUserAttendanceAsync(Guid userId, DateTime? startDate = null, DateTime? endDate = null);
         Task<ApiResponse<IEnumerable<AttendanceRecordDto>>> GetTodayAttendanceAsync(Guid userId);
         Task<ApiResponse<AttendanceRecordDto?>> GetLastAttendanceAsync(Guid userId);
@@ -122,7 +122,7 @@ namespace AttendancePlatform.Attendance.Api.Services
             }
         }
 
-        public async Task<ApiResponse<AttendanceRecordDto>> CheckOutAsync(CheckInRequest request, Guid userId)
+        public async Task<ApiResponse<AttendanceRecordDto>> CheckOutAsync(CheckOutRequest request, Guid userId)
         {
             try
             {
@@ -398,6 +398,20 @@ namespace AttendancePlatform.Attendance.Api.Services
         }
 
         private AttendanceMethod DetermineAttendanceMethod(CheckInRequest request)
+        {
+            if (!string.IsNullOrEmpty(request.BiometricData))
+                return AttendanceMethod.Biometric;
+            
+            if (!string.IsNullOrEmpty(request.BeaconId))
+                return AttendanceMethod.Beacon;
+            
+            if (request.Latitude.HasValue && request.Longitude.HasValue)
+                return AttendanceMethod.GPS;
+            
+            return AttendanceMethod.Manual;
+        }
+
+        private AttendanceMethod DetermineAttendanceMethod(CheckOutRequest request)
         {
             if (!string.IsNullOrEmpty(request.BiometricData))
                 return AttendanceMethod.Biometric;

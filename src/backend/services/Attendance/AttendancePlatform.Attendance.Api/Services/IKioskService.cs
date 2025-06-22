@@ -1,4 +1,5 @@
 using AttendancePlatform.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Attendance.Api.Controllers;
 
 namespace AttendancePlatform.Attendance.Api.Services
@@ -10,7 +11,7 @@ namespace AttendancePlatform.Attendance.Api.Services
         Task<EmployeeDto?> LookupEmployeeAsync(string employeeId, string? biometricData);
         Task<KioskStatusDto> GetKioskStatusAsync(string kioskId);
         Task<List<KioskActivityDto>> GetRecentActivityAsync(string kioskId, int limit);
-        Task<bool> ValidateKioskLocationAsync(string kioskId, LocationDto location);
+        Task<bool> ValidateKioskLocationAsync(string kioskId, LocationInfo location);
         Task<bool> UpdateKioskStatusAsync(string kioskId, KioskStatus status);
     }
 
@@ -57,11 +58,7 @@ namespace AttendancePlatform.Attendance.Api.Services
         public bool IsSuccessful { get; set; }
     }
 
-    public enum KioskStatus
-    {
-        Active,
-        Inactive,
-        Maintenance,
-        Error
-    }
+
+
+
 }

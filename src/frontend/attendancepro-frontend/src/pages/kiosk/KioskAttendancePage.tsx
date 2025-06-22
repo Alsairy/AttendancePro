@@ -11,8 +11,6 @@ import {
   User, 
   CheckCircle, 
   XCircle, 
-  Camera, 
-  MapPin,
   Activity,
   LogIn,
   LogOut,
@@ -167,7 +165,7 @@ const KioskAttendancePage: React.FC = () => {
       })
 
       if (response.ok) {
-        const result = await response.json()
+        await response.json()
         toast.success(`${action === 'check-in' ? 'Check-in' : 'Check-out'} successful`)
         
         setEmployee(null)

@@ -5,7 +5,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
 {
     public class Shift : BaseEntity, ITenantAware
     {
-        public string TenantId { get; set; } = string.Empty;
+        public Guid TenantId { get; set; }
         
         [Required]
         [MaxLength(100)]
@@ -46,7 +46,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
 
     public class ShiftTemplate : BaseEntity, ITenantAware
     {
-        public string TenantId { get; set; } = string.Empty;
+        public Guid TenantId { get; set; }
         
         [Required]
         [MaxLength(100)]
@@ -82,7 +82,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
 
     public class ShiftAssignment : BaseEntity, ITenantAware
     {
-        public string TenantId { get; set; } = string.Empty;
+        public Guid TenantId { get; set; }
         
         [Required]
         public string ShiftId { get; set; } = string.Empty;
@@ -110,7 +110,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
 
     public class ShiftSwapRequest : BaseEntity, ITenantAware
     {
-        public string TenantId { get; set; } = string.Empty;
+        public Guid TenantId { get; set; }
         
         [Required]
         public string RequesterId { get; set; } = string.Empty;
@@ -148,7 +148,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
 
     public class ShiftConflict : BaseEntity, ITenantAware
     {
-        public string TenantId { get; set; } = string.Empty;
+        public Guid TenantId { get; set; }
         
         [Required]
         public string UserId { get; set; } = string.Empty;

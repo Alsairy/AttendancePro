@@ -31,7 +31,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         
         // Security and Compliance entities
         public DbSet<ComplianceEvent> ComplianceEvents { get; set; }
-        public DbSet<ComplianceReport> ComplianceReports { get; set; }
+        public DbSet<AttendancePlatform.Shared.Domain.Entities.ComplianceReport> ComplianceReports { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
 
         // Attendance entities
@@ -47,16 +47,11 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<ShiftSwapRequest> ShiftSwapRequests { get; set; }
         public DbSet<ShiftConflict> ShiftConflicts { get; set; }
 
-        // Compliance entities
-        public DbSet<ComplianceReport> ComplianceReports { get; set; }
         public DbSet<RegionalSettings> RegionalSettings { get; set; }
         public DbSet<LocalizedString> LocalizedStrings { get; set; }
 
         // Advanced workflow entities
-        public DbSet<WorkflowTemplate> WorkflowTemplates { get; set; }
-        public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
         public DbSet<WorkflowStep> WorkflowSteps { get; set; }
-        public DbSet<WorkflowExecutionLog> WorkflowExecutionLogs { get; set; }
 
         // Leave management entities
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
@@ -528,20 +523,19 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasIndex(e => e.Timestamp);
             });
 
-            modelBuilder.Entity<ComplianceReport>(entity =>
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ComplianceReport>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasMaxLength(50);
-                entity.Property(e => e.TenantId).IsRequired().HasMaxLength(50);
-                entity.Property(e => e.ReportType).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.Details).HasColumnType("nvarchar(max)");
-                entity.Ignore(e => e.Summary);
+                entity.Property(e => e.TenantId).IsRequired();
+                entity.Property(e => e.Region).IsRequired().HasMaxLength(10);
+                entity.Property(e => e.Language).IsRequired().HasMaxLength(10);
+                entity.Property(e => e.ReportData).HasColumnType("nvarchar(max)");
                 entity.HasIndex(e => e.TenantId);
-                entity.HasIndex(e => e.ReportType);
+                entity.HasIndex(e => e.Region);
                 entity.HasIndex(e => e.GeneratedAt);
             });
 
-            modelBuilder.Entity<ComplianceViolation>(entity =>
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ComplianceViolation>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasMaxLength(50);

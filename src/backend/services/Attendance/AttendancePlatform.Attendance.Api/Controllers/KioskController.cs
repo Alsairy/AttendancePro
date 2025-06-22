@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AttendancePlatform.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Attendance.Api.Services;
 using System.Security.Claims;
 
@@ -94,7 +95,7 @@ namespace AttendancePlatform.Attendance.Api.Controllers
                     KioskId = kioskId,
                     BiometricData = request.BiometricData,
                     Timestamp = DateTime.UtcNow
-                });
+                }, Guid.Parse(request.EmployeeId));
 
                 return Ok(result);
             }
@@ -120,7 +121,7 @@ namespace AttendancePlatform.Attendance.Api.Controllers
                     KioskId = kioskId,
                     BiometricData = request.BiometricData,
                     Timestamp = DateTime.UtcNow
-                });
+                }, Guid.Parse(request.EmployeeId));
 
                 return Ok(result);
             }
@@ -195,7 +196,7 @@ namespace AttendancePlatform.Attendance.Api.Controllers
     public class KioskAttendanceRequest
     {
         public string EmployeeId { get; set; } = string.Empty;
-        public LocationDto Location { get; set; } = new();
+        public LocationInfo Location { get; set; } = new();
         public string? BiometricData { get; set; }
     }
 }

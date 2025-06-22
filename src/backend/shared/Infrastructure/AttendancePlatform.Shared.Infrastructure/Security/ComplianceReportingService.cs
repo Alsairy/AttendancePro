@@ -247,7 +247,18 @@ public class ComplianceReportingService : IComplianceReportingService
     {
         try
         {
-            _context.ComplianceReports.Add(report);
+            var domainReport = new AttendancePlatform.Shared.Domain.Entities.ComplianceReport
+            {
+                Id = Guid.NewGuid(),
+                TenantId = Guid.Parse(report.TenantId),
+                Region = "US", // Default region, should be configurable
+                Language = "en", // Default language, should be configurable
+                StartDate = report.FromDate,
+                EndDate = report.ToDate,
+                GeneratedAt = report.GeneratedAt,
+                ReportData = JsonSerializer.Serialize(report)
+            };
+            _context.ComplianceReports.Add(domainReport);
             await _context.SaveChangesAsync();
         }
         catch (Exception ex)
