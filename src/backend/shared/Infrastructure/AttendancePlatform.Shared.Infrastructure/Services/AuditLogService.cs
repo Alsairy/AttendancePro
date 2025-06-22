@@ -1,17 +1,17 @@
-using AttendancePlatform.Shared.Domain.Entities;
-using AttendancePlatform.Shared.Infrastructure.Data;
+using Hudur.Shared.Domain.Entities;
+using Hudur.Shared.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace AttendancePlatform.Shared.Infrastructure.Services;
+namespace Hudur.Shared.Infrastructure.Services;
 
 public class AuditLogService : IAuditLogService
 {
-    private readonly AttendancePlatformDbContext _context;
+    private readonly HudurDbContext _context;
     private readonly ILogger<AuditLogService> _logger;
 
-    public AuditLogService(AttendancePlatformDbContext context, ILogger<AuditLogService> logger)
+    public AuditLogService(HudurDbContext context, ILogger<AuditLogService> logger)
     {
         _context = context;
         _logger = logger;

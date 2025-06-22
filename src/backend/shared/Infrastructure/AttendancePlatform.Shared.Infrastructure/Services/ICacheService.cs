@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace AttendancePlatform.Shared.Infrastructure.Services
+namespace Hudur.Shared.Infrastructure.Services
 {
     public interface ICacheService
     {

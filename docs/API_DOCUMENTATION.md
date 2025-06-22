@@ -1,14 +1,14 @@
-# AttendancePro Platform - Complete API Documentation
+# Hudur Platform - Complete API Documentation
 
 ## Overview
 
-AttendancePro is a comprehensive, enterprise-grade attendance and workforce management platform built with modern microservices architecture. This documentation provides detailed information about all API endpoints, authentication, and integration capabilities.
+Hudur is a comprehensive, enterprise-grade attendance and workforce management platform built with modern microservices architecture. This documentation provides detailed information about all API endpoints, authentication, and integration capabilities.
 
 ## Base URLs
 
 - **Development**: `http://localhost:5000`
-- **Production**: `https://api.attendancepro.com`
-- **Staging**: `https://staging-api.attendancepro.com`
+- **Production**: `https://api.hudu.sa`
+- **Staging**: `https://staging-api.hudu.sa`
 
 ## Authentication
 
@@ -474,7 +474,7 @@ Send SMS notification.
 {
   "phoneNumbers": ["+1234567890"],
   "message": "Your leave request has been approved.",
-  "senderId": "AttendancePro"
+  "senderId": "Hudur"
 }
 ```
 
@@ -712,18 +712,18 @@ X-RateLimit-Reset: 1625097600
 
 Official SDKs are available for:
 
-- **JavaScript/Node.js**: `npm install attendancepro-sdk`
-- **Python**: `pip install attendancepro-sdk`
-- **C#/.NET**: `Install-Package AttendancePro.SDK`
+- **JavaScript/Node.js**: `npm install hudur-sdk`
+- **Python**: `pip install hudur-sdk`
+- **C#/.NET**: `Install-Package Hudur.SDK`
 - **Java**: Maven/Gradle dependency available
 - **PHP**: Composer package available
 
 ## Support and Resources
 
-- **Documentation**: https://docs.attendancepro.com
-- **API Status**: https://status.attendancepro.com
-- **Support**: support@attendancepro.com
-- **Community**: https://community.attendancepro.com
+- **Documentation**: https://docs.hudu.sa
+- **API Status**: https://status.hudu.sa
+- **Support**: support@hudu.sa
+- **Community**: https://community.hudu.sa
 
 ## Changelog
 

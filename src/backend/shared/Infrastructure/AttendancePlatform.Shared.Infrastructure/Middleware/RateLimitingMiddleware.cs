@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net;
 
-namespace AttendancePlatform.Shared.Infrastructure.Middleware
+namespace Hudur.Shared.Infrastructure.Middleware
 {
     public class RateLimitingMiddleware
     {

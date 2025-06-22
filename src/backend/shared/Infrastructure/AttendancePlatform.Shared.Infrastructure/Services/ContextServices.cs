@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
-using AttendancePlatform.Shared.Domain.Interfaces;
+using Hudur.Shared.Domain.Interfaces;
 
-namespace AttendancePlatform.Shared.Infrastructure.Services
+namespace Hudur.Shared.Infrastructure.Services
 {
     public class TenantContext : ITenantContext
     {

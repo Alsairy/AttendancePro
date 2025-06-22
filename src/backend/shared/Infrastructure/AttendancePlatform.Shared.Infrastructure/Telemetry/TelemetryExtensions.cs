@@ -7,14 +7,14 @@ using OpenTelemetry.Trace;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace AttendancePlatform.Shared.Infrastructure.Telemetry;
+namespace Hudur.Shared.Infrastructure.Telemetry;
 
 public static class TelemetryExtensions
 {
-    public static readonly ActivitySource ActivitySource = new("AttendancePro");
-    public static readonly Meter Meter = new("AttendancePro");
+    public static readonly ActivitySource ActivitySource = new("Hudur");
+    public static readonly Meter Meter = new("Hudur");
 
-    public static IServiceCollection AddAttendanceProTelemetry(this IServiceCollection services, string serviceName)
+    public static IServiceCollection AddHudurTelemetry(this IServiceCollection services, string serviceName)
     {
         services.AddOpenTelemetry()
             .WithTracing(builder =>
@@ -23,7 +23,7 @@ public static class TelemetryExtensions
                     .SetResourceBuilder(ResourceBuilder.CreateDefault()
                         .AddService(serviceName)
                         .AddTelemetrySdk())
-                    .AddSource("AttendancePro")
+                    .AddSource("Hudur")
                     .AddAspNetCoreInstrumentation(options =>
                     {
                         options.RecordException = true;
@@ -53,7 +53,7 @@ public static class TelemetryExtensions
                     .SetResourceBuilder(ResourceBuilder.CreateDefault()
                         .AddService(serviceName)
                         .AddTelemetrySdk())
-                    .AddMeter("AttendancePro")
+                    .AddMeter("Hudur")
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddRuntimeInstrumentation()

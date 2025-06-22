@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using AttendancePlatform.Shared.Infrastructure.Data;
-using AttendancePlatform.Shared.Infrastructure.Extensions;
-using AttendancePlatform.Integrations.Api.Services;
+using Hudur.Shared.Infrastructure.Data;
+using Hudur.Shared.Infrastructure.Extensions;
+using Hudur.Integrations.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,9 +18,9 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo 
     { 
-        Title = "AttendancePro Integrations API", 
+        Title = "Hudur Integrations API", 
         Version = "v1",
-        Description = "SCIM 2.0 and HR system integrations for the AttendancePro platform"
+        Description = "SCIM 2.0 and HR system integrations for the Hudur platform"
     });
     
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -49,7 +49,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Database configuration
-builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
+builder.Services.AddDbContext<HudurDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // JWT Authentication
@@ -99,7 +99,7 @@ builder.Services.AddHttpClient();
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<AttendancePlatformDbContext>();
+    .AddDbContextCheck<HudurDbContext>();
 
 var app = builder.Build();
 
@@ -109,7 +109,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AttendancePro Integrations API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hudur Integrations API v1");
         c.RoutePrefix = string.Empty;
     });
 }

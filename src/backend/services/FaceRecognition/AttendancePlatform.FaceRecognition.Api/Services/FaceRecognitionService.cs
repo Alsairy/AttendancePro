@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using AttendancePlatform.Shared.Domain.Entities;
-using AttendancePlatform.Shared.Domain.DTOs;
-using AttendancePlatform.Shared.Domain.Interfaces;
-using AttendancePlatform.Shared.Infrastructure.Data;
-using AttendancePlatform.Shared.Infrastructure.Services;
+using Hudur.Shared.Domain.Entities;
+using Hudur.Shared.Domain.DTOs;
+using Hudur.Shared.Domain.Interfaces;
+using Hudur.Shared.Infrastructure.Data;
+using Hudur.Shared.Infrastructure.Services;
 using System.Text.Json;
 
-namespace AttendancePlatform.FaceRecognition.Api.Services;
+namespace Hudur.FaceRecognition.Api.Services;
 
 public interface IFaceRecognitionService
 {
@@ -20,12 +20,12 @@ public interface IFaceRecognitionService
 
 public class FaceRecognitionService : IFaceRecognitionService
 {
-    private readonly AttendancePlatformDbContext _context;
+    private readonly HudurDbContext _context;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly ILogger<FaceRecognitionService> _logger;
 
     public FaceRecognitionService(
-        AttendancePlatformDbContext context,
+        HudurDbContext context,
         IDateTimeProvider dateTimeProvider,
         ILogger<FaceRecognitionService> logger)
     {

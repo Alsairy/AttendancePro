@@ -1,4 +1,4 @@
-# 🚀 AttendancePro - Enterprise Workforce Management Platform
+# 🚀 Hudur - Enterprise Workforce Management Platform
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
@@ -7,7 +7,7 @@
 [![React Native](https://img.shields.io/badge/React%20Native-0.72-blue.svg)](https://reactnative.dev/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-blue.svg)](https://kubernetes.io/)
-[![CI/CD](https://github.com/your-org/attendancepro/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/your-org/attendancepro/actions)
+[![CI/CD](https://github.com/your-org/hudur/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/your-org/hudur/actions)
 
 > **🌟 World-Class Enterprise Platform** - Complete workforce management solution with AI-powered analytics, real-time collaboration, and comprehensive business intelligence.
 
@@ -29,9 +29,9 @@
 
 ## 🎯 Overview
 
-AttendancePro is a **production-ready enterprise workforce management platform** featuring cutting-edge technology, AI-powered analytics, and comprehensive business intelligence. Built with modern microservices architecture and designed for global scale.
+Hudur is a **production-ready enterprise workforce management platform** featuring cutting-edge technology, AI-powered analytics, and comprehensive business intelligence. Built with modern microservices architecture and designed for global scale.
 
-### 🌟 **Why AttendancePro?**
+### 🌟 **Why Hudur?**
 
 - **🤖 AI-Powered**: Predictive analytics and anomaly detection
 - **📊 Business Intelligence**: Real-time dashboards and custom reporting
@@ -111,8 +111,8 @@ AttendancePro is a **production-ready enterprise workforce management platform**
 
 ### **1. Clone Repository**
 ```bash
-git clone https://github.com/your-org/attendancepro.git
-cd attendancepro
+git clone https://github.com/your-org/hudur.git
+cd hudur
 ```
 
 ### **2. Environment Setup**
@@ -144,7 +144,7 @@ docker-compose logs -f
 
 ### **5. Default Login**
 ```
-Email: admin@attendancepro.com
+Email: admin@hudu.sa
 Password: Admin123!
 ```
 
@@ -182,7 +182,7 @@ npx react-native run-android
 ### **Backend Development**
 ```bash
 # Navigate to backend service
-cd src/backend/services/Authentication/AttendancePlatform.Authentication.Api
+cd src/backend/services/Authentication/Hudur.Authentication.Api
 
 # Restore packages
 dotnet restore
@@ -197,7 +197,7 @@ dotnet test
 ### **Frontend Development**
 ```bash
 # Navigate to frontend
-cd src/frontend/attendance-web-app
+cd src/frontend/hudur-frontend
 
 # Install dependencies
 npm install
@@ -238,7 +238,7 @@ docker-compose -f docker-compose.production.yml up -d
 kubectl apply -f k8s/
 
 # Check deployment
-kubectl get pods -n attendancepro
+kubectl get pods -n hudur
 
 # Access via port-forward
 kubectl port-forward svc/frontend 3000:3000
@@ -247,13 +247,13 @@ kubectl port-forward svc/frontend 3000:3000
 ### **Helm Deployment**
 ```bash
 # Install with Helm
-helm install attendancepro ./helm/attendancepro
+helm install hudur ./helm/hudur
 
 # Upgrade
-helm upgrade attendancepro ./helm/attendancepro
+helm upgrade hudur ./helm/hudur
 
 # Status
-helm status attendancepro
+helm status hudur
 ```
 
 ## 🔗 Integrations
@@ -336,9 +336,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### **Getting Help**
 - **📖 Documentation**: Comprehensive guides and API reference
-- **🐛 Issues**: [GitHub Issues](https://github.com/your-org/attendancepro/issues) for bug reports
-- **💬 Discussions**: [GitHub Discussions](https://github.com/your-org/attendancepro/discussions) for Q&A
-- **📧 Email**: support@attendancepro.com for enterprise support
+- **🐛 Issues**: [GitHub Issues](https://github.com/your-org/hudur/issues) for bug reports
+- **💬 Discussions**: [GitHub Discussions](https://github.com/your-org/hudur/discussions) for Q&A
+- **📧 Email**: support@hudu.sa for enterprise support
 
 ### **Community**
 - **⭐ Star** this repository if you find it useful
@@ -349,7 +349,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🌟 **Ready to Transform Your Workforce Management?**
 
-AttendancePro combines cutting-edge technology with enterprise-grade reliability to deliver a comprehensive workforce management solution. Whether you're a startup or enterprise, AttendancePro scales with your needs.
+Hudur combines cutting-edge technology with enterprise-grade reliability to deliver a comprehensive workforce management solution. Whether you're a startup or enterprise, Hudur scales with your needs.
 
 **[Get Started Today →](docs/getting-started.md)**
 
@@ -357,9 +357,9 @@ AttendancePro combines cutting-edge technology with enterprise-grade reliability
 
 <div align="center">
 
-**Built with ❤️ by the AttendancePro Team**
+**Built with ❤️ by the Hudur Team**
 
-[Website](https://attendancepro.com) • [Documentation](docs/) • [API Reference](docs/api/) • [Support](mailto:support@attendancepro.com)
+[Website](https://hudu.sa) • [Documentation](docs/) • [API Reference](docs/api/) • [Support](mailto:support@hudu.sa)
 
 </div>
 

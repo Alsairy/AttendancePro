@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AttendancePlatform.Webhooks.Api.Services
+namespace Hudur.Webhooks.Api.Services
 {
     public interface IWebhookService
     {

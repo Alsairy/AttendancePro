@@ -1,5 +1,5 @@
 apiVersion: v2
-name: attendancepro
+name: hudur
 description: A comprehensive attendance and workforce management platform
 type: application
 version: 1.0.0
@@ -10,12 +10,12 @@ keywords:
   - biometric
   - face-recognition
   - hr
-home: https://attendancepro.com
+home: https://hudu.sa
 sources:
-  - https://github.com/attendancepro/platform
+  - https://github.com/hudur/platform
 maintainers:
-  - name: AttendancePro Team
-    email: support@attendancepro.com
+  - name: Hudur Team
+    email: support@hudu.sa
 dependencies:
   - name: postgresql
     version: 12.1.9

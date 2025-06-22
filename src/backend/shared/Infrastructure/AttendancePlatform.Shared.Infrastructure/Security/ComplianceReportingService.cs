@@ -1,11 +1,11 @@
-using AttendancePlatform.Shared.Domain.Entities;
-using AttendancePlatform.Shared.Infrastructure.Data;
-using AttendancePlatform.Shared.Infrastructure.Services;
+using Hudur.Shared.Domain.Entities;
+using Hudur.Shared.Infrastructure.Data;
+using Hudur.Shared.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace AttendancePlatform.Shared.Infrastructure.Security;
+namespace Hudur.Shared.Infrastructure.Security;
 
 public interface IComplianceReportingService
 {
@@ -18,12 +18,12 @@ public interface IComplianceReportingService
 
 public class ComplianceReportingService : IComplianceReportingService
 {
-    private readonly AttendancePlatformDbContext _context;
+    private readonly HudurDbContext _context;
     private readonly IAuditLogService _auditLogService;
     private readonly ILogger<ComplianceReportingService> _logger;
 
     public ComplianceReportingService(
-        AttendancePlatformDbContext context,
+        HudurDbContext context,
         IAuditLogService auditLogService,
         ILogger<ComplianceReportingService> logger)
     {
@@ -247,7 +247,7 @@ public class ComplianceReportingService : IComplianceReportingService
     {
         try
         {
-            var domainReport = new AttendancePlatform.Shared.Domain.Entities.ComplianceReport
+            var domainReport = new Hudur.Shared.Domain.Entities.ComplianceReport
             {
                 Id = Guid.NewGuid(),
                 TenantId = Guid.Parse(report.TenantId),

@@ -1,4 +1,4 @@
-using AttendancePlatform.Shared.Domain.Entities;
+using Hudur.Shared.Domain.Entities;
 using Xunit;
 
 namespace AttendancePlatform.Tests.Integration

@@ -3,7 +3,7 @@ using AttendancePlatform.Shared.Infrastructure.Data;
 using System.Text.Json;
 using System.Dynamic;
 
-namespace AttendancePlatform.BI.Api.Services
+namespace Hudur.BI.Api.Services
 {
     public interface IReportBuilderService
     {

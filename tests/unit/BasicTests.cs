@@ -1,8 +1,8 @@
 using Xunit;
-using AttendancePlatform.Shared.Infrastructure.Services;
+using Hudur.Shared.Infrastructure.Services;
 using Moq;
 
-namespace AttendancePlatform.Tests.Unit
+namespace Hudur.Tests.Unit
 {
     public class BasicTests
     {

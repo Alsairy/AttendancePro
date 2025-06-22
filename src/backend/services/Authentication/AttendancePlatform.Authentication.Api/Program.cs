@@ -1,20 +1,20 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using AttendancePlatform.Authentication.Api.Services;
-using AttendancePlatform.Authentication.Api.Hubs;
-using AttendancePlatform.Shared.Infrastructure.Extensions;
-using AttendancePlatform.Shared.Infrastructure.Middleware;
-using AttendancePlatform.Shared.Infrastructure.Telemetry;
-using AttendancePlatform.Shared.Infrastructure.Services;
-using AttendancePlatform.Shared.Infrastructure.Repositories;
-using AttendancePlatform.Shared.Domain.Interfaces;
+using Hudur.Authentication.Api.Services;
+using Hudur.Shared.Infrastructure.Hubs;
+using Hudur.Shared.Infrastructure.Extensions;
+using Hudur.Shared.Infrastructure.Middleware;
+using Hudur.Shared.Infrastructure.Telemetry;
+using Hudur.Shared.Infrastructure.Services;
+using Hudur.Shared.Infrastructure.Repositories;
+using Hudur.Shared.Domain.Interfaces;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
-using AttendancePlatform.Shared.Infrastructure.Data;
+using Hudur.Shared.Infrastructure.Data;
 using StackExchange.Redis;
 
-[assembly: InternalsVisibleTo("AttendancePlatform.Tests.Integration")]
+[assembly: InternalsVisibleTo("Hudur.Tests.Integration")]
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,8 +22,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Add infrastructure services with in-memory database for testing
-builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
-    options.UseInMemoryDatabase("AttendancePlatformTestDb"));
+builder.Services.AddDbContext<HudurDbContext>(options =>
+    options.UseInMemoryDatabase("HudurTestDb"));
 
 // Add infrastructure services without database context (to avoid conflict)
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?? 
@@ -33,7 +33,7 @@ var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = redisConnectionString;
-    options.InstanceName = "AttendancePlatform";
+    options.InstanceName = "Hudur";
 });
 
 builder.Services.AddMemoryCache(options =>
@@ -56,7 +56,7 @@ builder.Services.AddSecurityServices(builder.Configuration);
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ITwoFactorService, TwoFactorService>();
-builder.Services.AddScoped<AttendancePlatform.Authentication.Api.Services.IEmailService, AttendancePlatform.Authentication.Api.Services.EmailService>();
+builder.Services.AddScoped<Hudur.Authentication.Api.Services.IEmailService, Hudur.Authentication.Api.Services.EmailService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
 // Configure JWT authentication
@@ -99,7 +99,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddAttendanceProTelemetry("Authentication Service");
+builder.Services.AddHudurTelemetry("Authentication Service");
 
 builder.Services.AddSession(options =>
 {
@@ -115,7 +115,7 @@ builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "Attendance Platform Authentication API", Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "Hudur Authentication API", Version = "v1" });
     
     // Add JWT authentication to Swagger
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme

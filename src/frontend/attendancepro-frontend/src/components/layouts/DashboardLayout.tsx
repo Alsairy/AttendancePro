@@ -87,7 +87,7 @@ const DashboardLayout: React.FC = () => {
         <div className="flex items-center space-x-2">
           <Shield className="h-8 w-8 text-primary" />
           <div className="flex flex-col">
-            <span className="text-xl font-bold">AttendancePro</span>
+            <span className="text-xl font-bold">Hudur</span>
             <span className="text-xs text-muted-foreground capitalize">{PERSONA} Portal</span>
           </div>
         </div>

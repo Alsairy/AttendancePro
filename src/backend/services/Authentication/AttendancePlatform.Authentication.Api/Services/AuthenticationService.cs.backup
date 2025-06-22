@@ -449,7 +449,7 @@ namespace AttendancePlatform.Authentication.Api.Services
                 _context.PasswordResetTokens.Add(resetToken);
                 await _context.SaveChangesAsync();
 
-                var resetUrl = "https://app.attendancepro.com/reset-password"; // This should come from configuration
+                var resetUrl = "https://app.hudu.sa/reset-password"; // This should come from configuration
                 var emailSent = await _emailService.SendPasswordResetEmailAsync(user.Email, resetToken.Token, resetUrl);
 
                 if (!emailSent)

@@ -83,7 +83,7 @@
   "jest": {
     "preset": "react-native"
   },
-  "description": "AttendancePro Mobile - Enterprise attendance management mobile application with biometric authentication, GPS tracking, and offline capabilities.",
+  "description": "Hudur Mobile - Enterprise attendance management mobile application with biometric authentication, GPS tracking, and offline capabilities.",
   "keywords": [
     "attendance",
     "biometric",

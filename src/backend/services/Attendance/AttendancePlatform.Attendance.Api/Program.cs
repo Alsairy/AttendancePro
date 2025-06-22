@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using AttendancePlatform.Attendance.Api.Services;
-using AttendancePlatform.Shared.Infrastructure.Extensions;
-using AttendancePlatform.Shared.Infrastructure.Middleware;
+using Hudur.Attendance.Api.Services;
+using Hudur.Shared.Infrastructure.Extensions;
+using Hudur.Shared.Infrastructure.Middleware;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("AttendancePlatform.Tests.Integration")]
+[assembly: InternalsVisibleTo("Hudur.Tests.Integration")]
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,7 +64,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "Attendance Platform Attendance API", Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "Hudur Attendance API", Version = "v1" });
     
     // Add JWT authentication to Swagger
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme

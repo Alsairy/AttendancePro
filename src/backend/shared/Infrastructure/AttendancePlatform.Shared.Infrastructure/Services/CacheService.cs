@@ -5,7 +5,7 @@ using System.Text.Json;
 using StackExchange.Redis;
 using System.Diagnostics.Metrics;
 
-namespace AttendancePlatform.Shared.Infrastructure.Services
+namespace Hudur.Shared.Infrastructure.Services
 {
     public class CacheService : ICacheService
     {

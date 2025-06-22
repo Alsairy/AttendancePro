@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: api-gateway-hpa
-  namespace: attendancepro
+  namespace: hudur
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -28,7 +28,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: attendance-service-hpa
-  namespace: attendancepro
+  namespace: hudur
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -54,7 +54,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: face-recognition-service-hpa
-  namespace: attendancepro
+  namespace: hudur
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -80,7 +80,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: frontend-hpa
-  namespace: attendancepro
+  namespace: hudur
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -105,8 +105,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: attendancepro-network-policy
-  namespace: attendancepro
+  name: hudur-network-policy
+  namespace: hudur
 spec:
   podSelector: {}
   policyTypes:
@@ -116,7 +116,7 @@ spec:
   - from:
     - namespaceSelector:
         matchLabels:
-          name: attendancepro
+          name: hudur
     - namespaceSelector:
         matchLabels:
           name: kube-system
@@ -130,7 +130,7 @@ spec:
   - to:
     - namespaceSelector:
         matchLabels:
-          name: attendancepro
+          name: hudur
   - to:
     - namespaceSelector:
         matchLabels:
@@ -149,8 +149,8 @@ spec:
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: attendancepro-quota
-  namespace: attendancepro
+  name: hudur-quota
+  namespace: hudur
 spec:
   hard:
     requests.cpu: "10"

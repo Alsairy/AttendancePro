@@ -1,6 +1,6 @@
-using AttendancePlatform.Shared.Domain.Interfaces;
+using Hudur.Shared.Domain.Interfaces;
 
-namespace AttendancePlatform.Shared.Domain.Entities
+namespace Hudur.Shared.Domain.Entities
 {
     public class Kiosk : BaseEntity, ITenantAware
     {

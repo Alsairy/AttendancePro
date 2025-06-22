@@ -1,8 +1,8 @@
 {
   "dashboard": {
     "id": null,
-    "title": "AttendancePro Business Metrics",
-    "tags": ["attendancepro", "business"],
+    "title": "Hudur Business Metrics",
+    "tags": ["hudur", "business"],
     "style": "dark",
     "timezone": "browser",
     "panels": [

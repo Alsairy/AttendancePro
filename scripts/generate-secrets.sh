@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-echo "Generating secure secrets for AttendancePro..."
+echo "Generating secure secrets for Hudur..."
 
 JWT_SECRET=$(openssl rand -base64 48 | tr -d "=+/" | cut -c1-64)
 
@@ -16,7 +16,7 @@ ENCRYPTION_KEY=$(openssl rand -base64 24 | tr -d "=+/" | cut -c1-32)
 cat > .env.production << EOF
 
 DB_SERVER=sql-server
-DB_NAME=AttendancePlatform
+DB_NAME=Hudur
 DB_USER=sa
 DB_PASSWORD=${DB_PASSWORD}
 DB_TRUST_SERVER_CERTIFICATE=true
@@ -52,7 +52,7 @@ SMTP_HOST=smtp.yourdomain.com
 SMTP_PORT=587
 SMTP_USER=noreply@yourdomain.com
 SMTP_PASSWORD=CHANGE_THIS_SMTP_PASSWORD_IN_PRODUCTION
-SMTP_FROM_NAME=AttendancePro System
+SMTP_FROM_NAME=Hudur System
 
 SMS_PROVIDER=twilio
 SMS_ACCOUNT_SID=CHANGE_THIS_SMS_SID_IN_PRODUCTION
@@ -63,7 +63,7 @@ STORAGE_TYPE=local
 STORAGE_PATH=/app/uploads
 AWS_ACCESS_KEY_ID=CHANGE_THIS_AWS_KEY_IN_PRODUCTION
 AWS_SECRET_ACCESS_KEY=CHANGE_THIS_AWS_SECRET_IN_PRODUCTION
-AWS_BUCKET_NAME=attendancepro-uploads
+AWS_BUCKET_NAME=hudur-uploads
 AWS_REGION=us-east-1
 
 FACE_RECOGNITION_CONFIDENCE_THRESHOLD=0.85
@@ -83,7 +83,7 @@ ACCOUNT_LOCKOUT_DURATION_MINUTES=30
 
 LOG_LEVEL=Information
 LOG_TO_FILE=true
-LOG_FILE_PATH=/app/logs/attendancepro.log
+LOG_FILE_PATH=/app/logs/hudur.log
 LOG_MAX_FILE_SIZE_MB=100
 LOG_MAX_FILES=10
 

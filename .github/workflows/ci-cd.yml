@@ -20,7 +20,7 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: attendancepro_test
+          POSTGRES_DB: hudur_test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -49,13 +49,13 @@ jobs:
         dotnet-version: '8.0.x'
     
     - name: Restore dependencies
-      run: dotnet restore AttendancePlatform.sln
+      run: dotnet restore Hudur.sln
     
     - name: Build
-      run: dotnet build AttendancePlatform.sln --no-restore
+      run: dotnet build Hudur.sln --no-restore
     
     - name: Test
-      run: dotnet test AttendancePlatform.sln --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      run: dotnet test Hudur.sln --no-build --verbosity normal --collect:"XPlat Code Coverage"
     
     - name: Upload coverage
       uses: codecov/codecov-action@v3
@@ -75,19 +75,19 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: src/frontend/attendancepro-frontend/package-lock.json
+        cache-dependency-path: src/frontend/hudur-frontend/package-lock.json
     
     - name: Install dependencies
       run: npm ci
-      working-directory: src/frontend/attendancepro-frontend
+      working-directory: src/frontend/hudur-frontend
     
     - name: Run tests
       run: npm test -- --coverage
-      working-directory: src/frontend/attendancepro-frontend
+      working-directory: src/frontend/hudur-frontend
     
     - name: Build
       run: npm run build
-      working-directory: src/frontend/attendancepro-frontend
+      working-directory: src/frontend/hudur-frontend
     
     - name: Upload coverage
       uses: codecov/codecov-action@v3
@@ -205,7 +205,7 @@ jobs:
     
     environment:
       name: staging
-      url: https://staging.attendancepro.com
+      url: https://staging.hudu.sa
     
     steps:
     - name: Checkout code
@@ -224,7 +224,7 @@ jobs:
     
     environment:
       name: production
-      url: https://attendancepro.com
+      url: https://hudu.sa
     
     steps:
     - name: Checkout code

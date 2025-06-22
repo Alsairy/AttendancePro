@@ -1,8 +1,8 @@
-# AttendancePro Architecture Guide
+# Hudur Architecture Guide
 
 ## Overview
 
-AttendancePro is built using a modern microservices architecture designed for enterprise-scale workforce management. The platform emphasizes scalability, security, maintainability, and high availability through well-defined service boundaries and robust infrastructure patterns.
+Hudur is built using a modern microservices architecture designed for enterprise-scale workforce management. The platform emphasizes scalability, security, maintainability, and high availability through well-defined service boundaries and robust infrastructure patterns.
 
 ## Architecture Principles
 
@@ -370,7 +370,7 @@ spec:
     spec:
       containers:
       - name: attendance-service
-        image: attendancepro/attendance-service:latest
+        image: hudur/attendance-service:latest
         ports:
         - containerPort: 8080
         env:
@@ -488,7 +488,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
     - name: Build Docker Images
-      run: docker build -t attendancepro/service:${{ github.sha }} .
+      run: docker build -t hudur/service:${{ github.sha }} .
     - name: Deploy to Kubernetes
       run: kubectl apply -f k8s/
 ```
@@ -537,7 +537,7 @@ jobs:
 
 ## Conclusion
 
-The AttendancePro architecture is designed for enterprise-scale deployment with emphasis on security, scalability, and maintainability. The microservices approach enables independent development and deployment while maintaining system cohesion through well-defined APIs and event-driven communication.
+The Hudur architecture is designed for enterprise-scale deployment with emphasis on security, scalability, and maintainability. The microservices approach enables independent development and deployment while maintaining system cohesion through well-defined APIs and event-driven communication.
 
 Key architectural strengths:
 - **Scalable**: Horizontal scaling across all layers

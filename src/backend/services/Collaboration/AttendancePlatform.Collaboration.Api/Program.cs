@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using AttendancePlatform.Shared.Infrastructure.Data;
-using AttendancePlatform.Shared.Infrastructure.Extensions;
-using AttendancePlatform.Shared.Domain.Entities;
-using AttendancePlatform.Collaboration.Api.Services;
-using AttendancePlatform.Collaboration.Api.Hubs;
+using Hudur.Shared.Infrastructure.Data;
+using Hudur.Shared.Infrastructure.Extensions;
+using Hudur.Shared.Domain.Entities;
+using Hudur.Collaboration.Api.Services;
+using Hudur.Collaboration.Api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Database
-builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
+builder.Services.AddDbContext<HudurDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // SignalR for real-time communication
@@ -84,7 +84,7 @@ builder.Services.AddCors(options =>
 
 // Health Checks
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<AttendancePlatformDbContext>();
+    .AddDbContextCheck<HudurDbContext>();
 
 // Shared Infrastructure
 builder.Services.AddSharedInfrastructure(builder.Configuration);

@@ -4,7 +4,7 @@ using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Domain.DTOs;
 using AttendancePlatform.Shared.Domain.Entities;
 
-namespace AttendancePlatform.Compliance.Api.Services
+namespace Hudur.Compliance.Api.Services
 {
     public interface IComplianceService
     {

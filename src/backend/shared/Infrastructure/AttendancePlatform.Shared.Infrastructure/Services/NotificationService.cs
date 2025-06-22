@@ -1,21 +1,21 @@
-using AttendancePlatform.Shared.Domain.Entities;
-using AttendancePlatform.Shared.Infrastructure.Data;
-using AttendancePlatform.Shared.Infrastructure.Hubs;
+using Hudur.Shared.Domain.Entities;
+using Hudur.Shared.Infrastructure.Data;
+using Hudur.Shared.Infrastructure.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace AttendancePlatform.Shared.Infrastructure.Services;
+namespace Hudur.Shared.Infrastructure.Services;
 
 public class NotificationService : INotificationService
 {
-    private readonly AttendancePlatformDbContext _context;
+    private readonly HudurDbContext _context;
     private readonly IHubContext<NotificationHub> _hubContext;
     private readonly ILogger<NotificationService> _logger;
 
     public NotificationService(
-        AttendancePlatformDbContext context,
+        HudurDbContext context,
         IHubContext<NotificationHub> hubContext,
         ILogger<NotificationService> logger)
     {

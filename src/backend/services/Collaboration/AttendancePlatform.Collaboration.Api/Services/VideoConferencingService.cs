@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using AttendancePlatform.Shared.Infrastructure.Data;
-using AttendancePlatform.Shared.Domain.Entities;
+using Hudur.Shared.Infrastructure.Data;
+using Hudur.Shared.Domain.Entities;
 
-namespace AttendancePlatform.Collaboration.Api.Services
+namespace Hudur.Collaboration.Api.Services
 {
     public interface IVideoConferencingService
     {
@@ -20,10 +20,10 @@ namespace AttendancePlatform.Collaboration.Api.Services
 
     public class VideoConferencingService : IVideoConferencingService
     {
-        private readonly AttendancePlatformDbContext _context;
+        private readonly HudurDbContext _context;
         private readonly ILogger<VideoConferencingService> _logger;
 
-        public VideoConferencingService(AttendancePlatformDbContext context, ILogger<VideoConferencingService> logger)
+        public VideoConferencingService(HudurDbContext context, ILogger<VideoConferencingService> logger)
         {
             _context = context;
             _logger = logger;
@@ -42,7 +42,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                     MaxParticipants = maxParticipants,
                     Status = ConferenceStatus.Scheduled,
                     CreatedAt = DateTime.UtcNow,
-                    ConferenceUrl = $"https://meet.attendancepro.com/{Guid.NewGuid():N}",
+                    ConferenceUrl = $"https://meet.hudu.sa/{Guid.NewGuid():N}",
                     IsRecordingEnabled = false,
                     IsLocked = false
                 };

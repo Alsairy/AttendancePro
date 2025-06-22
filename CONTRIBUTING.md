@@ -1,11 +1,11 @@
-# Contributing to AttendancePro
+# Contributing to Hudur
 
-We love your input! We want to make contributing to AttendancePro as easy and transparent as possible.
+We love your input! We want to make contributing to Hudur as easy and transparent as possible.
 
 ## 🚀 Quick Start for Contributors
 
 1. **Fork** the repository
-2. **Clone** your fork: `git clone https://github.com/your-username/attendancepro.git`
+2. **Clone** your fork: `git clone https://github.com/your-username/hudur.git`
 3. **Create** a branch: `git checkout -b feature/amazing-feature`
 4. **Make** your changes
 5. **Test** your changes: `npm test` and `dotnet test`
@@ -60,7 +60,7 @@ Use GitHub Issues with the feature request template:
 
 ## 🔒 Security
 
-Please report security vulnerabilities privately to security@attendancepro.com
+Please report security vulnerabilities privately to security@hudu.sa
 
 ## 📄 License
 

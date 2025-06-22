@@ -1,13 +1,13 @@
 const { test, expect } = require('@playwright/test');
 
-// End-to-End Tests for AttendancePro Platform
+// End-to-End Tests for Hudur Platform
 // These tests simulate real user interactions across the entire platform
 
-test.describe('AttendancePro Platform E2E Tests', () => {
+test.describe('Hudur Platform E2E Tests', () => {
   
   test.beforeEach(async ({ page }) => {
     // Navigate to the application
-    await page.goto('https://project-review-app-7tx5ua47.devinapps.com');
+    await page.goto('http://localhost:3000');
   });
 
   test.describe('Authentication Flow', () => {
@@ -64,7 +64,7 @@ test.describe('AttendancePro Platform E2E Tests', () => {
     
     test.beforeEach(async ({ page }) => {
       // Login before each attendance test
-      await page.goto('https://project-review-app-7tx5ua47.devinapps.com/login');
+      await page.goto('https://app.hudu.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
@@ -119,7 +119,7 @@ test.describe('AttendancePro Platform E2E Tests', () => {
   test.describe('Face Recognition', () => {
     
     test.beforeEach(async ({ page }) => {
-      await page.goto('https://project-review-app-7tx5ua47.devinapps.com/login');
+      await page.goto('https://app.hudu.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
@@ -166,7 +166,7 @@ test.describe('AttendancePro Platform E2E Tests', () => {
   test.describe('Leave Management', () => {
     
     test.beforeEach(async ({ page }) => {
-      await page.goto('https://project-review-app-7tx5ua47.devinapps.com/login');
+      await page.goto('https://app.hudu.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
@@ -215,7 +215,7 @@ test.describe('AttendancePro Platform E2E Tests', () => {
   test.describe('User Management', () => {
     
     test.beforeEach(async ({ page }) => {
-      await page.goto('https://project-review-app-7tx5ua47.devinapps.com/login');
+      await page.goto('https://app.hudu.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
@@ -265,7 +265,7 @@ test.describe('AttendancePro Platform E2E Tests', () => {
   test.describe('Reports and Analytics', () => {
     
     test.beforeEach(async ({ page }) => {
-      await page.goto('https://project-review-app-7tx5ua47.devinapps.com/login');
+      await page.goto('https://app.hudu.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
@@ -314,7 +314,7 @@ test.describe('AttendancePro Platform E2E Tests', () => {
   test.describe('Settings and Configuration', () => {
     
     test.beforeEach(async ({ page }) => {
-      await page.goto('https://project-review-app-7tx5ua47.devinapps.com/login');
+      await page.goto('https://app.hudu.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
@@ -368,7 +368,7 @@ test.describe('AttendancePro Platform E2E Tests', () => {
       // Set mobile viewport
       await page.setViewportSize({ width: 375, height: 667 });
       
-      await page.goto('https://project-review-app-7tx5ua47.devinapps.com');
+      await page.goto('http://localhost:3000');
       
       // Verify mobile navigation
       await expect(page.locator('[data-testid=mobile-menu-button]')).toBeVisible();
@@ -391,7 +391,7 @@ test.describe('AttendancePro Platform E2E Tests', () => {
   test.describe('Performance and Accessibility', () => {
     
     test('Platform meets performance benchmarks', async ({ page }) => {
-      await page.goto('https://project-review-app-7tx5ua47.devinapps.com');
+      await page.goto('http://localhost:3000');
       
       // Measure page load time
       const startTime = Date.now();
@@ -403,7 +403,7 @@ test.describe('AttendancePro Platform E2E Tests', () => {
     });
 
     test('Platform is accessible', async ({ page }) => {
-      await page.goto('https://project-review-app-7tx5ua47.devinapps.com');
+      await page.goto('http://localhost:3000');
       
       // Check for accessibility landmarks
       await expect(page.locator('main')).toBeVisible();

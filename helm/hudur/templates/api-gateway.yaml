@@ -2,25 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "attendancepro.fullname" . }}-api-gateway
+  name: {{ include "hudur.fullname" . }}-api-gateway
   labels:
-    {{- include "attendancepro.labels" . | nindent 4 }}
+    {{- include "hudur.labels" . | nindent 4 }}
     app.kubernetes.io/component: api-gateway
 spec:
   replicas: {{ .Values.services.apiGateway.replicaCount }}
   selector:
     matchLabels:
-      {{- include "attendancepro.selectorLabels" . | nindent 6 }}
+      {{- include "hudur.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/component: api-gateway
   template:
     metadata:
       labels:
-        {{- include "attendancepro.selectorLabels" . | nindent 8 }}
+        {{- include "hudur.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: api-gateway
     spec:
       containers:
       - name: api-gateway
-        image: {{ include "attendancepro.image" (dict "repository" .Values.services.apiGateway.image.repository "tag" .Values.services.apiGateway.image.tag "Values" .Values) }}
+        image: {{ include "hudur.image" (dict "repository" .Values.services.apiGateway.image.repository "tag" .Values.services.apiGateway.image.tag "Values" .Values) }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - name: http
@@ -28,7 +28,7 @@ spec:
           protocol: TCP
         envFrom:
         - configMapRef:
-            name: {{ include "attendancepro.fullname" . }}-config
+            name: {{ include "hudur.fullname" . }}-config
         env:
         - name: ASPNETCORE_ENVIRONMENT
           value: "Production"
@@ -52,9 +52,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "attendancepro.fullname" . }}-api-gateway
+  name: {{ include "hudur.fullname" . }}-api-gateway
   labels:
-    {{- include "attendancepro.labels" . | nindent 4 }}
+    {{- include "hudur.labels" . | nindent 4 }}
     app.kubernetes.io/component: api-gateway
 spec:
   type: {{ .Values.services.apiGateway.service.type }}
@@ -64,22 +64,22 @@ spec:
     protocol: TCP
     name: http
   selector:
-    {{- include "attendancepro.selectorLabels" . | nindent 4 }}
+    {{- include "hudur.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: api-gateway
 {{- if .Values.services.apiGateway.autoscaling.enabled }}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "attendancepro.fullname" . }}-api-gateway-hpa
+  name: {{ include "hudur.fullname" . }}-api-gateway-hpa
   labels:
-    {{- include "attendancepro.labels" . | nindent 4 }}
+    {{- include "hudur.labels" . | nindent 4 }}
     app.kubernetes.io/component: api-gateway
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "attendancepro.fullname" . }}-api-gateway
+    name: {{ include "hudur.fullname" . }}-api-gateway
   minReplicas: {{ .Values.services.apiGateway.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.services.apiGateway.autoscaling.maxReplicas }}
   metrics:

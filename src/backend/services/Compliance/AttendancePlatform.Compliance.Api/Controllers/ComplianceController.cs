@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using AttendancePlatform.Compliance.Api.Services;
-using AttendancePlatform.Shared.Domain.DTOs;
+using Hudur.Shared.Domain.DTOs;
 
 namespace AttendancePlatform.Compliance.Api.Controllers
 {

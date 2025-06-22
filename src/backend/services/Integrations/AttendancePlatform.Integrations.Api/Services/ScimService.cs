@@ -238,7 +238,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             return await Task.FromResult(new ScimServiceProviderConfig
             {
                 Schemas = new[] { "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig" },
-                DocumentationUri = "https://docs.attendancepro.com/scim",
+                DocumentationUri = "https://docs.hudu.sa/scim",
                 Patch = new ScimSupported { Supported = true },
                 Bulk = new ScimBulkSupported 
                 { 
@@ -262,7 +262,7 @@ namespace AttendancePlatform.Integrations.Api.Services
                         Name = "OAuth Bearer Token",
                         Description = "Authentication scheme using the OAuth Bearer Token Standard",
                         SpecUri = "http://www.rfc-editor.org/info/rfc6750",
-                        DocumentationUri = "https://docs.attendancepro.com/scim/auth"
+                        DocumentationUri = "https://docs.hudu.sa/scim/auth"
                     }
                 }
             });

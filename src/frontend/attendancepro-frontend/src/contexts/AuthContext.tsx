@@ -69,7 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           id: 'dev-user-1',
           firstName: 'John',
           lastName: 'Doe',
-          email: 'john.doe@attendancepro.com',
+          email: 'john.doe@hudu.sa',
           phoneNumber: '+1234567890',
           employeeId: 'EMP001',
           department: 'Engineering',

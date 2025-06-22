@@ -162,7 +162,7 @@ const KioskLoginPage: React.FC = () => {
 
         <div className="mt-6 text-center">
           <p className="text-xs text-gray-400">
-            AttendancePro Kiosk Mode v1.0.0
+            Hudur Kiosk Mode v1.0.0
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
-using AttendancePlatform.Shared.Domain.Interfaces;
+using Hudur.Shared.Domain.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
-namespace AttendancePlatform.Shared.Domain.Entities
+namespace Hudur.Shared.Domain.Entities
 {
     public class Shift : BaseEntity, ITenantAware
     {

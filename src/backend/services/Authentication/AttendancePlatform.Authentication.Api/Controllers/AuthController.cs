@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using AttendancePlatform.Authentication.Api.Services;
-using AttendancePlatform.Shared.Domain.DTOs;
+using Hudur.Authentication.Api.Services;
+using Hudur.Shared.Domain.DTOs;
 using System.Security.Claims;
 
-namespace AttendancePlatform.Authentication.Api.Controllers
+namespace Hudur.Authentication.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

@@ -9,7 +9,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Health;
 
 public static class HealthCheckExtensions
 {
-    public static IServiceCollection AddAttendanceProHealthChecks(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddHudurHealthChecks(this IServiceCollection services, string connectionString)
     {
         services.AddHealthChecks()
             .AddSqlServer(connectionString, name: "database", tags: new[] { "db", "sql" })
@@ -24,7 +24,7 @@ public static class HealthCheckExtensions
         return services;
     }
 
-    public static IApplicationBuilder UseAttendanceProHealthChecks(this IApplicationBuilder app)
+    public static IApplicationBuilder UseHudurHealthChecks(this IApplicationBuilder app)
     {
         app.UseHealthChecks("/health", new HealthCheckOptions
         {

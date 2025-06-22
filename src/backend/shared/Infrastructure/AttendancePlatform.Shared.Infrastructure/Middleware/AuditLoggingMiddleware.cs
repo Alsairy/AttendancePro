@@ -1,5 +1,5 @@
-using AttendancePlatform.Shared.Domain.Entities;
-using AttendancePlatform.Shared.Infrastructure.Services;
+using Hudur.Shared.Domain.Entities;
+using Hudur.Shared.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
-namespace AttendancePlatform.Shared.Infrastructure.Middleware;
+namespace Hudur.Shared.Infrastructure.Middleware;
 
 public class AuditLoggingMiddleware
 {

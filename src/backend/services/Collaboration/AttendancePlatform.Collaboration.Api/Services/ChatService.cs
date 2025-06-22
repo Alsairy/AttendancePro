@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using AttendancePlatform.Shared.Infrastructure.Data;
-using AttendancePlatform.Shared.Domain.Entities;
+using Hudur.Shared.Infrastructure.Data;
+using Hudur.Shared.Domain.Entities;
 
 namespace AttendancePlatform.Collaboration.Api.Services
 {
@@ -19,10 +19,10 @@ namespace AttendancePlatform.Collaboration.Api.Services
 
     public class ChatService : IChatService
     {
-        private readonly AttendancePlatformDbContext _context;
+        private readonly HudurDbContext _context;
         private readonly ILogger<ChatService> _logger;
 
-        public ChatService(AttendancePlatformDbContext context, ILogger<ChatService> logger)
+        public ChatService(HudurDbContext context, ILogger<ChatService> logger)
         {
             _context = context;
             _logger = logger;

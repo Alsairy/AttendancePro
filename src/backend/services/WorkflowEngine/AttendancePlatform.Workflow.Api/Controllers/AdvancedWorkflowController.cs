@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using AttendancePlatform.Workflow.Api.Services;
-using AttendancePlatform.Shared.Domain.DTOs;
+using Hudur.Shared.Domain.DTOs;
 
 namespace AttendancePlatform.Workflow.Api.Controllers
 {

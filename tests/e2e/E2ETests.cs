@@ -8,7 +8,7 @@ namespace AttendancePlatform.Tests.E2E
     {
         public IPlaywright Playwright { get; private set; } = null!;
         public IBrowser Browser { get; private set; } = null!;
-        public string BaseUrl { get; private set; } = "https://project-review-app-7tx5ua47.devinapps.com";
+        public string BaseUrl { get; private set; } = "https://app.hudu.sa";
 
         public async Task InitializeAsync()
         {

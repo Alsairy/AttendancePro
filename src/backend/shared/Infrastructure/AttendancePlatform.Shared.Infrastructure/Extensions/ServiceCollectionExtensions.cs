@@ -1,27 +1,27 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using AttendancePlatform.Shared.Domain.Interfaces;
-using AttendancePlatform.Shared.Infrastructure.Data;
-using AttendancePlatform.Shared.Infrastructure.Services;
-using AttendancePlatform.Shared.Infrastructure.Repositories;
-using AttendancePlatform.Shared.Infrastructure.Security;
-using AttendancePlatform.Shared.Infrastructure.Middleware;
+using Hudur.Shared.Domain.Interfaces;
+using Hudur.Shared.Infrastructure.Data;
+using Hudur.Shared.Infrastructure.Services;
+using Hudur.Shared.Infrastructure.Repositories;
+using Hudur.Shared.Infrastructure.Security;
+using Hudur.Shared.Infrastructure.Middleware;
 using StackExchange.Redis;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace AttendancePlatform.Shared.Infrastructure.Extensions
+namespace Hudur.Shared.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             // Add DbContext with optimized configuration
-            services.AddDbContext<AttendancePlatformDbContext>(options =>
+            services.AddDbContext<HudurDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     b => {
-                        b.MigrationsAssembly(typeof(AttendancePlatformDbContext).Assembly.FullName);
+                        b.MigrationsAssembly(typeof(HudurDbContext).Assembly.FullName);
                         b.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(5), errorNumbersToAdd: null);
                         b.CommandTimeout(30);
                     }), ServiceLifetime.Scoped);
@@ -33,7 +33,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = redisConnectionString;
-                options.InstanceName = "AttendancePlatform";
+                options.InstanceName = "Hudur";
             });
 
             services.AddMemoryCache(options =>
@@ -71,7 +71,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
         public static async Task<IServiceProvider> MigrateDatabaseAsync(this IServiceProvider serviceProvider)
         {
             using var scope = serviceProvider.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<AttendancePlatformDbContext>();
+            var context = scope.ServiceProvider.GetRequiredService<HudurDbContext>();
             
             try
             {

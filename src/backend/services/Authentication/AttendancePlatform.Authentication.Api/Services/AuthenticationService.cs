@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
-using AttendancePlatform.Shared.Domain.Entities;
-using AttendancePlatform.Shared.Domain.DTOs;
-using AttendancePlatform.Shared.Domain.Interfaces;
-using AttendancePlatform.Shared.Infrastructure.Data;
+using Hudur.Shared.Domain.Entities;
+using Hudur.Shared.Domain.DTOs;
+using Hudur.Shared.Domain.Interfaces;
+using Hudur.Shared.Infrastructure.Data;
+using Hudur.Authentication.Api.Services;
 
-namespace AttendancePlatform.Authentication.Api.Services
+namespace Hudur.Authentication.Api.Services
 {
     public interface IAuthenticationService
     {
@@ -21,7 +22,7 @@ namespace AttendancePlatform.Authentication.Api.Services
 
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly AttendancePlatformDbContext _context;
+        private readonly HudurDbContext _context;
         private readonly IJwtTokenService _jwtTokenService;
         private readonly ILogger<AuthenticationService> _logger;
         private readonly ITenantContext _tenantContext;
@@ -30,7 +31,7 @@ namespace AttendancePlatform.Authentication.Api.Services
         private readonly IRefreshTokenService _refreshTokenService;
 
         public AuthenticationService(
-            AttendancePlatformDbContext context,
+            HudurDbContext context,
             IJwtTokenService jwtTokenService,
             ILogger<AuthenticationService> logger,
             ITenantContext tenantContext,
@@ -438,7 +439,7 @@ namespace AttendancePlatform.Authentication.Api.Services
                 _context.PasswordResetTokens.Add(resetToken);
                 await _context.SaveChangesAsync();
 
-                var resetUrl = "https://app.attendancepro.com/reset-password"; // This should come from configuration
+                var resetUrl = "https://app.hudu.sa/reset-password"; // This should come from configuration
                 var emailSent = await _emailService.SendPasswordResetEmailAsync(user.Email, resetToken.Token, resetUrl);
 
                 if (!emailSent)

@@ -1,8 +1,8 @@
 {
   "dashboard": {
     "id": null,
-    "title": "AttendancePro System Overview",
-    "tags": ["attendancepro", "overview"],
+    "title": "Hudur System Overview",
+    "tags": ["hudur", "overview"],
     "style": "dark",
     "timezone": "browser",
     "panels": [

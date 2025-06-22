@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using AttendancePlatform.Shared.Infrastructure.Data;
-using AttendancePlatform.Shared.Domain.Entities;
+using Hudur.Shared.Infrastructure.Data;
+using Hudur.Shared.Domain.Entities;
 
 namespace AttendancePlatform.Collaboration.Api.Services
 {
@@ -20,10 +20,10 @@ namespace AttendancePlatform.Collaboration.Api.Services
 
     public class TeamCollaborationService : ITeamCollaborationService
     {
-        private readonly AttendancePlatformDbContext _context;
+        private readonly HudurDbContext _context;
         private readonly ILogger<TeamCollaborationService> _logger;
 
-        public TeamCollaborationService(AttendancePlatformDbContext context, ILogger<TeamCollaborationService> logger)
+        public TeamCollaborationService(HudurDbContext context, ILogger<TeamCollaborationService> logger)
         {
             _context = context;
             _logger = logger;

@@ -1,6 +1,6 @@
-using AttendancePlatform.Shared.Domain.Entities;
+using Hudur.Shared.Domain.Entities;
 
-namespace AttendancePlatform.Shared.Infrastructure.Services;
+namespace Hudur.Shared.Infrastructure.Services;
 
 public interface IWorkflowAutomationService
 {

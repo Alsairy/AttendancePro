@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AttendancePlatform.Shared.Domain.Entities
+namespace Hudur.Shared.Domain.Entities
 {
     public class User : TenantEntity
     {

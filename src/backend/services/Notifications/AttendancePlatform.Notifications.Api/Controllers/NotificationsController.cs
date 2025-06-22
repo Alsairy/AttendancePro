@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using AttendancePlatform.Notifications.Api.Services;
 using System.Security.Claims;
 
-namespace AttendancePlatform.Notifications.Api.Controllers
+namespace Hudur.Notifications.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

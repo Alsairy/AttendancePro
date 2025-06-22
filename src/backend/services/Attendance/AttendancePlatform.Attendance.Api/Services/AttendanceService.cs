@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using AttendancePlatform.Shared.Domain.Entities;
-using AttendancePlatform.Shared.Domain.DTOs;
-using AttendancePlatform.Shared.Domain.Interfaces;
-using AttendancePlatform.Shared.Infrastructure.Data;
+using Hudur.Shared.Domain.Entities;
+using Hudur.Shared.Domain.DTOs;
+using Hudur.Shared.Domain.Interfaces;
+using Hudur.Shared.Infrastructure.Data;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
 
-namespace AttendancePlatform.Attendance.Api.Services
+namespace Hudur.Attendance.Api.Services
 {
     public interface IAttendanceService
     {
@@ -23,13 +23,13 @@ namespace AttendancePlatform.Attendance.Api.Services
 
     public class AttendanceService : IAttendanceService
     {
-        private readonly AttendancePlatformDbContext _context;
+        private readonly HudurDbContext _context;
         private readonly ILogger<AttendanceService> _logger;
         private readonly ITenantContext _tenantContext;
         private readonly IDateTimeProvider _dateTimeProvider;
 
         public AttendanceService(
-            AttendancePlatformDbContext context,
+            HudurDbContext context,
             ILogger<AttendanceService> logger,
             ITenantContext tenantContext,
             IDateTimeProvider dateTimeProvider)

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using AttendancePlatform.Shared.Infrastructure.Data;
-using AttendancePlatform.Shared.Domain.Entities;
+using Hudur.Shared.Infrastructure.Data;
+using Hudur.Shared.Domain.Entities;
 
 namespace AttendancePlatform.Collaboration.Api.Services
 {
@@ -20,10 +20,10 @@ namespace AttendancePlatform.Collaboration.Api.Services
 
     public class ScreenSharingService : IScreenSharingService
     {
-        private readonly AttendancePlatformDbContext _context;
+        private readonly HudurDbContext _context;
         private readonly ILogger<ScreenSharingService> _logger;
 
-        public ScreenSharingService(AttendancePlatformDbContext context, ILogger<ScreenSharingService> logger)
+        public ScreenSharingService(HudurDbContext context, ILogger<ScreenSharingService> logger)
         {
             _context = context;
             _logger = logger;
@@ -41,7 +41,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                     Title = title ?? "Screen Sharing Session",
                     StartedAt = DateTime.UtcNow,
                     Status = "Active",
-                    SessionUrl = $"https://screen.attendancepro.com/{Guid.NewGuid():N}",
+                    SessionUrl = $"https://screen.hudu.sa/{Guid.NewGuid():N}",
                     IsRecording = false,
                     MaxParticipants = 50
                 };
