@@ -610,6 +610,81 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
             };
 
             modelBuilder.Entity<Permission>().HasData(permissions);
+
+            var defaultTenant = new Tenant
+            {
+                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                Name = "Test Organization",
+                Subdomain = "test",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = "System"
+            };
+
+            modelBuilder.Entity<Tenant>().HasData(defaultTenant);
+
+            var roles = new[]
+            {
+                new Role { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), Name = "Admin", Description = "System Administrator", TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" },
+                new Role { Id = Guid.Parse("33333333-3333-3333-3333-333333333333"), Name = "Manager", Description = "Department Manager", TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" },
+                new Role { Id = Guid.Parse("44444444-4444-4444-4444-444444444444"), Name = "Employee", Description = "Standard Employee", TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" }
+            };
+
+            modelBuilder.Entity<Role>().HasData(roles);
+
+            var users = new[]
+            {
+                new User
+                {
+                    Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
+                    FirstName = "System",
+                    LastName = "Administrator",
+                    Email = "admin@test.com",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("AdminPassword123!"),
+                    IsActive = true,
+                    IsEmailVerified = true,
+                    TenantId = defaultTenant.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedBy = "System"
+                },
+                new User
+                {
+                    Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
+                    FirstName = "Department",
+                    LastName = "Manager",
+                    Email = "manager@test.com",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("ManagerPassword123!"),
+                    IsActive = true,
+                    IsEmailVerified = true,
+                    TenantId = defaultTenant.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedBy = "System"
+                },
+                new User
+                {
+                    Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
+                    FirstName = "John",
+                    LastName = "Doe",
+                    Email = "john.doe@test.com",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("TestPassword123!"),
+                    IsActive = true,
+                    IsEmailVerified = true,
+                    TenantId = defaultTenant.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedBy = "System"
+                }
+            };
+
+            modelBuilder.Entity<User>().HasData(users);
+
+            var userRoles = new[]
+            {
+                new UserRole { Id = Guid.Parse("88888888-8888-8888-8888-888888888888"), UserId = users[0].Id, RoleId = roles[0].Id, TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" },
+                new UserRole { Id = Guid.Parse("99999999-9999-9999-9999-999999999999"), UserId = users[1].Id, RoleId = roles[1].Id, TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" },
+                new UserRole { Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), UserId = users[2].Id, RoleId = roles[2].Id, TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" }
+            };
+
+            modelBuilder.Entity<UserRole>().HasData(userRoles);
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
