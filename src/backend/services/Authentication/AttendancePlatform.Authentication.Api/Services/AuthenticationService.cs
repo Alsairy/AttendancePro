@@ -22,7 +22,7 @@ namespace AttendancePlatform.Authentication.Api.Services
 
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private readonly IJwtTokenService _jwtTokenService;
         private readonly ILogger<AuthenticationService> _logger;
         private readonly ITenantContext _tenantContext;
@@ -31,7 +31,7 @@ namespace AttendancePlatform.Authentication.Api.Services
         private readonly IRefreshTokenService _refreshTokenService;
 
         public AuthenticationService(
-            HudurDbContext context,
+            AttendancePlatformDbContext context,
             IJwtTokenService jwtTokenService,
             ILogger<AuthenticationService> logger,
             ITenantContext tenantContext,

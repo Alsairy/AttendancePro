@@ -19,10 +19,10 @@ namespace AttendancePlatform.Collaboration.Api.Services
 
     public class ChatService : IChatService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private readonly ILogger<ChatService> _logger;
 
-        public ChatService(HudurDbContext context, ILogger<ChatService> logger)
+        public ChatService(AttendancePlatformDbContext context, ILogger<ChatService> logger)
         {
             _context = context;
             _logger = logger;

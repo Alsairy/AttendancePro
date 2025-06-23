@@ -22,8 +22,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Add infrastructure services with in-memory database for testing
-builder.Services.AddDbContext<HudurDbContext>(options =>
-    options.UseInMemoryDatabase("HudurTestDb"));
+builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
+    options.UseInMemoryDatabase("AttendancePlatformTestDb"));
 
 // Add infrastructure services without database context (to avoid conflict)
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?? 

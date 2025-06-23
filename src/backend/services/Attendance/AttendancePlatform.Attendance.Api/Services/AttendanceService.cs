@@ -23,13 +23,13 @@ namespace AttendancePlatform.Attendance.Api.Services
 
     public class AttendanceService : IAttendanceService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private readonly ILogger<AttendanceService> _logger;
         private readonly ITenantContext _tenantContext;
         private readonly IDateTimeProvider _dateTimeProvider;
 
         public AttendanceService(
-            HudurDbContext context,
+            AttendancePlatformDbContext context,
             ILogger<AttendanceService> logger,
             ITenantContext tenantContext,
             IDateTimeProvider dateTimeProvider)

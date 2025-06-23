@@ -20,10 +20,10 @@ namespace AttendancePlatform.Collaboration.Api.Services
 
     public class DocumentCollaborationService : IDocumentCollaborationService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private readonly ILogger<DocumentCollaborationService> _logger;
 
-        public DocumentCollaborationService(HudurDbContext context, ILogger<DocumentCollaborationService> logger)
+        public DocumentCollaborationService(AttendancePlatformDbContext context, ILogger<DocumentCollaborationService> logger)
         {
             _context = context;
             _logger = logger;
