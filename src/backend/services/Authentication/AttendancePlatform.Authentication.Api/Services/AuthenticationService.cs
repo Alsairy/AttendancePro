@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
-using Hudur.Shared.Domain.Entities;
-using Hudur.Shared.Domain.DTOs;
-using Hudur.Shared.Domain.Interfaces;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.Authentication.Api.Services;
+using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Authentication.Api.Services;
 
-namespace Hudur.Authentication.Api.Services
+namespace AttendancePlatform.Authentication.Api.Services
 {
     public interface IAuthenticationService
     {

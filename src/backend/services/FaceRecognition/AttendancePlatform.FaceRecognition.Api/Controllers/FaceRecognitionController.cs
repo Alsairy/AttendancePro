@@ -5,7 +5,7 @@ using AttendancePlatform.Shared.Domain.DTOs;
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace Hudur.FaceRecognition.Api.Controllers
+namespace AttendancePlatform.FaceRecognition.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -293,7 +293,7 @@ namespace Hudur.FaceRecognition.Api.Controllers
 }
 
 // Request DTOs
-namespace Hudur.Shared.Domain.DTOs
+namespace AttendancePlatform.Shared.Domain.DTOs
 {
     public class FaceEnrollmentRequest
     {
