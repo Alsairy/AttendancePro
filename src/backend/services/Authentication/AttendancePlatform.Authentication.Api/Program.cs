@@ -33,7 +33,7 @@ var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = redisConnectionString;
-    options.InstanceName = "Hudur";
+    options.InstanceName = "AttendancePlatform";
 });
 
 builder.Services.AddMemoryCache(options =>
@@ -56,7 +56,7 @@ builder.Services.AddSecurityServices(builder.Configuration);
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ITwoFactorService, TwoFactorService>();
-builder.Services.AddScoped<Hudur.Authentication.Api.Services.IEmailService, Hudur.Authentication.Api.Services.EmailService>();
+builder.Services.AddScoped<AttendancePlatform.Authentication.Api.Services.IEmailService, AttendancePlatform.Authentication.Api.Services.EmailService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
 // Configure JWT authentication
@@ -99,7 +99,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddHudurTelemetry("Authentication Service");
+builder.Services.AddAttendancePlatformTelemetry("Authentication Service");
 
 builder.Services.AddSession(options =>
 {
@@ -115,7 +115,7 @@ builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "Hudur Authentication API", Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "AttendancePlatform Authentication API", Version = "v1" });
     
     // Add JWT authentication to Swagger
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
