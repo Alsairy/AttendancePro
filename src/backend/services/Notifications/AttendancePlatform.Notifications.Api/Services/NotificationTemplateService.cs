@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Data;
 using System.Text.RegularExpressions;
 
 namespace AttendancePlatform.Notifications.Api.Services

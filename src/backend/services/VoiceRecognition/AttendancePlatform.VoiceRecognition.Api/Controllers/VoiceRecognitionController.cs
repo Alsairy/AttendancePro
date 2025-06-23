@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Hudur.VoiceRecognition.Api.Services;
-using Hudur.Shared.Domain.DTOs;
+using AttendancePlatform.VoiceRecognition.Api.Services;
+using AttendancePlatform.Shared.Domain.DTOs;
 
 namespace AttendancePlatform.VoiceRecognition.Api.Controllers
 {

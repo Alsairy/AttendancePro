@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.Shared.Infrastructure.Extensions;
-using Hudur.Analytics.Api.Services;
-using Hudur.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Analytics.Api.Services;
+using AttendancePlatform.Shared.Domain.Entities;
 using Microsoft.ML;
 
 var builder = WebApplication.CreateBuilder(args);

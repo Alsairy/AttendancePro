@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Hudur.LeaveManagement.Api.Services;
-using Hudur.Shared.Infrastructure.Extensions;
-using Hudur.Shared.Infrastructure.Middleware;
+using AttendancePlatform.LeaveManagement.Api.Services;
+using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Shared.Infrastructure.Middleware;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("AttendancePlatform.Tests.Integration")]

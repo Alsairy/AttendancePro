@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Hudur.Attendance.Api.Services;
+using AttendancePlatform.Attendance.Api.Services;
 using AttendancePlatform.Shared.Domain.DTOs;
 using System.Security.Claims;
 
