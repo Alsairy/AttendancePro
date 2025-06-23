@@ -7,7 +7,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
 
-namespace Hudur.Attendance.Api.Services
+namespace AttendancePlatform.Attendance.Api.Services
 {
     public interface IAttendanceService
     {

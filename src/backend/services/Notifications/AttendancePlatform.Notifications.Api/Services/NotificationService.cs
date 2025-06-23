@@ -3,7 +3,7 @@ using Hudur.Shared.Domain.Interfaces;
 using Hudur.Shared.Infrastructure.Data;
 using System.Text.Json;
 
-namespace Hudur.Notifications.Api.Services
+namespace AttendancePlatform.Notifications.Api.Services
 {
     public interface INotificationService
     {
