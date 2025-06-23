@@ -6,10 +6,10 @@ namespace AttendancePlatform.Collaboration.Api.Services
 {
     public interface IDocumentCollaborationService
     {
-        Task<CollaborativeDocument> CreateDocumentAsync(string title, string content, Guid createdById, Guid? teamId = null);
-        Task<CollaborativeDocument> UpdateDocumentAsync(Guid documentId, string content, Guid userId);
-        Task<CollaborativeDocument?> GetDocumentAsync(Guid documentId);
-        Task<IEnumerable<CollaborativeDocument>> GetUserDocumentsAsync(Guid userId);
+        Task<Document> CreateDocumentAsync(string title, string content, Guid createdById, Guid? teamId = null);
+        Task<Document> UpdateDocumentAsync(Guid documentId, string content, Guid userId);
+        Task<Document?> GetDocumentAsync(Guid documentId);
+        Task<IEnumerable<Document>> GetUserDocumentsAsync(Guid userId);
         Task<bool> ShareDocumentAsync(Guid documentId, Guid userId, string permission = "Read");
         Task<bool> RevokeDocumentAccessAsync(Guid documentId, Guid userId);
         Task<IEnumerable<DocumentVersion>> GetDocumentVersionsAsync(Guid documentId);
@@ -29,46 +29,37 @@ namespace AttendancePlatform.Collaboration.Api.Services
             _logger = logger;
         }
 
-        public async Task<CollaborativeDocument> CreateDocumentAsync(string title, string content, Guid createdById, Guid? teamId = null)
+        public async Task<Document> CreateDocumentAsync(string title, string content, Guid createdById, Guid? teamId = null)
         {
             try
             {
-                var document = new CollaborativeDocument
+                var document = new Document
                 {
                     Id = Guid.NewGuid(),
-                    Title = title,
-                    Content = content,
-                    CreatedById = createdById,
+                    FileName = title,
+                    FilePath = $"/documents/{Guid.NewGuid()}.txt",
+                    FileType = "text/plain",
+                    FileSize = System.Text.Encoding.UTF8.GetByteCount(content),
+                    UploadedById = createdById,
+                    UploadedAt = DateTime.UtcNow,
                     TeamId = teamId,
-                    CreatedAt = DateTime.UtcNow,
-                    LastModifiedAt = DateTime.UtcNow,
-                    LastModifiedById = createdById,
-                    IsLocked = false,
-                    Version = 1
+                    Status = "Active",
+                    Version = 1,
+                    IsShared = false
                 };
 
-                _context.CollaborativeDocuments.Add(document);
-
-                var permission = new DocumentPermission
-                {
-                    Id = Guid.NewGuid(),
-                    DocumentId = document.Id,
-                    UserId = createdById,
-                    Permission = "Owner",
-                    GrantedAt = DateTime.UtcNow
-                };
-
-                _context.DocumentPermissions.Add(permission);
+                _context.Documents.Add(document);
 
                 var version = new DocumentVersion
                 {
                     Id = Guid.NewGuid(),
                     DocumentId = document.Id,
-                    Content = content,
-                    Version = 1,
+                    VersionNumber = 1,
+                    FilePath = document.FilePath,
                     CreatedById = createdById,
                     CreatedAt = DateTime.UtcNow,
-                    Comment = "Initial version"
+                    ChangeDescription = "Initial version",
+                    FileSize = document.FileSize
                 };
 
                 _context.DocumentVersions.Add(version);
@@ -85,40 +76,29 @@ namespace AttendancePlatform.Collaboration.Api.Services
             }
         }
 
-        public async Task<CollaborativeDocument> UpdateDocumentAsync(Guid documentId, string content, Guid userId)
+        public async Task<Document> UpdateDocumentAsync(Guid documentId, string content, Guid userId)
         {
             try
             {
-                var document = await _context.CollaborativeDocuments
+                var document = await _context.Documents
                     .FirstOrDefaultAsync(d => d.Id == documentId);
 
                 if (document == null)
                     throw new ArgumentException("Document not found");
 
-                if (document.IsLocked && document.LockedById != userId)
-                    throw new UnauthorizedAccessException("Document is locked by another user");
-
-                var hasPermission = await _context.DocumentPermissions
-                    .AnyAsync(dp => dp.DocumentId == documentId && dp.UserId == userId && 
-                             (dp.Permission == "Write" || dp.Permission == "Owner"));
-
-                if (!hasPermission)
-                    throw new UnauthorizedAccessException("User does not have write permission");
-
-                document.Content = content;
-                document.LastModifiedAt = DateTime.UtcNow;
-                document.LastModifiedById = userId;
+                document.FileSize = System.Text.Encoding.UTF8.GetByteCount(content);
                 document.Version++;
 
                 var version = new DocumentVersion
                 {
                     Id = Guid.NewGuid(),
                     DocumentId = documentId,
-                    Content = content,
-                    Version = document.Version,
+                    VersionNumber = document.Version,
+                    FilePath = document.FilePath,
                     CreatedById = userId,
                     CreatedAt = DateTime.UtcNow,
-                    Comment = "Document updated"
+                    ChangeDescription = "Document updated",
+                    FileSize = document.FileSize
                 };
 
                 _context.DocumentVersions.Add(version);
@@ -135,15 +115,14 @@ namespace AttendancePlatform.Collaboration.Api.Services
             }
         }
 
-        public async Task<CollaborativeDocument?> GetDocumentAsync(Guid documentId)
+        public async Task<Document?> GetDocumentAsync(Guid documentId)
         {
             try
             {
-                var document = await _context.CollaborativeDocuments
-                    .Include(d => d.CreatedBy)
-                    .Include(d => d.LastModifiedBy)
-                    .Include(d => d.Permissions)
-                    .ThenInclude(p => p.User)
+                var document = await _context.Documents
+                    .Include(d => d.UploadedBy)
+                    .Include(d => d.Team)
+                    .Include(d => d.Project)
                     .FirstOrDefaultAsync(d => d.Id == documentId);
 
                 return document;
@@ -155,16 +134,15 @@ namespace AttendancePlatform.Collaboration.Api.Services
             }
         }
 
-        public async Task<IEnumerable<CollaborativeDocument>> GetUserDocumentsAsync(Guid userId)
+        public async Task<IEnumerable<Document>> GetUserDocumentsAsync(Guid userId)
         {
             try
             {
-                var documents = await _context.DocumentPermissions
-                    .Include(dp => dp.Document)
-                    .ThenInclude(d => d.CreatedBy)
-                    .Where(dp => dp.UserId == userId)
-                    .Select(dp => dp.Document)
-                    .OrderByDescending(d => d.LastModifiedAt)
+                var documents = await _context.Documents
+                    .Include(d => d.UploadedBy)
+                    .Include(d => d.Team)
+                    .Where(d => d.UploadedById == userId || d.IsShared)
+                    .OrderByDescending(d => d.UploadedAt)
                     .ToListAsync();
 
                 return documents;
@@ -180,27 +158,13 @@ namespace AttendancePlatform.Collaboration.Api.Services
         {
             try
             {
-                var existingPermission = await _context.DocumentPermissions
-                    .FirstOrDefaultAsync(dp => dp.DocumentId == documentId && dp.UserId == userId);
+                var document = await _context.Documents
+                    .FirstOrDefaultAsync(d => d.Id == documentId);
 
-                if (existingPermission != null)
-                {
-                    existingPermission.Permission = permission;
-                }
-                else
-                {
-                    var newPermission = new DocumentPermission
-                    {
-                        Id = Guid.NewGuid(),
-                        DocumentId = documentId,
-                        UserId = userId,
-                        Permission = permission,
-                        GrantedAt = DateTime.UtcNow
-                    };
+                if (document == null)
+                    return false;
 
-                    _context.DocumentPermissions.Add(newPermission);
-                }
-
+                document.IsShared = true;
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Document shared successfully. DocumentId: {DocumentId}, UserId: {UserId}, Permission: {Permission}", 
@@ -218,13 +182,13 @@ namespace AttendancePlatform.Collaboration.Api.Services
         {
             try
             {
-                var permission = await _context.DocumentPermissions
-                    .FirstOrDefaultAsync(dp => dp.DocumentId == documentId && dp.UserId == userId);
+                var document = await _context.Documents
+                    .FirstOrDefaultAsync(d => d.Id == documentId);
 
-                if (permission == null || permission.Permission == "Owner")
+                if (document == null || document.UploadedById == userId)
                     return false;
 
-                _context.DocumentPermissions.Remove(permission);
+                document.IsShared = false;
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Document access revoked successfully. DocumentId: {DocumentId}, UserId: {UserId}", 
@@ -246,7 +210,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 var versions = await _context.DocumentVersions
                     .Include(dv => dv.CreatedBy)
                     .Where(dv => dv.DocumentId == documentId)
-                    .OrderByDescending(dv => dv.Version)
+                    .OrderByDescending(dv => dv.VersionNumber)
                     .ToListAsync();
 
                 return versions;
@@ -262,7 +226,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
         {
             try
             {
-                var document = await _context.CollaborativeDocuments
+                var document = await _context.Documents
                     .FirstOrDefaultAsync(d => d.Id == documentId);
 
                 if (document == null)
@@ -272,23 +236,21 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 {
                     Id = Guid.NewGuid(),
                     DocumentId = documentId,
-                    Content = content,
-                    Version = document.Version + 1,
+                    VersionNumber = document.Version + 1,
+                    FilePath = document.FilePath,
                     CreatedById = userId,
                     CreatedAt = DateTime.UtcNow,
-                    Comment = comment ?? "Manual version created"
+                    ChangeDescription = comment ?? "Manual version created",
+                    FileSize = System.Text.Encoding.UTF8.GetByteCount(content)
                 };
 
-                document.Version = version.Version;
-                document.Content = content;
-                document.LastModifiedAt = DateTime.UtcNow;
-                document.LastModifiedById = userId;
+                document.Version = version.VersionNumber;
 
                 _context.DocumentVersions.Add(version);
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Document version created successfully. DocumentId: {DocumentId}, Version: {Version}, UserId: {UserId}", 
-                    documentId, version.Version, userId);
+                    documentId, version.VersionNumber, userId);
                 return version;
             }
             catch (Exception ex)
@@ -303,19 +265,16 @@ namespace AttendancePlatform.Collaboration.Api.Services
         {
             try
             {
-                var document = await _context.CollaborativeDocuments
+                var document = await _context.Documents
                     .FirstOrDefaultAsync(d => d.Id == documentId);
 
                 if (document == null)
                     return false;
 
-                if (document.IsLocked)
+                if (document.Status == "Locked")
                     return false;
 
-                document.IsLocked = true;
-                document.LockedById = userId;
-                document.LockedAt = DateTime.UtcNow;
-
+                document.Status = "Locked";
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Document locked successfully. DocumentId: {DocumentId}, UserId: {UserId}", 
@@ -334,19 +293,16 @@ namespace AttendancePlatform.Collaboration.Api.Services
         {
             try
             {
-                var document = await _context.CollaborativeDocuments
+                var document = await _context.Documents
                     .FirstOrDefaultAsync(d => d.Id == documentId);
 
                 if (document == null)
                     return false;
 
-                if (!document.IsLocked || document.LockedById != userId)
+                if (document.Status != "Locked")
                     return false;
 
-                document.IsLocked = false;
-                document.LockedById = null;
-                document.LockedAt = null;
-
+                document.Status = "Active";
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Document unlocked successfully. DocumentId: {DocumentId}, UserId: {UserId}", 

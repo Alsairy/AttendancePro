@@ -30,17 +30,13 @@ var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?
                           builder.Configuration["Redis:ConnectionString"] ?? 
                           "localhost:6379";
 
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = redisConnectionString;
-    options.InstanceName = "AttendancePlatform";
-});
-
 builder.Services.AddMemoryCache(options =>
 {
     options.SizeLimit = 1024;
     options.CompactionPercentage = 0.25;
 });
+
+builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -93,21 +89,22 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
 builder.Services.AddHudurTelemetry("Authentication Service");
 
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-    options.Cookie.SameSite = SameSiteMode.Lax;
-});
+// builder.Services.AddSession(options =>
+// {
+//     options.IdleTimeout = TimeSpan.FromMinutes(30);
+//     options.Cookie.HttpOnly = true;
+//     options.Cookie.IsEssential = true;
+//     options.Cookie.SameSite = SameSiteMode.Lax;
+// });
 
 builder.Services.AddSignalR();
 
@@ -145,6 +142,17 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AttendancePlatformDbContext>();
+    context.Database.EnsureCreated();
+    
+    if (!context.Users.Any())
+    {
+        context.SaveChanges();
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -156,20 +164,20 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
-app.UseSession();
+// app.UseSession(); // Disabled to avoid Redis dependency
 
 if (!app.Environment.IsDevelopment())
 {
     app.UseMiddleware<RateLimitingMiddleware>();
+    // app.UseMiddleware<AuditLoggingMiddleware>(); // Disabled for development to avoid DI issues
 }
-app.UseMiddleware<AuditLoggingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<NotificationHub>("/hubs/realtime");
+app.MapHub<NotificationHub>("/api/hubs/realtime");
 
 // Health check endpoint
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.UtcNow });

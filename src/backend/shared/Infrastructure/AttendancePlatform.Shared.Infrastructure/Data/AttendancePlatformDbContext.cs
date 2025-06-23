@@ -549,6 +549,94 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasIndex(e => e.ViolationType);
                 entity.HasIndex(e => e.Severity);
                 entity.HasIndex(e => e.Status);
+                
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.ResolvedByUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.ResolvedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ShiftAssignment>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.TenantId).IsRequired();
+                
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.AssignedByUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.AssignedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.Shift)
+                    .WithMany(s => s.Assignments)
+                    .HasForeignKey(e => e.ShiftId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ShiftSwapRequest>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.TenantId).IsRequired();
+                
+                entity.HasOne(e => e.Requester)
+                    .WithMany()
+                    .HasForeignKey(e => e.RequesterId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.TargetUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.TargetUserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.RespondedByUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.RespondedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.ApprovedByUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.ApprovedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.OriginalAssignment)
+                    .WithMany(sa => sa.SwapRequests)
+                    .HasForeignKey(e => e.OriginalAssignmentId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.TargetAssignment)
+                    .WithMany()
+                    .HasForeignKey(e => e.TargetAssignmentId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ShiftConflict>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.TenantId).IsRequired();
+                
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.ResolvedByUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.ResolvedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.Assignment)
+                    .WithMany()
+                    .HasForeignKey(e => e.AssignmentId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
 

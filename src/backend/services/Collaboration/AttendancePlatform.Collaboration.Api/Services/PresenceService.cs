@@ -41,7 +41,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                         Id = Guid.NewGuid(),
                         UserId = userId,
                         Status = status,
-                        CustomMessage = customMessage,
+                        StatusMessage = customMessage,
                         LastSeen = DateTime.UtcNow,
                         IsOnline = status != "Offline"
                     };
@@ -51,7 +51,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 else
                 {
                     presence.Status = status;
-                    presence.CustomMessage = customMessage;
+                    presence.StatusMessage = customMessage;
                     presence.LastSeen = DateTime.UtcNow;
                     presence.IsOnline = status != "Offline";
                 }
@@ -239,7 +239,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                         Id = Guid.NewGuid(),
                         UserId = userId,
                         Status = "Busy",
-                        CustomMessage = reason,
+                        StatusMessage = reason,
                         LastSeen = DateTime.UtcNow,
                         IsOnline = true
                     };
@@ -249,7 +249,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 else
                 {
                     presence.Status = "Busy";
-                    presence.CustomMessage = reason;
+                    presence.StatusMessage = reason;
                     presence.LastSeen = DateTime.UtcNow;
                     presence.IsOnline = true;
                 }
@@ -289,7 +289,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 else
                 {
                     presence.Status = "Available";
-                    presence.CustomMessage = null;
+                    presence.StatusMessage = null;
                     presence.LastSeen = DateTime.UtcNow;
                     presence.IsOnline = true;
                 }

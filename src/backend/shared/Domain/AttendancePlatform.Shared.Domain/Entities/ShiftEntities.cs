@@ -41,7 +41,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public virtual ICollection<ShiftAssignment> Assignments { get; set; } = new List<ShiftAssignment>();
         public virtual ICollection<ShiftSwapRequest> SwapRequests { get; set; } = new List<ShiftSwapRequest>();
         public virtual ShiftTemplate? Template { get; set; }
-        public string? TemplateId { get; set; }
+        public Guid? TemplateId { get; set; }
     }
 
     public class ShiftTemplate : BaseEntity, ITenantAware
@@ -85,10 +85,10 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public Guid TenantId { get; set; }
         
         [Required]
-        public string ShiftId { get; set; } = string.Empty;
+        public Guid ShiftId { get; set; }
         
         [Required]
-        public string UserId { get; set; } = string.Empty;
+        public Guid UserId { get; set; }
         
         public DateTime ScheduledDate { get; set; }
         public DateTime? ActualStartTime { get; set; }
@@ -97,7 +97,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public ShiftAssignmentStatus Status { get; set; } = ShiftAssignmentStatus.Scheduled;
         
         public string? Notes { get; set; }
-        public string? AssignedBy { get; set; }
+        public Guid? AssignedBy { get; set; }
         
         public bool IsRecurring { get; set; } = false;
         public RecurrencePattern? RecurrencePattern { get; set; }
@@ -113,13 +113,13 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public Guid TenantId { get; set; }
         
         [Required]
-        public string RequesterId { get; set; } = string.Empty;
+        public Guid RequesterId { get; set; }
         
         [Required]
-        public string OriginalAssignmentId { get; set; } = string.Empty;
+        public Guid OriginalAssignmentId { get; set; }
         
-        public string? TargetUserId { get; set; }
-        public string? TargetAssignmentId { get; set; }
+        public Guid? TargetUserId { get; set; }
+        public Guid? TargetAssignmentId { get; set; }
         
         [MaxLength(1000)]
         public string Reason { get; set; } = string.Empty;
@@ -133,8 +133,8 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public string? ResponseNotes { get; set; }
         public string? ApprovalNotes { get; set; }
         
-        public string? RespondedBy { get; set; }
-        public string? ApprovedBy { get; set; }
+        public Guid? RespondedBy { get; set; }
+        public Guid? ApprovedBy { get; set; }
         
         public SwapType Type { get; set; } = SwapType.DirectSwap;
         
@@ -151,10 +151,10 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public Guid TenantId { get; set; }
         
         [Required]
-        public string UserId { get; set; } = string.Empty;
+        public Guid UserId { get; set; }
         
         [Required]
-        public string AssignmentId { get; set; } = string.Empty;
+        public Guid AssignmentId { get; set; }
         
         public ConflictType Type { get; set; }
         
@@ -167,7 +167,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public DateTime DetectedAt { get; set; }
         public DateTime? ResolvedAt { get; set; }
         
-        public string? ResolvedBy { get; set; }
+        public Guid? ResolvedBy { get; set; }
         public string? ResolutionNotes { get; set; }
         
         public virtual User User { get; set; } = null!;

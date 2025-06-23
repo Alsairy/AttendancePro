@@ -20,10 +20,10 @@ namespace AttendancePlatform.Collaboration.Api.Services
 
     public class VideoConferencingService : IVideoConferencingService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private readonly ILogger<VideoConferencingService> _logger;
 
-        public VideoConferencingService(HudurDbContext context, ILogger<VideoConferencingService> logger)
+        public VideoConferencingService(AttendancePlatformDbContext context, ILogger<VideoConferencingService> logger)
         {
             _context = context;
             _logger = logger;
@@ -37,14 +37,14 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 {
                     Id = Guid.NewGuid(),
                     Title = title,
-                    OrganizerId = organizerId,
-                    ScheduledTime = scheduledTime,
+                    HostId = organizerId,
+                    ScheduledStartTime = scheduledTime,
                     MaxParticipants = maxParticipants,
-                    Status = ConferenceStatus.Scheduled,
-                    CreatedAt = DateTime.UtcNow,
-                    ConferenceUrl = $"https://meet.hudu.sa/{Guid.NewGuid():N}",
-                    IsRecordingEnabled = false,
-                    IsLocked = false
+                    Status = "Scheduled",
+                    MeetingUrl = $"https://meet.attendancepro.com/{Guid.NewGuid():N}",
+                    MeetingId = Guid.NewGuid().ToString("N")[..8],
+                    Passcode = new Random().Next(100000, 999999).ToString(),
+                    IsRecorded = false
                 };
 
                 _context.VideoConferences.Add(conference);
@@ -74,9 +74,6 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 if (conference == null)
                     throw new ArgumentException("Conference not found");
 
-                if (conference.IsLocked)
-                    throw new UnauthorizedAccessException("Conference is locked");
-
                 if (conference.Participants.Count >= conference.MaxParticipants)
                     throw new InvalidOperationException("Conference is full");
 
@@ -93,7 +90,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                         JoinedAt = DateTime.UtcNow,
                         IsMuted = false,
                         IsVideoEnabled = true,
-                        Role = userId == conference.OrganizerId ? "Moderator" : "Participant"
+                        Role = userId == conference.HostId ? "Moderator" : "Participant"
                     };
 
                     _context.ConferenceParticipants.Add(participant);
@@ -144,13 +141,13 @@ namespace AttendancePlatform.Collaboration.Api.Services
             try
             {
                 var conference = await _context.VideoConferences
-                    .FirstOrDefaultAsync(c => c.Id == conferenceId && c.OrganizerId == organizerId);
+                    .FirstOrDefaultAsync(c => c.Id == conferenceId && c.HostId == organizerId);
 
                 if (conference == null)
                     throw new UnauthorizedAccessException("Conference not found or user not authorized");
 
-                conference.Status = ConferenceStatus.InProgress;
-                conference.StartedAt = DateTime.UtcNow;
+                conference.Status = "InProgress";
+                conference.ActualStartTime = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
 
@@ -172,13 +169,13 @@ namespace AttendancePlatform.Collaboration.Api.Services
             try
             {
                 var conference = await _context.VideoConferences
-                    .FirstOrDefaultAsync(c => c.Id == conferenceId && c.OrganizerId == organizerId);
+                    .FirstOrDefaultAsync(c => c.Id == conferenceId && c.HostId == organizerId);
 
                 if (conference == null)
                     return false;
 
-                conference.Status = ConferenceStatus.Ended;
-                conference.EndedAt = DateTime.UtcNow;
+                conference.Status = "Ended";
+                conference.EndTime = DateTime.UtcNow;
 
                 var activeParticipants = await _context.ConferenceParticipants
                     .Where(p => p.ConferenceId == conferenceId && p.LeftAt == null)
@@ -210,8 +207,8 @@ namespace AttendancePlatform.Collaboration.Api.Services
             {
                 var conferences = await _context.VideoConferences
                     .Include(c => c.Participants)
-                    .Where(c => c.OrganizerId == userId || c.Participants.Any(p => p.UserId == userId))
-                    .OrderByDescending(c => c.ScheduledTime)
+                    .Where(c => c.HostId == userId || c.Participants.Any(p => p.UserId == userId))
+                    .OrderByDescending(c => c.ScheduledStartTime)
                     .ToListAsync();
 
                 return conferences;
@@ -230,7 +227,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 var conference = await _context.VideoConferences
                     .Include(c => c.Participants.Where(p => p.LeftAt == null))
                     .ThenInclude(p => p.User)
-                    .FirstOrDefaultAsync(c => c.Id == conferenceId && c.Status == ConferenceStatus.InProgress);
+                    .FirstOrDefaultAsync(c => c.Id == conferenceId && c.Status == "InProgress");
 
                 return conference;
             }
@@ -253,7 +250,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                     return false;
 
                 var moderator = conference.Participants
-                    .FirstOrDefault(p => p.UserId == moderatorId && (p.Role == "Moderator" || conference.OrganizerId == moderatorId));
+                    .FirstOrDefault(p => p.UserId == moderatorId && (p.Role == "Moderator" || conference.HostId == moderatorId));
 
                 if (moderator == null)
                     throw new UnauthorizedAccessException("User not authorized to mute participants");
@@ -292,7 +289,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                     return false;
 
                 var moderator = conference.Participants
-                    .FirstOrDefault(p => p.UserId == moderatorId && (p.Role == "Moderator" || conference.OrganizerId == moderatorId));
+                    .FirstOrDefault(p => p.UserId == moderatorId && (p.Role == "Moderator" || conference.HostId == moderatorId));
 
                 if (moderator == null)
                     throw new UnauthorizedAccessException("User not authorized to kick participants");
@@ -304,7 +301,6 @@ namespace AttendancePlatform.Collaboration.Api.Services
                     return false;
 
                 participant.LeftAt = DateTime.UtcNow;
-                participant.IsKicked = true;
 
                 await _context.SaveChangesAsync();
 
@@ -354,11 +350,5 @@ namespace AttendancePlatform.Collaboration.Api.Services
         }
     }
 
-    public enum ConferenceStatus
-    {
-        Scheduled,
-        InProgress,
-        Ended,
-        Cancelled
-    }
+
 }

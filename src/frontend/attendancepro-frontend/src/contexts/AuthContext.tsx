@@ -64,23 +64,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.error('Failed to get current user:', error)
           localStorage.removeItem('accessToken')
         }
-      } else {
-        const mockUser: User = {
-          id: 'dev-user-1',
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john.doe@hudu.sa',
-          phoneNumber: '+1234567890',
-          employeeId: 'EMP001',
-          department: 'Engineering',
-          position: 'Senior Developer',
-          profilePictureUrl: '',
-          status: 'active',
-          roles: ['admin', 'user']
-        }
-        setUser(mockUser)
-        localStorage.setItem('accessToken', 'dev-mock-token')
-        console.log('Development mode: Mock user set', mockUser)
       }
       setIsLoading(false)
     }
