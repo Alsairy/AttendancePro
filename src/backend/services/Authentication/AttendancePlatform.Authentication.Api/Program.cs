@@ -1,20 +1,20 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Hudur.Authentication.Api.Services;
-using Hudur.Shared.Infrastructure.Hubs;
-using Hudur.Shared.Infrastructure.Extensions;
-using Hudur.Shared.Infrastructure.Middleware;
-using Hudur.Shared.Infrastructure.Telemetry;
-using Hudur.Shared.Infrastructure.Services;
-using Hudur.Shared.Infrastructure.Repositories;
-using Hudur.Shared.Domain.Interfaces;
+using AttendancePlatform.Authentication.Api.Services;
+using AttendancePlatform.Shared.Infrastructure.Hubs;
+using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Shared.Infrastructure.Middleware;
+using AttendancePlatform.Shared.Infrastructure.Telemetry;
+using AttendancePlatform.Shared.Infrastructure.Services;
+using AttendancePlatform.Shared.Infrastructure.Repositories;
+using AttendancePlatform.Shared.Domain.Interfaces;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Data;
 using StackExchange.Redis;
 
-[assembly: InternalsVisibleTo("Hudur.Tests.Integration")]
+[assembly: InternalsVisibleTo("AttendancePlatform.Tests.Integration")]
 
 var builder = WebApplication.CreateBuilder(args);
 
