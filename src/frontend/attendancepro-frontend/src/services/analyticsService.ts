@@ -176,8 +176,13 @@ class AnalyticsService {
       if (filter?.endDate) params.append('endDate', filter.endDate);
       if (filter?.departmentId) params.append('departmentId', filter.departmentId);
 
-      const response: AxiosResponse<AnalyticsOverview> = await this.api.get(`/overview?${params}`);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: AnalyticsOverview; message: string}> = await this.api.get(`/overview?${params}`);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch analytics overview');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch analytics overview');
     }
@@ -190,8 +195,13 @@ class AnalyticsService {
       if (filter?.endDate) params.append('endDate', filter.endDate);
       if (filter?.departmentId) params.append('departmentId', filter.departmentId);
 
-      const response: AxiosResponse<AttendanceTrend[]> = await this.api.get(`/attendance-trends?${params}`);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: AttendanceTrend[]; message: string}> = await this.api.get(`/attendance-trends?${params}`);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch attendance trends');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch attendance trends');
     }
@@ -205,8 +215,13 @@ class AnalyticsService {
       if (filter?.departmentId) params.append('departmentId', filter.departmentId);
       if (filter?.userId) params.append('userId', filter.userId);
 
-      const response: AxiosResponse<ProductivityMetric[]> = await this.api.get(`/productivity?${params}`);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: ProductivityMetric[]; message: string}> = await this.api.get(`/productivity?${params}`);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch productivity metrics');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch productivity metrics');
     }
@@ -219,8 +234,13 @@ class AnalyticsService {
       if (filter?.startDate) params.append('startDate', filter.startDate);
       if (filter?.endDate) params.append('endDate', filter.endDate);
 
-      const response: AxiosResponse<DepartmentAnalytics[]> = await this.api.get(`/departments?${params}`);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: DepartmentAnalytics[]; message: string}> = await this.api.get(`/departments?${params}`);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch department analytics');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch department analytics');
     }
@@ -403,8 +423,13 @@ class AnalyticsService {
       const params = new URLSearchParams();
       params.append('limit', limit.toString());
 
-      const response: AxiosResponse<RecentActivity[]> = await this.api.get(`/recent-activity?${params}`);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: RecentActivity[]; message: string}> = await this.api.get(`/recent-activity?${params}`);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch recent activity');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch recent activity');
     }

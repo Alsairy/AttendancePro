@@ -21,7 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Add infrastructure services with in-memory database for testing
+// Add infrastructure services with in-memory database for local testing
 builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
     options.UseInMemoryDatabase("AttendancePlatformTestDb"));
 
@@ -89,7 +89,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
+        policy.WithOrigins(
+                "http://localhost:5173", 
+                "http://localhost:3000",
+                "https://project-review-app-7tx5ua47.devinapps.com"
+              )
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();

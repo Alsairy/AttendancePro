@@ -178,12 +178,17 @@ class LeaveManagementService {
         });
       }
 
-      const response: AxiosResponse<LeaveRequest> = await this.api.post('/leave-requests', formData, {
+      const response: AxiosResponse<{success: boolean; data: LeaveRequest; message: string}> = await this.api.post('/leave-requests', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      return response.data;
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to create leave request');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to create leave request');
     }
@@ -191,8 +196,13 @@ class LeaveManagementService {
 
   async createPermissionRequest(request: CreatePermissionRequest): Promise<PermissionRequest> {
     try {
-      const response: AxiosResponse<PermissionRequest> = await this.api.post('/permission-requests', request);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: PermissionRequest; message: string}> = await this.api.post('/permission-requests', request);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to create permission request');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to create permission request');
     }
@@ -215,8 +225,13 @@ class LeaveManagementService {
       if (startDate) params.append('startDate', startDate);
       if (endDate) params.append('endDate', endDate);
 
-      const response: AxiosResponse<LeaveRequest[]> = await this.api.get(`/leave-requests?${params}`);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: LeaveRequest[]; message: string}> = await this.api.get(`/leave-requests?${params}`);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch leave requests');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch leave requests');
     }
@@ -315,8 +330,13 @@ class LeaveManagementService {
   async getLeaveBalance(userId?: string): Promise<LeaveBalance[]> {
     try {
       const url = userId ? `/balance/${userId}` : '/balance';
-      const response: AxiosResponse<LeaveBalance[]> = await this.api.get(url);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: LeaveBalance[]; message: string}> = await this.api.get(url);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch leave balance');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch leave balance');
     }
@@ -324,8 +344,13 @@ class LeaveManagementService {
 
   async getLeaveTypes(): Promise<LeaveType[]> {
     try {
-      const response: AxiosResponse<LeaveType[]> = await this.api.get('/leave-types');
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: LeaveType[]; message: string}> = await this.api.get('/leave-types');
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch leave types');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch leave types');
     }

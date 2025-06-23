@@ -140,8 +140,13 @@ class AttendanceService {
 
   async checkIn(request: CheckInRequest): Promise<AttendanceRecord> {
     try {
-      const response: AxiosResponse<AttendanceRecord> = await this.api.post('/checkin', request);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: AttendanceRecord; message: string}> = await this.api.post('/checkin', request);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Check-in failed');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Check-in failed');
     }
@@ -149,8 +154,13 @@ class AttendanceService {
 
   async checkOut(request: CheckOutRequest): Promise<AttendanceRecord> {
     try {
-      const response: AxiosResponse<AttendanceRecord> = await this.api.post('/checkout', request);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: AttendanceRecord; message: string}> = await this.api.post('/checkout', request);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Check-out failed');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Check-out failed');
     }
@@ -158,8 +168,13 @@ class AttendanceService {
 
   async getTodayAttendance(): Promise<TodayAttendanceResponse> {
     try {
-      const response: AxiosResponse<TodayAttendanceResponse> = await this.api.get('/today');
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: TodayAttendanceResponse; message: string}> = await this.api.get('/today');
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch today\'s attendance');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch today\'s attendance');
     }
@@ -180,8 +195,13 @@ class AttendanceService {
       if (startDate) params.append('startDate', startDate);
       if (endDate) params.append('endDate', endDate);
 
-      const response: AxiosResponse<AttendanceRecord[]> = await this.api.get(`/records?${params}`);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: AttendanceRecord[]; message: string}> = await this.api.get(`/records?${params}`);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch attendance records');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch attendance records');
     }
@@ -211,8 +231,13 @@ class AttendanceService {
       if (startDate) params.append('startDate', startDate);
       if (endDate) params.append('endDate', endDate);
 
-      const response: AxiosResponse<AttendanceStats> = await this.api.get(`/stats?${params}`);
-      return response.data;
+      const response: AxiosResponse<{success: boolean; data: AttendanceStats; message: string}> = await this.api.get(`/stats?${params}`);
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Failed to fetch attendance statistics');
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch attendance statistics');
     }

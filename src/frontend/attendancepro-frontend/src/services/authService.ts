@@ -28,6 +28,7 @@ interface RegisterData {
   lastName: string
   email: string
   password: string
+  confirmPassword: string
   phoneNumber?: string
   employeeId?: string
   department?: string
@@ -69,12 +70,17 @@ class AuthService {
 
   async login(email: string, password: string, twoFactorCode?: string): Promise<LoginResponse> {
     try {
-      const response: AxiosResponse<LoginResponse> = await this.api.post('/auth/login', {
+      const response: AxiosResponse<{success: boolean; data: LoginResponse; message: string}> = await this.api.post('/auth/login', {
         email,
         password,
         twoFactorCode,
       })
-      return response.data
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data
+      } else {
+        throw new Error(response.data.message || 'Login failed')
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Login failed')
     }
@@ -82,7 +88,12 @@ class AuthService {
 
   async register(userData: RegisterData): Promise<void> {
     try {
-      await this.api.post('/auth/register', userData)
+      const response: AxiosResponse<{success: boolean; data: any; message: string}> = await this.api.post('/auth/register', userData)
+      if (response.data.success) {
+        return
+      } else {
+        throw new Error(response.data.message || 'Registration failed')
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Registration failed')
     }
@@ -98,10 +109,15 @@ class AuthService {
 
   async refreshToken(refreshToken: string): Promise<LoginResponse> {
     try {
-      const response: AxiosResponse<LoginResponse> = await this.api.post('/auth/refresh-token', {
+      const response: AxiosResponse<{success: boolean; data: LoginResponse; message: string}> = await this.api.post('/auth/refresh-token', {
         refreshToken,
       })
-      return response.data
+      
+      if (response.data.success && response.data.data) {
+        return response.data.data
+      } else {
+        throw new Error(response.data.message || 'Token refresh failed')
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Token refresh failed')
     }
@@ -109,8 +125,12 @@ class AuthService {
 
   async getCurrentUser(): Promise<User> {
     try {
-      const response: AxiosResponse<User> = await this.api.get('/auth/me')
-      return response.data
+      const response: AxiosResponse<{success: boolean; data: User; message: string}> = await this.api.get('/auth/me')
+      if (response.data.success && response.data.data) {
+        return response.data.data
+      } else {
+        throw new Error(response.data.message || 'Failed to get current user')
+      }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to get current user')
     }

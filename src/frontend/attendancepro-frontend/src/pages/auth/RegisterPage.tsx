@@ -50,8 +50,7 @@ const RegisterPage: React.FC = () => {
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true)
     try {
-      const { confirmPassword, ...registerData } = data
-      const result = await registerUser(registerData)
+      const result = await registerUser(data)
       
       if (result.success) {
         toast.success('Account created successfully! Please check your email to verify your account.')

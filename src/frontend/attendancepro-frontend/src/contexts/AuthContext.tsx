@@ -33,6 +33,7 @@ interface RegisterData {
   lastName: string
   email: string
   password: string
+  confirmPassword: string
   phoneNumber?: string
   employeeId?: string
   department?: string
