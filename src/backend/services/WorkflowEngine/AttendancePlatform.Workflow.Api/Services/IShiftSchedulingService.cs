@@ -1,4 +1,4 @@
-using Hudur.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.Entities;
 
 namespace AttendancePlatform.Workflow.Api.Services
 {
