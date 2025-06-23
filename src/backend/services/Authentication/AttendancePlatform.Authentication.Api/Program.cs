@@ -99,7 +99,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddAttendancePlatformTelemetry("Authentication Service");
+builder.Services.AddHudurTelemetry("Authentication Service");
 
 builder.Services.AddSession(options =>
 {
