@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.ML;
 using Microsoft.ML.Data;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.Entities;
 
-namespace Hudur.Analytics.Api.Services
+namespace AttendancePlatform.Analytics.Api.Services
 {
     public interface IAnalyticsService
     {

@@ -2,10 +2,10 @@ using Microsoft.Graph;
 using Microsoft.Graph.Auth;
 using Microsoft.Identity.Client;
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.DTOs;
 
-namespace Hudur.Integrations.Api.Services
+namespace AttendancePlatform.Integrations.Api.Services
 {
     public class MicrosoftGraphService : IMicrosoftGraphService
     {

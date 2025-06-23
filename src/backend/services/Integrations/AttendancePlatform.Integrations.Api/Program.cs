@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.Shared.Infrastructure.Extensions;
-using Hudur.Integrations.Api.Services;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Integrations.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
