@@ -2,10 +2,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Hudur.Shared.Domain.Entities;
-using Hudur.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.DTOs;
 
-namespace Hudur.Authentication.Api.Services
+namespace AttendancePlatform.Authentication.Api.Services
 {
     public interface IJwtTokenService
     {

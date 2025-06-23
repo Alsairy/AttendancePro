@@ -94,7 +94,7 @@ const DashboardLayout: React.FC = () => {
       await logout()
       toast.success('Logged out successfully')
       navigate('/login')
-    } catch (error) {
+    } catch {
       toast.error('Error logging out')
     }
   }

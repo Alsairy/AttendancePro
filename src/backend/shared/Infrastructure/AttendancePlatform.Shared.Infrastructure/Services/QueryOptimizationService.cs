@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Services;
 
-namespace Hudur.Shared.Infrastructure.Services
+namespace AttendancePlatform.Shared.Infrastructure.Services
 {
     public interface IQueryOptimizationService
     {
@@ -14,12 +16,12 @@ namespace Hudur.Shared.Infrastructure.Services
 
     public class QueryOptimizationService : IQueryOptimizationService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private readonly ICacheService _cacheService;
         private readonly ILogger<QueryOptimizationService> _logger;
 
         public QueryOptimizationService(
-            HudurDbContext context,
+            AttendancePlatformDbContext context,
             ICacheService cacheService,
             ILogger<QueryOptimizationService> logger)
         {

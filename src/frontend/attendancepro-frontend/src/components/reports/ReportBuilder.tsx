@@ -68,7 +68,7 @@ const ReportBuilder: React.FC = () => {
     groupBy: [],
     reportType: 'standard'
   })
-  const [previewData, setPreviewData] = useState<any[]>([])
+  const [previewData, setPreviewData] = useState<Record<string, unknown>[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [complianceTemplates, setComplianceTemplates] = useState<ComplianceTemplate[]>([])
@@ -216,9 +216,9 @@ const ReportBuilder: React.FC = () => {
       fields: template.requiredFields,
       filters: template.defaultFilters,
       reportType: 'compliance',
-      complianceFramework: template.framework as any,
+      complianceFramework: template.framework as 'gdpr' | 'sox' | 'hipaa' | 'labor_law' | 'audit_trail' | 'data_retention',
       schedule: {
-        frequency: template.frequency as any,
+        frequency: template.frequency as 'daily' | 'weekly' | 'monthly',
         recipients: []
       }
     }))
@@ -293,9 +293,9 @@ const ReportBuilder: React.FC = () => {
       }))
 
       const filteredData = analyticsData.map(row => {
-        const filteredRow: any = {}
+        const filteredRow: Record<string, unknown> = {}
         report.fields.forEach(fieldId => {
-          if (row.hasOwnProperty(fieldId)) {
+          if (Object.prototype.hasOwnProperty.call(row, fieldId)) {
             filteredRow[fieldId] = row[fieldId as keyof typeof row]
           }
         })
@@ -532,7 +532,7 @@ const ReportBuilder: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="chartType">Visualization Type</Label>
-              <Select value={report.chartType || 'table'} onValueChange={(value: any) => setReport(prev => ({ ...prev, chartType: value }))}>
+              <Select value={report.chartType || 'table'} onValueChange={(value: string) => setReport(prev => ({ ...prev, chartType: value as 'table' | 'bar' | 'line' | 'pie' }))}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -644,7 +644,7 @@ const ReportBuilder: React.FC = () => {
                   </SelectContent>
                 </Select>
 
-                <Select value={filter.operator} onValueChange={(value: any) => updateFilter(filter.id, { operator: value })}>
+                <Select value={filter.operator} onValueChange={(value: string) => updateFilter(filter.id, { operator: value as 'equals' | 'contains' | 'greater_than' | 'less_than' | 'between' })}>
                   <SelectTrigger className="w-32">
                     <SelectValue />
                   </SelectTrigger>
@@ -744,15 +744,15 @@ const ReportBuilder: React.FC = () => {
                     <Card key={index} className="p-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h4 className="font-semibold text-sm">{metric.metricName}</h4>
-                          <p className="text-2xl font-bold text-blue-600">{metric.value}</p>
-                          <p className="text-xs text-gray-600">{metric.description}</p>
+                          <h4 className="font-semibold text-sm">{String(metric.metricName || '')}</h4>
+                          <p className="text-2xl font-bold text-blue-600">{String(metric.value || '')}</p>
+                          <p className="text-xs text-gray-600">{String(metric.description || '')}</p>
                         </div>
                         <Badge 
                           variant={metric.status === 'Compliant' ? 'default' : 'destructive'}
                           className="text-xs"
                         >
-                          {metric.status}
+                          {String(metric.status || '')}
                         </Badge>
                       </div>
                     </Card>

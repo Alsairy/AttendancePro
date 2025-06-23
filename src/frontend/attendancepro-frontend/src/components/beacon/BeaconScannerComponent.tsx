@@ -70,7 +70,7 @@ const BeaconScannerComponent: React.FC<BeaconScannerComponentProps> = ({
     if ('bluetooth' in navigator) {
       setBluetoothSupported(true)
       try {
-        const availability = await (navigator as any).bluetooth.getAvailability()
+        const availability = await (navigator as unknown as { bluetooth: { getAvailability(): Promise<boolean> } }).bluetooth.getAvailability()
         setBluetoothEnabled(availability)
       } catch (error) {
         console.warn('Could not check Bluetooth availability:', error)
@@ -89,7 +89,7 @@ const BeaconScannerComponent: React.FC<BeaconScannerComponentProps> = ({
 
     try {
       setError(null)
-      await (navigator as any).bluetooth.requestDevice({
+      await (navigator as unknown as { bluetooth: { requestDevice(options: { acceptAllDevices: boolean; optionalServices: string[] }): Promise<unknown> } }).bluetooth.requestDevice({
         acceptAllDevices: true,
         optionalServices: ['battery_service']
       })
@@ -97,7 +97,7 @@ const BeaconScannerComponent: React.FC<BeaconScannerComponentProps> = ({
       setBluetoothEnabled(true)
       toast.success('Bluetooth access granted')
       return true
-    } catch (error: any) {
+    } catch {
       setError('Bluetooth access denied. Please enable Bluetooth and grant permission.')
       toast.error('Bluetooth access denied')
       return false
@@ -142,8 +142,9 @@ const BeaconScannerComponent: React.FC<BeaconScannerComponentProps> = ({
         }
       }, scanDuration)
 
-    } catch (error: any) {
-      setError(error.message || 'Failed to start beacon scanning')
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to start beacon scanning'
+      setError(errorMessage)
       setIsScanning(false)
       toast.error('Beacon scanning failed')
     }
@@ -151,7 +152,7 @@ const BeaconScannerComponent: React.FC<BeaconScannerComponentProps> = ({
 
   const scanForBeacons = async () => {
     try {
-      await (navigator as any).bluetooth.getDevices()
+      await (navigator as unknown as { bluetooth: { getDevices(): Promise<unknown[]> } }).bluetooth.getDevices()
       
       const mockBeacons: BeaconData[] = [
         {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Hudur.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.Entities;
 
-namespace Hudur.Shared.Domain.DTOs
+namespace AttendancePlatform.Shared.Domain.DTOs
 {
     public class ApiResponse<T>
     {
@@ -89,6 +89,125 @@ namespace Hudur.Shared.Domain.DTOs
         public string Status { get; set; } = string.Empty;
         public IEnumerable<string> Roles { get; set; } = new List<string>();
         public string FullName => $"{FirstName} {LastName}";
+    }
+
+    public class CreateUserDto
+    {
+        [Required]
+        [MaxLength(100)]
+        public string FirstName { get; set; } = string.Empty;
+        
+        [Required]
+        [MaxLength(100)]
+        public string LastName { get; set; } = string.Empty;
+        
+        [Required]
+        [EmailAddress]
+        [MaxLength(200)]
+        public string Email { get; set; } = string.Empty;
+        
+        [Phone]
+        [MaxLength(20)]
+        public string? PhoneNumber { get; set; }
+        
+        [MaxLength(50)]
+        public string? EmployeeId { get; set; }
+        
+        [MaxLength(100)]
+        public string? Department { get; set; }
+        
+        [MaxLength(100)]
+        public string? Position { get; set; }
+        
+        public DateTime? HireDate { get; set; }
+        
+        public string? ProfilePictureUrl { get; set; }
+        
+        public Guid? ManagerId { get; set; }
+        
+        public IEnumerable<Guid> RoleIds { get; set; } = new List<Guid>();
+        
+        [Required]
+        [MinLength(8)]
+        public string Password { get; set; } = string.Empty;
+        
+        public bool RequirePasswordChange { get; set; } = true;
+    }
+
+    public class UpdateUserDto
+    {
+        [MaxLength(100)]
+        public string? FirstName { get; set; }
+        
+        [MaxLength(100)]
+        public string? LastName { get; set; }
+        
+        [EmailAddress]
+        [MaxLength(200)]
+        public string? Email { get; set; }
+        
+        [Phone]
+        [MaxLength(20)]
+        public string? PhoneNumber { get; set; }
+        
+        [MaxLength(50)]
+        public string? EmployeeId { get; set; }
+        
+        [MaxLength(100)]
+        public string? Department { get; set; }
+        
+        [MaxLength(100)]
+        public string? Position { get; set; }
+        
+        public DateTime? HireDate { get; set; }
+        
+        public string? ProfilePictureUrl { get; set; }
+        
+        public Guid? ManagerId { get; set; }
+        
+        public IEnumerable<Guid>? RoleIds { get; set; }
+    }
+
+    public class UserProfileDto
+    {
+        public Guid Id { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
+        public string? EmployeeId { get; set; }
+        public string? Department { get; set; }
+        public string? Position { get; set; }
+        public DateTime? HireDate { get; set; }
+        public string? ProfilePictureUrl { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public bool IsEmailVerified { get; set; }
+        public bool IsPhoneVerified { get; set; }
+        public DateTime? LastLoginAt { get; set; }
+        public bool IsTwoFactorEnabled { get; set; }
+        public string? ManagerName { get; set; }
+        public IEnumerable<string> Roles { get; set; } = new List<string>();
+        public string? NotificationPreferences { get; set; }
+        public string FullName => $"{FirstName} {LastName}";
+    }
+
+    public class UpdateUserProfileDto
+    {
+        [MaxLength(100)]
+        public string? FirstName { get; set; }
+        
+        [MaxLength(100)]
+        public string? LastName { get; set; }
+        
+        [Phone]
+        [MaxLength(20)]
+        public string? PhoneNumber { get; set; }
+        
+        public string? ProfilePictureUrl { get; set; }
+        
+        public string? NotificationPreferences { get; set; }
+        
+        public bool? IsTwoFactorEnabled { get; set; }
     }
     
     public class AttendanceRecordDto
@@ -346,6 +465,96 @@ namespace Hudur.Shared.Domain.DTOs
         public string Value { get; set; } = string.Empty;
         public string Language { get; set; } = string.Empty;
         public string Module { get; set; } = string.Empty;
+    }
+
+    public class TenantDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public string? LogoUrl { get; set; }
+        public string? PrimaryColor { get; set; }
+        public string? SecondaryColor { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public DateTime? SubscriptionStartDate { get; set; }
+        public DateTime? SubscriptionEndDate { get; set; }
+        public int MaxUsers { get; set; }
+        public string? TimeZone { get; set; }
+        public string? Locale { get; set; }
+        public string? Currency { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+    }
+
+    public class TenantUsageDto
+    {
+        public Guid TenantId { get; set; }
+        public int ActiveUsers { get; set; }
+        public int TotalUsers { get; set; }
+        public int AttendanceRecordsThisMonth { get; set; }
+        public int LeaveRequestsThisMonth { get; set; }
+        public DateTime? LastActivity { get; set; }
+    }
+
+    public class TenantSettingsDto
+    {
+        public Guid TenantId { get; set; }
+        public string? LogoUrl { get; set; }
+        public string? PrimaryColor { get; set; }
+        public string? SecondaryColor { get; set; }
+        public string? TimeZone { get; set; }
+        public string? Locale { get; set; }
+        public string? Currency { get; set; }
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    public class CreateTenantDto
+    {
+        [Required]
+        [MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+        
+        [MaxLength(500)]
+        public string? Description { get; set; }
+        
+        public string? LogoUrl { get; set; }
+        public string? PrimaryColor { get; set; }
+        public string? SecondaryColor { get; set; }
+        
+        [Required]
+        public DateTime SubscriptionStartDate { get; set; }
+        
+        [Required]
+        public DateTime SubscriptionEndDate { get; set; }
+        
+        [Range(1, 10000)]
+        public int MaxUsers { get; set; } = 100;
+        
+        public string? TimeZone { get; set; }
+        public string? Locale { get; set; }
+        public string? Currency { get; set; }
+    }
+
+    public class UpdateTenantDto
+    {
+        [MaxLength(100)]
+        public string? Name { get; set; }
+        
+        [MaxLength(500)]
+        public string? Description { get; set; }
+        
+        public string? LogoUrl { get; set; }
+        public string? PrimaryColor { get; set; }
+        public string? SecondaryColor { get; set; }
+        public DateTime? SubscriptionStartDate { get; set; }
+        public DateTime? SubscriptionEndDate { get; set; }
+        
+        [Range(1, 10000)]
+        public int? MaxUsers { get; set; }
+        
+        public string? TimeZone { get; set; }
+        public string? Locale { get; set; }
+        public string? Currency { get; set; }
     }
 }
 

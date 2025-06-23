@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Hudur.Shared.Domain.Entities
+namespace AttendancePlatform.Shared.Domain.Entities
 {
     public class PasswordResetToken : BaseEntity
     {

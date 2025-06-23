@@ -174,14 +174,14 @@ const AutoCheckInComponent: React.FC<AutoCheckInComponentProps> = ({
       } else {
         throw new Error('Check-in failed')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       setCheckInHistory(prev => [...prev, {
         timestamp: Date.now(),
         beacon,
         success: false,
       }])
       
-      const errorMessage = error.message || 'Auto check-in failed'
+      const errorMessage = error instanceof Error ? error.message : 'Auto check-in failed'
       toast.error(errorMessage)
       onCheckInError?.(errorMessage)
     } finally {
@@ -199,7 +199,7 @@ const AutoCheckInComponent: React.FC<AutoCheckInComponentProps> = ({
     setPendingCheckIn(null)
   }
 
-  const updateSettings = (key: keyof AutoCheckInSettings, value: any) => {
+  const updateSettings = (key: keyof AutoCheckInSettings, value: unknown) => {
     setSettings(prev => ({ ...prev, [key]: value }))
   }
 

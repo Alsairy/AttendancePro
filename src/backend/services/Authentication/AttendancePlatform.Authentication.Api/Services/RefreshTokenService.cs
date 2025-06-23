@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Domain.Entities;
-using Hudur.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Infrastructure.Data;
 using System.Security.Cryptography;
 
-namespace Hudur.Authentication.Api.Services
+namespace AttendancePlatform.Authentication.Api.Services
 {
     public interface IRefreshTokenService
     {
@@ -17,12 +17,12 @@ namespace Hudur.Authentication.Api.Services
 
     public class RefreshTokenService : IRefreshTokenService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private readonly ILogger<RefreshTokenService> _logger;
         private readonly IConfiguration _configuration;
 
         public RefreshTokenService(
-            HudurDbContext context,
+            AttendancePlatformDbContext context,
             ILogger<RefreshTokenService> logger,
             IConfiguration configuration)
         {

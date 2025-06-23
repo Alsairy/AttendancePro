@@ -1,21 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using Hudur.Shared.Domain.Interfaces;
-using Hudur.Shared.Infrastructure.Services;
+using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Services;
 
-namespace Hudur.Shared.Infrastructure.Data
+namespace AttendancePlatform.Shared.Infrastructure.Data
 {
-    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<HudurDbContext>
+    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AttendancePlatformDbContext>
     {
-        public HudurDbContext CreateDbContext(string[] args)
+        public AttendancePlatformDbContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<HudurDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<AttendancePlatformDbContext>();
             
-            var connectionString = "Server=host.docker.internal,1433;Database=Hudur;User Id=sa;Password=AttendanceP@ssw0rd123;TrustServerCertificate=true";
+            var connectionString = "Server=host.docker.internal,1433;Database=AttendancePlatform;User Id=sa;Password=AttendanceP@ssw0rd123;TrustServerCertificate=true";
             
             optionsBuilder.UseSqlServer(connectionString, b => {
-                b.MigrationsAssembly(typeof(HudurDbContext).Assembly.FullName);
+                b.MigrationsAssembly(typeof(AttendancePlatformDbContext).Assembly.FullName);
                 b.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(5), errorNumbersToAdd: null);
                 b.CommandTimeout(30);
             });
@@ -24,7 +24,7 @@ namespace Hudur.Shared.Infrastructure.Data
             var mockCurrentUserService = new MockCurrentUserService();
             var mockDateTimeProvider = new DateTimeProvider();
 
-            return new HudurDbContext(optionsBuilder.Options, mockTenantContext, mockCurrentUserService, mockDateTimeProvider);
+            return new AttendancePlatformDbContext(optionsBuilder.Options, mockTenantContext, mockCurrentUserService, mockDateTimeProvider);
         }
     }
 

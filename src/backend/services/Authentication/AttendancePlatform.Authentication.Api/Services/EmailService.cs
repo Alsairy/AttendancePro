@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 
-namespace Hudur.Authentication.Api.Services
+namespace AttendancePlatform.Authentication.Api.Services
 {
     public interface IEmailService
     {

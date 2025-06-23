@@ -104,8 +104,9 @@ const WorkforceHealthDashboard: React.FC = () => {
 
       setHealthScore(mockHealthScore)
       setEngagementInsights(mockEngagementInsights)
-    } catch (error: any) {
-      toast.error('Failed to load workforce health data: ' + error.message)
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load workforce health data'
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }

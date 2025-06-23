@@ -1,4 +1,4 @@
-namespace Hudur.Shared.Domain.Interfaces
+namespace AttendancePlatform.Shared.Domain.Interfaces
 {
     public interface ITenantAware
     {

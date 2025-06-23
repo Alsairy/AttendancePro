@@ -147,8 +147,9 @@ const DepartmentAnalyticsComparison: React.FC = () => {
       setDepartments(mockDepartments)
       setTrends(mockTrends)
       setRankings(mockRankings)
-    } catch (error: any) {
-      toast.error('Failed to load department analytics: ' + error.message)
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load department analytics'
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }

@@ -103,8 +103,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       return { success: false, error: 'Invalid response from server' }
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Login failed' }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Login failed'
+      return { success: false, error: errorMessage }
     }
   }
 
@@ -112,8 +113,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await authService.register(userData)
       return { success: true }
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Registration failed' }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed'
+      return { success: false, error: errorMessage }
     }
   }
 
@@ -136,8 +138,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await authService.forgotPassword(email)
       return { success: true }
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Failed to send reset email' }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send reset email'
+      return { success: false, error: errorMessage }
     }
   }
 
@@ -145,8 +148,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await authService.resetPassword(token, newPassword)
       return { success: true }
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Password reset failed' }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Password reset failed'
+      return { success: false, error: errorMessage }
     }
   }
 
@@ -155,8 +159,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (!user) throw new Error('User not authenticated')
       await authService.changePassword(user.id, currentPassword, newPassword)
       return { success: true }
-    } catch (error: any) {
-      return { success: false, error: error.message || 'Password change failed' }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Password change failed'
+      return { success: false, error: errorMessage }
     }
   }
 

@@ -1,8 +1,8 @@
-using Hudur.Shared.Domain.DTOs;
-using Hudur.Shared.Domain.Entities;
-using Hudur.Attendance.Api.Controllers;
+using AttendancePlatform.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Attendance.Api.Controllers;
 
-namespace Hudur.Attendance.Api.Services
+namespace AttendancePlatform.Attendance.Api.Services
 {
     public interface IKioskService
     {

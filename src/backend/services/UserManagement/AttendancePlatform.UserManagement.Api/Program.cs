@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.UserManagement.Api.Services;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.UserManagement.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +33,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddDbContext<HudurDbContext>(options =>
+builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();

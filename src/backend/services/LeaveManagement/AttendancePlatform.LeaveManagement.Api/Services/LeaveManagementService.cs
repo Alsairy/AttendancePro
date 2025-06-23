@@ -26,9 +26,9 @@ namespace Hudur.LeaveManagement.Api.Services
 
     public class LeaveManagementService : ILeaveManagementService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
 
-        public LeaveManagementService(HudurDbContext context)
+        public LeaveManagementService(AttendancePlatformDbContext context)
         {
             _context = context;
         }

@@ -83,7 +83,7 @@ const ManagerDashboard: React.FC = () => {
   })
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
   const [pendingTasks, setPendingTasks] = useState<PendingTask[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [, setIsLoading] = useState(true)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [unreadNotifications, setUnreadNotifications] = useState(0)
   const [showNotifications, setShowNotifications] = useState(false)

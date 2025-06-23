@@ -1,20 +1,20 @@
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Domain.Interfaces;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.Shared.Infrastructure.Services;
+using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Services;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
-namespace Hudur.Shared.Infrastructure.Repositories
+namespace AttendancePlatform.Shared.Infrastructure.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        protected readonly HudurDbContext _context;
+        protected readonly AttendancePlatformDbContext _context;
         protected readonly DbSet<T> _dbSet;
         protected readonly ICacheService _cacheService;
         protected readonly ILogger<Repository<T>> _logger;
 
-        public Repository(HudurDbContext context, ICacheService cacheService, ILogger<Repository<T>> logger)
+        public Repository(AttendancePlatformDbContext context, ICacheService cacheService, ILogger<Repository<T>> logger)
         {
             _context = context;
             _dbSet = context.Set<T>();
@@ -171,7 +171,7 @@ namespace Hudur.Shared.Infrastructure.Repositories
     {
         private readonly ITenantContext _tenantContext;
 
-        public TenantRepository(HudurDbContext context, ITenantContext tenantContext, ICacheService cacheService, ILogger<Repository<T>> logger) 
+        public TenantRepository(AttendancePlatformDbContext context, ITenantContext tenantContext, ICacheService cacheService, ILogger<Repository<T>> logger) 
             : base(context, cacheService, logger)
         {
             _tenantContext = tenantContext;
@@ -210,10 +210,10 @@ namespace Hudur.Shared.Infrastructure.Repositories
 
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction? _transaction;
 
-        public UnitOfWork(HudurDbContext context)
+        public UnitOfWork(AttendancePlatformDbContext context)
         {
             _context = context;
         }

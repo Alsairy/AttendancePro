@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Hudur.Shared.Infrastructure.Security;
+namespace AttendancePlatform.Shared.Infrastructure.Security;
 
 public interface IEncryptionService
 {

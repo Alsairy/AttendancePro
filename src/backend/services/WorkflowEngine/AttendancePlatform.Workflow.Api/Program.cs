@@ -14,7 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Database
-builder.Services.AddDbContext<HudurDbContext>(options =>
+builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Workflow Services
@@ -67,7 +67,7 @@ builder.Services.AddCors(options =>
 
 // Health Checks
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<HudurDbContext>();
+    .AddDbContextCheck<AttendancePlatformDbContext>();
 
 // Shared Infrastructure
 builder.Services.AddSharedInfrastructure(builder.Configuration);

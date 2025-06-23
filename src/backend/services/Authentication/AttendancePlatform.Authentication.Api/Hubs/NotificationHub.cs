@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Hudur.Authentication.Api.Hubs
+namespace AttendancePlatform.Authentication.Api.Hubs
 {
     [Authorize]
     public class NotificationHub : Hub

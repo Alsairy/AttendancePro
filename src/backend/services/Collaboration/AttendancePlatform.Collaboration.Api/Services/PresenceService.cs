@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.Entities;
 
-namespace Hudur.Collaboration.Api.Services
+namespace AttendancePlatform.Collaboration.Api.Services
 {
     public interface IPresenceService
     {
@@ -18,10 +18,10 @@ namespace Hudur.Collaboration.Api.Services
 
     public class PresenceService : IPresenceService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private readonly ILogger<PresenceService> _logger;
 
-        public PresenceService(HudurDbContext context, ILogger<PresenceService> logger)
+        public PresenceService(AttendancePlatformDbContext context, ILogger<PresenceService> logger)
         {
             _context = context;
             _logger = logger;

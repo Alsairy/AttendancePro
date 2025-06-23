@@ -1,14 +1,14 @@
-using Hudur.Shared.Domain.DTOs;
-using Hudur.Shared.Domain.Entities;
-using Hudur.Shared.Domain.Interfaces;
-using Hudur.Shared.Infrastructure.Services;
-using Hudur.Attendance.Api.Controllers;
+using AttendancePlatform.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Services;
+using AttendancePlatform.Attendance.Api.Controllers;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
 
-namespace Hudur.Attendance.Api.Services
+namespace AttendancePlatform.Attendance.Api.Services
 {
     public class KioskService : IKioskService
     {

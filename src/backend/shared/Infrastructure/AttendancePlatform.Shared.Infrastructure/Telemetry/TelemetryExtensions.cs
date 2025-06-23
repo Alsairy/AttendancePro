@@ -7,7 +7,7 @@ using OpenTelemetry.Trace;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace Hudur.Shared.Infrastructure.Telemetry;
+namespace AttendancePlatform.Shared.Infrastructure.Telemetry;
 
 public static class TelemetryExtensions
 {

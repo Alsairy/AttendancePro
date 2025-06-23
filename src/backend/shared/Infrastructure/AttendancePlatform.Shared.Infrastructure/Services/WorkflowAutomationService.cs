@@ -1,15 +1,17 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Domain.Entities;
-using Hudur.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Services;
 
-namespace Hudur.Shared.Infrastructure.Services
+namespace AttendancePlatform.Shared.Infrastructure.Services
 {
     public class WorkflowAutomationService : IWorkflowAutomationService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
 
-        public WorkflowAutomationService(HudurDbContext context)
+        public WorkflowAutomationService(AttendancePlatformDbContext context)
         {
             _context = context;
         }

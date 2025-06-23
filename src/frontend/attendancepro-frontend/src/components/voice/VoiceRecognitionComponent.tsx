@@ -37,7 +37,12 @@ export const VoiceRecognitionComponent: React.FC<VoiceRecognitionComponentProps>
   const [voiceQuality, setVoiceQuality] = useState<VoiceQuality | null>(null);
   const [lastCommand, setLastCommand] = useState<string>('');
   const [confidence, setConfidence] = useState<number>(0);
-  const [supportedCommands, setSupportedCommands] = useState<any[]>([]);
+  const [supportedCommands, setSupportedCommands] = useState<Array<{
+    category: string;
+    command: string;
+    description: string;
+    examples?: string[];
+  }>>([]);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);

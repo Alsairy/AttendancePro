@@ -45,10 +45,11 @@ const BiometricTemplateManager: React.FC<BiometricTemplateManagerProps> = ({
       setError(null)
       const userTemplates = await faceRecognitionService.getUserTemplates(userId)
       setTemplates(userTemplates)
-    } catch (error: any) {
-      setError(error.message || 'Failed to load biometric templates')
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load biometric templates'
+      setError(errorMessage)
       toast.error('Failed to load templates')
-    } finally {
+    }finally {
       setIsLoading(false)
     }
   }
@@ -59,9 +60,10 @@ const BiometricTemplateManager: React.FC<BiometricTemplateManagerProps> = ({
       await faceRecognitionService.activateTemplate(templateId)
       toast.success('Template activated successfully')
       await loadTemplates()
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to activate template')
-    } finally {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to activate template'
+      toast.error(errorMessage)
+    }finally {
       setActionLoading(null)
     }
   }
@@ -72,9 +74,10 @@ const BiometricTemplateManager: React.FC<BiometricTemplateManagerProps> = ({
       await faceRecognitionService.deactivateTemplate(templateId)
       toast.success('Template deactivated successfully')
       await loadTemplates()
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to deactivate template')
-    } finally {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to deactivate template'
+      toast.error(errorMessage)
+    }finally {
       setActionLoading(null)
     }
   }
@@ -86,16 +89,18 @@ const BiometricTemplateManager: React.FC<BiometricTemplateManagerProps> = ({
       toast.success('Template deleted successfully')
       setDeleteDialog({ open: false, templateId: '', templateName: '' })
       await loadTemplates()
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to delete template')
-    } finally {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete template'
+      toast.error(errorMessage)
+    }finally {
       setActionLoading(null)
     }
   }
 
-  const handleEnrollmentComplete = async (_templateId: string) => {
+  const handleEnrollmentComplete = async (templateId: string) => {
     setShowEnrollmentDialog(false)
     toast.success('New biometric template created successfully')
+    console.log('Template enrolled:', templateId)
     await loadTemplates()
   }
 

@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.Shared.Infrastructure.Extensions;
-using Hudur.TenantManagement.Api.Controllers;
-using Hudur.TenantManagement.Api.Services;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.TenantManagement.Api.Controllers;
+using AttendancePlatform.TenantManagement.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +35,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddDbContext<HudurDbContext>(options =>
+builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

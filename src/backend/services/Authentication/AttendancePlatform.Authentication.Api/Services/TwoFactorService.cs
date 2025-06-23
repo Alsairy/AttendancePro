@@ -1,10 +1,10 @@
 using System.Security.Cryptography;
 using System.Text;
-using Hudur.Shared.Domain.Entities;
-using Hudur.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hudur.Authentication.Api.Services
+namespace AttendancePlatform.Authentication.Api.Services
 {
     public interface ITwoFactorService
     {
@@ -18,12 +18,12 @@ namespace Hudur.Authentication.Api.Services
 
     public class TwoFactorService : ITwoFactorService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private readonly ILogger<TwoFactorService> _logger;
-        private const string ApplicationName = "Hudur";
+        private const string ApplicationName = "AttendancePro";
 
         public TwoFactorService(
-            HudurDbContext context,
+            AttendancePlatformDbContext context,
             ILogger<TwoFactorService> logger)
         {
             _context = context;

@@ -56,7 +56,7 @@ const FaceEnrollmentComponent: React.FC<FaceEnrollmentComponentProps> = ({
         setCameraActive(true)
         setEnrollmentStep('capturing')
       }
-    } catch (error) {
+    } catch {
       setError('Unable to access camera. Please ensure camera permissions are granted.')
       toast.error('Camera access denied')
     }
@@ -125,11 +125,12 @@ const FaceEnrollmentComponent: React.FC<FaceEnrollmentComponentProps> = ({
       } else {
         throw new Error(enrollmentResult.message)
       }
-    } catch (error: any) {
-      setError(error.message || 'Enrollment failed')
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Enrollment failed'
+      setError(errorMessage)
       toast.error('Face enrollment failed')
       setEnrollmentStep('setup')
-    } finally {
+    }finally {
       setIsLoading(false)
       stopCamera()
     }

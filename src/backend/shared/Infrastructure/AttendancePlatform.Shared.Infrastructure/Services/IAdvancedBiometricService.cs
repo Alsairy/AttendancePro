@@ -1,6 +1,6 @@
-using Hudur.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.Entities;
 
-namespace Hudur.Shared.Infrastructure.Services;
+namespace AttendancePlatform.Shared.Infrastructure.Services;
 
 public interface IAdvancedBiometricService
 {

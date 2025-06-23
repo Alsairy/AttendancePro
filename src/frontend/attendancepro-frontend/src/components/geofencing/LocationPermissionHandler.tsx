@@ -67,7 +67,7 @@ const LocationPermissionHandler: React.FC<LocationPermissionHandlerProps> = ({
           onPermissionDenied?.()
         }
       })
-    } catch (error) {
+    } catch {
       setPermissionState('unknown')
     }
   }

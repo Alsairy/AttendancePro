@@ -5,27 +5,20 @@ import { Badge } from '../../components/ui/badge'
 import { Progress } from '../../components/ui/progress'
 import { 
   Users, 
-  CheckCircle, 
-  XCircle, 
   TrendingUp, 
-  Calendar, 
-  Clock, 
   BarChart3, 
-  Settings, 
-  Smartphone,
+  Settings,
   Bell,
   Activity,
   Wifi,
   WifiOff,
   RefreshCw,
-  MapPin,
   Building2,
   Shield,
   Database,
   Server,
   AlertTriangle,
   DollarSign,
-  UserCheck,
   FileText
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
@@ -75,7 +68,7 @@ const AdminDashboard: React.FC = () => {
     criticalAlerts: 0,
   })
   const [systemAlerts, setSystemAlerts] = useState<SystemAlert[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [, setIsLoading] = useState(true)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [unreadNotifications, setUnreadNotifications] = useState(0)
   const [showNotifications, setShowNotifications] = useState(false)
@@ -127,7 +120,7 @@ const AdminDashboard: React.FC = () => {
       }
     })
 
-    realTimeService.on('admin-update', (update) => {
+    realTimeService.on('admin-update', () => {
       if (realTimeUpdates) {
         loadAdminData()
       }
@@ -135,9 +128,9 @@ const AdminDashboard: React.FC = () => {
   }
 
   const cleanupRealTimeConnections = () => {
-    realTimeService.off('connection-status')
-    realTimeService.off('system-alert')
-    realTimeService.off('admin-update')
+    realTimeService.off('connection-status', () => {})
+    realTimeService.off('system-alert', () => {})
+    realTimeService.off('admin-update', () => {})
   }
 
   const loadAdminData = async () => {
@@ -151,12 +144,12 @@ const AdminDashboard: React.FC = () => {
         absentToday: overview.absentToday || 85,
         lateToday: overview.lateToday || 23,
         attendanceRate: overview.attendanceRate || 91.2,
-        totalTenants: overview.totalTenants || 45,
-        activeTenants: overview.activeTenants || 42,
-        systemHealth: overview.systemHealth || 98.5,
-        monthlyRevenue: overview.monthlyRevenue || 125000,
-        newUsersThisMonth: overview.newUsersThisMonth || 156,
-        criticalAlerts: overview.criticalAlerts || 2,
+        totalTenants: 45,
+        activeTenants: 42,
+        systemHealth: 98.5,
+        monthlyRevenue: 125000,
+        newUsersThisMonth: 156,
+        criticalAlerts: 2,
       })
 
       setSystemAlerts([

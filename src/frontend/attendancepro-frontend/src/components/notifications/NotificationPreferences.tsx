@@ -94,7 +94,7 @@ const NotificationPreferencesComponent: React.FC = () => {
     }
   }
 
-  const updatePreference = (key: keyof NotificationPreferencesDto, value: any) => {
+  const updatePreference = (key: keyof NotificationPreferencesDto, value: boolean | string) => {
     setPreferences(prev => ({
       ...prev,
       [key]: value
@@ -111,7 +111,7 @@ const NotificationPreferencesComponent: React.FC = () => {
     }))
   }
 
-  const updateQuietHours = (key: keyof NotificationPreferencesDto['quietHours'], value: any) => {
+  const updateQuietHours = (key: keyof NotificationPreferencesDto['quietHours'], value: boolean | string) => {
     setPreferences(prev => ({
       ...prev,
       quietHours: {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Hudur.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.Entities;
 
-namespace Hudur.Shared.Domain.DTOs
+namespace AttendancePlatform.Shared.Domain.DTOs
 {
     // Additional Leave Management DTOs that don't exist in CommonDTOs
     public class ApprovalDto

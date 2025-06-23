@@ -128,8 +128,9 @@ const AttendancePatternAnalysis: React.FC = () => {
       setWeeklyPatterns(mockWeeklyPatterns)
       setSeasonalPatterns(mockSeasonalPatterns)
       setAnomalies(mockAnomalies)
-    } catch (error: any) {
-      toast.error('Failed to load pattern analysis: ' + error.message)
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load pattern analysis'
+      toast.error(errorMessage)
     } finally {
       setIsLoading(false)
     }

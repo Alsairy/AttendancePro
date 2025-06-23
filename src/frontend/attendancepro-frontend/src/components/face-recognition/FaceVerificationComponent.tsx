@@ -61,7 +61,7 @@ const FaceVerificationComponent: React.FC<FaceVerificationComponentProps> = ({
           startLivenessCheck()
         }
       }
-    } catch (error) {
+    } catch {
       setError('Unable to access camera. Please ensure camera permissions are granted.')
       toast.error('Camera access denied')
     }
@@ -143,11 +143,12 @@ const FaceVerificationComponent: React.FC<FaceVerificationComponentProps> = ({
         toast.error('Face verification failed')
         onVerificationFailed?.(reason)
       }
-    } catch (error: any) {
-      setError(error.message || 'Verification failed')
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Verification failed'
+      setError(errorMessage)
       setVerificationStep('failed')
       toast.error('Face verification failed')
-      onVerificationFailed?.(error.message || 'Verification failed')
+      onVerificationFailed?.(errorMessage)
     } finally {
       stopCamera()
     }
