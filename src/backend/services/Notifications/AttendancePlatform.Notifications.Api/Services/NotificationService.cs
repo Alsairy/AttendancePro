@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Domain.Interfaces;
-using Hudur.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Data;
 using System.Text.Json;
 
 namespace AttendancePlatform.Notifications.Api.Services
