@@ -21,12 +21,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Add infrastructure services with SQL Server database
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? 
-                       "Server=localhost;Database=AttendancePlatform;Trusted_Connection=true;TrustServerCertificate=true;";
-
+// Add infrastructure services with in-memory database for local development
 builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseInMemoryDatabase("AttendancePlatform"));
 
 // Add infrastructure services without database context (to avoid conflict)
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?? 
@@ -94,6 +91,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
                 "http://localhost:5173", 
+                "http://localhost:5174",
                 "http://localhost:3000",
                 "https://project-review-app-7tx5ua47.devinapps.com"
               )
