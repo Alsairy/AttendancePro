@@ -1,9 +1,9 @@
 using System.Net.Mail;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Data;
 
-namespace Hudur.Notifications.Api.Services
+namespace AttendancePlatform.Notifications.Api.Services
 {
     public interface IEmailService
     {

@@ -4,7 +4,7 @@ using Hudur.LeaveManagement.Api.Services;
 using Hudur.Shared.Domain.DTOs;
 using System.Security.Claims;
 
-namespace Hudur.LeaveManagement.Api.Controllers
+namespace AttendancePlatform.LeaveManagement.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

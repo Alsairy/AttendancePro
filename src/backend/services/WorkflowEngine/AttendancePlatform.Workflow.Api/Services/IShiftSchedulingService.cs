@@ -1,6 +1,6 @@
 using Hudur.Shared.Domain.Entities;
 
-namespace Hudur.Workflow.Api.Services
+namespace AttendancePlatform.Workflow.Api.Services
 {
     public interface IShiftSchedulingService
     {
