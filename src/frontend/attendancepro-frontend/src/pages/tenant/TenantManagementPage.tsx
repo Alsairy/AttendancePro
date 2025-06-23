@@ -39,6 +39,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import tenantManagementService, { 
   Tenant, 
   CreateTenantRequest, 
+  UpdateTenantRequest,
   TenantSearchFilters,
   TenantListResponse,
   TenantAnalytics,
@@ -115,7 +116,7 @@ const TenantManagementPage: React.FC = () => {
     totalCount: 0,
   });
 
-  const createForm = useForm<any>({
+  const createForm = useForm<CreateTenantRequest>({
     resolver: zodResolver(createTenantSchema),
     defaultValues: {
       features: [],
@@ -127,11 +128,11 @@ const TenantManagementPage: React.FC = () => {
     },
   });
 
-  const editForm = useForm<any>({
+  const editForm = useForm<UpdateTenantRequest>({
     resolver: zodResolver(updateTenantSchema),
   });
 
-  const brandingForm = useForm<any>({
+  const brandingForm = useForm({
     resolver: zodResolver(brandingSchema),
   });
 

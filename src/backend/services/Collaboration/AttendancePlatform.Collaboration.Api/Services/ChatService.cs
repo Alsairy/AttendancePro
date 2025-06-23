@@ -36,13 +36,11 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 {
                     Id = Guid.NewGuid(),
                     SenderId = senderId,
-                    ReceiverId = receiverId,
                     ChannelId = channelId,
                     Content = content,
-                    AttachmentUrl = attachmentUrl,
-                    Timestamp = DateTime.UtcNow,
-                    IsEdited = false,
-                    IsDeleted = false
+                    MessageType = string.IsNullOrEmpty(attachmentUrl) ? "Text" : "File",
+                    SentAt = DateTime.UtcNow,
+                    IsEdited = false
                 };
 
                 _context.ChatMessages.Add(message);
@@ -67,8 +65,8 @@ namespace AttendancePlatform.Collaboration.Api.Services
             {
                 var query = _context.ChatMessages
                     .Include(m => m.Sender)
-                    .Include(m => m.Receiver)
-                    .Where(m => !m.IsDeleted);
+                    .Include(m => m.Channel)
+                    .AsQueryable();
 
                 if (channelId.HasValue)
                 {
@@ -76,16 +74,16 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 }
                 else if (userId.HasValue)
                 {
-                    query = query.Where(m => m.SenderId == userId.Value || m.ReceiverId == userId.Value);
+                    query = query.Where(m => m.SenderId == userId.Value);
                 }
 
                 var messages = await query
-                    .OrderByDescending(m => m.Timestamp)
+                    .OrderByDescending(m => m.SentAt)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
 
-                return messages.OrderBy(m => m.Timestamp);
+                return messages.OrderBy(m => m.SentAt);
             }
             catch (Exception ex)
             {
@@ -106,13 +104,13 @@ namespace AttendancePlatform.Collaboration.Api.Services
                     Description = description,
                     CreatedById = createdById,
                     CreatedAt = DateTime.UtcNow,
-                    IsPrivate = isPrivate,
+                    ChannelType = isPrivate ? "Private" : "Public",
                     IsActive = true
                 };
 
                 _context.ChatChannels.Add(channel);
 
-                var membership = new ChannelMembership
+                var membership = new ChannelMember
                 {
                     Id = Guid.NewGuid(),
                     UserId = createdById,
@@ -121,7 +119,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                     Role = "Admin"
                 };
 
-                _context.ChannelMemberships.Add(membership);
+                _context.ChannelMembers.Add(membership);
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Channel created successfully. ChannelId: {ChannelId}, Name: {Name}", 
@@ -141,7 +139,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
         {
             try
             {
-                var channels = await _context.ChannelMemberships
+                var channels = await _context.ChannelMembers
                     .Include(cm => cm.Channel)
                     .Where(cm => cm.UserId == userId && cm.Channel.IsActive)
                     .Select(cm => cm.Channel)
@@ -160,13 +158,13 @@ namespace AttendancePlatform.Collaboration.Api.Services
         {
             try
             {
-                var existingMembership = await _context.ChannelMemberships
+                var existingMembership = await _context.ChannelMembers
                     .FirstOrDefaultAsync(cm => cm.UserId == userId && cm.ChannelId == channelId);
 
                 if (existingMembership != null)
                     return false;
 
-                var membership = new ChannelMembership
+                var membership = new ChannelMember
                 {
                     Id = Guid.NewGuid(),
                     UserId = userId,
@@ -175,7 +173,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                     Role = "Member"
                 };
 
-                _context.ChannelMemberships.Add(membership);
+                _context.ChannelMembers.Add(membership);
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("User joined channel successfully. UserId: {UserId}, ChannelId: {ChannelId}", 
@@ -195,13 +193,13 @@ namespace AttendancePlatform.Collaboration.Api.Services
         {
             try
             {
-                var membership = await _context.ChannelMemberships
+                var membership = await _context.ChannelMembers
                     .FirstOrDefaultAsync(cm => cm.UserId == userId && cm.ChannelId == channelId);
 
                 if (membership == null)
                     return false;
 
-                _context.ChannelMemberships.Remove(membership);
+                _context.ChannelMembers.Remove(membership);
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("User left channel successfully. UserId: {UserId}, ChannelId: {ChannelId}", 
@@ -227,8 +225,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 if (message == null)
                     return false;
 
-                message.IsDeleted = true;
-                message.DeletedAt = DateTime.UtcNow;
+                _context.ChatMessages.Remove(message);
 
                 await _context.SaveChangesAsync();
 
@@ -280,7 +277,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
             {
                 var messagesQuery = _context.ChatMessages
                     .Include(m => m.Sender)
-                    .Where(m => !m.IsDeleted && m.Content.Contains(query));
+                    .Where(m => m.Content.Contains(query));
 
                 if (channelId.HasValue)
                 {
@@ -288,11 +285,11 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 }
                 else
                 {
-                    messagesQuery = messagesQuery.Where(m => m.SenderId == userId || m.ReceiverId == userId);
+                    messagesQuery = messagesQuery.Where(m => m.SenderId == userId);
                 }
 
                 var messages = await messagesQuery
-                    .OrderByDescending(m => m.Timestamp)
+                    .OrderByDescending(m => m.SentAt)
                     .Take(100)
                     .ToListAsync();
 

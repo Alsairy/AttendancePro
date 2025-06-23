@@ -4,46 +4,31 @@ using AttendancePlatform.Shared.Domain.Entities;
 
 namespace AttendancePlatform.Collaboration.Api.Services
 {
-    public interface IScreenSharingService
-    {
-        Task<ScreenSharingSession> StartScreenSharingAsync(Guid userId, Guid? conferenceId = null, string? title = null);
-        Task<bool> StopScreenSharingAsync(Guid sessionId, Guid userId);
-        Task<ScreenSharingSession?> GetActiveSessionAsync(Guid sessionId);
-        Task<IEnumerable<ScreenSharingSession>> GetUserSessionsAsync(Guid userId);
-        Task<bool> JoinScreenSharingAsync(Guid sessionId, Guid userId);
-        Task<bool> LeaveScreenSharingAsync(Guid sessionId, Guid userId);
-        Task<IEnumerable<ScreenSharingParticipant>> GetSessionParticipantsAsync(Guid sessionId);
-        Task<bool> GrantControlAsync(Guid sessionId, Guid participantId, Guid ownerId);
-        Task<bool> RevokeControlAsync(Guid sessionId, Guid participantId, Guid ownerId);
-        Task<string> GenerateSessionTokenAsync(Guid sessionId, Guid userId);
-    }
-
     public class ScreenSharingService : IScreenSharingService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private readonly ILogger<ScreenSharingService> _logger;
 
-        public ScreenSharingService(HudurDbContext context, ILogger<ScreenSharingService> logger)
+        public ScreenSharingService(AttendancePlatformDbContext context, ILogger<ScreenSharingService> logger)
         {
             _context = context;
             _logger = logger;
         }
 
-        public async Task<ScreenSharingSession> StartScreenSharingAsync(Guid userId, Guid? conferenceId = null, string? title = null)
+        public async Task<ScreenSharingSession> StartScreenSharingAsync(Guid hostId, string sessionName, Guid? conferenceId = null)
         {
             try
             {
                 var session = new ScreenSharingSession
                 {
                     Id = Guid.NewGuid(),
-                    OwnerId = userId,
+                    HostId = hostId,
                     ConferenceId = conferenceId,
-                    Title = title ?? "Screen Sharing Session",
+                    SessionName = sessionName,
                     StartedAt = DateTime.UtcNow,
                     Status = "Active",
-                    SessionUrl = $"https://screen.hudu.sa/{Guid.NewGuid():N}",
-                    IsRecording = false,
-                    MaxParticipants = 50
+                    StreamUrl = $"https://screen.hudu.sa/{Guid.NewGuid():N}",
+                    IsRecorded = false
                 };
 
                 _context.ScreenSharingSessions.Add(session);
@@ -52,22 +37,21 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 {
                     Id = Guid.NewGuid(),
                     SessionId = session.Id,
-                    UserId = userId,
+                    UserId = hostId,
                     JoinedAt = DateTime.UtcNow,
-                    Role = "Owner",
-                    HasControl = true
+                    Permission = "Control"
                 };
 
                 _context.ScreenSharingParticipants.Add(participant);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Screen sharing session started successfully. SessionId: {SessionId}, OwnerId: {OwnerId}", 
-                    session.Id, userId);
+                _logger.LogInformation("Screen sharing session started successfully. SessionId: {SessionId}, HostId: {HostId}", 
+                    session.Id, hostId);
                 return session;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error starting screen sharing session. UserId: {UserId}", userId);
+                _logger.LogError(ex, "Error starting screen sharing session. UserId: {UserId}", hostId);
                 throw;
             }
         }
@@ -77,7 +61,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
             try
             {
                 var session = await _context.ScreenSharingSessions
-                    .FirstOrDefaultAsync(s => s.Id == sessionId && s.OwnerId == userId);
+                    .FirstOrDefaultAsync(s => s.Id == sessionId && s.HostId == userId);
 
                 if (session == null)
                     return false;
@@ -96,7 +80,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
 
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Screen sharing session stopped successfully. SessionId: {SessionId}, OwnerId: {OwnerId}", 
+                _logger.LogInformation("Screen sharing session stopped successfully. SessionId: {SessionId}, HostId: {HostId}", 
                     sessionId, userId);
                 return true;
             }
@@ -108,12 +92,12 @@ namespace AttendancePlatform.Collaboration.Api.Services
             }
         }
 
-        public async Task<ScreenSharingSession?> GetActiveSessionAsync(Guid sessionId)
+        public async Task<ScreenSharingSession?> GetSessionAsync(Guid sessionId)
         {
             try
             {
                 var session = await _context.ScreenSharingSessions
-                    .Include(s => s.Owner)
+                    .Include(s => s.Host)
                     .Include(s => s.Participants.Where(p => p.LeftAt == null))
                     .ThenInclude(p => p.User)
                     .FirstOrDefaultAsync(s => s.Id == sessionId && s.Status == "Active");
@@ -127,13 +111,13 @@ namespace AttendancePlatform.Collaboration.Api.Services
             }
         }
 
-        public async Task<IEnumerable<ScreenSharingSession>> GetUserSessionsAsync(Guid userId)
+        public async Task<IEnumerable<ScreenSharingSession>> GetActiveSessionsAsync()
         {
             try
             {
                 var sessions = await _context.ScreenSharingSessions
                     .Include(s => s.Participants)
-                    .Where(s => s.OwnerId == userId || s.Participants.Any(p => p.UserId == userId))
+                    .Where(s => s.Status == "Active")
                     .OrderByDescending(s => s.StartedAt)
                     .ToListAsync();
 
@@ -141,12 +125,12 @@ namespace AttendancePlatform.Collaboration.Api.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving user screen sharing sessions. UserId: {UserId}", userId);
+                _logger.LogError(ex, "Error retrieving active screen sharing sessions");
                 throw;
             }
         }
 
-        public async Task<bool> JoinScreenSharingAsync(Guid sessionId, Guid userId)
+        public async Task<bool> JoinSessionAsync(Guid sessionId, Guid userId)
         {
             try
             {
@@ -157,8 +141,6 @@ namespace AttendancePlatform.Collaboration.Api.Services
                 if (session == null)
                     return false;
 
-                if (session.Participants.Count(p => p.LeftAt == null) >= session.MaxParticipants)
-                    throw new InvalidOperationException("Session is full");
 
                 var existingParticipant = session.Participants
                     .FirstOrDefault(p => p.UserId == userId && p.LeftAt == null);
@@ -172,8 +154,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                     SessionId = sessionId,
                     UserId = userId,
                     JoinedAt = DateTime.UtcNow,
-                    Role = "Viewer",
-                    HasControl = false
+                    Permission = "View"
                 };
 
                 _context.ScreenSharingParticipants.Add(participant);
@@ -191,7 +172,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
             }
         }
 
-        public async Task<bool> LeaveScreenSharingAsync(Guid sessionId, Guid userId)
+        public async Task<bool> LeaveSessionAsync(Guid sessionId, Guid userId)
         {
             try
             {
@@ -234,107 +215,76 @@ namespace AttendancePlatform.Collaboration.Api.Services
             }
         }
 
-        public async Task<bool> GrantControlAsync(Guid sessionId, Guid participantId, Guid ownerId)
+        public async Task<bool> GrantControlAsync(Guid sessionId, Guid userId, Guid requesterId)
         {
             try
             {
                 var session = await _context.ScreenSharingSessions
-                    .FirstOrDefaultAsync(s => s.Id == sessionId && s.OwnerId == ownerId);
+                    .FirstOrDefaultAsync(s => s.Id == sessionId && s.HostId == requesterId);
 
                 if (session == null)
                     throw new UnauthorizedAccessException("User not authorized to grant control");
 
                 var participant = await _context.ScreenSharingParticipants
-                    .FirstOrDefaultAsync(p => p.SessionId == sessionId && p.UserId == participantId && p.LeftAt == null);
+                    .FirstOrDefaultAsync(p => p.SessionId == sessionId && p.UserId == userId && p.LeftAt == null);
 
                 if (participant == null)
                     return false;
 
                 var currentControllers = await _context.ScreenSharingParticipants
-                    .Where(p => p.SessionId == sessionId && p.HasControl && p.UserId != ownerId)
+                    .Where(p => p.SessionId == sessionId && p.Permission == "Control" && p.UserId != requesterId)
                     .ToListAsync();
 
                 foreach (var controller in currentControllers)
                 {
-                    controller.HasControl = false;
+                    controller.Permission = "View";
                 }
 
-                participant.HasControl = true;
+                participant.Permission = "Control";
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Control granted successfully. SessionId: {SessionId}, ParticipantId: {ParticipantId}, OwnerId: {OwnerId}", 
-                    sessionId, participantId, ownerId);
+                _logger.LogInformation("Control granted successfully. SessionId: {SessionId}, ParticipantId: {ParticipantId}, RequesterId: {RequesterId}", 
+                    sessionId, userId, requesterId);
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error granting control. SessionId: {SessionId}, ParticipantId: {ParticipantId}, OwnerId: {OwnerId}", 
-                    sessionId, participantId, ownerId);
+                _logger.LogError(ex, "Error granting control. SessionId: {SessionId}, ParticipantId: {ParticipantId}, RequesterId: {RequesterId}", 
+                    sessionId, userId, requesterId);
                 throw;
             }
         }
 
-        public async Task<bool> RevokeControlAsync(Guid sessionId, Guid participantId, Guid ownerId)
+        public async Task<bool> RevokeControlAsync(Guid sessionId, Guid userId, Guid requesterId)
         {
             try
             {
                 var session = await _context.ScreenSharingSessions
-                    .FirstOrDefaultAsync(s => s.Id == sessionId && s.OwnerId == ownerId);
+                    .FirstOrDefaultAsync(s => s.Id == sessionId && s.HostId == requesterId);
 
                 if (session == null)
                     throw new UnauthorizedAccessException("User not authorized to revoke control");
 
                 var participant = await _context.ScreenSharingParticipants
-                    .FirstOrDefaultAsync(p => p.SessionId == sessionId && p.UserId == participantId);
+                    .FirstOrDefaultAsync(p => p.SessionId == sessionId && p.UserId == userId);
 
                 if (participant == null)
                     return false;
 
-                participant.HasControl = false;
+                participant.Permission = "View";
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("Control revoked successfully. SessionId: {SessionId}, ParticipantId: {ParticipantId}, OwnerId: {OwnerId}", 
-                    sessionId, participantId, ownerId);
+                _logger.LogInformation("Control revoked successfully. SessionId: {SessionId}, ParticipantId: {ParticipantId}, RequesterId: {RequesterId}", 
+                    sessionId, userId, requesterId);
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error revoking control. SessionId: {SessionId}, ParticipantId: {ParticipantId}, OwnerId: {OwnerId}", 
-                    sessionId, participantId, ownerId);
+                _logger.LogError(ex, "Error revoking control. SessionId: {SessionId}, ParticipantId: {ParticipantId}, RequesterId: {RequesterId}", 
+                    sessionId, userId, requesterId);
                 throw;
             }
         }
 
-        public async Task<string> GenerateSessionTokenAsync(Guid sessionId, Guid userId)
-        {
-            try
-            {
-                var session = await _context.ScreenSharingSessions
-                    .Include(s => s.Participants)
-                    .FirstOrDefaultAsync(s => s.Id == sessionId);
-
-                if (session == null)
-                    throw new ArgumentException("Session not found");
-
-                var participant = session.Participants
-                    .FirstOrDefault(p => p.UserId == userId && p.LeftAt == null);
-
-                if (participant == null)
-                    throw new UnauthorizedAccessException("User not authorized to access this session");
-
-                var token = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes($"{sessionId}:{userId}:{DateTime.UtcNow.Ticks}"));
-
-                _logger.LogInformation("Session token generated successfully. SessionId: {SessionId}, UserId: {UserId}", 
-                    sessionId, userId);
-
-                return token;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error generating session token. SessionId: {SessionId}, UserId: {UserId}", 
-                    sessionId, userId);
-                throw;
-            }
-        }
     }
 }
