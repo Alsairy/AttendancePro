@@ -34,12 +34,11 @@ import {
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Checkbox } from '@/components/ui/checkbox';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+
 
 import tenantManagementService, { 
   Tenant, 
   CreateTenantRequest, 
-  UpdateTenantRequest, 
   TenantSearchFilters,
   TenantListResponse,
   TenantAnalytics,
@@ -54,13 +53,15 @@ const createTenantSchema = z.object({
   contactPhone: z.string().optional(),
   address: z.string().optional(),
   city: z.string().optional(),
-  country: z.string().min(1, 'Country is required'),
+  country: z.string().optional(),
   timezone: z.string().min(1, 'Timezone is required'),
   currency: z.string().min(1, 'Currency is required'),
   language: z.string().min(1, 'Language is required'),
   subscriptionPlan: z.enum(['Basic', 'Professional', 'Enterprise', 'Custom']),
   maxUsers: z.number().min(1, 'Max users must be at least 1'),
   features: z.array(z.string()).min(1, 'At least one feature must be selected'),
+  customBranding: z.any().optional(),
+  settings: z.any().optional(),
 });
 
 const updateTenantSchema = z.object({
@@ -77,6 +78,8 @@ const updateTenantSchema = z.object({
   subscriptionPlan: z.enum(['Basic', 'Professional', 'Enterprise', 'Custom']).optional(),
   maxUsers: z.number().min(1, 'Max users must be at least 1').optional(),
   features: z.array(z.string()).optional(),
+  customBranding: z.any().optional(),
+  settings: z.any().optional(),
 });
 
 const brandingSchema = z.object({
@@ -96,14 +99,14 @@ const TenantManagementPage: React.FC = () => {
   const [filters, setFilters] = useState<TenantSearchFilters>({});
   const [selectedTenants, setSelectedTenants] = useState<string[]>([]);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [showBrandingDialog, setShowBrandingDialog] = useState(false);
+  const [, setShowEditDialog] = useState(false);
+  const [, setShowBrandingDialog] = useState(false);
   const [showAnalyticsDialog, setShowAnalyticsDialog] = useState(false);
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const [tenantAnalytics, setTenantAnalytics] = useState<TenantAnalytics | null>(null);
   const [tenantUsage, setTenantUsage] = useState<TenantUsageReport | null>(null);
   const [availableFeatures, setAvailableFeatures] = useState<Array<{ id: string; name: string; description: string; category: string }>>([]);
-  const [subscriptionPlans, setSubscriptionPlans] = useState<Array<{ id: string; name: string; description: string; price: number; features: string[] }>>([]);
+  const [, setSubscriptionPlans] = useState<Array<{ id: string; name: string; description: string; price: number; features: string[] }>>([]);
   const [tenantStats, setTenantStats] = useState<any>(null);
   const [pagination, setPagination] = useState({
     page: 1,
@@ -112,7 +115,7 @@ const TenantManagementPage: React.FC = () => {
     totalCount: 0,
   });
 
-  const createForm = useForm<CreateTenantRequest>({
+  const createForm = useForm<any>({
     resolver: zodResolver(createTenantSchema),
     defaultValues: {
       features: [],
@@ -124,11 +127,11 @@ const TenantManagementPage: React.FC = () => {
     },
   });
 
-  const editForm = useForm<UpdateTenantRequest>({
+  const editForm = useForm<any>({
     resolver: zodResolver(updateTenantSchema),
   });
 
-  const brandingForm = useForm({
+  const brandingForm = useForm<any>({
     resolver: zodResolver(brandingSchema),
   });
 
@@ -216,33 +219,7 @@ const TenantManagementPage: React.FC = () => {
     }
   };
 
-  const handleUpdateTenant = async (data: UpdateTenantRequest) => {
-    if (!selectedTenant) return;
-    
-    try {
-      await tenantManagementService.updateTenant(selectedTenant.id, data);
-      toast.success('Tenant updated successfully');
-      setShowEditDialog(false);
-      editForm.reset();
-      loadTenants();
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update tenant');
-    }
-  };
 
-  const handleUpdateBranding = async (data: any) => {
-    if (!selectedTenant) return;
-    
-    try {
-      await tenantManagementService.updateTenantBranding(selectedTenant.id, data);
-      toast.success('Branding updated successfully');
-      setShowBrandingDialog(false);
-      brandingForm.reset();
-      loadTenants();
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update branding');
-    }
-  };
 
   const handleDeleteTenant = async (tenantId: string) => {
     if (!confirm('Are you sure you want to delete this tenant? This action cannot be undone.')) {
@@ -842,7 +819,7 @@ const TenantManagementPage: React.FC = () => {
                                         ? field.onChange([...field.value, feature.id])
                                         : field.onChange(
                                             field.value?.filter(
-                                              (value) => value !== feature.id
+                                              (value: string) => value !== feature.id
                                             )
                                           )
                                     }}
