@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.Entities;
 
 namespace AttendancePlatform.Collaboration.Api.Services
 {
