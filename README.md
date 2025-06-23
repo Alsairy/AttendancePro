@@ -353,6 +353,7 @@ AttendancePro combines cutting-edge technology with enterprise-grade reliability
 **[Get Started Today →](docs/getting-started.md)**
 
 ---
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Alsairy/AttendancePro?utm_source=oss&utm_medium=github&utm_campaign=Alsairy%2FAttendancePro&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
 <div align="center">
 
