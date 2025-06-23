@@ -9,7 +9,7 @@ namespace AttendancePlatform.Integrations.Api.Services
 {
     public class MicrosoftGraphService : IMicrosoftGraphService
     {
-        private readonly HudurDbContext _context;
+        private readonly AttendancePlatformDbContext _context;
         private readonly ILogger<MicrosoftGraphService> _logger;
         private readonly IConfiguration _configuration;
 
