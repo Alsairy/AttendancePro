@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Hudur.FaceRecognition.Api.Services;
+using AttendancePlatform.FaceRecognition.Api.Services;
 using AttendancePlatform.Shared.Domain.DTOs;
 using System.Security.Claims;
 using System.Text.Json;

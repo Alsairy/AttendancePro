@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Infrastructure.Data;
-using Hudur.Shared.Domain.Entities;
-using Hudur.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.DTOs;
 
-namespace Hudur.LeaveManagement.Api.Services
+namespace AttendancePlatform.LeaveManagement.Api.Services
 {
     public interface ILeaveManagementService
     {
