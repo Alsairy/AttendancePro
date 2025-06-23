@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Hudur.Shared.Domain.Entities;
-using Hudur.Shared.Domain.DTOs;
-using Hudur.Shared.Domain.Interfaces;
-using Hudur.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Data;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
