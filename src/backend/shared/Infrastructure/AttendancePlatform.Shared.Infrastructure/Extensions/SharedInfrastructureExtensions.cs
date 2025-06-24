@@ -16,10 +16,5 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
             
             return services;
         }
-
-        public static IServiceCollection AddSecurityServices(this IServiceCollection services, IConfiguration configuration)
-        {
-            return services;
-        }
     }
 }
