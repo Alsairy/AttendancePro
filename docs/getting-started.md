@@ -1,6 +1,6 @@
-# 🚀 Getting Started with AttendancePro
+# 🚀 Getting Started with Hudur
 
-Welcome to AttendancePro! This guide will help you get the platform up and running quickly.
+Welcome to Hudur! This guide will help you get the platform up and running quickly.
 
 ## 📋 Prerequisites
 
@@ -17,12 +17,12 @@ Before you begin, ensure you have the following installed:
 
 ### Option 1: Docker Compose (Recommended)
 
-The fastest way to get AttendancePro running:
+The fastest way to get Hudur running:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/attendancepro.git
-cd attendancepro
+git clone https://github.com/your-org/hudur.git
+cd hudur
 
 # Copy environment configuration
 cp .env.example .env
@@ -45,14 +45,14 @@ For active development:
 
 ```bash
 # Clone and setup
-git clone https://github.com/your-org/attendancepro.git
-cd attendancepro
+git clone https://github.com/your-org/hudur.git
+cd hudur
 
 # Backend setup
 cd src/backend
 dotnet restore
 dotnet ef database update
-dotnet run --project services/Authentication/AttendancePlatform.Authentication.Api
+dotnet run --project services/Authentication/Hudur.Authentication.Api
 
 # Frontend setup (new terminal)
 cd src/frontend/attendance-web-app
@@ -68,7 +68,7 @@ npx react-native run-ios  # or run-android
 ## 🔑 Default Credentials
 
 ```
-Email: admin@attendancepro.com
+Email: admin@hudu.sa
 Password: Admin123!
 ```
 
@@ -104,7 +104,7 @@ Key configuration options in `.env`:
 
 ```bash
 # Database
-DATABASE_URL=postgresql://user:pass@localhost:5432/attendancepro
+DATABASE_URL=postgresql://user:pass@localhost:5432/hudur
 
 # JWT Authentication
 JWT_SECRET=your-super-secret-key
@@ -197,9 +197,9 @@ cd android && ./gradlew clean
 ## 🆘 Getting Help
 
 - **Documentation**: Check the `/docs` folder
-- **Issues**: [GitHub Issues](https://github.com/your-org/attendancepro/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/attendancepro/discussions)
-- **Email**: support@attendancepro.com
+- **Issues**: [GitHub Issues](https://github.com/your-org/hudur/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-org/hudur/discussions)
+- **Email**: support@hudu.sa
 
 ---
 

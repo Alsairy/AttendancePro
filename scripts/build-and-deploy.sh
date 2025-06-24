@@ -1,16 +1,16 @@
 #!/bin/bash
 
-# AttendancePro Platform Build and Deploy Script
+# Hudur Platform Build and Deploy Script
 # This script builds all Docker images and deploys the platform
 
 set -e
 
-echo "🚀 Starting AttendancePro Platform Build and Deploy Process..."
+echo "🚀 Starting Hudur Platform Build and Deploy Process..."
 
 # Configuration
-REGISTRY="attendancepro"
+REGISTRY="hudur"
 VERSION="1.0.0"
-NAMESPACE="attendancepro"
+NAMESPACE="hudur"
 
 # Colors for output
 RED='\033[0;31m'
@@ -179,14 +179,14 @@ case $REPLY in
         fi
         
         # Install or upgrade the Helm chart
-        helm upgrade --install attendancepro ./helm/attendancepro \
+        helm upgrade --install hudur ./helm/hudur \
             --namespace ${NAMESPACE} \
             --create-namespace \
             --set image.tag=${VERSION}
         
         print_success "Helm deployment completed!"
         print_status "You can check the deployment status with:"
-        echo "  helm status attendancepro -n ${NAMESPACE}"
+        echo "  helm status hudur -n ${NAMESPACE}"
         echo "  kubectl get pods -n ${NAMESPACE}"
         ;;
     4)
@@ -197,16 +197,16 @@ case $REPLY in
         ;;
 esac
 
-print_success "🎉 AttendancePro Platform build process completed!"
+print_success "🎉 Hudur Platform build process completed!"
 
 # Display useful information
 echo
 print_status "📋 Useful Commands:"
-echo "  • View Docker images: docker images | grep attendancepro"
+echo "  • View Docker images: docker images | grep hudur"
 echo "  • Check Docker Compose status: docker-compose -f docker-compose.production.yml ps"
 echo "  • View Kubernetes pods: kubectl get pods -n ${NAMESPACE}"
 echo "  • View Helm releases: helm list -n ${NAMESPACE}"
-echo "  • Access Grafana: http://localhost:3001 (admin/admin123)"
+echo "  • Access Grafana: http://localhost:3001 (admin/\${GRAFANA_ADMIN_PASSWORD})"
 echo "  • Access Prometheus: http://localhost:9090"
 echo "  • Access Frontend: http://localhost:3000"
 echo "  • Access API Gateway: http://localhost:5000"
@@ -215,7 +215,7 @@ print_status "📚 Documentation:"
 echo "  • API Documentation: http://localhost:5000/swagger"
 echo "  • Platform README: ./README.md"
 echo "  • Kubernetes manifests: ./k8s/"
-echo "  • Helm chart: ./helm/attendancepro/"
+echo "  • Helm chart: ./helm/hudur/"
 
 echo
 print_success "✅ Build and deployment script completed successfully!"

@@ -1,8 +1,8 @@
-# AttendancePro Platform - Deployment Guide
+# Hudur Platform - Deployment Guide
 
 ## Overview
 
-This guide provides comprehensive instructions for deploying the AttendancePro platform in various environments, from development to production. The platform supports multiple deployment methods including Docker Compose, Kubernetes, and Helm.
+This guide provides comprehensive instructions for deploying the Hudur platform in various environments, from development to production. The platform supports multiple deployment methods including Docker Compose, Kubernetes, and Helm.
 
 ## Prerequisites
 
@@ -39,7 +39,7 @@ This guide provides comprehensive instructions for deploying the AttendancePro p
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/attendancepro/platform.git
+git clone https://github.com/hudur/platform.git
 cd attendance-platform
 ```
 
@@ -52,7 +52,7 @@ Create environment-specific configuration files:
 # Database Configuration
 DB_HOST=localhost
 DB_PORT=1433
-DB_NAME=AttendancePlatform
+DB_NAME=Hudur
 DB_USER=sa
 DB_PASSWORD=YourStrong@Passw0rd
 
@@ -62,8 +62,8 @@ REDIS_PORT=6379
 
 # JWT Configuration
 JWT_SECRET=YourSuperSecretKeyThatIsAtLeast32CharactersLong!
-JWT_ISSUER=AttendancePlatform
-JWT_AUDIENCE=AttendancePlatformUsers
+JWT_ISSUER=Hudur
+JWT_AUDIENCE=HudurUsers
 JWT_EXPIRY_MINUTES=60
 
 # Email Configuration
@@ -71,7 +71,7 @@ SMTP_SERVER=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USERNAME=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
-SMTP_FROM_EMAIL=noreply@attendancepro.com
+SMTP_FROM_EMAIL=noreply@hudu.sa
 
 # SMS Configuration (Twilio)
 TWILIO_ACCOUNT_SID=your-account-sid
@@ -88,7 +88,7 @@ FACE_RECOGNITION_MODEL=dlib
 
 # Logging
 LOG_LEVEL=Information
-LOG_FILE_PATH=/var/log/attendancepro/
+LOG_FILE_PATH=/var/log/hudur/
 
 # CORS
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
@@ -99,7 +99,7 @@ ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
 # Database Configuration
 DB_HOST=sql-server-service
 DB_PORT=1433
-DB_NAME=AttendancePlatform
+DB_NAME=Hudur
 DB_USER=sa
 DB_PASSWORD=${DB_PASSWORD}
 
@@ -109,8 +109,8 @@ REDIS_PORT=6379
 
 # JWT Configuration
 JWT_SECRET=${JWT_SECRET}
-JWT_ISSUER=AttendancePlatform
-JWT_AUDIENCE=AttendancePlatformUsers
+JWT_ISSUER=Hudur
+JWT_AUDIENCE=HudurUsers
 JWT_EXPIRY_MINUTES=60
 
 # Email Configuration
@@ -118,7 +118,7 @@ SMTP_SERVER=${SMTP_SERVER}
 SMTP_PORT=587
 SMTP_USERNAME=${SMTP_USERNAME}
 SMTP_PASSWORD=${SMTP_PASSWORD}
-SMTP_FROM_EMAIL=noreply@attendancepro.com
+SMTP_FROM_EMAIL=noreply@hudu.sa
 
 # SMS Configuration
 TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
@@ -131,8 +131,8 @@ FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
 
 # Security
 ENABLE_HTTPS=true
-SSL_CERTIFICATE_PATH=/etc/ssl/certs/attendancepro.crt
-SSL_PRIVATE_KEY_PATH=/etc/ssl/private/attendancepro.key
+SSL_CERTIFICATE_PATH=/etc/ssl/certs/hudur.crt
+SSL_PRIVATE_KEY_PATH=/etc/ssl/private/hudur.key
 
 # Monitoring
 PROMETHEUS_ENABLED=true
@@ -195,8 +195,8 @@ kubectl apply -f k8s/base/namespace-and-config.yaml
 kubectl apply -f k8s/base/database.yaml
 
 # Wait for databases to be ready
-kubectl wait --for=condition=ready pod -l app=sql-server -n attendancepro --timeout=300s
-kubectl wait --for=condition=ready pod -l app=redis -n attendancepro --timeout=300s
+kubectl wait --for=condition=ready pod -l app=sql-server -n hudur --timeout=300s
+kubectl wait --for=condition=ready pod -l app=redis -n hudur --timeout=300s
 ```
 
 3. **Deploy Backend Services**
@@ -204,7 +204,7 @@ kubectl wait --for=condition=ready pod -l app=redis -n attendancepro --timeout=3
 kubectl apply -f k8s/base/backend-services.yaml
 
 # Wait for services to be ready
-kubectl wait --for=condition=ready pod -l tier=backend -n attendancepro --timeout=300s
+kubectl wait --for=condition=ready pod -l tier=backend -n hudur --timeout=300s
 ```
 
 4. **Deploy Additional Services and Frontend**
@@ -212,7 +212,7 @@ kubectl wait --for=condition=ready pod -l tier=backend -n attendancepro --timeou
 kubectl apply -f k8s/base/additional-services.yaml
 
 # Wait for frontend to be ready
-kubectl wait --for=condition=ready pod -l tier=frontend -n attendancepro --timeout=300s
+kubectl wait --for=condition=ready pod -l tier=frontend -n hudur --timeout=300s
 ```
 
 5. **Apply Auto-scaling and Policies**
@@ -228,16 +228,16 @@ kubectl apply -f k8s/monitoring/
 #### Verify Deployment
 ```bash
 # Check all pods
-kubectl get pods -n attendancepro
+kubectl get pods -n hudur
 
 # Check services
-kubectl get services -n attendancepro
+kubectl get services -n hudur
 
 # Check ingress (if configured)
-kubectl get ingress -n attendancepro
+kubectl get ingress -n hudur
 
 # View logs
-kubectl logs -f deployment/api-gateway -n attendancepro
+kubectl logs -f deployment/api-gateway -n hudur
 ```
 
 ### Method 3: Helm Deployment (Recommended for Production)
@@ -255,30 +255,30 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 ```
 
-2. **Install AttendancePro Platform**
+2. **Install Hudur Platform**
 ```bash
 # Install with default values
-helm install attendancepro ./helm/attendancepro \
-  --namespace attendancepro \
+helm install hudur ./helm/hudur \
+  --namespace hudur \
   --create-namespace
 
 # Install with custom values
-helm install attendancepro ./helm/attendancepro \
-  --namespace attendancepro \
+helm install hudur ./helm/hudur \
+  --namespace hudur \
   --create-namespace \
-  --values ./helm/attendancepro/values-production.yaml
+  --values ./helm/hudur/values-production.yaml
 ```
 
 3. **Verify Installation**
 ```bash
 # Check Helm release status
-helm status attendancepro -n attendancepro
+helm status hudur -n hudur
 
 # List all releases
-helm list -n attendancepro
+helm list -n hudur
 
 # Check pods
-kubectl get pods -n attendancepro
+kubectl get pods -n hudur
 ```
 
 #### Helm Configuration Options
@@ -323,7 +323,7 @@ ingress:
           pathType: Prefix
           service: frontend
   tls:
-    - secretName: attendancepro-tls
+    - secretName: hudur-tls
       hosts:
         - api.yourdomain.com
         - app.yourdomain.com
@@ -345,28 +345,28 @@ monitoring:
 #### Initial Database Setup
 ```sql
 -- Create database
-CREATE DATABASE AttendancePlatform;
+CREATE DATABASE Hudur;
 GO
 
 -- Create login and user
-CREATE LOGIN attendancepro_user WITH PASSWORD = 'YourSecurePassword123!';
+CREATE LOGIN hudur_user WITH PASSWORD = 'YourSecurePassword123!';
 GO
 
-USE AttendancePlatform;
+USE Hudur;
 GO
 
-CREATE USER attendancepro_user FOR LOGIN attendancepro_user;
+CREATE USER hudur_user FOR LOGIN hudur_user;
 GO
 
 -- Grant permissions
-ALTER ROLE db_owner ADD MEMBER attendancepro_user;
+ALTER ROLE db_owner ADD MEMBER hudur_user;
 GO
 ```
 
 #### Database Migration
 ```bash
 # Run Entity Framework migrations
-dotnet ef database update --project src/backend/shared/Infrastructure/AttendancePlatform.Shared.Infrastructure
+dotnet ef database update --project src/backend/shared/Infrastructure/Hudur.Shared.Infrastructure
 
 # Or use the migration script
 ./scripts/migrate-database.sh
@@ -399,25 +399,25 @@ sudo apt-get install certbot
 sudo certbot certonly --standalone -d api.yourdomain.com -d app.yourdomain.com
 
 # Create Kubernetes secret
-kubectl create secret tls attendancepro-tls \
+kubectl create secret tls hudur-tls \
   --cert=/etc/letsencrypt/live/yourdomain.com/fullchain.pem \
   --key=/etc/letsencrypt/live/yourdomain.com/privkey.pem \
-  -n attendancepro
+  -n hudur
 ```
 
 #### Using Self-Signed Certificates (Development)
 ```bash
 # Generate self-signed certificate
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -keyout attendancepro.key \
-  -out attendancepro.crt \
+  -keyout hudur.key \
+  -out hudur.crt \
   -subj "/CN=localhost"
 
 # Create Kubernetes secret
-kubectl create secret tls attendancepro-tls \
-  --cert=attendancepro.crt \
-  --key=attendancepro.key \
-  -n attendancepro
+kubectl create secret tls hudur-tls \
+  --cert=hudur.crt \
+  --key=hudur.key \
+  -n hudur
 ```
 
 ## Monitoring and Logging
@@ -432,12 +432,12 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'attendancepro-services'
+  - job_name: 'hudur-services'
     kubernetes_sd_configs:
     - role: endpoints
       namespaces:
         names:
-        - attendancepro
+        - hudur
     relabel_configs:
     - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
       action: keep
@@ -495,18 +495,18 @@ spec:
 
 BACKUP_DIR="/backups/database"
 DATE=$(date +%Y%m%d_%H%M%S)
-BACKUP_FILE="attendancepro_backup_${DATE}.bak"
+BACKUP_FILE="hudur_backup_${DATE}.bak"
 
 # Create backup directory
 mkdir -p $BACKUP_DIR
 
 # Backup SQL Server database
-kubectl exec -it deployment/sql-server -n attendancepro -- \
+kubectl exec -it deployment/sql-server -n hudur -- \
   /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $DB_PASSWORD \
-  -Q "BACKUP DATABASE AttendancePlatform TO DISK = '/var/opt/mssql/backup/${BACKUP_FILE}'"
+  -Q "BACKUP DATABASE Hudur TO DISK = '/var/opt/mssql/backup/${BACKUP_FILE}'"
 
 # Copy backup file from container
-kubectl cp attendancepro/sql-server-pod:/var/opt/mssql/backup/${BACKUP_FILE} \
+kubectl cp hudur/sql-server-pod:/var/opt/mssql/backup/${BACKUP_FILE} \
   ${BACKUP_DIR}/${BACKUP_FILE}
 
 echo "Database backup completed: ${BACKUP_DIR}/${BACKUP_FILE}"
@@ -525,12 +525,12 @@ if [ -z "$BACKUP_FILE" ]; then
 fi
 
 # Copy backup file to container
-kubectl cp $BACKUP_FILE attendancepro/sql-server-pod:/var/opt/mssql/backup/
+kubectl cp $BACKUP_FILE hudur/sql-server-pod:/var/opt/mssql/backup/
 
 # Restore database
-kubectl exec -it deployment/sql-server -n attendancepro -- \
+kubectl exec -it deployment/sql-server -n hudur -- \
   /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $DB_PASSWORD \
-  -Q "RESTORE DATABASE AttendancePlatform FROM DISK = '/var/opt/mssql/backup/$(basename $BACKUP_FILE)'"
+  -Q "RESTORE DATABASE Hudur FROM DISK = '/var/opt/mssql/backup/$(basename $BACKUP_FILE)'"
 ```
 
 ### Application Data Backup
@@ -538,10 +538,10 @@ kubectl exec -it deployment/sql-server -n attendancepro -- \
 #### Redis Backup
 ```bash
 # Create Redis backup
-kubectl exec -it deployment/redis -n attendancepro -- redis-cli BGSAVE
+kubectl exec -it deployment/redis -n hudur -- redis-cli BGSAVE
 
 # Copy RDB file
-kubectl cp attendancepro/redis-pod:/data/dump.rdb ./backups/redis/dump_$(date +%Y%m%d).rdb
+kubectl cp hudur/redis-pod:/data/dump.rdb ./backups/redis/dump_$(date +%Y%m%d).rdb
 ```
 
 ## Performance Optimization
@@ -582,7 +582,7 @@ resources:
 #### SQL Server Performance Tuning
 ```sql
 -- Enable query store
-ALTER DATABASE AttendancePlatform SET QUERY_STORE = ON;
+ALTER DATABASE Hudur SET QUERY_STORE = ON;
 
 -- Configure memory settings
 EXEC sp_configure 'max server memory (MB)', 4096;
@@ -622,8 +622,8 @@ VOLUME ["/tmp"]
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: attendancepro-network-policy
-  namespace: attendancepro
+  name: hudur-network-policy
+  namespace: hudur
 spec:
   podSelector: {}
   policyTypes:
@@ -633,12 +633,12 @@ spec:
   - from:
     - namespaceSelector:
         matchLabels:
-          name: attendancepro
+          name: hudur
   egress:
   - to:
     - namespaceSelector:
         matchLabels:
-          name: attendancepro
+          name: hudur
 ```
 
 ## Troubleshooting
@@ -648,30 +648,30 @@ spec:
 #### 1. Database Connection Issues
 ```bash
 # Check database connectivity
-kubectl exec -it deployment/api-gateway -n attendancepro -- \
+kubectl exec -it deployment/api-gateway -n hudur -- \
   curl -f http://sql-server-service:1433
 
 # Check database logs
-kubectl logs deployment/sql-server -n attendancepro
+kubectl logs deployment/sql-server -n hudur
 ```
 
 #### 2. Service Discovery Issues
 ```bash
 # Check service endpoints
-kubectl get endpoints -n attendancepro
+kubectl get endpoints -n hudur
 
 # Check DNS resolution
-kubectl exec -it deployment/api-gateway -n attendancepro -- \
+kubectl exec -it deployment/api-gateway -n hudur -- \
   nslookup authentication-service
 ```
 
 #### 3. Memory Issues
 ```bash
 # Check resource usage
-kubectl top pods -n attendancepro
+kubectl top pods -n hudur
 
 # Check resource limits
-kubectl describe pod <pod-name> -n attendancepro
+kubectl describe pod <pod-name> -n hudur
 ```
 
 ### Log Analysis
@@ -679,13 +679,13 @@ kubectl describe pod <pod-name> -n attendancepro
 #### Centralized Log Viewing
 ```bash
 # View all service logs
-kubectl logs -f -l tier=backend -n attendancepro
+kubectl logs -f -l tier=backend -n hudur
 
 # View specific service logs
-kubectl logs -f deployment/attendance-service -n attendancepro
+kubectl logs -f deployment/attendance-service -n hudur
 
 # View logs with timestamps
-kubectl logs --timestamps=true deployment/api-gateway -n attendancepro
+kubectl logs --timestamps=true deployment/api-gateway -n hudur
 ```
 
 ## Maintenance
@@ -710,25 +710,25 @@ kubectl logs --timestamps=true deployment/api-gateway -n attendancepro
 ```bash
 # Update specific service
 kubectl set image deployment/attendance-service \
-  attendance-service=attendancepro/attendance-service:v1.1.0 \
-  -n attendancepro
+  attendance-service=hudur/attendance-service:v1.1.0 \
+  -n hudur
 
 # Check rollout status
-kubectl rollout status deployment/attendance-service -n attendancepro
+kubectl rollout status deployment/attendance-service -n hudur
 
 # Rollback if needed
-kubectl rollout undo deployment/attendance-service -n attendancepro
+kubectl rollout undo deployment/attendance-service -n hudur
 ```
 
 #### Helm Updates
 ```bash
 # Update Helm chart
-helm upgrade attendancepro ./helm/attendancepro \
-  --namespace attendancepro \
-  --values ./helm/attendancepro/values-production.yaml
+helm upgrade hudur ./helm/hudur \
+  --namespace hudur \
+  --values ./helm/hudur/values-production.yaml
 
 # Check upgrade status
-helm status attendancepro -n attendancepro
+helm status hudur -n hudur
 ```
 
 ## Support and Resources
@@ -744,9 +744,9 @@ helm status attendancepro -n attendancepro
 - **Application**: http://your-domain.com
 
 ### Support Contacts
-- **Technical Support**: support@attendancepro.com
+- **Technical Support**: support@hudu.sa
 - **Emergency**: +1-800-ATTENDANCE
-- **Documentation**: https://docs.attendancepro.com
+- **Documentation**: https://docs.hudu.sa
 
-This deployment guide provides comprehensive instructions for deploying the AttendancePro platform in various environments. Follow the appropriate section based on your deployment requirements and infrastructure setup.
+This deployment guide provides comprehensive instructions for deploying the Hudur platform in various environments. Follow the appropriate section based on your deployment requirements and infrastructure setup.
 

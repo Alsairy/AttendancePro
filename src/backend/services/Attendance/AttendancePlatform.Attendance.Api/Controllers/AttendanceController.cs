@@ -48,7 +48,7 @@ namespace AttendancePlatform.Attendance.Api.Controllers
         /// Check out user with location and biometric data
         /// </summary>
         [HttpPost("checkout")]
-        public async Task<ActionResult<ApiResponse<AttendanceRecordDto>>> CheckOut([FromBody] CheckInRequest request)
+        public async Task<ActionResult<ApiResponse<AttendanceRecordDto>>> CheckOut([FromBody] CheckOutRequest request)
         {
             var userId = GetCurrentUserId();
             if (!userId.HasValue)

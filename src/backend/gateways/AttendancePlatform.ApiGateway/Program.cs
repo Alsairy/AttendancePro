@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
 
 // Add JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"] ?? "AttendancePro_Super_Secret_Key_2024_Enterprise_Grade_Security";
+var secretKey = jwtSettings["SecretKey"] ?? "Hudur_Super_Secret_Key_2024_Enterprise_Grade_Security";
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer("Bearer", options =>
@@ -38,8 +38,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings["Issuer"] ?? "AttendancePro",
-            ValidAudience = jwtSettings["Audience"] ?? "AttendancePro.Users",
+            ValidIssuer = jwtSettings["Issuer"] ?? "Hudur",
+            ValidAudience = jwtSettings["Audience"] ?? "Hudur.Users",
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
             ClockSkew = TimeSpan.Zero
         };
@@ -127,7 +127,7 @@ app.MapHealthChecks("/health");
 // Add API Gateway info endpoint
 app.MapGet("/api/gateway/info", () => new
 {
-    Service = "AttendancePro API Gateway",
+    Service = "Hudur API Gateway",
     Version = "1.0.0",
     Environment = app.Environment.EnvironmentName,
     Timestamp = DateTime.UtcNow,

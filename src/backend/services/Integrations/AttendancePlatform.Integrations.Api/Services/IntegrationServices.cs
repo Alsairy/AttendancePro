@@ -3,7 +3,7 @@ using AttendancePlatform.Shared.Domain.Interfaces;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using System.Text.Json;
 
-namespace AttendancePlatform.Integrations.Api.Services
+namespace Hudur.Integrations.Api.Services
 {
     public interface IAuditLogService
     {
@@ -218,7 +218,7 @@ namespace AttendancePlatform.Integrations.Api.Services
         private string? GetUserAgent()
         {
             // In a real implementation, this would extract the User-Agent from HttpContext
-            return "AttendancePro API";
+            return "Hudur API";
         }
 
         private AuditLogDto MapToDto(AuditLog auditLog)

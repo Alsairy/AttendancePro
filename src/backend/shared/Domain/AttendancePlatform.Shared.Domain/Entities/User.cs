@@ -30,7 +30,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         
         public DateTime? HireDate { get; set; }
         
-        public DateTime? DateOfBirth { get; set; }
+        // public DateTime? DateOfBirth { get; set; }
         
         public string? ProfilePictureUrl { get; set; }
         
@@ -50,7 +50,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         
         public bool RequirePasswordChange { get; set; } = false;
         
-        public int FailedLoginAttempts { get; set; } = 0;
+        // public int FailedLoginAttempts { get; set; } = 0;
         
         public DateTime? LockedUntil { get; set; }
         
@@ -68,6 +68,10 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public virtual ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
         public virtual ICollection<PermissionRequest> PermissionRequests { get; set; } = new List<PermissionRequest>();
         public virtual UserBiometrics? Biometrics { get; set; }
+        
+        public string? NotificationPreferences { get; set; }
+        
+        public virtual ICollection<Role> Roles => UserRoles.Select(ur => ur.Role).ToList();
         
         public string FullName => $"{FirstName} {LastName}";
     }

@@ -20,7 +20,7 @@ RUN dotnet restore "src/backend/services/LeaveManagement/AttendancePlatform.Leav
 COPY . .
 
 # Build the application
-WORKDIR "/src/src/backend/services/LeaveManagement/AttendancePlatform.LeaveManagement.Api"
+WORKDIR "src/backend/services/LeaveManagement/AttendancePlatform.LeaveManagement.Api"
 RUN dotnet build "AttendancePlatform.LeaveManagement.Api.csproj" -c Release -o /app/build
 
 # Publish stage

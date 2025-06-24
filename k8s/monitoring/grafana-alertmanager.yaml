@@ -22,7 +22,7 @@ spec:
         - containerPort: 3000
         env:
         - name: GF_SECURITY_ADMIN_PASSWORD
-          value: "admin123"
+          value: "${GRAFANA_ADMIN_PASSWORD}"
         - name: GF_INSTALL_PLUGINS
           value: "grafana-kubernetes-app"
         volumeMounts:
@@ -99,12 +99,12 @@ data:
       options:
         path: /var/lib/grafana/dashboards
 
-  attendancepro-dashboard.json: |
+  hudur-dashboard.json: |
     {
       "dashboard": {
         "id": null,
-        "title": "AttendancePro Platform Monitoring",
-        "tags": ["attendancepro"],
+        "title": "Hudur Platform Monitoring",
+        "tags": ["hudur"],
         "style": "dark",
         "timezone": "browser",
         "panels": [
@@ -114,7 +114,7 @@ data:
             "type": "stat",
             "targets": [
               {
-                "expr": "up{job=\"attendancepro-services\"}",
+                "expr": "up{job=\"hudur-services\"}",
                 "legendFormat": "{{kubernetes_name}}"
               }
             ],
@@ -254,7 +254,7 @@ data:
   alertmanager.yml: |
     global:
       smtp_smarthost: 'localhost:587'
-      smtp_from: 'alerts@attendancepro.com'
+      smtp_from: 'alerts@hudu.sa'
 
     route:
       group_by: ['alertname']
@@ -266,8 +266,8 @@ data:
     receivers:
     - name: 'web.hook'
       email_configs:
-      - to: 'admin@attendancepro.com'
-        subject: 'AttendancePro Alert: {{ .GroupLabels.alertname }}'
+      - to: 'admin@hudu.sa'
+        subject: 'Hudur Alert: {{ .GroupLabels.alertname }}'
         body: |
           {{ range .Alerts }}
           Alert: {{ .Annotations.summary }}

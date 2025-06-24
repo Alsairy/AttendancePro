@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Collaboration.Api.Services;
 using AttendancePlatform.Collaboration.Api.Hubs;
 
@@ -86,7 +87,17 @@ builder.Services.AddHealthChecks()
     .AddDbContextCheck<AttendancePlatformDbContext>();
 
 // Shared Infrastructure
-builder.Services.AddSharedInfrastructure(builder.Configuration);
+// Configure shared infrastructure services
+builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IVideoConferencingService, VideoConferencingService>();
+builder.Services.AddScoped<ITeamCollaborationService, TeamCollaborationService>();
+builder.Services.AddScoped<IDocumentCollaborationService, DocumentCollaborationService>();
+builder.Services.AddScoped<IPresenceService, PresenceService>();
+builder.Services.AddScoped<IScreenSharingService, ScreenSharingService>();
+builder.Services.AddSecurityServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -98,6 +109,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
+
+// app.UseMiddleware<RateLimitingMiddleware>();
+// app.UseMiddleware<AuditLoggingMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

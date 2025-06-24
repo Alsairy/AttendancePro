@@ -3,6 +3,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AttendancePlatform.Attendance.Api.Services;
 using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Shared.Infrastructure.Middleware;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Hudur.Tests.Integration")]
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,7 @@ builder.Services.AddControllers();
 
 // Add infrastructure services
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddSecurityServices(builder.Configuration);
 
 // Add attendance services
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
@@ -59,7 +64,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "Attendance Platform Attendance API", Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "Hudur Attendance API", Version = "v1" });
     
     // Add JWT authentication to Swagger
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -100,6 +105,9 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
+app.UseMiddleware<RateLimitingMiddleware>();
+app.UseMiddleware<AuditLoggingMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -109,4 +117,6 @@ app.MapControllers();
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.UtcNow });
 
 app.Run();
+
+public partial class Program { }
 

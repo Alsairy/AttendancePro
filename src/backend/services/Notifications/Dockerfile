@@ -20,7 +20,7 @@ RUN dotnet restore "src/backend/services/Notifications/AttendancePlatform.Notifi
 COPY . .
 
 # Build the application
-WORKDIR "/src/src/backend/services/Notifications/AttendancePlatform.Notifications.Api"
+WORKDIR "src/backend/services/Notifications/AttendancePlatform.Notifications.Api"
 RUN dotnet build "AttendancePlatform.Notifications.Api.csproj" -c Release -o /app/build
 
 # Publish stage

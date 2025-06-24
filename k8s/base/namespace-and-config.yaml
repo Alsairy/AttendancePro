@@ -1,25 +1,25 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: attendancepro
+  name: hudur
   labels:
-    name: attendancepro
-    app.kubernetes.io/name: attendancepro
+    name: hudur
+    app.kubernetes.io/name: hudur
     app.kubernetes.io/version: "1.0.0"
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: attendancepro-config
-  namespace: attendancepro
+  name: hudur-config
+  namespace: hudur
 data:
   # Database configuration
-  ConnectionStrings__DefaultConnection: "Server=sql-server-service;Database=AttendancePlatform;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true"
+  ConnectionStrings__DefaultConnection: "Server=sql-server-service;Database=Hudur;User Id=sa;Password=$(DB_PASSWORD);TrustServerCertificate=true"
   
   # JWT configuration
-  Jwt__Key: "YourSuperSecretKeyThatIsAtLeast32CharactersLong!"
-  Jwt__Issuer: "AttendancePlatform"
-  Jwt__Audience: "AttendancePlatformUsers"
+  Jwt__Key: "$(JWT_SECRET_KEY)"
+  Jwt__Issuer: "Hudur"
+  Jwt__Audience: "HudurUsers"
   Jwt__ExpiryMinutes: "60"
   
   # Redis configuration
@@ -35,13 +35,13 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: attendancepro-secrets
-  namespace: attendancepro
+  name: hudur-secrets
+  namespace: hudur
 type: Opaque
 data:
   # Base64 encoded secrets
-  database-password: WW91clN0cm9uZ0BQYXNzdzByZA== # YourStrong@Passw0rd
-  jwt-key: WW91clN1cGVyU2VjcmV0S2V5VGhhdElzQXRMZWFzdDMyQ2hhcmFjdGVyc0xvbmch # YourSuperSecretKeyThatIsAtLeast32CharactersLong!
+  database-password: $(echo -n "${DB_PASSWORD}" | base64)
+  jwt-key: $(echo -n "${JWT_SECRET_KEY}" | base64)
   email-password: ""
   sms-auth-token: ""
   firebase-server-key: ""
@@ -50,7 +50,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: sql-server-pvc
-  namespace: attendancepro
+  namespace: hudur
 spec:
   accessModes:
     - ReadWriteOnce
@@ -63,7 +63,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: redis-pvc
-  namespace: attendancepro
+  namespace: hudur
 spec:
   accessModes:
     - ReadWriteOnce

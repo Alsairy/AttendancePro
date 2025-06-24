@@ -1,5 +1,7 @@
 using System.Net.Mail;
 using System.Net;
+using Microsoft.EntityFrameworkCore;
+using AttendancePlatform.Shared.Infrastructure.Data;
 
 namespace AttendancePlatform.Notifications.Api.Services
 {
@@ -100,7 +102,7 @@ namespace AttendancePlatform.Notifications.Api.Services
 <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>AttendancePro Notification</title>
+    <title>Hudur Notification</title>
     <style>
         body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
         .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
@@ -113,14 +115,14 @@ namespace AttendancePlatform.Notifications.Api.Services
 <body>
     <div class='container'>
         <div class='header'>
-            <h1>AttendancePro</h1>
+            <h1>Hudur</h1>
         </div>
         <div class='content'>
             <p>{body}</p>
             {(actionUrl != null ? $"<a href='{actionUrl}' class='button'>Take Action</a>" : "")}
         </div>
         <div class='footer'>
-            <p>This is an automated message from AttendancePro. Please do not reply to this email.</p>
+            <p>This is an automated message from Hudur. Please do not reply to this email.</p>
         </div>
     </div>
 </body>

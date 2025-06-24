@@ -14,7 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Database
-builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
+builder.Services.AddDbContext<HudurDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Custom Services
@@ -64,7 +64,7 @@ builder.Services.AddCors(options =>
 
 // Health Checks
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<AttendancePlatformDbContext>();
+    .AddDbContextCheck<HudurDbContext>();
 
 // Shared Infrastructure
 builder.Services.AddSharedInfrastructure(builder.Configuration);

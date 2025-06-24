@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Infrastructure.Security;
 
 namespace AttendancePlatform.Shared.Infrastructure.Data
 {
@@ -27,6 +28,10 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        
+        // Security and Compliance entities
+        public DbSet<ComplianceEvent> ComplianceEvents { get; set; }
+        public DbSet<AttendancePlatform.Shared.Domain.Entities.ComplianceReport> ComplianceReports { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
 
         // Attendance entities
@@ -34,6 +39,19 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<Geofence> Geofences { get; set; }
         public DbSet<UserGeofence> UserGeofences { get; set; }
         public DbSet<Beacon> Beacons { get; set; }
+        public DbSet<Kiosk> Kiosks { get; set; }
+        
+        public DbSet<Shift> Shifts { get; set; }
+        public DbSet<ShiftTemplate> ShiftTemplates { get; set; }
+        public DbSet<ShiftAssignment> ShiftAssignments { get; set; }
+        public DbSet<ShiftSwapRequest> ShiftSwapRequests { get; set; }
+        public DbSet<ShiftConflict> ShiftConflicts { get; set; }
+
+        public DbSet<RegionalSettings> RegionalSettings { get; set; }
+        public DbSet<LocalizedString> LocalizedStrings { get; set; }
+
+        // Advanced workflow entities
+        public DbSet<WorkflowStep> WorkflowSteps { get; set; }
 
         // Leave management entities
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
@@ -48,6 +66,38 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<UserBiometrics> UserBiometrics { get; set; }
         public DbSet<TenantSettings> TenantSettings { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
+        
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+        
+        // Advanced enterprise entities
+        public DbSet<AuditLogEntry> AuditLogEntries { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<ScheduledNotification> ScheduledNotifications { get; set; }
+        public DbSet<WorkflowDefinition> WorkflowDefinitions { get; set; }
+        public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
+        public DbSet<WorkflowTask> WorkflowTasks { get; set; }
+        public DbSet<WorkflowExecutionLog> WorkflowExecutionLogs { get; set; }
+        public DbSet<WorkflowTemplate> WorkflowTemplates { get; set; }
+        public DbSet<BiometricAuditLog> BiometricAuditLogs { get; set; }
+        public DbSet<BiometricBackup> BiometricBackups { get; set; }
+        public DbSet<BiometricSession> BiometricSessions { get; set; }
+        public DbSet<BiometricDevice> BiometricDevices { get; set; }
+
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<TeamMember> TeamMembers { get; set; }
+        public DbSet<TeamProject> TeamProjects { get; set; }
+        public DbSet<ProjectMember> ProjectMembers { get; set; }
+        public DbSet<VideoConference> VideoConferences { get; set; }
+        public DbSet<ConferenceParticipant> ConferenceParticipants { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<ChatChannel> ChatChannels { get; set; }
+        public DbSet<ChannelMember> ChannelMembers { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<DocumentVersion> DocumentVersions { get; set; }
+        public DbSet<ScreenSharingSession> ScreenSharingSessions { get; set; }
+        public DbSet<ScreenSharingParticipant> ScreenSharingParticipants { get; set; }
+        public DbSet<UserPresence> UserPresences { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,6 +112,8 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
             ConfigureLeaveManagement(modelBuilder);
             ConfigureSettings(modelBuilder);
             ConfigureAudit(modelBuilder);
+            ConfigureNotification(modelBuilder);
+            ConfigureCompliance(modelBuilder);
 
             // Apply global query filters for multi-tenancy
             ApplyGlobalFilters(modelBuilder);
@@ -125,6 +177,9 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.Biometrics)
                       .WithOne(e => e.User)
                       .HasForeignKey<UserBiometrics>(e => e.UserId);
+                
+                entity.Ignore("DateOfBirth");
+                entity.Ignore("FailedLoginAttempts");
             });
         }
 
@@ -413,6 +468,178 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
             });
         }
 
+        private void ConfigureNotification(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.UserId).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
+                entity.Property(e => e.Type).HasMaxLength(50).HasDefaultValue("info");
+                entity.Property(e => e.Data).HasColumnType("nvarchar(max)");
+                entity.Property(e => e.ActionUrl).HasMaxLength(500);
+                entity.Property(e => e.Priority).HasMaxLength(20).HasDefaultValue("normal");
+                entity.Property(e => e.Category).HasMaxLength(100);
+                entity.Property(e => e.Source).HasMaxLength(100);
+                entity.Property(e => e.CorrelationId).HasMaxLength(50);
+                entity.HasIndex(e => e.UserId);
+                entity.HasIndex(e => e.IsRead);
+                entity.HasIndex(e => e.CreatedAt);
+                entity.HasIndex(e => e.ExpiresAt);
+            });
+
+            modelBuilder.Entity<ScheduledNotification>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.UserId).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
+                entity.Property(e => e.Type).HasMaxLength(50).HasDefaultValue("info");
+                entity.Property(e => e.Data).HasColumnType("nvarchar(max)");
+                entity.Property(e => e.RecurrencePattern).HasMaxLength(100);
+                entity.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("pending");
+                entity.Property(e => e.ErrorMessage).HasMaxLength(1000);
+                entity.HasIndex(e => e.UserId);
+                entity.HasIndex(e => e.ScheduledAt);
+                entity.HasIndex(e => e.IsProcessed);
+                entity.HasIndex(e => e.Status);
+            });
+        }
+
+        private void ConfigureCompliance(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ComplianceEvent>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasMaxLength(50);
+                entity.Property(e => e.TenantId).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.EventType).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Description).IsRequired().HasMaxLength(1000);
+                entity.Property(e => e.UserId).HasMaxLength(50);
+                entity.Ignore(e => e.Metadata);
+                entity.HasIndex(e => e.TenantId);
+                entity.HasIndex(e => e.EventType);
+                entity.HasIndex(e => e.Timestamp);
+            });
+
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ComplianceReport>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.TenantId).IsRequired();
+                entity.Property(e => e.Region).IsRequired().HasMaxLength(10);
+                entity.Property(e => e.Language).IsRequired().HasMaxLength(10);
+                entity.Property(e => e.ReportData).HasColumnType("nvarchar(max)");
+                entity.HasIndex(e => e.TenantId);
+                entity.HasIndex(e => e.Region);
+                entity.HasIndex(e => e.GeneratedAt);
+            });
+
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ComplianceViolation>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasMaxLength(50);
+                entity.Property(e => e.TenantId).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.ViolationType).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Severity).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Description).IsRequired().HasMaxLength(1000);
+                entity.Property(e => e.UserId).HasMaxLength(50);
+                entity.Property(e => e.Status).IsRequired().HasMaxLength(50);
+                entity.HasIndex(e => e.TenantId);
+                entity.HasIndex(e => e.ViolationType);
+                entity.HasIndex(e => e.Severity);
+                entity.HasIndex(e => e.Status);
+                
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.ResolvedByUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.ResolvedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ShiftAssignment>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.TenantId).IsRequired();
+                
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.AssignedByUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.AssignedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.Shift)
+                    .WithMany(s => s.Assignments)
+                    .HasForeignKey(e => e.ShiftId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ShiftSwapRequest>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.TenantId).IsRequired();
+                
+                entity.HasOne(e => e.Requester)
+                    .WithMany()
+                    .HasForeignKey(e => e.RequesterId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.TargetUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.TargetUserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.RespondedByUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.RespondedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.ApprovedByUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.ApprovedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.OriginalAssignment)
+                    .WithMany(sa => sa.SwapRequests)
+                    .HasForeignKey(e => e.OriginalAssignmentId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.TargetAssignment)
+                    .WithMany()
+                    .HasForeignKey(e => e.TargetAssignmentId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AttendancePlatform.Shared.Domain.Entities.ShiftConflict>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.TenantId).IsRequired();
+                
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.ResolvedByUser)
+                    .WithMany()
+                    .HasForeignKey(e => e.ResolvedBy)
+                    .OnDelete(DeleteBehavior.Restrict);
+                    
+                entity.HasOne(e => e.Assignment)
+                    .WithMany()
+                    .HasForeignKey(e => e.AssignmentId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+        }
+
         private void ApplyGlobalFilters(ModelBuilder modelBuilder)
         {
             // Apply global query filter for tenant isolation
@@ -460,17 +687,92 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
             // Seed system permissions
             var permissions = new[]
             {
-                new Permission { Id = Guid.NewGuid(), Name = "View Users", Resource = "User", Action = "Read", Description = "View user information" },
-                new Permission { Id = Guid.NewGuid(), Name = "Create Users", Resource = "User", Action = "Create", Description = "Create new users" },
-                new Permission { Id = Guid.NewGuid(), Name = "Update Users", Resource = "User", Action = "Update", Description = "Update user information" },
-                new Permission { Id = Guid.NewGuid(), Name = "Delete Users", Resource = "User", Action = "Delete", Description = "Delete users" },
-                new Permission { Id = Guid.NewGuid(), Name = "View Attendance", Resource = "Attendance", Action = "Read", Description = "View attendance records" },
-                new Permission { Id = Guid.NewGuid(), Name = "Manage Attendance", Resource = "Attendance", Action = "Manage", Description = "Manage attendance records" },
-                new Permission { Id = Guid.NewGuid(), Name = "View Reports", Resource = "Report", Action = "Read", Description = "View reports" },
-                new Permission { Id = Guid.NewGuid(), Name = "Manage Settings", Resource = "Settings", Action = "Manage", Description = "Manage system settings" }
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a6844265"), Name = "View Users", Resource = "User", Action = "Read", Description = "View user information" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a6844266"), Name = "Create Users", Resource = "User", Action = "Create", Description = "Create new users" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a6844267"), Name = "Update Users", Resource = "User", Action = "Update", Description = "Update user information" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a6844268"), Name = "Delete Users", Resource = "User", Action = "Delete", Description = "Delete users" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a6844269"), Name = "View Attendance", Resource = "Attendance", Action = "Read", Description = "View attendance records" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a684426a"), Name = "Manage Attendance", Resource = "Attendance", Action = "Manage", Description = "Manage attendance records" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a684426b"), Name = "View Reports", Resource = "Report", Action = "Read", Description = "View reports" },
+                new Permission { Id = Guid.Parse("581b124f-d825-48db-96d6-b344a684426c"), Name = "Manage Settings", Resource = "Settings", Action = "Manage", Description = "Manage system settings" }
             };
 
             modelBuilder.Entity<Permission>().HasData(permissions);
+
+            var defaultTenant = new Tenant
+            {
+                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                Name = "Test Organization",
+                Subdomain = "test",
+                Status = TenantStatus.Active,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = "System"
+            };
+
+            modelBuilder.Entity<Tenant>().HasData(defaultTenant);
+
+            var roles = new[]
+            {
+                new Role { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), Name = "Admin", Description = "System Administrator", TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" },
+                new Role { Id = Guid.Parse("33333333-3333-3333-3333-333333333333"), Name = "Manager", Description = "Department Manager", TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" },
+                new Role { Id = Guid.Parse("44444444-4444-4444-4444-444444444444"), Name = "Employee", Description = "Standard Employee", TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" }
+            };
+
+            modelBuilder.Entity<Role>().HasData(roles);
+
+            var users = new[]
+            {
+                new User
+                {
+                    Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
+                    FirstName = "System",
+                    LastName = "Administrator",
+                    Email = "admin@test.com",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("AdminPassword123!"),
+                    Status = UserStatus.Active,
+                    IsEmailVerified = true,
+                    TenantId = defaultTenant.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedBy = "System"
+                },
+                new User
+                {
+                    Id = Guid.Parse("66666666-6666-6666-6666-666666666666"),
+                    FirstName = "Department",
+                    LastName = "Manager",
+                    Email = "manager@test.com",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("ManagerPassword123!"),
+                    Status = UserStatus.Active,
+                    IsEmailVerified = true,
+                    TenantId = defaultTenant.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedBy = "System"
+                },
+                new User
+                {
+                    Id = Guid.Parse("77777777-7777-7777-7777-777777777777"),
+                    FirstName = "John",
+                    LastName = "Doe",
+                    Email = "john.doe@test.com",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("TestPassword123!"),
+                    Status = UserStatus.Active,
+                    IsEmailVerified = true,
+                    TenantId = defaultTenant.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedBy = "System"
+                }
+            };
+
+            modelBuilder.Entity<User>().HasData(users);
+
+            var userRoles = new[]
+            {
+                new UserRole { Id = Guid.Parse("88888888-8888-8888-8888-888888888888"), UserId = users[0].Id, RoleId = roles[0].Id, TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" },
+                new UserRole { Id = Guid.Parse("99999999-9999-9999-9999-999999999999"), UserId = users[1].Id, RoleId = roles[1].Id, TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" },
+                new UserRole { Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), UserId = users[2].Id, RoleId = roles[2].Id, TenantId = defaultTenant.Id, CreatedAt = DateTime.UtcNow, CreatedBy = "System" }
+            };
+
+            modelBuilder.Entity<UserRole>().HasData(userRoles);
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

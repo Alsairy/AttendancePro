@@ -3,13 +3,16 @@ using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Shared.Domain.DTOs;
 using AttendancePlatform.Shared.Domain.Interfaces;
 using AttendancePlatform.Shared.Infrastructure.Data;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg;
 
 namespace AttendancePlatform.Attendance.Api.Services
 {
     public interface IAttendanceService
     {
         Task<ApiResponse<AttendanceRecordDto>> CheckInAsync(CheckInRequest request, Guid userId);
-        Task<ApiResponse<AttendanceRecordDto>> CheckOutAsync(CheckInRequest request, Guid userId);
+        Task<ApiResponse<AttendanceRecordDto>> CheckOutAsync(CheckOutRequest request, Guid userId);
         Task<ApiResponse<IEnumerable<AttendanceRecordDto>>> GetUserAttendanceAsync(Guid userId, DateTime? startDate = null, DateTime? endDate = null);
         Task<ApiResponse<IEnumerable<AttendanceRecordDto>>> GetTodayAttendanceAsync(Guid userId);
         Task<ApiResponse<AttendanceRecordDto?>> GetLastAttendanceAsync(Guid userId);
@@ -119,7 +122,7 @@ namespace AttendancePlatform.Attendance.Api.Services
             }
         }
 
-        public async Task<ApiResponse<AttendanceRecordDto>> CheckOutAsync(CheckInRequest request, Guid userId)
+        public async Task<ApiResponse<AttendanceRecordDto>> CheckOutAsync(CheckOutRequest request, Guid userId)
         {
             try
             {
@@ -408,6 +411,20 @@ namespace AttendancePlatform.Attendance.Api.Services
             return AttendanceMethod.Manual;
         }
 
+        private AttendanceMethod DetermineAttendanceMethod(CheckOutRequest request)
+        {
+            if (!string.IsNullOrEmpty(request.BiometricData))
+                return AttendanceMethod.Biometric;
+            
+            if (!string.IsNullOrEmpty(request.BeaconId))
+                return AttendanceMethod.Beacon;
+            
+            if (request.Latitude.HasValue && request.Longitude.HasValue)
+                return AttendanceMethod.GPS;
+            
+            return AttendanceMethod.Manual;
+        }
+
         private async Task<string?> GetBeaconNameAsync(string? beaconId)
         {
             if (string.IsNullOrEmpty(beaconId))
@@ -424,9 +441,55 @@ namespace AttendancePlatform.Attendance.Api.Services
             if (string.IsNullOrEmpty(photoBase64))
                 return null;
 
-            // TODO: Implement photo processing and storage
-            // For now, return a placeholder URL
-            return $"/photos/attendance_{Guid.NewGuid()}.jpg";
+            try
+            {
+                var photoBytes = Convert.FromBase64String(photoBase64);
+                
+                if (photoBytes.Length > 5 * 1024 * 1024) // 5MB limit
+                {
+                    _logger.LogWarning("Photo size exceeds limit: {Size} bytes", photoBytes.Length);
+                    throw new ArgumentException("Photo size exceeds 5MB limit");
+                }
+
+                var fileName = $"attendance_{Guid.NewGuid()}.jpg";
+                var photoDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "photos");
+                
+                if (!Directory.Exists(photoDirectory))
+                {
+                    Directory.CreateDirectory(photoDirectory);
+                }
+
+                var filePath = Path.Combine(photoDirectory, fileName);
+                
+                using (var image = SixLabors.ImageSharp.Image.Load(photoBytes))
+                {
+                    if (image.Width > 1920 || image.Height > 1080)
+                    {
+                        image.Mutate(x => x.Resize(new ResizeOptions
+                        {
+                            Size = new Size(1920, 1080),
+                            Mode = ResizeMode.Max
+                        }));
+                    }
+
+                    await image.SaveAsJpegAsync(filePath, new JpegEncoder
+                    {
+                        Quality = 85
+                    });
+                }
+
+                var photoUrl = $"/photos/{fileName}";
+                
+                _logger.LogInformation("Photo processed and saved successfully. PhotoUrl: {PhotoUrl}, Size: {Size} bytes", 
+                    photoUrl, photoBytes.Length);
+
+                return photoUrl;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing photo");
+                throw new InvalidOperationException("Failed to process photo", ex);
+            }
         }
 
         private async Task<Geofence?> GetNearestGeofenceAsync(double latitude, double longitude, Guid userId)

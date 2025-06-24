@@ -18,9 +18,9 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo 
     { 
-        Title = "AttendancePro Notifications API", 
+        Title = "Hudur Notifications API", 
         Version = "v1",
-        Description = "Comprehensive notification service for the AttendancePro platform"
+        Description = "Comprehensive notification service for the Hudur platform"
     });
     
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -49,7 +49,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Database configuration
-builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
+builder.Services.AddDbContext<HudurDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // JWT Authentication
@@ -85,6 +85,7 @@ builder.Services.AddCors(options =>
 
 // Register shared services
 builder.Services.AddSharedInfrastructure();
+builder.Services.AddSecurityServices(builder.Configuration);
 
 // Register notification services
 builder.Services.AddScoped<INotificationService, NotificationService>();
@@ -98,7 +99,7 @@ builder.Services.AddHttpClient();
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<AttendancePlatformDbContext>();
+    .AddDbContextCheck<HudurDbContext>();
 
 var app = builder.Build();
 
@@ -108,13 +109,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AttendancePro Notifications API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hudur Notifications API v1");
         c.RoutePrefix = string.Empty;
     });
 }
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+
+app.UseMiddleware<RateLimitingMiddleware>();
+app.UseMiddleware<AuditLoggingMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
