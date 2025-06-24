@@ -142,7 +142,7 @@ jobs:
     needs: [test-backend, test-frontend, test-mobile, security-scan]
     runs-on: ubuntu-latest
     name: Build Docker Images
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') || github.event_name == 'pull_request'
     
     permissions:
       contents: read
@@ -201,7 +201,7 @@ jobs:
     needs: build-images
     runs-on: ubuntu-latest
     name: Deploy to Staging
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'pull_request' && github.base_ref == 'develop')
     
     environment:
       name: staging
@@ -220,7 +220,7 @@ jobs:
     needs: build-images
     runs-on: ubuntu-latest
     name: Deploy to Production
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.base_ref == 'main')
     
     environment:
       name: production
