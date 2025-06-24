@@ -77,9 +77,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+                "http://localhost:5173", 
+                "http://localhost:5174",
+                "http://localhost:3000",
+                "https://project-review-app-7tx5ua47.devinapps.com",
+                "https://attendancepro-auth-api.devinapps.com"
+              )
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
