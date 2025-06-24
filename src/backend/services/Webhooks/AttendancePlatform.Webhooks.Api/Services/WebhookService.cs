@@ -48,7 +48,7 @@ namespace AttendancePlatform.Webhooks.Api.Services
             var subscription = new WebhookSubscription
             {
                 Id = Guid.NewGuid(),
-                TenantId = _tenantContext.TenantId,
+                TenantId = _tenantContext.TenantId ?? Guid.Empty,
                 Name = request.Name,
                 Url = request.Url,
                 EventTypes = request.EventTypes,
@@ -62,7 +62,7 @@ namespace AttendancePlatform.Webhooks.Api.Services
                     ExponentialBackoff = request.ExponentialBackoff ?? true
                 },
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = _currentUserService.UserId
+                CreatedBy = _currentUserService.UserId?.ToString() ?? string.Empty
             };
 
             _context.WebhookSubscriptions.Add(subscription);
@@ -95,7 +95,7 @@ namespace AttendancePlatform.Webhooks.Api.Services
             }
 
             subscription.UpdatedAt = DateTime.UtcNow;
-            subscription.UpdatedBy = _currentUserService.UserId;
+            subscription.UpdatedBy = _currentUserService.UserId?.ToString() ?? string.Empty;
 
             await _context.SaveChangesAsync();
 
