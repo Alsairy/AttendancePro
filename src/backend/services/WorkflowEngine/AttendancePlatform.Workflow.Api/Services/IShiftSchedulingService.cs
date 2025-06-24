@@ -1,4 +1,5 @@
 using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.Interfaces;
 
 namespace AttendancePlatform.Workflow.Api.Services
 {
