@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Infrastructure.Services;
 using AttendancePlatform.Shared.Domain.DTOs;
 using AttendancePlatform.Shared.Domain.Entities;
 using System.Text.Json;
@@ -659,8 +660,9 @@ namespace AttendancePlatform.Workflow.Api.Services
             return true;
         }
     }
+}
 
-    // Request/Response DTOs
+// Request/Response DTOs
     public class CreateWorkflowInstanceRequest
     {
         public string WorkflowType { get; set; } = string.Empty;
@@ -697,4 +699,3 @@ namespace AttendancePlatform.Workflow.Api.Services
         public bool IsAutomated { get; set; }
         public Dictionary<string, object>? Configuration { get; set; }
     }
-

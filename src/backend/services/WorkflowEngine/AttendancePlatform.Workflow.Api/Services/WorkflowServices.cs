@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.DTOs;
 using System.Text.Json;
 using System.Linq.Dynamic.Core;
 
@@ -1370,19 +1371,6 @@ namespace AttendancePlatform.Workflow.Api.Services
         public Dictionary<string, object> Result { get; set; } = new();
     }
 
-    public class WorkflowExecutionLogDto
-    {
-        public Guid Id { get; set; }
-        public Guid WorkflowId { get; set; }
-        public Guid InstanceId { get; set; }
-        public string WorkflowName { get; set; } = string.Empty;
-        public bool Success { get; set; }
-        public string? ErrorMessage { get; set; }
-        public DateTime StartedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public long ExecutionTimeMs { get; set; }
-    }
-
     public class WorkflowPerformanceDto
     {
         public Guid WorkflowId { get; set; }
@@ -1395,16 +1383,6 @@ namespace AttendancePlatform.Workflow.Api.Services
         public long MinExecutionTimeMs { get; set; }
         public long MaxExecutionTimeMs { get; set; }
         public DateTime LastExecuted { get; set; }
-    }
-
-    public class WorkflowMetricsDto
-    {
-        public string Category { get; set; } = string.Empty;
-        public int ActiveWorkflows { get; set; }
-        public int RunningInstances { get; set; }
-        public int CompletedToday { get; set; }
-        public int FailedToday { get; set; }
-        public double AverageCompletionTime { get; set; }
     }
 }
 
