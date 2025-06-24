@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using AttendancePlatform.Workflow.Api.Services;
 using AttendancePlatform.Shared.Domain.DTOs;
 
 namespace AttendancePlatform.Workflow.Api.Controllers
@@ -10,11 +9,11 @@ namespace AttendancePlatform.Workflow.Api.Controllers
     [Authorize]
     public class AdvancedWorkflowController : ControllerBase
     {
-        private readonly IAdvancedWorkflowService _advancedWorkflowService;
+        private readonly AttendancePlatform.Workflow.Api.Services.IAdvancedWorkflowService _advancedWorkflowService;
         private readonly ILogger<AdvancedWorkflowController> _logger;
 
         public AdvancedWorkflowController(
-            IAdvancedWorkflowService advancedWorkflowService,
+            AttendancePlatform.Workflow.Api.Services.IAdvancedWorkflowService advancedWorkflowService,
             ILogger<AdvancedWorkflowController> logger)
         {
             _advancedWorkflowService = advancedWorkflowService;
@@ -293,5 +292,42 @@ namespace AttendancePlatform.Workflow.Api.Controllers
         public WorkflowMetricsDto Metrics { get; set; } = new();
         public List<WorkflowInstanceDto> PendingApprovals { get; set; } = new();
         public List<WorkflowInstanceDto> RecentActivity { get; set; } = new();
+    }
+
+    public class CreateWorkflowInstanceRequest
+    {
+        public string WorkflowType { get; set; } = string.Empty;
+        public Guid EntityId { get; set; }
+        public string EntityType { get; set; } = string.Empty;
+        public Guid InitiatedBy { get; set; }
+        public string? Priority { get; set; }
+        public Dictionary<string, object>? InputData { get; set; }
+    }
+
+    public class ExecuteStepRequest
+    {
+        public string Action { get; set; } = string.Empty; // Approve, Reject
+        public Guid CompletedBy { get; set; }
+        public string? Comments { get; set; }
+        public Dictionary<string, object>? OutputData { get; set; }
+    }
+
+    public class CreateWorkflowTemplateRequest
+    {
+        public string WorkflowType { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public List<WorkflowStepDefinition> Steps { get; set; } = new();
+    }
+
+    public class WorkflowStepDefinition
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string? AssignedTo { get; set; }
+        public int? DueDays { get; set; }
+        public bool IsAutomated { get; set; }
+        public Dictionary<string, object>? Configuration { get; set; }
     }
 }

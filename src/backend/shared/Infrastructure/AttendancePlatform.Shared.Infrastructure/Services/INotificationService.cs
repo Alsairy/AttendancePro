@@ -21,6 +21,7 @@ public interface INotificationService
     Task SendPushNotificationAsync(PushNotificationRequest request);
     Task ScheduleNotificationAsync(ScheduledNotificationRequest request);
     Task CancelScheduledNotificationAsync(string scheduledNotificationId);
+    Task<bool> SendWorkflowNotificationAsync(Guid workflowInstanceId, string stepName, Guid? assignedTo = null);
 }
 
 public class NotificationRequest
