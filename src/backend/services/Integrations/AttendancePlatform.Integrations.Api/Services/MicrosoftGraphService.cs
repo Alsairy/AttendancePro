@@ -4,6 +4,7 @@ using Microsoft.Identity.Client;
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Domain.Entities;
 
 namespace AttendancePlatform.Integrations.Api.Services
 {
@@ -14,7 +15,7 @@ namespace AttendancePlatform.Integrations.Api.Services
         private readonly IConfiguration _configuration;
 
         public MicrosoftGraphService(
-            HudurDbContext context,
+            AttendancePlatformDbContext context,
             ILogger<MicrosoftGraphService> logger,
             IConfiguration configuration)
         {
@@ -337,6 +338,44 @@ namespace AttendancePlatform.Integrations.Api.Services
             {
                 _logger.LogError(ex, "Error resolving team ID for channel {ChannelId}", channelId);
                 return null;
+            }
+        }
+
+        public async Task<OneDriveFileDto> UploadToOneDriveAsync(Guid tenantId, Guid userId, UploadFileRequestDto request)
+        {
+            try
+            {
+                _logger.LogInformation("Uploading file to OneDrive for user {UserId}", userId);
+                
+                var graphClient = await GetGraphClientAsync(tenantId);
+                if (graphClient == null)
+                {
+                    throw new InvalidOperationException("Could not create Graph client");
+                }
+
+                using var fileStream = new MemoryStream(request.FileContent);
+                var uploadedFile = await graphClient.Users[userId.ToString()].Drive.Root
+                    .ItemWithPath(request.FileName)
+                    .Content
+                    .Request()
+                    .PutAsync<DriveItem>(fileStream);
+
+                var result = new OneDriveFileDto
+                {
+                    Id = uploadedFile.Id,
+                    Name = uploadedFile.Name,
+                    Size = uploadedFile.Size ?? 0,
+                    DownloadUrl = uploadedFile.WebUrl,
+                    CreatedDateTime = uploadedFile.CreatedDateTime?.DateTime ?? DateTime.UtcNow
+                };
+
+                _logger.LogInformation("Successfully uploaded file {FileName} to OneDrive", request.FileName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading file to OneDrive for user {UserId}", userId);
+                throw new InvalidOperationException($"OneDrive upload failed: {ex.Message}");
             }
         }
     }
