@@ -159,10 +159,8 @@ jobs:
           - Integrations
           - Webhooks
           - Analytics
-          - BusinessIntelligence
           - WorkflowEngine
           - Collaboration
-          - EventSourcing
     
     steps:
     - name: Checkout code
