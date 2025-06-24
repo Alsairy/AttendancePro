@@ -71,6 +71,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public virtual User InitiatedByUser { get; set; } = null!;
         public virtual ICollection<WorkflowStep> WorkflowSteps { get; set; } = new List<WorkflowStep>();
         public virtual ICollection<WorkflowExecutionLog> WorkflowExecutionLogs { get; set; } = new List<WorkflowExecutionLog>();
+        public virtual ICollection<WorkflowHistory> WorkflowHistories { get; set; } = new List<WorkflowHistory>();
     }
 
     public class WorkflowStep : BaseEntity
@@ -252,5 +253,32 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public virtual WorkflowStep WorkflowStep { get; set; } = null!;
         public virtual User Approver { get; set; } = null!;
         public virtual User? DelegatedToUser { get; set; }
+    }
+
+    public class WorkflowHistory : BaseEntity
+    {
+        [Required]
+        public Guid WorkflowInstanceId { get; set; }
+        
+        [Required]
+        [MaxLength(100)]
+        public string Action { get; set; } = string.Empty;
+        
+        [Required]
+        public Guid PerformedBy { get; set; }
+        
+        [Required]
+        public DateTime PerformedAt { get; set; }
+        
+        [MaxLength(1000)]
+        public string? Details { get; set; }
+        
+        public string? PreviousState { get; set; }
+        
+        public string? NewState { get; set; }
+        
+        // Navigation properties
+        public virtual WorkflowInstance WorkflowInstance { get; set; } = null!;
+        public virtual User PerformedByUser { get; set; } = null!;
     }
 }

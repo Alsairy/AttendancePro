@@ -82,6 +82,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<WorkflowTask> WorkflowTasks { get; set; }
         public DbSet<WorkflowExecutionLog> WorkflowExecutionLogs { get; set; }
         public DbSet<WorkflowTemplate> WorkflowTemplates { get; set; }
+        public DbSet<WorkflowHistory> WorkflowHistory { get; set; }
         public DbSet<BiometricAuditLog> BiometricAuditLogs { get; set; }
         public DbSet<BiometricBackup> BiometricBackups { get; set; }
         public DbSet<BiometricSession> BiometricSessions { get; set; }

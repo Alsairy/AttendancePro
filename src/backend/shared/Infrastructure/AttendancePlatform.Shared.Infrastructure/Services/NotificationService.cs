@@ -333,6 +333,31 @@ public class NotificationService : INotificationService
         }
     }
 
+    public async Task<bool> SendWorkflowNotificationAsync(Guid workflowInstanceId, string stepName, Guid? assignedTo = null)
+    {
+        try
+        {
+            var notificationRequest = new NotificationRequest
+            {
+                UserId = assignedTo?.ToString() ?? string.Empty,
+                Title = "Workflow Step Notification",
+                Message = $"Workflow step '{stepName}' requires your attention",
+                Type = "workflow",
+                Data = new { WorkflowInstanceId = workflowInstanceId, StepName = stepName },
+                Priority = "normal",
+                Channels = new List<string> { "email", "push", "inapp" }
+            };
+
+            await SendNotificationAsync(notificationRequest);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to send workflow notification for instance {WorkflowInstanceId}", workflowInstanceId);
+            return false;
+        }
+    }
+
     private async Task<string> GetUserEmailAsync(string userId)
     {
         var user = await _context.Users.FindAsync(Guid.Parse(userId));

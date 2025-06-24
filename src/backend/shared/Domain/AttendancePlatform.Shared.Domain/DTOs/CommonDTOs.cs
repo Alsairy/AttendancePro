@@ -610,6 +610,7 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string StepDefinitions { get; set; } = string.Empty;
+        public int StepCount { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
