@@ -54,11 +54,23 @@ namespace AttendancePlatform.Shared.Domain.Entities
         [Required]
         public Guid TenantId { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string NotificationType { get; set; } = string.Empty;
+        public bool EmailEnabled { get; set; } = true;
 
-        public bool IsEnabled { get; set; } = true;
+        public bool SmsEnabled { get; set; } = false;
+
+        public bool PushEnabled { get; set; } = true;
+
+        public bool AttendanceNotifications { get; set; } = true;
+
+        public bool LeaveNotifications { get; set; } = true;
+
+        public bool SystemNotifications { get; set; } = true;
+
+        public bool MarketingNotifications { get; set; } = false;
+
+        public TimeSpan QuietHoursStart { get; set; } = TimeSpan.FromHours(22);
+
+        public TimeSpan QuietHoursEnd { get; set; } = TimeSpan.FromHours(7);
 
         [MaxLength(20)]
         public string? DeliveryMethod { get; set; }

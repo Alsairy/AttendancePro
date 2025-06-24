@@ -54,7 +54,7 @@ namespace AttendancePlatform.Notifications.Api.Services
             var notification = new Notification
             {
                 Id = Guid.NewGuid(),
-                TenantId = _tenantContext.TenantId,
+                TenantId = _tenantContext.TenantId ?? Guid.Empty,
                 UserId = request.UserId,
                 Type = request.Type,
                 Title = request.Title,
@@ -110,7 +110,7 @@ namespace AttendancePlatform.Notifications.Api.Services
                 var notification = new Notification
                 {
                     Id = Guid.NewGuid(),
-                    TenantId = _tenantContext.TenantId,
+                    TenantId = _tenantContext.TenantId ?? Guid.Empty,
                     UserId = userId,
                     Type = request.Type,
                     Title = request.Title,
@@ -284,11 +284,11 @@ namespace AttendancePlatform.Notifications.Api.Services
 
             if (existingPreferences == null)
             {
-                existingPreferences = new NotificationPreferences
+                existingPreferences = new NotificationPreference
                 {
                     Id = Guid.NewGuid(),
                     UserId = userId,
-                    TenantId = _tenantContext.TenantId,
+                    TenantId = _tenantContext.TenantId ?? Guid.Empty,
                     CreatedAt = DateTime.UtcNow
                 };
                 _context.NotificationPreferences.Add(existingPreferences);

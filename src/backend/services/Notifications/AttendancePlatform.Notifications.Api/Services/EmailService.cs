@@ -2,6 +2,7 @@ using System.Net.Mail;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.Entities;
 
 namespace AttendancePlatform.Notifications.Api.Services
 {
@@ -410,15 +411,6 @@ namespace AttendancePlatform.Notifications.Api.Services
         }
     }
 
-    public class DeviceToken
-    {
-        public Guid Id { get; set; }
-        public Guid UserId { get; set; }
-        public string Token { get; set; } = string.Empty;
-        public string Platform { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-    }
+
 }
 
