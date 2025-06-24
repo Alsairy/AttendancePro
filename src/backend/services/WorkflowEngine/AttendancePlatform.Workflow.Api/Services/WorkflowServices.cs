@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Domain.Entities;
 using System.Text.Json;
 using System.Linq.Dynamic.Core;
 
@@ -956,22 +957,7 @@ namespace AttendancePlatform.Workflow.Api.Services
         public DateTime UpdatedAt { get; set; }
     }
 
-    public class WorkflowInstance
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public Guid WorkflowTemplateId { get; set; }
-        public Guid InitiatedBy { get; set; }
-        public string Status { get; set; } = string.Empty;
-        public int CurrentStep { get; set; }
-        public string Context { get; set; } = string.Empty; // JSON
-        public DateTime StartedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public DateTime LastUpdatedAt { get; set; }
-        public DateTime? ResumeAt { get; set; }
-        
-        public WorkflowTemplate WorkflowTemplate { get; set; } = null!;
-    }
+
 
     public class WorkflowHistory
     {
@@ -984,20 +970,7 @@ namespace AttendancePlatform.Workflow.Api.Services
         public Guid? UserId { get; set; }
     }
 
-    public class BusinessRule
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string Category { get; set; } = string.Empty;
-        public string RuleType { get; set; } = string.Empty;
-        public string Conditions { get; set; } = string.Empty; // JSON
-        public string Actions { get; set; } = string.Empty; // JSON
-        public int Priority { get; set; }
-        public bool IsActive { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+
     }
 
     public class ApprovalRequest
@@ -1041,21 +1014,7 @@ namespace AttendancePlatform.Workflow.Api.Services
         public string? Comments { get; set; }
     }
 
-    public class WorkflowInstanceDto
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public Guid WorkflowTemplateId { get; set; }
-        public string WorkflowTemplateName { get; set; } = string.Empty;
-        public Guid InitiatedBy { get; set; }
-        public string Status { get; set; } = string.Empty;
-        public int CurrentStep { get; set; }
-        public Dictionary<string, object> Context { get; set; } = new();
-        public DateTime StartedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public DateTime LastUpdatedAt { get; set; }
-        public DateTime? ResumeAt { get; set; }
-    }
+
 
     public class WorkflowHistoryDto
     {
