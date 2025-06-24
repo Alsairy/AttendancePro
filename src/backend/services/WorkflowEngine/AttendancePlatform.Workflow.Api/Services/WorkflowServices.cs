@@ -1040,43 +1040,7 @@ namespace AttendancePlatform.Workflow.Api.Services
         public string? Comments { get; set; }
     }
 
-    public class WorkflowInstanceDto
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public Guid WorkflowTemplateId { get; set; }
-        public string WorkflowTemplateName { get; set; } = string.Empty;
-        public Guid InitiatedBy { get; set; }
-        public string Status { get; set; } = string.Empty;
-        public int CurrentStep { get; set; }
-        public Dictionary<string, object> Context { get; set; } = new();
-        public DateTime StartedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public DateTime LastUpdatedAt { get; set; }
-        public DateTime? ResumeAt { get; set; }
-    }
 
-    public class WorkflowHistoryDto
-    {
-        public Guid Id { get; set; }
-        public Guid WorkflowInstanceId { get; set; }
-        public string EventType { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public Dictionary<string, object> Data { get; set; } = new();
-        public DateTime Timestamp { get; set; }
-        public Guid? UserId { get; set; }
-    }
-
-    public class WorkflowStepDto
-    {
-        public string Id { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
-        public Dictionary<string, object> Configuration { get; set; } = new();
-        public int Order { get; set; }
-    }
-
-    public class CreateBusinessRuleRequestDto
     {
         public Guid TenantId { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -1347,64 +1311,3 @@ namespace AttendancePlatform.Workflow.Api.Services
         public Dictionary<string, object> Configuration { get; set; } = new();
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
-
-    public class WorkflowTemplateCategoryDto
-    {
-        public string Id { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public int TemplateCount { get; set; }
-    }
-
-    public class WorkflowExecutionResultDto
-    {
-        public Guid WorkflowId { get; set; }
-        public Guid InstanceId { get; set; }
-        public bool Success { get; set; }
-        public string? ErrorMessage { get; set; }
-        public DateTime StartedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public long ExecutionTimeMs { get; set; }
-        public Dictionary<string, object> Result { get; set; } = new();
-    }
-
-    public class WorkflowExecutionLogDto
-    {
-        public Guid Id { get; set; }
-        public Guid WorkflowId { get; set; }
-        public Guid InstanceId { get; set; }
-        public string WorkflowName { get; set; } = string.Empty;
-        public bool Success { get; set; }
-        public string? ErrorMessage { get; set; }
-        public DateTime StartedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public long ExecutionTimeMs { get; set; }
-    }
-
-    public class WorkflowPerformanceDto
-    {
-        public Guid WorkflowId { get; set; }
-        public string WorkflowName { get; set; } = string.Empty;
-        public int TotalExecutions { get; set; }
-        public int SuccessfulExecutions { get; set; }
-        public int FailedExecutions { get; set; }
-        public double SuccessRate { get; set; }
-        public long AverageExecutionTimeMs { get; set; }
-        public long MinExecutionTimeMs { get; set; }
-        public long MaxExecutionTimeMs { get; set; }
-        public DateTime LastExecuted { get; set; }
-    }
-
-    public class WorkflowMetricsDto
-    {
-        public string Category { get; set; } = string.Empty;
-        public int ActiveWorkflows { get; set; }
-        public int RunningInstances { get; set; }
-        public int CompletedToday { get; set; }
-        public int FailedToday { get; set; }
-        public double AverageCompletionTime { get; set; }
-    }
-}
-
