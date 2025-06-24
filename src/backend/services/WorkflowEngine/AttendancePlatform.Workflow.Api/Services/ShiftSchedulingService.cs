@@ -42,7 +42,7 @@ namespace AttendancePlatform.Workflow.Api.Services
             {
                 var template = new ShiftTemplate
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid(),
                     TenantId = request.TenantId,
                     Name = request.Name,
                     Description = request.Description,
@@ -169,7 +169,7 @@ namespace AttendancePlatform.Workflow.Api.Services
             {
                 var shift = new Shift
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid(),
                     TenantId = request.TenantId,
                     TemplateId = request.TemplateId,
                     Name = request.Name,
@@ -311,7 +311,7 @@ namespace AttendancePlatform.Workflow.Api.Services
             {
                 var assignment = new ShiftAssignment
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid(),
                     TenantId = request.TenantId,
                     ShiftId = request.ShiftId,
                     UserId = request.UserId,
@@ -413,7 +413,7 @@ namespace AttendancePlatform.Workflow.Api.Services
             {
                 var swapRequest = new ShiftSwapRequest
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid(),
                     TenantId = request.TenantId,
                     RequesterId = request.RequesterId,
                     OriginalAssignmentId = request.OriginalAssignmentId,
@@ -670,7 +670,7 @@ namespace AttendancePlatform.Workflow.Api.Services
                     {
                         var assignment = new ShiftAssignment
                         {
-                            Id = Guid.NewGuid().ToString(),
+                            Id = Guid.NewGuid(),
                             TenantId = request.TenantId,
                             ShiftId = shift.Id,
                             UserId = user.Id,
@@ -779,7 +779,7 @@ namespace AttendancePlatform.Workflow.Api.Services
                     {
                         conflicts.Add(new ShiftConflict
                         {
-                            Id = Guid.NewGuid().ToString(),
+                            Id = Guid.NewGuid(),
                             TenantId = assignment.TenantId,
                             UserId = assignment.UserId,
                             AssignmentId = assignment.Id,

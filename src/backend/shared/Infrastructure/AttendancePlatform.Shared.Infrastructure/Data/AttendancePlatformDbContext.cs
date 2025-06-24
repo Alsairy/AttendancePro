@@ -108,6 +108,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<TenantIntegration> TenantIntegrations { get; set; }
         public DbSet<IntegrationLog> IntegrationLogs { get; set; }
         public DbSet<TenantConfiguration> TenantConfigurations { get; set; }
+        public DbSet<BusinessRule> BusinessRules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
