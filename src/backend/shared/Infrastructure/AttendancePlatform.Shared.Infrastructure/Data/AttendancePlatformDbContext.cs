@@ -104,6 +104,9 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
 
         public DbSet<WebhookSubscription> WebhookSubscriptions { get; set; }
         public DbSet<WebhookDelivery> WebhookDeliveries { get; set; }
+        public DbSet<TenantIntegration> TenantIntegrations { get; set; }
+        public DbSet<IntegrationLog> IntegrationLogs { get; set; }
+        public DbSet<TenantConfiguration> TenantConfigurations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
