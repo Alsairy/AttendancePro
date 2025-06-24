@@ -109,7 +109,7 @@ app.Use(async (context, next) =>
     
     // Add correlation ID
     var correlationId = Guid.NewGuid().ToString();
-    context.Response.Headers.Add("X-Correlation-ID", correlationId);
+    context.Response.Headers.Append("X-Correlation-ID", correlationId);
     
     var stopwatch = System.Diagnostics.Stopwatch.StartNew();
     

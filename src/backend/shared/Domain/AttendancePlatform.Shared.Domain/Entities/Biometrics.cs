@@ -148,7 +148,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public string? CustomBrandingColors { get; set; } // JSON
         
         // Navigation properties
-        public override Tenant Tenant { get; set; } = null!;
+        public override Tenant? Tenant { get; set; } = null!;
     }
 }
 
