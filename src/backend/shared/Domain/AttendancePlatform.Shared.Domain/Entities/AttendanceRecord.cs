@@ -61,6 +61,9 @@ namespace AttendancePlatform.Shared.Domain.Entities
         
         public string? KioskId { get; set; }
         
+        public DateTime CheckInTime { get; set; }
+        public DateTime? CheckOutTime { get; set; }
+
         // Additional metadata
         public string? Notes { get; set; }
         public string? IpAddress { get; set; }

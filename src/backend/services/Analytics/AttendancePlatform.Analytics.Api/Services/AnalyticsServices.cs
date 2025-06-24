@@ -548,9 +548,9 @@ namespace AttendancePlatform.Analytics.Api.Services
             var fromDate = DateTime.UtcNow;
             var toDate = fromDate.AddDays(futureDays);
 
-            return await _context.LeaveManagement
+            return await _context.LeaveRequests
                 .Where(lm => lm.TenantId == tenantId && 
-                           lm.Status == "Approved" && 
+                           lm.Status == LeaveRequestStatus.Approved && 
                            lm.StartDate <= toDate && 
                            lm.EndDate >= fromDate)
                 .GroupBy(lm => lm.StartDate.Date)
