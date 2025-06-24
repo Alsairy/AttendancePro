@@ -362,45 +362,6 @@ namespace AttendancePlatform.Webhooks.Api.Services
         }
     }
 
-    // DTOs and Models
-    public class WebhookSubscription
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Url { get; set; } = string.Empty;
-        public List<string> EventTypes { get; set; } = new();
-        public string Secret { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
-        public Dictionary<string, string> Headers { get; set; } = new();
-        public WebhookRetryPolicy RetryPolicy { get; set; } = new();
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public Guid? CreatedBy { get; set; }
-        public Guid? UpdatedBy { get; set; }
-    }
-
-    public class WebhookRetryPolicy
-    {
-        public int MaxRetries { get; set; } = 3;
-        public int RetryDelaySeconds { get; set; } = 60;
-        public bool ExponentialBackoff { get; set; } = true;
-    }
-
-    public class WebhookDelivery
-    {
-        public Guid Id { get; set; }
-        public Guid SubscriptionId { get; set; }
-        public WebhookSubscription Subscription { get; set; } = null!;
-        public string EventType { get; set; } = string.Empty;
-        public string Payload { get; set; } = string.Empty;
-        public int? HttpStatusCode { get; set; }
-        public string? ResponseBody { get; set; }
-        public DateTime AttemptedAt { get; set; }
-        public bool IsSuccessful { get; set; }
-        public string? ErrorMessage { get; set; }
-        public int RetryCount { get; set; }
-    }
 
     public class WebhookSubscriptionDto
     {
