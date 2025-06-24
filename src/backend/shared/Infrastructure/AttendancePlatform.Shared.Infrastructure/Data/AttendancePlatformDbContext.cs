@@ -74,6 +74,9 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<AuditLogEntry> AuditLogEntries { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<ScheduledNotification> ScheduledNotifications { get; set; }
+        public DbSet<NotificationTemplate> NotificationTemplates { get; set; }
+        public DbSet<DeviceToken> DeviceTokens { get; set; }
+        public DbSet<NotificationPreference> NotificationPreferences { get; set; }
         public DbSet<WorkflowDefinition> WorkflowDefinitions { get; set; }
         public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
         public DbSet<WorkflowTask> WorkflowTasks { get; set; }
