@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using AttendancePlatform.Shared.Domain.DTOs;
+using AttendancePlatform.Shared.Domain.Entities;
 
 namespace AttendancePlatform.Workflow.Api.Controllers
 {
@@ -320,14 +321,5 @@ namespace AttendancePlatform.Workflow.Api.Controllers
         public List<WorkflowStepDefinition> Steps { get; set; } = new();
     }
 
-    public class WorkflowStepDefinition
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string? AssignedTo { get; set; }
-        public int? DueDays { get; set; }
-        public bool IsAutomated { get; set; }
-        public Dictionary<string, object>? Configuration { get; set; }
-    }
+
 }

@@ -4,6 +4,7 @@ using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Infrastructure.Services;
 using AttendancePlatform.Shared.Domain.DTOs;
 using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Workflow.Api.Controllers;
 using System.Text.Json;
 
 namespace AttendancePlatform.Workflow.Api.Services
@@ -661,41 +662,3 @@ namespace AttendancePlatform.Workflow.Api.Services
         }
     }
 }
-
-// Request/Response DTOs
-    public class CreateWorkflowInstanceRequest
-    {
-        public string WorkflowType { get; set; } = string.Empty;
-        public Guid EntityId { get; set; }
-        public string EntityType { get; set; } = string.Empty;
-        public Guid InitiatedBy { get; set; }
-        public string? Priority { get; set; }
-        public Dictionary<string, object>? InputData { get; set; }
-    }
-
-    public class ExecuteStepRequest
-    {
-        public string Action { get; set; } = string.Empty; // Approve, Reject
-        public Guid CompletedBy { get; set; }
-        public string? Comments { get; set; }
-        public Dictionary<string, object>? OutputData { get; set; }
-    }
-
-    public class CreateWorkflowTemplateRequest
-    {
-        public string WorkflowType { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public List<WorkflowStepDefinition> Steps { get; set; } = new();
-    }
-
-    public class WorkflowStepDefinition
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string? AssignedTo { get; set; }
-        public int? DueDays { get; set; }
-        public bool IsAutomated { get; set; }
-        public Dictionary<string, object>? Configuration { get; set; }
-    }

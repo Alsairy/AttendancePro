@@ -102,6 +102,11 @@ public class WorkflowStepDefinition
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string? AssignedTo { get; set; }
+    public int? DueDays { get; set; }
+    public bool IsAutomated { get; set; }
+    public Dictionary<string, object>? Configuration { get; set; }
     public Dictionary<string, object> Properties { get; set; } = new();
     public List<string> NextSteps { get; set; } = new();
     public List<WorkflowCondition> Conditions { get; set; } = new();

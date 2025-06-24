@@ -22,6 +22,10 @@ namespace AttendancePlatform.Shared.Domain.Entities
         [Required]
         public string StepDefinitions { get; set; } = string.Empty; // JSON serialized
         
+        public string Steps { get; set; } = string.Empty; // JSON serialized steps
+        
+        public int StepCount { get; set; } = 0;
+        
         public bool IsActive { get; set; } = true;
         
         // Navigation properties
@@ -62,6 +66,12 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public string InputData { get; set; } = string.Empty; // JSON serialized
         
         public int CurrentStepIndex { get; set; } = 0;
+        
+        public string CurrentStep { get; set; } = string.Empty;
+        
+        public string CurrentStepName { get; set; } = string.Empty;
+        
+        public DateTime LastUpdatedAt { get; set; } = DateTime.UtcNow;
         
         public DateTime? CompletedAt { get; set; }
         
@@ -269,6 +279,8 @@ namespace AttendancePlatform.Shared.Domain.Entities
         
         [Required]
         public DateTime PerformedAt { get; set; }
+        
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         
         [MaxLength(1000)]
         public string? Details { get; set; }
