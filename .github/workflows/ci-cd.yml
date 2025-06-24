@@ -151,20 +151,18 @@ jobs:
     strategy:
       matrix:
         service:
-          - authentication
-          - attendance
-          - face-recognition
-          - leave-management
-          - notifications
-          - integrations
-          - webhooks
-          - analytics
-          - business-intelligence
-          - workflow-engine
-          - collaboration
-          - event-sourcing
-          - api-gateway
-          - frontend
+          - Authentication
+          - Attendance
+          - FaceRecognition
+          - LeaveManagement
+          - Notifications
+          - Integrations
+          - Webhooks
+          - Analytics
+          - BusinessIntelligence
+          - WorkflowEngine
+          - Collaboration
+          - EventSourcing
     
     steps:
     - name: Checkout code
