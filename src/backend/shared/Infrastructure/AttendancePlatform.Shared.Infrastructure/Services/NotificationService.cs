@@ -32,16 +32,16 @@ public class NotificationService : INotificationService
         {
             var notification = new Notification
             {
-                UserId = request.UserId,
+                UserId = Guid.Parse(request.UserId),
+                TenantId = Guid.Parse(request.TenantId ?? Guid.Empty.ToString()),
                 Title = request.Title,
                 Message = request.Message,
-                Type = request.Type,
+                Type = Enum.Parse<NotificationType>(request.Type, true),
                 Data = request.Data != null ? JsonSerializer.Serialize(request.Data) : null,
                 ActionUrl = request.ActionUrl,
                 ExpiresAt = request.ExpiresAt,
-                Priority = request.Priority,
-                Channels = request.Channels,
-                CorrelationId = Guid.NewGuid().ToString()
+                Priority = Enum.Parse<NotificationPriority>(request.Priority, true),
+                ImageUrl = request.ImageUrl
             };
 
             _context.Notifications.Add(notification);
@@ -112,16 +112,16 @@ public class NotificationService : INotificationService
 
             var notifications = userIds.Select(userId => new Notification
             {
-                UserId = userId,
+                UserId = Guid.Parse(userId),
+                TenantId = Guid.Parse(request.TenantId ?? Guid.Empty.ToString()),
                 Title = request.Title,
                 Message = request.Message,
-                Type = request.Type,
+                Type = Enum.Parse<NotificationType>(request.Type, true),
                 Data = request.Data != null ? JsonSerializer.Serialize(request.Data) : null,
                 ActionUrl = request.ActionUrl,
                 ExpiresAt = request.ExpiresAt,
-                Priority = request.Priority,
-                Channels = request.Channels,
-                CorrelationId = Guid.NewGuid().ToString()
+                Priority = Enum.Parse<NotificationPriority>(request.Priority, true),
+                ImageUrl = request.ImageUrl
             }).ToList();
 
             _context.Notifications.AddRange(notifications);
@@ -197,8 +197,9 @@ public class NotificationService : INotificationService
 
     public async Task<IEnumerable<Notification>> GetUserNotificationsAsync(string userId, bool unreadOnly = false, int page = 1, int pageSize = 50)
     {
+        var userGuid = Guid.Parse(userId);
         var query = _context.Notifications
-            .Where(n => n.UserId == userId && !n.IsDeleted);
+            .Where(n => n.UserId == userGuid && !n.IsDeleted);
 
         if (unreadOnly)
         {
@@ -214,14 +215,16 @@ public class NotificationService : INotificationService
 
     public async Task<int> GetUnreadNotificationCountAsync(string userId)
     {
+        var userGuid = Guid.Parse(userId);
         return await _context.Notifications
-            .CountAsync(n => n.UserId == userId && !n.IsRead && !n.IsDeleted);
+            .CountAsync(n => n.UserId == userGuid && !n.IsRead && !n.IsDeleted);
     }
 
     public async Task MarkNotificationAsReadAsync(string notificationId, string userId)
     {
+        var userGuid = Guid.Parse(userId);
         var notification = await _context.Notifications
-            .FirstOrDefaultAsync(n => n.Id == Guid.Parse(notificationId) && n.UserId == userId);
+            .FirstOrDefaultAsync(n => n.Id == Guid.Parse(notificationId) && n.UserId == userGuid);
 
         if (notification != null && !notification.IsRead)
         {
@@ -235,8 +238,9 @@ public class NotificationService : INotificationService
 
     public async Task MarkAllNotificationsAsReadAsync(string userId)
     {
+        var userGuid = Guid.Parse(userId);
         var unreadNotifications = await _context.Notifications
-            .Where(n => n.UserId == userId && !n.IsRead && !n.IsDeleted)
+            .Where(n => n.UserId == userGuid && !n.IsRead && !n.IsDeleted)
             .ToListAsync();
 
         foreach (var notification in unreadNotifications)
@@ -252,8 +256,9 @@ public class NotificationService : INotificationService
 
     public async Task DeleteNotificationAsync(string notificationId, string userId)
     {
+        var userGuid = Guid.Parse(userId);
         var notification = await _context.Notifications
-            .FirstOrDefaultAsync(n => n.Id == Guid.Parse(notificationId) && n.UserId == userId);
+            .FirstOrDefaultAsync(n => n.Id == Guid.Parse(notificationId) && n.UserId == userGuid);
 
         if (notification != null)
         {
@@ -303,15 +308,15 @@ public class NotificationService : INotificationService
     {
         var scheduledNotification = new ScheduledNotification
         {
-            UserId = request.UserId,
+            UserId = Guid.Parse(request.UserId),
+            TenantId = Guid.Parse(request.TenantId ?? Guid.Empty.ToString()),
             Title = request.Title,
             Message = request.Message,
-            Type = request.Type,
+            Type = Enum.Parse<NotificationType>(request.Type, true),
             Data = request.Data != null ? JsonSerializer.Serialize(request.Data) : null,
             ScheduledAt = request.ScheduledAt,
             RecurrencePattern = request.RecurrencePattern,
-            RecurrenceEndDate = request.RecurrenceEndDate,
-            Channels = request.Channels
+            RecurrenceEndDate = request.RecurrenceEndDate
         };
 
         _context.ScheduledNotifications.Add(scheduledNotification);

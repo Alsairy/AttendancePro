@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Integrations.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,7 +50,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Database configuration
-builder.Services.AddDbContext<HudurDbContext>(options =>
+builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // JWT Authentication
@@ -106,7 +107,7 @@ builder.Services.AddHttpClient();
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<HudurDbContext>();
+    .AddDbContextCheck<AttendancePlatformDbContext>();
 
 var app = builder.Build();
 
@@ -124,8 +125,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
-app.UseMiddleware<RateLimitingMiddleware>();
-app.UseMiddleware<AuditLoggingMiddleware>();
+
 
 app.UseAuthentication();
 app.UseAuthorization();

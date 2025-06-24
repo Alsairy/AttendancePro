@@ -52,6 +52,9 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public Guid UserId { get; set; }
 
         [Required]
+        public Guid TenantId { get; set; }
+
+        [Required]
         [MaxLength(50)]
         public string NotificationType { get; set; } = string.Empty;
 
@@ -63,5 +66,23 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public string? Settings { get; set; }
 
         public virtual User? User { get; set; }
+    }
+
+    public enum NotificationType
+    {
+        Attendance,
+        Leave,
+        System,
+        Marketing,
+        Security,
+        Reminder
+    }
+
+    public enum NotificationPriority
+    {
+        Low,
+        Normal,
+        High,
+        Critical
     }
 }
