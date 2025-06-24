@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using System.Text.Json;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Hudur.Webhooks.Api.Services
+namespace AttendancePlatform.Webhooks.Api.Services
 {
     public interface IWebhookService
     {
@@ -26,17 +27,20 @@ namespace Hudur.Webhooks.Api.Services
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<WebhookService> _logger;
         private readonly ITenantContext _tenantContext;
+        private readonly ICurrentUserService _currentUserService;
 
         public WebhookService(
             AttendancePlatformDbContext context,
             IHttpClientFactory httpClientFactory,
             ILogger<WebhookService> logger,
-            ITenantContext tenantContext)
+            ITenantContext tenantContext,
+            ICurrentUserService currentUserService)
         {
             _context = context;
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _tenantContext = tenantContext;
+            _currentUserService = currentUserService;
         }
 
         public async Task<WebhookSubscriptionDto> CreateSubscriptionAsync(CreateWebhookSubscriptionRequest request)
@@ -58,7 +62,7 @@ namespace Hudur.Webhooks.Api.Services
                     ExponentialBackoff = request.ExponentialBackoff ?? true
                 },
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = _tenantContext.UserId
+                CreatedBy = _currentUserService.UserId
             };
 
             _context.WebhookSubscriptions.Add(subscription);
@@ -91,7 +95,7 @@ namespace Hudur.Webhooks.Api.Services
             }
 
             subscription.UpdatedAt = DateTime.UtcNow;
-            subscription.UpdatedBy = _tenantContext.UserId;
+            subscription.UpdatedBy = _currentUserService.UserId;
 
             await _context.SaveChangesAsync();
 

@@ -102,6 +102,9 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<ScreenSharingParticipant> ScreenSharingParticipants { get; set; }
         public DbSet<UserPresence> UserPresences { get; set; }
 
+        public DbSet<WebhookSubscription> WebhookSubscriptions { get; set; }
+        public DbSet<WebhookDelivery> WebhookDeliveries { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
