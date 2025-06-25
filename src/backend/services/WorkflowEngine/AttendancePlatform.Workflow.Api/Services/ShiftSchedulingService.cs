@@ -43,7 +43,7 @@ namespace AttendancePlatform.Workflow.Api.Services
                 var template = new ShiftTemplate
                 {
                     Id = Guid.NewGuid(),
-                    TenantId = request.TenantId,
+                    TenantId = Guid.Parse(request.TenantId),
                     Name = request.Name,
                     Description = request.Description,
                     StartTime = request.StartTime,
@@ -118,13 +118,14 @@ namespace AttendancePlatform.Workflow.Api.Services
         {
             try
             {
-                var template = await _shiftTemplateRepository.GetByIdAsync(templateId);
+                var templateGuid = Guid.Parse(templateId);
+                var template = await _shiftTemplateRepository.GetByIdAsync(templateGuid);
                 if (template == null)
                 {
                     return false;
                 }
 
-                await _shiftTemplateRepository.DeleteAsync(template);
+                await _shiftTemplateRepository.DeleteAsync(templateGuid);
                 return true;
             }
             catch (Exception ex)
@@ -138,8 +139,9 @@ namespace AttendancePlatform.Workflow.Api.Services
         {
             try
             {
+                var tenantGuid = Guid.Parse(tenantId);
                 return await _shiftTemplateRepository.Query()
-                    .Where(t => t.TenantId == tenantId)
+                    .Where(t => t.TenantId == tenantGuid)
                     .OrderBy(t => t.Name)
                     .ToListAsync();
             }

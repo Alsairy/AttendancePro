@@ -70,7 +70,7 @@ builder.Services.AddHealthChecks()
     .AddDbContextCheck<AttendancePlatformDbContext>();
 
 // Shared Infrastructure
-builder.Services.AddSharedInfrastructure(builder.Configuration);
+builder.Services.AddSharedInfrastructure(builder.Configuration, builder.Environment);
 builder.Services.AddSecurityServices(builder.Configuration);
 
 var app = builder.Build();
@@ -84,8 +84,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAll");
 
-app.UseMiddleware<RateLimitingMiddleware>();
-app.UseMiddleware<AuditLoggingMiddleware>();
+// app.UseMiddleware<RateLimitingMiddleware>();
+// app.UseMiddleware<AuditLoggingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

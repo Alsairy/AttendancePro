@@ -632,10 +632,13 @@ namespace AttendancePlatform.Workflow.Api.Services
                 var notificationService = _serviceProvider.GetService<INotificationService>();
                 if (notificationService != null && !string.IsNullOrEmpty(stepDefinition.AssignedTo))
                 {
-                    await notificationService.SendWorkflowNotificationAsync(
-                        workflowInstanceId, 
-                        stepDefinition.AssignedTo, 
-                        stepDefinition.Description ?? "Workflow notification");
+                    if (Guid.TryParse(stepDefinition.AssignedTo, out var assignedToGuid))
+                    {
+                        await notificationService.SendWorkflowNotificationAsync(
+                            workflowInstanceId, 
+                            assignedToGuid, 
+                            stepDefinition.Description ?? "Workflow notification");
+                    }
                 }
                 return true;
             }

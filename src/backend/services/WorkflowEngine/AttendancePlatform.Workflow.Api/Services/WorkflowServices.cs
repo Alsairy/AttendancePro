@@ -96,7 +96,7 @@ namespace AttendancePlatform.Workflow.Api.Services
                     WorkflowTemplateId = request.WorkflowTemplateId,
                     InitiatedBy = request.InitiatedBy,
                     Status = "Running",
-                    CurrentStep = 0,
+                    CurrentStepIndex = 0,
                     Context = JsonSerializer.Serialize(request.Context),
                     StartedAt = DateTime.UtcNow,
                     LastUpdatedAt = DateTime.UtcNow
@@ -968,9 +968,6 @@ namespace AttendancePlatform.Workflow.Api.Services
         public string? Data { get; set; } // JSON
         public DateTime Timestamp { get; set; }
         public Guid? UserId { get; set; }
-    }
-
-
     }
 
     public class ApprovalRequest
