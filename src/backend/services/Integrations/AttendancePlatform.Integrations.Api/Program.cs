@@ -96,11 +96,6 @@ builder.Services.AddSharedInfrastructure();
 builder.Services.AddSecurityServices(builder.Configuration);
 
 // Register integration services
-builder.Services.AddScoped<IScimService, ScimService>();
-builder.Services.AddScoped<IHrIntegrationService, HrIntegrationService>();
-builder.Services.AddScoped<IAuditLogService, AuditLogService>();
-builder.Services.AddScoped<IPayrollIntegrationService, PayrollIntegrationService>();
-builder.Services.AddScoped<IActiveDirectoryService, ActiveDirectoryService>();
 
 // HTTP Client for external services
 builder.Services.AddHttpClient();
