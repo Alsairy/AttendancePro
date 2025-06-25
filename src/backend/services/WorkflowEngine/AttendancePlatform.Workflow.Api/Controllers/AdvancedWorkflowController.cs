@@ -295,31 +295,11 @@ namespace AttendancePlatform.Workflow.Api.Controllers
         public List<WorkflowInstanceDto> RecentActivity { get; set; } = new();
     }
 
-    public class CreateWorkflowInstanceRequest
-    {
-        public string WorkflowType { get; set; } = string.Empty;
-        public Guid EntityId { get; set; }
-        public string EntityType { get; set; } = string.Empty;
-        public Guid InitiatedBy { get; set; }
-        public string? Priority { get; set; }
-        public Dictionary<string, object>? InputData { get; set; }
-    }
 
-    public class ExecuteStepRequest
-    {
-        public string Action { get; set; } = string.Empty; // Approve, Reject
-        public Guid CompletedBy { get; set; }
-        public string? Comments { get; set; }
-        public Dictionary<string, object>? OutputData { get; set; }
-    }
 
-    public class CreateWorkflowTemplateRequest
-    {
-        public string WorkflowType { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public List<WorkflowStepDefinition> Steps { get; set; } = new();
-    }
+
+
+
 
 
 }
