@@ -202,7 +202,7 @@ jobs:
     
     environment:
       name: staging
-      url: https://staging.hudu.sa
+      url: https://staging.hudur.sa
     
     steps:
     - name: Checkout code
@@ -221,7 +221,7 @@ jobs:
     
     environment:
       name: production
-      url: https://hudu.sa
+      url: https://hudur.sa
     
     steps:
     - name: Checkout code
