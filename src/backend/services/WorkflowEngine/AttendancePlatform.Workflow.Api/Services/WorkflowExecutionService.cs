@@ -177,7 +177,7 @@ namespace AttendancePlatform.Workflow.Api.Services
             }
         }
 
-        public async Task<WorkflowMetricsDto> GetWorkflowMetricsAsync(Guid tenantId)
+        public async Task<List<WorkflowMetricsDto>> GetWorkflowMetricsAsync(Guid tenantId)
         {
             try
             {
@@ -185,22 +185,36 @@ namespace AttendancePlatform.Workflow.Api.Services
                     .Where(w => w.TenantId == tenantId)
                     .ToListAsync();
 
+                var totalWorkflows = workflows.Count;
+                var completedWorkflows = workflows.Count(w => w.Status == "Completed");
+                var rejectedWorkflows = workflows.Count(w => w.Status == "Rejected");
+                var cancelledWorkflows = workflows.Count(w => w.Status == "Cancelled");
+                var activeWorkflows = workflows.Count(w => w.Status == "Running" || w.Status == "Pending");
+
+                var completedWithTimes = workflows.Where(w => w.Status == "Completed" && w.CompletedAt.HasValue && w.StartedAt.HasValue);
+                var averageCompletionTime = completedWithTimes.Any() 
+                    ? completedWithTimes.Average(w => (w.CompletedAt!.Value - w.StartedAt).TotalMinutes)
+                    : 0;
+
+                var workflowsByType = workflows
+                    .GroupBy(w => w.WorkflowType)
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+                var completionRate = totalWorkflows > 0 ? (double)completedWorkflows / totalWorkflows * 100 : 0;
+
                 var metrics = new WorkflowMetricsDto
                 {
-                    TenantId = tenantId,
-                    TotalWorkflows = workflows.Count,
-                    ActiveWorkflows = workflows.Count(w => w.Status == "Running"),
-                    CompletedWorkflows = workflows.Count(w => w.Status == "Completed"),
-                    FailedWorkflows = workflows.Count(w => w.Status == "Failed"),
-                    AverageExecutionTime = workflows
-                        .Where(w => w.CompletedAt.HasValue)
-                        .Select(w => (w.CompletedAt!.Value - w.StartedAt).TotalMinutes)
-                        .DefaultIfEmpty(0)
-                        .Average(),
-                    GeneratedAt = DateTime.UtcNow
+                    TotalWorkflows = totalWorkflows,
+                    CompletedWorkflows = completedWorkflows,
+                    RejectedWorkflows = rejectedWorkflows,
+                    CancelledWorkflows = cancelledWorkflows,
+                    ActiveWorkflows = activeWorkflows,
+                    AverageCompletionTime = averageCompletionTime,
+                    WorkflowsByType = workflowsByType,
+                    CompletionRate = completionRate
                 };
 
-                return metrics;
+                return new List<WorkflowMetricsDto> { metrics };
             }
             catch (Exception ex)
             {

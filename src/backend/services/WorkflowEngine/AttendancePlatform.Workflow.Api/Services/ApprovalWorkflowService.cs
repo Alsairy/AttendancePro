@@ -163,7 +163,7 @@ namespace AttendancePlatform.Workflow.Api.Services
             }
         }
 
-        public async Task<WorkflowInstanceDto> SubmitForApprovalAsync(SubmitApprovalRequestDto request)
+        public async Task<ApprovalRequestDto> SubmitForApprovalAsync(SubmitApprovalRequestDto request)
         {
             try
             {
@@ -189,18 +189,20 @@ namespace AttendancePlatform.Workflow.Api.Services
                 _context.WorkflowInstances.Add(workflowInstance);
                 await _context.SaveChangesAsync();
 
-                return new WorkflowInstanceDto
+                return new ApprovalRequestDto
                 {
                     Id = workflowInstance.Id,
                     TenantId = workflowInstance.TenantId,
+                    WorkflowInstanceId = workflowInstance.Id,
                     WorkflowTemplateId = workflowInstance.WorkflowTemplateId,
-                    WorkflowType = workflowInstance.WorkflowType,
                     EntityId = workflowInstance.EntityId,
                     EntityType = workflowInstance.EntityType,
+                    InitiatedBy = workflowInstance.InitiatedBy,
+                    InitiatorName = "System",
                     Status = workflowInstance.Status,
                     Priority = workflowInstance.Priority,
-                    CurrentStepIndex = workflowInstance.CurrentStepIndex,
-                    StartedAt = workflowInstance.StartedAt
+                    SubmittedAt = workflowInstance.StartedAt,
+                    InputData = workflowInstance.InputData
                 };
             }
             catch (Exception ex)
@@ -210,7 +212,7 @@ namespace AttendancePlatform.Workflow.Api.Services
             }
         }
 
-        public async Task<ApprovalResultDto> ProcessApprovalAsync(Guid approvalId, ProcessApprovalRequestDto request)
+        public async Task<ApprovalRequestDto> ProcessApprovalAsync(Guid approvalId, ProcessApprovalRequestDto request)
         {
             try
             {
@@ -238,13 +240,24 @@ namespace AttendancePlatform.Workflow.Api.Services
 
                 await _context.SaveChangesAsync();
 
-                return new ApprovalResultDto
+                return new ApprovalRequestDto
                 {
-                    ApprovalId = approval.Id,
+                    Id = approval.Id,
+                    TenantId = approval.WorkflowInstance.TenantId,
                     WorkflowInstanceId = approval.WorkflowInstanceId,
-                    Decision = approval.Status,
+                    WorkflowTemplateId = approval.WorkflowInstance.WorkflowTemplateId,
+                    EntityId = approval.WorkflowInstance.EntityId,
+                    EntityType = approval.WorkflowInstance.EntityType,
+                    InitiatedBy = approval.WorkflowInstance.InitiatedBy,
+                    InitiatorName = "System",
+                    Status = approval.Status,
+                    Priority = approval.WorkflowInstance.Priority,
+                    SubmittedAt = approval.WorkflowInstance.StartedAt,
+                    ProcessedAt = approval.ApprovedAt,
+                    ApproverId = approval.ApproverId,
+                    ApproverName = "System",
                     Comments = approval.Comments,
-                    ProcessedAt = approval.ApprovedAt ?? DateTime.UtcNow
+                    InputData = approval.WorkflowInstance.InputData
                 };
             }
             catch (Exception ex)
@@ -254,7 +267,7 @@ namespace AttendancePlatform.Workflow.Api.Services
             }
         }
 
-        public async Task<List<PendingApprovalDto>> GetPendingApprovalsAsync(Guid tenantId, Guid? approverId = null)
+        public async Task<List<ApprovalRequestDto>> GetPendingApprovalsAsync(Guid tenantId, Guid? approverId = null)
         {
             try
             {
@@ -268,15 +281,23 @@ namespace AttendancePlatform.Workflow.Api.Services
                 }
 
                 var approvals = await query
-                    .Select(a => new PendingApprovalDto
+                    .Select(a => new ApprovalRequestDto
                     {
-                        ApprovalId = a.Id,
+                        Id = a.Id,
+                        TenantId = a.WorkflowInstance.TenantId,
                         WorkflowInstanceId = a.WorkflowInstanceId,
+                        WorkflowTemplateId = a.WorkflowInstance.WorkflowTemplateId,
                         EntityType = a.WorkflowInstance.EntityType,
                         EntityId = a.WorkflowInstance.EntityId,
+                        InitiatedBy = a.WorkflowInstance.InitiatedBy,
+                        InitiatorName = "System",
+                        Status = a.Status,
                         Priority = a.WorkflowInstance.Priority,
                         SubmittedAt = a.WorkflowInstance.StartedAt,
-                        ApproverId = a.ApproverId
+                        ApproverId = a.ApproverId,
+                        ApproverName = "System",
+                        Comments = a.Comments,
+                        InputData = a.WorkflowInstance.InputData
                     })
                     .ToListAsync();
 
@@ -289,7 +310,7 @@ namespace AttendancePlatform.Workflow.Api.Services
             }
         }
 
-        public async Task<List<ApprovalHistoryDto>> GetApprovalHistoryAsync(Guid tenantId, Guid? entityId = null)
+        public async Task<List<ApprovalRequestDto>> GetApprovalHistoryAsync(Guid tenantId, Guid? entityId = null)
         {
             try
             {
@@ -304,13 +325,24 @@ namespace AttendancePlatform.Workflow.Api.Services
 
                 var history = await query
                     .OrderByDescending(a => a.ApprovedAt)
-                    .Select(a => new ApprovalHistoryDto
+                    .Select(a => new ApprovalRequestDto
                     {
+                        Id = a.Id,
+                        TenantId = a.WorkflowInstance.TenantId,
+                        WorkflowInstanceId = a.WorkflowInstanceId,
+                        WorkflowTemplateId = a.WorkflowInstance.WorkflowTemplateId,
+                        EntityType = a.WorkflowInstance.EntityType,
+                        EntityId = a.WorkflowInstance.EntityId,
+                        InitiatedBy = a.WorkflowInstance.InitiatedBy,
+                        InitiatorName = "System",
+                        Status = a.Status,
+                        Priority = a.WorkflowInstance.Priority,
+                        SubmittedAt = a.WorkflowInstance.StartedAt,
+                        ProcessedAt = a.ApprovedAt,
                         ApproverId = a.ApproverId,
                         ApproverName = "System",
-                        Decision = a.Status,
                         Comments = a.Comments,
-                        ProcessedAt = a.ApprovedAt ?? DateTime.UtcNow
+                        InputData = a.WorkflowInstance.InputData
                     })
                     .ToListAsync();
 
