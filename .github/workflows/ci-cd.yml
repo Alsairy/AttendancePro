@@ -198,7 +198,7 @@ jobs:
     needs: build-images
     runs-on: ubuntu-latest
     name: Deploy to Staging
-    if: github.ref == 'refs/heads/develop' || (github.event_name == 'pull_request' && github.base_ref == 'develop')
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'pull_request' && (github.base_ref == 'develop' || github.base_ref == 'main'))
     
     environment:
       name: staging
