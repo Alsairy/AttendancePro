@@ -75,6 +75,12 @@ namespace AttendancePlatform.Shared.Domain.Entities
         
         public DateTime? CompletedAt { get; set; }
         
+        public string Context { get; set; } = string.Empty; // JSON serialized context data
+        
+        public DateTime StartedAt { get; set; } = DateTime.UtcNow;
+        
+        public DateTime? ResumeAt { get; set; }
+        
         // Navigation properties
         public virtual Tenant Tenant { get; set; } = null!;
         public virtual WorkflowTemplate WorkflowTemplate { get; set; } = null!;
@@ -275,7 +281,16 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public string Action { get; set; } = string.Empty;
         
         [Required]
+        [MaxLength(100)]
+        public string EventType { get; set; } = string.Empty;
+        
+        [MaxLength(1000)]
+        public string Description { get; set; } = string.Empty;
+        
+        [Required]
         public Guid PerformedBy { get; set; }
+        
+        public Guid? UserId { get; set; }
         
         [Required]
         public DateTime PerformedAt { get; set; }
@@ -284,6 +299,8 @@ namespace AttendancePlatform.Shared.Domain.Entities
         
         [MaxLength(1000)]
         public string? Details { get; set; }
+        
+        public string? Data { get; set; }
         
         public string? PreviousState { get; set; }
         

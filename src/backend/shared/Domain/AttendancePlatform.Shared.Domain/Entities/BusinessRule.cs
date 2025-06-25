@@ -20,6 +20,10 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public string Category { get; set; } = string.Empty;
         
         [Required]
+        [MaxLength(50)]
+        public string RuleType { get; set; } = string.Empty;
+        
+        [Required]
         public string Conditions { get; set; } = string.Empty; // JSON serialized
         
         [Required]

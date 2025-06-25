@@ -594,12 +594,19 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public string Priority { get; set; } = string.Empty;
         public string InputData { get; set; } = string.Empty;
         public int CurrentStepIndex { get; set; }
+        public int CurrentStep { get; set; }
         public string CurrentStepName { get; set; } = string.Empty;
+        public Dictionary<string, object> Context { get; set; } = new();
+        public DateTime StartedAt { get; set; }
+        public DateTime LastUpdatedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
+        public DateTime? ResumeAt { get; set; }
         public string InitiatedByName { get; set; } = string.Empty;
         public string WorkflowTemplateName { get; set; } = string.Empty;
+        public int TotalSteps { get; set; }
+        public List<WorkflowStepDto> Steps { get; set; } = new();
     }
 
     public class WorkflowTemplateDto
