@@ -6,7 +6,7 @@ Hudur is a comprehensive enterprise workforce management platform that provides 
 
 ## Base URL
 ```
-https://api.hudu.sa/api
+https://api.hudur.sa/api
 ```
 
 ## Authentication
@@ -491,7 +491,7 @@ Official SDKs are available for:
 
 ## Support
 
-For API support, contact: api-support@hudu.sa
+For API support, contact: api-support@hudur.sa
 
 ---
 

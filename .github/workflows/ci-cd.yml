@@ -142,7 +142,7 @@ jobs:
     needs: [test-backend, test-frontend, test-mobile, security-scan]
     runs-on: ubuntu-latest
     name: Build Docker Images
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') || github.event_name == 'pull_request'
     
     permissions:
       contents: read
@@ -151,20 +151,16 @@ jobs:
     strategy:
       matrix:
         service:
-          - authentication
-          - attendance
-          - face-recognition
-          - leave-management
-          - notifications
-          - integrations
-          - webhooks
-          - analytics
-          - business-intelligence
-          - workflow-engine
-          - collaboration
-          - event-sourcing
-          - api-gateway
-          - frontend
+          - Authentication
+          - Attendance
+          - FaceRecognition
+          - LeaveManagement
+          - Notifications
+          - Integrations
+          - Webhooks
+          - Analytics
+          - WorkflowEngine
+          - Collaboration
     
     steps:
     - name: Checkout code
@@ -185,7 +181,8 @@ jobs:
         tags: |
           type=ref,event=branch
           type=ref,event=pr
-          type=sha,prefix={{branch}}-
+          type=sha,prefix={{branch}}-,enable={{is_default_branch}}
+          type=sha,prefix=pr-{{branch}}-,enable=${{ github.event_name == 'pull_request' }}
           type=raw,value=latest,enable={{is_default_branch}}
     
     - name: Build and push Docker image
@@ -201,11 +198,11 @@ jobs:
     needs: build-images
     runs-on: ubuntu-latest
     name: Deploy to Staging
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'pull_request' && (github.base_ref == 'develop' || github.base_ref == 'main'))
     
     environment:
       name: staging
-      url: https://staging.hudu.sa
+      url: https://staging.hudur.sa
     
     steps:
     - name: Checkout code
@@ -220,11 +217,11 @@ jobs:
     needs: build-images
     runs-on: ubuntu-latest
     name: Deploy to Production
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'pull_request' && github.base_ref == 'main')
     
     environment:
       name: production
-      url: https://hudu.sa
+      url: https://hudur.sa
     
     steps:
     - name: Checkout code

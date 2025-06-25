@@ -117,7 +117,7 @@ npx react-native run-ios
 ### **Environment Configuration**
 ```bash
 # Create .env file
-API_BASE_URL=https://api.hudu.sa
+API_BASE_URL=https://api.hudur.sa
 JWT_SECRET_KEY=your_jwt_secret
 FACE_API_KEY=your_face_api_key
 MAPS_API_KEY=your_maps_api_key

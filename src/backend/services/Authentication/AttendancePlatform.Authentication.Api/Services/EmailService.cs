@@ -191,7 +191,7 @@ namespace AttendancePlatform.Authentication.Api.Services
                 <p><strong>Temporary Password:</strong> {temporaryPassword}</p>
             </div>
             <p><strong>Important:</strong> Please log in and change your password immediately for security reasons.</p>
-            <p>You can access the system at: <a href='https://app.hudu.sa'>https://app.hudu.sa</a></p>
+            <p>You can access the system at: <a href='https://app.hudur.sa'>https://app.hudur.sa</a></p>
             <p>If you have any questions or need assistance, please contact our support team.</p>
         </div>
         <div class='footer'>

@@ -60,7 +60,7 @@ Use GitHub Issues with the feature request template:
 
 ## 🔒 Security
 
-Please report security vulnerabilities privately to security@hudu.sa
+Please report security vulnerabilities privately to security@hudur.sa
 
 ## 📄 License
 

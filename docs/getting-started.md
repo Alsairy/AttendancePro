@@ -68,7 +68,7 @@ npx react-native run-ios  # or run-android
 ## 🔑 Default Credentials
 
 ```
-Email: admin@hudu.sa
+Email: admin@hudur.sa
 Password: Admin123!
 ```
 
@@ -199,7 +199,7 @@ cd android && ./gradlew clean
 - **Documentation**: Check the `/docs` folder
 - **Issues**: [GitHub Issues](https://github.com/your-org/hudur/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/your-org/hudur/discussions)
-- **Email**: support@hudu.sa
+- **Email**: support@hudur.sa
 
 ---
 

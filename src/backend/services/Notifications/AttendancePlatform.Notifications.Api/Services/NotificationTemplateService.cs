@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Infrastructure.Data;
+using AttendancePlatform.Shared.Domain.Entities;
 using System.Text.RegularExpressions;
 
 namespace AttendancePlatform.Notifications.Api.Services
@@ -43,7 +44,6 @@ namespace AttendancePlatform.Notifications.Api.Services
                 Type = request.Type,
                 Subject = request.Subject,
                 Body = request.Body,
-                Language = request.Language ?? "en",
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
@@ -64,7 +64,6 @@ namespace AttendancePlatform.Notifications.Api.Services
 
             template.Subject = request.Subject ?? template.Subject;
             template.Body = request.Body ?? template.Body;
-            template.Language = request.Language ?? template.Language;
             template.IsActive = request.IsActive ?? template.IsActive;
             template.UpdatedAt = DateTime.UtcNow;
 
@@ -161,19 +160,6 @@ namespace AttendancePlatform.Notifications.Api.Services
 
             return await Task.FromResult(template);
         }
-    }
-
-    public class NotificationTemplate
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty; // email, sms, push
-        public string Subject { get; set; } = string.Empty;
-        public string Body { get; set; } = string.Empty;
-        public string Language { get; set; } = "en";
-        public bool IsActive { get; set; } = true;
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
     }
 
     public class CreateTemplateRequest

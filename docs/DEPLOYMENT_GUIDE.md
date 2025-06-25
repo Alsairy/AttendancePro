@@ -71,7 +71,7 @@ SMTP_SERVER=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USERNAME=your-email@gmail.com
 SMTP_PASSWORD=your-app-password
-SMTP_FROM_EMAIL=noreply@hudu.sa
+SMTP_FROM_EMAIL=noreply@hudur.sa
 
 # SMS Configuration (Twilio)
 TWILIO_ACCOUNT_SID=your-account-sid
@@ -118,7 +118,7 @@ SMTP_SERVER=${SMTP_SERVER}
 SMTP_PORT=587
 SMTP_USERNAME=${SMTP_USERNAME}
 SMTP_PASSWORD=${SMTP_PASSWORD}
-SMTP_FROM_EMAIL=noreply@hudu.sa
+SMTP_FROM_EMAIL=noreply@hudur.sa
 
 # SMS Configuration
 TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
@@ -744,9 +744,9 @@ helm status hudur -n hudur
 - **Application**: http://your-domain.com
 
 ### Support Contacts
-- **Technical Support**: support@hudu.sa
+- **Technical Support**: support@hudur.sa
 - **Emergency**: +1-800-ATTENDANCE
-- **Documentation**: https://docs.hudu.sa
+- **Documentation**: https://docs.hudur.sa
 
 This deployment guide provides comprehensive instructions for deploying the Hudur platform in various environments. Follow the appropriate section based on your deployment requirements and infrastructure setup.
 

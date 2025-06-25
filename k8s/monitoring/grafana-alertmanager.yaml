@@ -254,7 +254,7 @@ data:
   alertmanager.yml: |
     global:
       smtp_smarthost: 'localhost:587'
-      smtp_from: 'alerts@hudu.sa'
+      smtp_from: 'alerts@hudur.sa'
 
     route:
       group_by: ['alertname']
@@ -266,7 +266,7 @@ data:
     receivers:
     - name: 'web.hook'
       email_configs:
-      - to: 'admin@hudu.sa'
+      - to: 'admin@hudur.sa'
         subject: 'Hudur Alert: {{ .GroupLabels.alertname }}'
         body: |
           {{ range .Alerts }}

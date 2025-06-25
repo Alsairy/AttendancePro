@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Infrastructure.Extensions;
-using AttendancePlatform.Workflow.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,15 +17,6 @@ builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Workflow Services
-builder.Services.AddScoped<IWorkflowEngineService, WorkflowEngineService>();
-builder.Services.AddScoped<IBusinessRulesService, BusinessRulesService>();
-builder.Services.AddScoped<IApprovalWorkflowService, ApprovalWorkflowService>();
-builder.Services.AddScoped<IAutomationService, AutomationService>();
-builder.Services.AddScoped<IWorkflowTemplateService, WorkflowTemplateService>();
-builder.Services.AddScoped<IWorkflowExecutionService, WorkflowExecutionService>();
-builder.Services.AddScoped<IShiftSchedulingService, ShiftSchedulingService>();
-builder.Services.AddScoped<IAdvancedWorkflowService, AdvancedWorkflowService>();
-builder.Services.AddScoped<IWorkflowExecutionEngine, WorkflowExecutionEngine>();
 
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -70,7 +60,6 @@ builder.Services.AddHealthChecks()
     .AddDbContextCheck<AttendancePlatformDbContext>();
 
 // Shared Infrastructure
-builder.Services.AddSharedInfrastructure(builder.Configuration);
 builder.Services.AddSecurityServices(builder.Configuration);
 
 var app = builder.Build();
@@ -84,8 +73,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAll");
 
-app.UseMiddleware<RateLimitingMiddleware>();
-app.UseMiddleware<AuditLoggingMiddleware>();
+// app.UseMiddleware<RateLimitingMiddleware>();
+// app.UseMiddleware<AuditLoggingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

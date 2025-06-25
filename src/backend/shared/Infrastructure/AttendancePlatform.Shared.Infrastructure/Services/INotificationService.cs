@@ -21,16 +21,19 @@ public interface INotificationService
     Task SendPushNotificationAsync(PushNotificationRequest request);
     Task ScheduleNotificationAsync(ScheduledNotificationRequest request);
     Task CancelScheduledNotificationAsync(string scheduledNotificationId);
+    Task<bool> SendWorkflowNotificationAsync(Guid workflowInstanceId, string stepName, Guid? assignedTo = null);
 }
 
 public class NotificationRequest
 {
     public string UserId { get; set; } = string.Empty;
+    public string? TenantId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
     public string Type { get; set; } = "info";
     public object? Data { get; set; }
     public string? ActionUrl { get; set; }
+    public string? ImageUrl { get; set; }
     public DateTime? ExpiresAt { get; set; }
     public string Priority { get; set; } = "normal";
     public List<string> Channels { get; set; } = new();
@@ -46,6 +49,7 @@ public class BulkNotificationRequest
     public string Type { get; set; } = "info";
     public object? Data { get; set; }
     public string? ActionUrl { get; set; }
+    public string? ImageUrl { get; set; }
     public DateTime? ExpiresAt { get; set; }
     public string Priority { get; set; } = "normal";
     public List<string> Channels { get; set; } = new();
@@ -85,6 +89,7 @@ public class PushNotificationRequest
 public class ScheduledNotificationRequest
 {
     public string UserId { get; set; } = string.Empty;
+    public string? TenantId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
     public string Type { get; set; } = "info";

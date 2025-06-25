@@ -33,7 +33,7 @@
 1. **Access the Platform**
    - Open your web browser
    - Navigate to your organization's Hudur URL
-   - Example: `https://yourcompany.hudu.sa`
+   - Example: `https://yourcompany.hudur.sa`
 
 2. **Login Credentials**
    - Enter your email address
@@ -603,7 +603,7 @@ Configure which events trigger email notifications:
 4. Check FAQ section
 
 #### Contact Support
-- **Email**: support@hudu.sa
+- **Email**: support@hudur.sa
 - **Phone**: 1-800-ATTENDANCE
 - **Live Chat**: Available in app
 - **Help Desk**: Submit ticket through portal

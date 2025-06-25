@@ -10,12 +10,12 @@ keywords:
   - biometric
   - face-recognition
   - hr
-home: https://hudu.sa
+home: https://hudur.sa
 sources:
   - https://github.com/hudur/platform
 maintainers:
   - name: Hudur Team
-    email: support@hudu.sa
+    email: support@hudur.sa
 dependencies:
   - name: postgresql
     version: 12.1.9

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using System.Text.Json;
 
@@ -53,7 +54,7 @@ namespace AttendancePlatform.Notifications.Api.Services
             var notification = new Notification
             {
                 Id = Guid.NewGuid(),
-                TenantId = _tenantContext.TenantId,
+                TenantId = _tenantContext.TenantId ?? Guid.Empty,
                 UserId = request.UserId,
                 Type = request.Type,
                 Title = request.Title,
@@ -109,7 +110,7 @@ namespace AttendancePlatform.Notifications.Api.Services
                 var notification = new Notification
                 {
                     Id = Guid.NewGuid(),
-                    TenantId = _tenantContext.TenantId,
+                    TenantId = _tenantContext.TenantId ?? Guid.Empty,
                     UserId = userId,
                     Type = request.Type,
                     Title = request.Title,
@@ -283,11 +284,11 @@ namespace AttendancePlatform.Notifications.Api.Services
 
             if (existingPreferences == null)
             {
-                existingPreferences = new NotificationPreferences
+                existingPreferences = new NotificationPreference
                 {
                     Id = Guid.NewGuid(),
                     UserId = userId,
-                    TenantId = _tenantContext.TenantId,
+                    TenantId = _tenantContext.TenantId ?? Guid.Empty,
                     CreatedAt = DateTime.UtcNow
                 };
                 _context.NotificationPreferences.Add(existingPreferences);
@@ -464,61 +465,9 @@ namespace AttendancePlatform.Notifications.Api.Services
         }
     }
 
-    // Models and DTOs
-    public class Notification
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public Guid UserId { get; set; }
-        public NotificationType Type { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string Message { get; set; } = string.Empty;
-        public string? Data { get; set; }
-        public NotificationPriority Priority { get; set; }
-        public string? Category { get; set; }
-        public bool IsRead { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? ReadAt { get; set; }
-        public DateTime? ExpiresAt { get; set; }
-        public string? ActionUrl { get; set; }
-        public string? ImageUrl { get; set; }
-    }
 
-    public class NotificationPreferences
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public Guid UserId { get; set; }
-        public bool EmailEnabled { get; set; } = true;
-        public bool SmsEnabled { get; set; } = false;
-        public bool PushEnabled { get; set; } = true;
-        public bool AttendanceNotifications { get; set; } = true;
-        public bool LeaveNotifications { get; set; } = true;
-        public bool SystemNotifications { get; set; } = true;
-        public bool MarketingNotifications { get; set; } = false;
-        public TimeSpan QuietHoursStart { get; set; } = TimeSpan.FromHours(22);
-        public TimeSpan QuietHoursEnd { get; set; } = TimeSpan.FromHours(7);
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-    }
 
-    public enum NotificationType
-    {
-        Attendance,
-        Leave,
-        System,
-        Marketing,
-        Security,
-        Reminder
-    }
 
-    public enum NotificationPriority
-    {
-        Low,
-        Normal,
-        High,
-        Critical
-    }
 
     public class NotificationDto
     {

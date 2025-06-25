@@ -12,10 +12,10 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public string Description { get; set; } = string.Empty;
 
         public Guid CreatedById { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public new DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; } = true;
 
-        public virtual User CreatedBy { get; set; } = null!;
+        public new virtual User CreatedBy { get; set; } = null!;
         public virtual ICollection<TeamMember> Members { get; set; } = new List<TeamMember>();
         public virtual ICollection<TeamProject> Projects { get; set; } = new List<TeamProject>();
     }
@@ -48,7 +48,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public string Description { get; set; } = string.Empty;
 
         public Guid CreatedById { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public new DateTime CreatedAt { get; set; }
 
         [MaxLength(20)]
         public string Status { get; set; } = "Active";
@@ -60,7 +60,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public DateTime? EndDate { get; set; }
 
         public virtual Team Team { get; set; } = null!;
-        public virtual User CreatedBy { get; set; } = null!;
+        public new virtual User CreatedBy { get; set; } = null!;
         public virtual ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
     }
 
@@ -163,7 +163,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
 
         public Guid? TeamId { get; set; }
         public Guid CreatedById { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public new DateTime CreatedAt { get; set; }
 
         [MaxLength(20)]
         public string ChannelType { get; set; } = "Public";
@@ -171,7 +171,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public bool IsActive { get; set; } = true;
 
         public virtual Team? Team { get; set; }
-        public virtual User CreatedBy { get; set; } = null!;
+        public new virtual User CreatedBy { get; set; } = null!;
         public virtual ICollection<ChatMessage> Messages { get; set; } = new List<ChatMessage>();
         public virtual ICollection<ChannelMember> Members { get; set; } = new List<ChannelMember>();
     }
@@ -232,7 +232,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public string FilePath { get; set; } = string.Empty;
 
         public Guid CreatedById { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public new DateTime CreatedAt { get; set; }
 
         [MaxLength(500)]
         public string ChangeDescription { get; set; } = string.Empty;
@@ -240,7 +240,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public long FileSize { get; set; }
 
         public virtual Document Document { get; set; } = null!;
-        public virtual User CreatedBy { get; set; } = null!;
+        public new virtual User CreatedBy { get; set; } = null!;
     }
 
     public class ScreenSharingSession : BaseEntity

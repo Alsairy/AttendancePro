@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Domain.Interfaces;
+using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using System.Text.Json;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Hudur.Webhooks.Api.Services
+namespace AttendancePlatform.Webhooks.Api.Services
 {
     public interface IWebhookService
     {
@@ -26,17 +27,20 @@ namespace Hudur.Webhooks.Api.Services
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<WebhookService> _logger;
         private readonly ITenantContext _tenantContext;
+        private readonly ICurrentUserService _currentUserService;
 
         public WebhookService(
             AttendancePlatformDbContext context,
             IHttpClientFactory httpClientFactory,
             ILogger<WebhookService> logger,
-            ITenantContext tenantContext)
+            ITenantContext tenantContext,
+            ICurrentUserService currentUserService)
         {
             _context = context;
             _httpClientFactory = httpClientFactory;
             _logger = logger;
             _tenantContext = tenantContext;
+            _currentUserService = currentUserService;
         }
 
         public async Task<WebhookSubscriptionDto> CreateSubscriptionAsync(CreateWebhookSubscriptionRequest request)
@@ -44,7 +48,7 @@ namespace Hudur.Webhooks.Api.Services
             var subscription = new WebhookSubscription
             {
                 Id = Guid.NewGuid(),
-                TenantId = _tenantContext.TenantId,
+                TenantId = _tenantContext.TenantId ?? Guid.Empty,
                 Name = request.Name,
                 Url = request.Url,
                 EventTypes = request.EventTypes,
@@ -58,7 +62,7 @@ namespace Hudur.Webhooks.Api.Services
                     ExponentialBackoff = request.ExponentialBackoff ?? true
                 },
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = _tenantContext.UserId
+                CreatedBy = _currentUserService.UserId?.ToString() ?? string.Empty
             };
 
             _context.WebhookSubscriptions.Add(subscription);
@@ -91,7 +95,7 @@ namespace Hudur.Webhooks.Api.Services
             }
 
             subscription.UpdatedAt = DateTime.UtcNow;
-            subscription.UpdatedBy = _tenantContext.UserId;
+            subscription.UpdatedBy = _currentUserService.UserId?.ToString() ?? string.Empty;
 
             await _context.SaveChangesAsync();
 
@@ -358,45 +362,6 @@ namespace Hudur.Webhooks.Api.Services
         }
     }
 
-    // DTOs and Models
-    public class WebhookSubscription
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Url { get; set; } = string.Empty;
-        public List<string> EventTypes { get; set; } = new();
-        public string Secret { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
-        public Dictionary<string, string> Headers { get; set; } = new();
-        public WebhookRetryPolicy RetryPolicy { get; set; } = new();
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public Guid? CreatedBy { get; set; }
-        public Guid? UpdatedBy { get; set; }
-    }
-
-    public class WebhookRetryPolicy
-    {
-        public int MaxRetries { get; set; } = 3;
-        public int RetryDelaySeconds { get; set; } = 60;
-        public bool ExponentialBackoff { get; set; } = true;
-    }
-
-    public class WebhookDelivery
-    {
-        public Guid Id { get; set; }
-        public Guid SubscriptionId { get; set; }
-        public WebhookSubscription Subscription { get; set; } = null!;
-        public string EventType { get; set; } = string.Empty;
-        public string Payload { get; set; } = string.Empty;
-        public int? HttpStatusCode { get; set; }
-        public string? ResponseBody { get; set; }
-        public DateTime AttemptedAt { get; set; }
-        public bool IsSuccessful { get; set; }
-        public string? ErrorMessage { get; set; }
-        public int RetryCount { get; set; }
-    }
 
     public class WebhookSubscriptionDto
     {

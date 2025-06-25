@@ -49,7 +49,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Database configuration
-builder.Services.AddDbContext<HudurDbContext>(options =>
+builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // JWT Authentication
@@ -77,15 +77,22 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+                "http://localhost:5173", 
+                "http://localhost:5174",
+                "http://localhost:3000",
+                "https://project-review-app-7tx5ua47.devinapps.com",
+                "https://attendancepro-auth-api.devinapps.com"
+              )
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
 // Register shared services
-builder.Services.AddSharedInfrastructure();
-builder.Services.AddSecurityServices(builder.Configuration);
+// builder.Services.AddSharedInfrastructure();
+// builder.Services.AddSecurityServices(builder.Configuration);
 
 // Register notification services
 builder.Services.AddScoped<INotificationService, NotificationService>();
@@ -99,7 +106,7 @@ builder.Services.AddHttpClient();
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<HudurDbContext>();
+    .AddDbContextCheck<AttendancePlatformDbContext>();
 
 var app = builder.Build();
 
@@ -117,8 +124,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
-app.UseMiddleware<RateLimitingMiddleware>();
-app.UseMiddleware<AuditLoggingMiddleware>();
+// app.UseMiddleware<RateLimitingMiddleware>();
+// app.UseMiddleware<AuditLoggingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -36,6 +36,8 @@ namespace AttendancePlatform.Shared.Domain.Entities
         
         public UserStatus Status { get; set; } = UserStatus.Active;
         
+        public bool IsActive { get; set; } = true;
+        
         public bool IsEmailVerified { get; set; } = false;
         
         public bool IsPhoneVerified { get; set; } = false;

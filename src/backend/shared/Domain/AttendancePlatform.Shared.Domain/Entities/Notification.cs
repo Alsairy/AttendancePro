@@ -7,8 +7,10 @@ namespace AttendancePlatform.Shared.Domain.Entities;
 public class Notification : BaseEntity
 {
     [Required]
-    [MaxLength(50)]
-    public string UserId { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
+
+    [Required]
+    public Guid TenantId { get; set; }
 
     [Required]
     [MaxLength(200)]
@@ -18,13 +20,15 @@ public class Notification : BaseEntity
     [MaxLength(1000)]
     public string Message { get; set; } = string.Empty;
 
-    [MaxLength(50)]
-    public string Type { get; set; } = "info";
+    public NotificationType Type { get; set; } = NotificationType.System;
 
     public string? Data { get; set; }
 
     [MaxLength(500)]
     public string? ActionUrl { get; set; }
+
+    [MaxLength(500)]
+    public string? ImageUrl { get; set; }
 
     public bool IsRead { get; set; } = false;
 
@@ -32,8 +36,7 @@ public class Notification : BaseEntity
 
     public DateTime? ExpiresAt { get; set; }
 
-    [MaxLength(20)]
-    public string Priority { get; set; } = "normal";
+    public NotificationPriority Priority { get; set; } = NotificationPriority.Normal;
 
     [MaxLength(100)]
     public string? Category { get; set; }
@@ -59,8 +62,10 @@ public class Notification : BaseEntity
 public class ScheduledNotification : BaseEntity
 {
     [Required]
-    [MaxLength(50)]
-    public string UserId { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
+
+    [Required]
+    public Guid TenantId { get; set; }
 
     [Required]
     [MaxLength(200)]
@@ -70,8 +75,7 @@ public class ScheduledNotification : BaseEntity
     [MaxLength(1000)]
     public string Message { get; set; } = string.Empty;
 
-    [MaxLength(50)]
-    public string Type { get; set; } = "info";
+    public NotificationType Type { get; set; } = NotificationType.System;
 
     public string? Data { get; set; }
 

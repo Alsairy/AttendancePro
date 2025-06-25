@@ -16,7 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Database
-builder.Services.AddDbContext<HudurDbContext>(options =>
+builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // ML.NET Context
@@ -68,10 +68,10 @@ builder.Services.AddCors(options =>
 
 // Health Checks
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<HudurDbContext>();
+    .AddDbContextCheck<AttendancePlatformDbContext>();
 
 // Shared Infrastructure
-builder.Services.AddSharedInfrastructure(builder.Configuration);
+builder.Services.AddSharedInfrastructure();
 builder.Services.AddSecurityServices(builder.Configuration);
 
 var app = builder.Build();
@@ -85,8 +85,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAll");
 
-app.UseMiddleware<RateLimitingMiddleware>();
-app.UseMiddleware<AuditLoggingMiddleware>();
+// Middleware will be added by shared infrastructure
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -556,5 +556,92 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public string? Locale { get; set; }
         public string? Currency { get; set; }
     }
+
+    public class WorkflowMetricsDto
+    {
+        public int TotalWorkflows { get; set; }
+        public int CompletedWorkflows { get; set; }
+        public int RejectedWorkflows { get; set; }
+        public int CancelledWorkflows { get; set; }
+        public int ActiveWorkflows { get; set; }
+        public double AverageCompletionTime { get; set; }
+        public Dictionary<string, int> WorkflowsByType { get; set; } = new();
+        public double CompletionRate { get; set; }
+    }
+
+    public class WorkflowExecutionLogDto
+    {
+        public Guid Id { get; set; }
+        public Guid WorkflowInstanceId { get; set; }
+        public Guid StepId { get; set; }
+        public string Action { get; set; } = string.Empty;
+        public Guid ExecutedBy { get; set; }
+        public DateTime ExecutedAt { get; set; }
+        public string? Comments { get; set; }
+        public Dictionary<string, object>? OutputData { get; set; }
+    }
+
+    public class WorkflowInstanceDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public Guid WorkflowTemplateId { get; set; }
+        public string WorkflowType { get; set; } = string.Empty;
+        public Guid EntityId { get; set; }
+        public string EntityType { get; set; } = string.Empty;
+        public Guid InitiatedBy { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string Priority { get; set; } = string.Empty;
+        public string InputData { get; set; } = string.Empty;
+        public int CurrentStepIndex { get; set; }
+        public int CurrentStep { get; set; }
+        public string CurrentStepName { get; set; } = string.Empty;
+        public Dictionary<string, object> Context { get; set; } = new();
+        public DateTime StartedAt { get; set; }
+        public DateTime LastUpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
+        public DateTime? ResumeAt { get; set; }
+        public string InitiatedByName { get; set; } = string.Empty;
+        public string WorkflowTemplateName { get; set; } = string.Empty;
+        public int TotalSteps { get; set; }
+        public List<WorkflowStepDto> Steps { get; set; } = new();
+    }
+
+    public class WorkflowTemplateDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string WorkflowType { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string StepDefinitions { get; set; } = string.Empty;
+        public int StepCount { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    public class WorkflowStepDto
+    {
+        public Guid Id { get; set; }
+        public Guid WorkflowInstanceId { get; set; }
+        public string StepName { get; set; } = string.Empty;
+        public string StepType { get; set; } = string.Empty;
+        public int StepIndex { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string? AssignedTo { get; set; }
+        public DateTime? DueDate { get; set; }
+        public DateTime? StartedAt { get; set; }
+        public DateTime? CompletedAt { get; set; }
+        public Guid? CompletedBy { get; set; }
+        public string? Comments { get; set; }
+        public string? InputData { get; set; }
+        public string? OutputData { get; set; }
+        public int? RetryCount { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+    }
 }
 

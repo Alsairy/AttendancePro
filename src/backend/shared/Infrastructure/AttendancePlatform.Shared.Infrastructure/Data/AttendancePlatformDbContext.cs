@@ -74,11 +74,15 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<AuditLogEntry> AuditLogEntries { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<ScheduledNotification> ScheduledNotifications { get; set; }
+        public DbSet<NotificationTemplate> NotificationTemplates { get; set; }
+        public DbSet<DeviceToken> DeviceTokens { get; set; }
+        public DbSet<NotificationPreference> NotificationPreferences { get; set; }
         public DbSet<WorkflowDefinition> WorkflowDefinitions { get; set; }
         public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
         public DbSet<WorkflowTask> WorkflowTasks { get; set; }
         public DbSet<WorkflowExecutionLog> WorkflowExecutionLogs { get; set; }
         public DbSet<WorkflowTemplate> WorkflowTemplates { get; set; }
+        public DbSet<WorkflowHistory> WorkflowHistory { get; set; }
         public DbSet<BiometricAuditLog> BiometricAuditLogs { get; set; }
         public DbSet<BiometricBackup> BiometricBackups { get; set; }
         public DbSet<BiometricSession> BiometricSessions { get; set; }
@@ -98,6 +102,13 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<ScreenSharingSession> ScreenSharingSessions { get; set; }
         public DbSet<ScreenSharingParticipant> ScreenSharingParticipants { get; set; }
         public DbSet<UserPresence> UserPresences { get; set; }
+
+        public DbSet<WebhookSubscription> WebhookSubscriptions { get; set; }
+        public DbSet<WebhookDelivery> WebhookDeliveries { get; set; }
+        public DbSet<TenantIntegration> TenantIntegrations { get; set; }
+        public DbSet<IntegrationLog> IntegrationLogs { get; set; }
+        public DbSet<TenantConfiguration> TenantConfigurations { get; set; }
+        public DbSet<BusinessRule> BusinessRules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

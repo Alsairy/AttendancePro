@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Infrastructure.Extensions;
+using AttendancePlatform.Shared.Domain.Entities;
 using AttendancePlatform.Integrations.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,7 +50,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Database configuration
-builder.Services.AddDbContext<HudurDbContext>(options =>
+builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // JWT Authentication
@@ -77,9 +78,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+                "http://localhost:5173", 
+                "http://localhost:5174",
+                "http://localhost:3000",
+                "https://project-review-app-7tx5ua47.devinapps.com",
+                "https://attendancepro-auth-api.devinapps.com"
+              )
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -88,18 +96,13 @@ builder.Services.AddSharedInfrastructure();
 builder.Services.AddSecurityServices(builder.Configuration);
 
 // Register integration services
-builder.Services.AddScoped<IScimService, ScimService>();
-builder.Services.AddScoped<IHrIntegrationService, HrIntegrationService>();
-builder.Services.AddScoped<IAuditLogService, AuditLogService>();
-builder.Services.AddScoped<IPayrollIntegrationService, PayrollIntegrationService>();
-builder.Services.AddScoped<IActiveDirectoryService, ActiveDirectoryService>();
 
 // HTTP Client for external services
 builder.Services.AddHttpClient();
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddDbContextCheck<HudurDbContext>();
+    .AddDbContextCheck<AttendancePlatformDbContext>();
 
 var app = builder.Build();
 
@@ -117,8 +120,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
-app.UseMiddleware<RateLimitingMiddleware>();
-app.UseMiddleware<AuditLoggingMiddleware>();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
