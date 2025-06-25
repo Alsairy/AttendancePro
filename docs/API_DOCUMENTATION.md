@@ -7,8 +7,8 @@ Hudur is a comprehensive, enterprise-grade attendance and workforce management p
 ## Base URLs
 
 - **Development**: `http://localhost:5000`
-- **Production**: `https://api.hudu.sa`
-- **Staging**: `https://staging-api.hudu.sa`
+- **Production**: `https://api.hudur.sa`
+- **Staging**: `https://staging-api.hudur.sa`
 
 ## Authentication
 
@@ -720,10 +720,10 @@ Official SDKs are available for:
 
 ## Support and Resources
 
-- **Documentation**: https://docs.hudu.sa
-- **API Status**: https://status.hudu.sa
-- **Support**: support@hudu.sa
-- **Community**: https://community.hudu.sa
+- **Documentation**: https://docs.hudur.sa
+- **API Status**: https://status.hudur.sa
+- **Support**: support@hudur.sa
+- **Community**: https://community.hudur.sa
 
 ## Changelog
 

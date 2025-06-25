@@ -144,7 +144,7 @@ docker-compose logs -f
 
 ### **5. Default Login**
 ```
-Email: admin@hudu.sa
+Email: admin@hudur.sa
 Password: Admin123!
 ```
 
@@ -338,7 +338,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **📖 Documentation**: Comprehensive guides and API reference
 - **🐛 Issues**: [GitHub Issues](https://github.com/your-org/hudur/issues) for bug reports
 - **💬 Discussions**: [GitHub Discussions](https://github.com/your-org/hudur/discussions) for Q&A
-- **📧 Email**: support@hudu.sa for enterprise support
+- **📧 Email**: support@hudur.sa for enterprise support
 
 ### **Community**
 - **⭐ Star** this repository if you find it useful
@@ -359,7 +359,7 @@ Hudur combines cutting-edge technology with enterprise-grade reliability to deli
 
 **Built with ❤️ by the Hudur Team**
 
-[Website](https://hudu.sa) • [Documentation](docs/) • [API Reference](docs/api/) • [Support](mailto:support@hudu.sa)
+[Website](https://hudur.sa) • [Documentation](docs/) • [API Reference](docs/api/) • [Support](mailto:support@hudur.sa)
 
 </div>
 

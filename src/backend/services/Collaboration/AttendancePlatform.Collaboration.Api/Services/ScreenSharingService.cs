@@ -27,7 +27,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
                     SessionName = sessionName,
                     StartedAt = DateTime.UtcNow,
                     Status = "Active",
-                    StreamUrl = $"https://screen.hudu.sa/{Guid.NewGuid():N}",
+                    StreamUrl = $"https://screen.hudur.sa/{Guid.NewGuid():N}",
                     IsRecorded = false
                 };
 

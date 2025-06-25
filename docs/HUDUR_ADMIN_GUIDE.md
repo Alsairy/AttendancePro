@@ -495,6 +495,6 @@ The compliance dashboard provides:
 
 ---
 
-For additional support, contact: admin-support@hudu.sa
+For additional support, contact: admin-support@hudur.sa
 
 © 2024 Hudur Platform. All rights reserved.

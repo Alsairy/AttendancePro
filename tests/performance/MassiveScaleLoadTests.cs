@@ -22,7 +22,7 @@ namespace AttendancePlatform.Tests.Performance
                 
                 var loginRequest = new
                 {
-                    Email = $"loadtest{context.InvocationNumber}@hudu.sa",
+                    Email = $"loadtest{context.InvocationNumber}@hudur.sa",
                     Password = "LoadTest123!",
                     TenantSubdomain = "enterprise"
                 };
@@ -259,7 +259,7 @@ namespace AttendancePlatform.Tests.Performance
         {
             var loginRequest = new
             {
-                Email = $"loadtest{invocationNumber % 10000}@hudu.sa",
+                Email = $"loadtest{invocationNumber % 10000}@hudur.sa",
                 Password = "LoadTest123!",
                 TenantSubdomain = "enterprise"
             };

@@ -228,7 +228,7 @@ config:
     smtpServer: "smtp.gmail.com"
     smtpPort: 587
     enableSsl: true
-    fromEmail: "noreply@hudu.sa"
+    fromEmail: "noreply@hudur.sa"
     fromName: "Hudur"
   
   sms:
@@ -273,12 +273,12 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
   hosts:
-    - host: api.hudu.sa
+    - host: api.hudur.sa
       paths:
         - path: /
           pathType: Prefix
           service: api-gateway
-    - host: app.hudu.sa
+    - host: app.hudur.sa
       paths:
         - path: /
           pathType: Prefix
@@ -286,8 +286,8 @@ ingress:
   tls:
     - secretName: hudur-tls
       hosts:
-        - api.hudu.sa
-        - app.hudu.sa
+        - api.hudur.sa
+        - app.hudur.sa
 
 # Resource quotas
 resourceQuota:

@@ -64,7 +64,7 @@ test.describe('Hudur Platform E2E Tests', () => {
     
     test.beforeEach(async ({ page }) => {
       // Login before each attendance test
-      await page.goto('https://app.hudu.sa/login');
+      await page.goto('https://app.hudur.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
@@ -119,7 +119,7 @@ test.describe('Hudur Platform E2E Tests', () => {
   test.describe('Face Recognition', () => {
     
     test.beforeEach(async ({ page }) => {
-      await page.goto('https://app.hudu.sa/login');
+      await page.goto('https://app.hudur.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
@@ -166,7 +166,7 @@ test.describe('Hudur Platform E2E Tests', () => {
   test.describe('Leave Management', () => {
     
     test.beforeEach(async ({ page }) => {
-      await page.goto('https://app.hudu.sa/login');
+      await page.goto('https://app.hudur.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
@@ -215,7 +215,7 @@ test.describe('Hudur Platform E2E Tests', () => {
   test.describe('User Management', () => {
     
     test.beforeEach(async ({ page }) => {
-      await page.goto('https://app.hudu.sa/login');
+      await page.goto('https://app.hudur.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
@@ -265,7 +265,7 @@ test.describe('Hudur Platform E2E Tests', () => {
   test.describe('Reports and Analytics', () => {
     
     test.beforeEach(async ({ page }) => {
-      await page.goto('https://app.hudu.sa/login');
+      await page.goto('https://app.hudur.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
@@ -314,7 +314,7 @@ test.describe('Hudur Platform E2E Tests', () => {
   test.describe('Settings and Configuration', () => {
     
     test.beforeEach(async ({ page }) => {
-      await page.goto('https://app.hudu.sa/login');
+      await page.goto('https://app.hudur.sa/login');
       await page.fill('[data-testid=email-input]', 'admin@test.com');
       await page.fill('[data-testid=password-input]', 'Test123!');
       await page.fill('[data-testid=tenant-input]', 'test');
