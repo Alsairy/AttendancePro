@@ -47,12 +47,12 @@ namespace AttendancePlatform.Shared.Infrastructure.Middleware
             }
             else
             {
-                if (DateTime.UtcNow - rateLimitInfo.WindowStart > TimeSpan.FromMinutes(_options.WindowSizeInMinutes))
+                if (rateLimitInfo != null && DateTime.UtcNow - rateLimitInfo.WindowStart > TimeSpan.FromMinutes(_options.WindowSizeInMinutes))
                 {
                     rateLimitInfo.RequestCount = 1;
                     rateLimitInfo.WindowStart = DateTime.UtcNow;
                 }
-                else
+                else if (rateLimitInfo != null)
                 {
                     rateLimitInfo.RequestCount++;
                 }

@@ -291,17 +291,17 @@ public class NotificationService : INotificationService
 
     public async Task SendEmailNotificationAsync(EmailNotificationRequest request)
     {
-        _logger.LogInformation("Email notification would be sent to {Email}: {Subject}", request.ToEmail, request.Subject);
+        await Task.Run(() => _logger.LogInformation("Email notification would be sent to {Email}: {Subject}", request.ToEmail, request.Subject));
     }
 
     public async Task SendSmsNotificationAsync(SmsNotificationRequest request)
     {
-        _logger.LogInformation("SMS notification would be sent to {PhoneNumber}: {Message}", request.PhoneNumber, request.Message);
+        await Task.Run(() => _logger.LogInformation("SMS notification would be sent to {PhoneNumber}: {Message}", request.PhoneNumber, request.Message));
     }
 
     public async Task SendPushNotificationAsync(PushNotificationRequest request)
     {
-        _logger.LogInformation("Push notification would be sent to user {UserId}: {Title}", request.UserId, request.Title);
+        await Task.Run(() => _logger.LogInformation("Push notification would be sent to user {UserId}: {Title}", request.UserId, request.Title));
     }
 
     public async Task ScheduleNotificationAsync(ScheduledNotificationRequest request)

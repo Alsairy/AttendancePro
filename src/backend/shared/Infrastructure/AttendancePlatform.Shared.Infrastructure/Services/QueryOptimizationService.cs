@@ -111,7 +111,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
             {
                 ["todayAttendanceCount"] = ((Task<int>)tasks[0]).Result,
                 ["monthlyStats"] = ((Task<object>)tasks[1]).Result,
-                ["userTodayAttendance"] = ((Task<AttendanceRecord?>)tasks[2]).Result,
+                ["userTodayAttendance"] = ((Task<AttendanceRecord?>)tasks[2]).Result ?? new object(),
                 ["pendingLeaveRequests"] = ((Task<int>)tasks[3]).Result
             };
 
