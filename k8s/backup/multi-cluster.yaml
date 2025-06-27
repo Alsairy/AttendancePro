@@ -1,0 +1,257 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hudur-multi-cluster-config
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-multi-cluster-config
+    app.kubernetes.io/part-of: hudur-platform
+data:
+  cluster-topology: |
+    primary:
+      name: "hudur-production-eastus"
+      region: "eastus"
+      role: "primary"
+      endpoint: "https://hudur-prod-eastus.hcp.eastus.azmk8s.io"
+    secondary:
+      name: "hudur-production-westus2"
+      region: "westus2"
+      role: "secondary"
+      endpoint: "https://hudur-prod-westus2.hcp.westus2.azmk8s.io"
+    staging:
+      name: "hudur-staging-centralus"
+      region: "centralus"
+      role: "staging"
+      endpoint: "https://hudur-staging-centralus.hcp.centralus.azmk8s.io"
+  replication-strategy: "active-passive"
+  failover-threshold: "3"
+  health-check-interval: "30s"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hudur-multi-cluster-controller
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-multi-cluster-controller
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hudur-multi-cluster-controller
+  template:
+    metadata:
+      labels:
+        app: hudur-multi-cluster-controller
+    spec:
+      serviceAccountName: hudur-platform-sa
+      containers:
+      - name: multi-cluster-controller
+        image: hudurprodacr.azurecr.io/hudur/multi-cluster-controller:latest
+        env:
+        - name: CLUSTER_ROLE
+          value: "primary"
+        - name: PRIMARY_CLUSTER_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: hudur-multi-cluster-config
+              key: cluster-topology
+        - name: SECONDARY_CLUSTER_KUBECONFIG
+          valueFrom:
+            secretKeyRef:
+              name: hudur-multi-cluster-secrets
+              key: secondary-kubeconfig
+        - name: STAGING_CLUSTER_KUBECONFIG
+          valueFrom:
+            secretKeyRef:
+              name: hudur-multi-cluster-secrets
+              key: staging-kubeconfig
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 9090
+          name: metrics
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+        volumeMounts:
+        - name: kubeconfig-volume
+          mountPath: /etc/kubeconfig
+          readOnly: true
+      volumes:
+      - name: kubeconfig-volume
+        secret:
+          secretName: hudur-multi-cluster-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hudur-multi-cluster-service
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-multi-cluster-service
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  selector:
+    app: hudur-multi-cluster-controller
+  ports:
+  - port: 80
+    targetPort: 8080
+    name: http
+  - port: 9090
+    targetPort: 9090
+    name: metrics
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hudur-multi-cluster-secrets
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-multi-cluster-secrets
+    app.kubernetes.io/part-of: hudur-platform
+type: Opaque
+stringData:
+  secondary-kubeconfig: |
+    apiVersion: v1
+    kind: Config
+    clusters:
+    - cluster:
+        certificate-authority-data: LS0tLS1CRUdJTi...
+        server: https://hudur-prod-westus2.hcp.westus2.azmk8s.io
+      name: hudur-production-westus2
+    contexts:
+    - context:
+        cluster: hudur-production-westus2
+        user: hudur-production-westus2-user
+      name: hudur-production-westus2
+    current-context: hudur-production-westus2
+    users:
+    - name: hudur-production-westus2-user
+      user:
+        token: changeme
+  staging-kubeconfig: |
+    apiVersion: v1
+    kind: Config
+    clusters:
+    - cluster:
+        certificate-authority-data: LS0tLS1CRUdJTi...
+        server: https://hudur-staging-centralus.hcp.centralus.azmk8s.io
+      name: hudur-staging-centralus
+    contexts:
+    - context:
+        cluster: hudur-staging-centralus
+        user: hudur-staging-centralus-user
+      name: hudur-staging-centralus
+    current-context: hudur-staging-centralus
+    users:
+    - name: hudur-staging-centralus-user
+      user:
+        token: changeme
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hudur-cross-cluster-sync
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-cross-cluster-sync
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: hudur-platform-sa
+          containers:
+          - name: cross-cluster-sync
+            image: hudurprodacr.azurecr.io/hudur/multi-cluster-controller:latest
+            env:
+            - name: SYNC_MODE
+              value: "true"
+            - name: SOURCE_CLUSTER
+              value: "primary"
+            - name: TARGET_CLUSTERS
+              value: "secondary,staging"
+            command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Starting cross-cluster synchronization at $(date)"
+              
+              echo "Syncing ConfigMaps..."
+              kubectl get configmaps -n hudur-platform -o yaml > /tmp/configmaps.yaml
+              
+              for cluster in secondary staging; do
+                echo "Syncing to $cluster cluster..."
+                kubectl --kubeconfig=/etc/kubeconfig/${cluster}-kubeconfig apply -f /tmp/configmaps.yaml
+                
+                if [ $? -eq 0 ]; then
+                  echo "✓ ConfigMaps synced to $cluster cluster"
+                else
+                  echo "✗ Failed to sync ConfigMaps to $cluster cluster"
+                fi
+              done
+              
+              echo "Syncing Secrets (excluding sensitive data)..."
+              kubectl get secrets -n hudur-platform -l sync=enabled -o yaml > /tmp/secrets.yaml
+              
+              for cluster in secondary staging; do
+                echo "Syncing secrets to $cluster cluster..."
+                kubectl --kubeconfig=/etc/kubeconfig/${cluster}-kubeconfig apply -f /tmp/secrets.yaml
+                
+                if [ $? -eq 0 ]; then
+                  echo "✓ Secrets synced to $cluster cluster"
+                else
+                  echo "✗ Failed to sync secrets to $cluster cluster"
+                fi
+              done
+              
+              echo "Cross-cluster synchronization completed at $(date)"
+            volumeMounts:
+            - name: kubeconfig-volume
+              mountPath: /etc/kubeconfig
+              readOnly: true
+          volumes:
+          - name: kubeconfig-volume
+            secret:
+              secretName: hudur-multi-cluster-secrets
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hudur-multi-cluster-monitor
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-multi-cluster-monitor
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hudur-multi-cluster-service
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
