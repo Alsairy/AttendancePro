@@ -32,8 +32,13 @@ jobs:
     
     - name: Build Docker image
       run: |
-        docker build -t hudur/${{ matrix.service }}:scan \
-          -f src/backend/services/${{ matrix.service }}/Dockerfile .
+        if [ "${{ matrix.service }}" = "frontend" ]; then
+          docker build -t hudur/${{ matrix.service }}:scan -f src/frontend/Dockerfile .
+        elif [ "${{ matrix.service }}" = "api-gateway" ]; then
+          docker build -t hudur/${{ matrix.service }}:scan -f src/backend/gateways/Dockerfile .
+        else
+          docker build -t hudur/${{ matrix.service }}:scan -f src/backend/services/${{ matrix.service }}/Dockerfile .
+        fi
     
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master

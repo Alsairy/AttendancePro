@@ -318,7 +318,7 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        file: src/backend/services/${{ matrix.service }}/Dockerfile
+        file: ${{ matrix.service == 'frontend' && 'src/frontend/Dockerfile' || matrix.service == 'api-gateway' && 'src/backend/gateways/Dockerfile' || format('src/backend/services/{0}/Dockerfile', matrix.service) }}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}

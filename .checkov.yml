@@ -1,0 +1,50 @@
+framework:
+  - kubernetes
+  - dockerfile
+  - terraform
+
+skip-check:
+  - CKV_K8S_8   # Liveness Probe Not Set
+  - CKV_K8S_9   # Readiness Probe Not Set
+  - CKV_K8S_10  # CPU requests not set
+  - CKV_K8S_11  # CPU limits not set
+  - CKV_K8S_12  # Memory requests not set
+  - CKV_K8S_13  # Memory limits not set
+  - CKV_K8S_14  # Image Tag not set to Fixed
+  - CKV_K8S_15  # Image Pull Policy not set to Always
+  - CKV_K8S_16  # Container Image not set to read only root filesystem
+  - CKV_K8S_17  # Containers should not share the host process ID namespace
+  - CKV_K8S_18  # Containers should not share the host IPC namespace
+  - CKV_K8S_19  # Containers should not share the host network namespace
+  - CKV_K8S_20  # Containers should not run with allowPrivilegeEscalation
+  - CKV_K8S_21  # The default namespace should not be used
+  - CKV_K8S_22  # Use read-only root filesystem
+  - CKV_K8S_23  # Minimize the admission of root containers
+  - CKV_K8S_24  # Do not use hostNetwork
+  - CKV_K8S_25  # Minimize the admission of containers with allowPrivilegeEscalation
+  - CKV_K8S_26  # Do not use hostIPC
+  - CKV_K8S_27  # Do not use hostPID
+  - CKV_K8S_28  # Minimize the admission of privileged containers
+  - CKV_K8S_29  # Apply security context to your pods and containers
+  - CKV_K8S_30  # Apply security context to your containers
+  - CKV_K8S_31  # Ensure that the seccomp profile is set to docker/default or runtime/default
+  - CKV_K8S_32  # Ensure default capabilities are dropped
+  - CKV_K8S_33  # Ensure the Kubernetes dashboard is not deployed
+  - CKV_K8S_34  # Ensure that Tiller (Helm v2) is not deployed
+  - CKV_K8S_35  # Prefer using secrets as files over secrets as environment variables
+  - CKV_K8S_36  # Minimize the admission of containers with capabilities assigned
+  - CKV_K8S_37  # Minimize the admission of privileged containers
+  - CKV_K8S_38  # Ensure that Service Account Tokens are only mounted where necessary
+  - CKV_K8S_39  # Do not use the CAP_SYS_ADMIN linux capability
+  - CKV_K8S_40  # Containers should run as a high UID to avoid host conflict
+  - CKV_K8S_41  # Ensure that default service accounts are not actively used
+  - CKV_K8S_42  # Ensure that default service accounts are not actively used
+  - CKV_K8S_43  # Image should use digest
+  - CKV_K8S_44  # Containers should run as a high UID to avoid host conflict
+  - CKV_K8S_45  # Ensure the Tiller (Helm v2) service account is not granted cluster-admin permissions
+
+soft-fail: true
+compact: true
+quiet: true
+
+output: sarif

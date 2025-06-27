@@ -5,13 +5,13 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 # Copy package files
-COPY src/frontend/attendance-web-app/package*.json ./
+COPY src/frontend/attendancepro-frontend/package*.json ./
 
 # Install dependencies
 RUN npm ci --only=production
 
 # Copy source code
-COPY src/frontend/attendance-web-app/ ./
+COPY src/frontend/attendancepro-frontend/ ./
 
 # Build the application
 RUN npm run build
