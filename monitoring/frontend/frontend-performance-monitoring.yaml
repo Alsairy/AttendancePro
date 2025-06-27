@@ -1,0 +1,354 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hudur-frontend-monitoring-config
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-frontend-monitoring
+    app.kubernetes.io/part-of: hudur-platform
+data:
+  monitoring-config.yml: |
+    frontend:
+      monitoring_interval: 30
+      performance_thresholds:
+        first_contentful_paint_ms: 1500
+        largest_contentful_paint_ms: 2500
+        first_input_delay_ms: 100
+        cumulative_layout_shift: 0.1
+        time_to_interactive_ms: 3500
+        bundle_size_mb: 5
+        cache_hit_rate_percent: 85
+      
+    metrics:
+      - name: "core_web_vitals"
+        description: "Core Web Vitals performance metrics"
+        collection_method: "performance_observer"
+        thresholds:
+          lcp_good: 2500
+          lcp_poor: 4000
+          fid_good: 100
+          fid_poor: 300
+          cls_good: 0.1
+          cls_poor: 0.25
+        
+      - name: "bundle_analysis"
+        description: "JavaScript bundle size and loading performance"
+        collection_method: "webpack_stats"
+        thresholds:
+          main_bundle_mb: 2
+          vendor_bundle_mb: 3
+          total_bundle_mb: 5
+          gzip_compression_ratio: 0.3
+        
+      - name: "runtime_performance"
+        description: "Runtime performance metrics"
+        collection_method: "performance_api"
+        thresholds:
+          memory_usage_mb: 100
+          dom_nodes_count: 1500
+          event_listeners_count: 500
+          render_time_ms: 16
+        
+      - name: "user_experience"
+        description: "User experience and interaction metrics"
+        collection_method: "custom_tracking"
+        thresholds:
+          page_load_time_ms: 3000
+          route_change_time_ms: 500
+          api_response_time_ms: 1000
+          error_rate_percent: 1
+
+    alerts:
+      - name: "poor_lcp_performance"
+        condition: "lcp > 4000"
+        severity: "critical"
+        message: "Largest Contentful Paint exceeds 4 seconds"
+        
+      - name: "high_fid_delay"
+        condition: "fid > 300"
+        severity: "warning"
+        message: "First Input Delay exceeds 300ms"
+        
+      - name: "poor_cls_score"
+        condition: "cls > 0.25"
+        severity: "warning"
+        message: "Cumulative Layout Shift exceeds 0.25"
+        
+      - name: "large_bundle_size"
+        condition: "total_bundle_size > 5242880"
+        severity: "warning"
+        message: "Total bundle size exceeds 5MB"
+        
+      - name: "low_cache_hit_rate"
+        condition: "cache_hit_rate < 85"
+        severity: "warning"
+        message: "Frontend cache hit rate below 85%"
+        
+      - name: "high_memory_usage"
+        condition: "memory_usage > 104857600"
+        severity: "critical"
+        message: "Frontend memory usage exceeds 100MB"
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hudur-frontend-performance-monitor
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-frontend-performance-monitor
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  schedule: "*/2 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: frontend-monitor
+            image: hudurprodacr.azurecr.io/hudur/frontend-monitor:latest
+            env:
+            - name: FRONTEND_URL
+              value: "https://hudur.sa"
+            - name: STAGING_URL
+              value: "https://staging.hudur.sa"
+            - name: MONITORING_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: hudur-frontend-monitoring-config
+                  key: monitoring-config.yml
+            - name: LIGHTHOUSE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hudur-monitoring-secrets
+                  key: lighthouse-api-key
+            command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Starting frontend performance monitoring at $(date)"
+              
+              check_core_web_vitals() {
+                echo "Checking Core Web Vitals..."
+                
+                urls=("$FRONTEND_URL" "$STAGING_URL")
+                
+                for url in "${urls[@]}"; do
+                  echo "Testing $url..."
+                  
+                  lighthouse_result=$(lighthouse "$url" \
+                    --only-categories=performance \
+                    --output=json \
+                    --chrome-flags="--headless --no-sandbox" \
+                    --quiet 2>/dev/null || echo '{"error": "lighthouse_failed"}')
+                  
+                  if [[ "$lighthouse_result" == *"error"* ]]; then
+                    echo "WARNING: Lighthouse audit failed for $url"
+                    continue
+                  fi
+                  
+                  lcp=$(echo "$lighthouse_result" | jq -r '.audits["largest-contentful-paint"].numericValue // 0')
+                  fid=$(echo "$lighthouse_result" | jq -r '.audits["max-potential-fid"].numericValue // 0')
+                  cls=$(echo "$lighthouse_result" | jq -r '.audits["cumulative-layout-shift"].numericValue // 0')
+                  fcp=$(echo "$lighthouse_result" | jq -r '.audits["first-contentful-paint"].numericValue // 0')
+                  tti=$(echo "$lighthouse_result" | jq -r '.audits["interactive"].numericValue // 0')
+                  
+                  echo "Core Web Vitals for $url:"
+                  echo "  LCP: ${lcp}ms"
+                  echo "  FID: ${fid}ms"
+                  echo "  CLS: $cls"
+                  echo "  FCP: ${fcp}ms"
+                  echo "  TTI: ${tti}ms"
+                  
+                  if (( $(echo "$lcp > 4000" | bc -l) )); then
+                    echo "ALERT: Poor LCP performance for $url: ${lcp}ms"
+                    
+                    curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                      -H "Content-Type: application/json" \
+                      -d "[{
+                        \"labels\": {
+                          \"alertname\": \"PoorLCPPerformance\",
+                          \"severity\": \"critical\",
+                          \"service\": \"frontend\",
+                          \"url\": \"$url\",
+                          \"lcp_value\": \"${lcp}ms\"
+                        },
+                        \"annotations\": {
+                          \"summary\": \"Poor Largest Contentful Paint performance\",
+                          \"description\": \"LCP for $url: ${lcp}ms exceeds 4 second threshold\"
+                        }
+                      }]"
+                  fi
+                  
+                  if (( $(echo "$fid > 300" | bc -l) )); then
+                    echo "ALERT: High First Input Delay for $url: ${fid}ms"
+                    
+                    curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                      -H "Content-Type: application/json" \
+                      -d "[{
+                        \"labels\": {
+                          \"alertname\": \"HighFirstInputDelay\",
+                          \"severity\": \"warning\",
+                          \"service\": \"frontend\",
+                          \"url\": \"$url\",
+                          \"fid_value\": \"${fid}ms\"
+                        },
+                        \"annotations\": {
+                          \"summary\": \"High First Input Delay detected\",
+                          \"description\": \"FID for $url: ${fid}ms exceeds 300ms threshold\"
+                        }
+                      }]"
+                  fi
+                  
+                  if (( $(echo "$cls > 0.25" | bc -l) )); then
+                    echo "ALERT: Poor Cumulative Layout Shift for $url: $cls"
+                    
+                    curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                      -H "Content-Type: application/json" \
+                      -d "[{
+                        \"labels\": {
+                          \"alertname\": \"PoorCumulativeLayoutShift\",
+                          \"severity\": \"warning\",
+                          \"service\": \"frontend\",
+                          \"url\": \"$url\",
+                          \"cls_value\": \"$cls\"
+                        },
+                        \"annotations\": {
+                          \"summary\": \"Poor Cumulative Layout Shift score\",
+                          \"description\": \"CLS for $url: $cls exceeds 0.25 threshold\"
+                        }
+                      }]"
+                  fi
+                done
+              }
+              
+              check_bundle_performance() {
+                echo "Checking bundle performance..."
+                
+                bundle_stats=$(curl -s "$FRONTEND_URL/webpack-stats.json" 2>/dev/null || echo '{"assets": []}')
+                
+                total_size=0
+                js_size=0
+                css_size=0
+                
+                echo "$bundle_stats" | jq -r '.assets[]? | select(.name | endswith(".js") or endswith(".css")) | "\(.name):\(.size)"' | while IFS=: read -r name size; do
+                  total_size=$((total_size + size))
+                  
+                  if [[ "$name" == *.js ]]; then
+                    js_size=$((js_size + size))
+                  elif [[ "$name" == *.css ]]; then
+                    css_size=$((css_size + size))
+                  fi
+                  
+                  echo "Asset: $name, Size: $(echo "scale=2; $size / 1024 / 1024" | bc)MB"
+                done
+                
+                total_size_mb=$(echo "scale=2; $total_size / 1024 / 1024" | bc)
+                echo "Total bundle size: ${total_size_mb}MB"
+                
+                if (( $(echo "$total_size > 5242880" | bc -l) )); then
+                  echo "ALERT: Large bundle size: ${total_size_mb}MB"
+                  
+                  curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                    -H "Content-Type: application/json" \
+                    -d "[{
+                      \"labels\": {
+                        \"alertname\": \"LargeBundleSize\",
+                        \"severity\": \"warning\",
+                        \"service\": \"frontend\",
+                        \"bundle_size\": \"${total_size_mb}MB\"
+                      },
+                      \"annotations\": {
+                        \"summary\": \"Frontend bundle size exceeds threshold\",
+                        \"description\": \"Total bundle size: ${total_size_mb}MB exceeds 5MB threshold\"
+                      }
+                    }]"
+                fi
+              }
+              
+              check_runtime_performance() {
+                echo "Checking runtime performance..."
+                
+                node -e "
+                const puppeteer = require('puppeteer');
+                
+                (async () => {
+                  const browser = await puppeteer.launch({ 
+                    headless: true, 
+                    args: ['--no-sandbox', '--disable-setuid-sandbox'] 
+                  });
+                  
+                  const page = await browser.newPage();
+                  
+                  try {
+                    await page.goto('$FRONTEND_URL', { waitUntil: 'networkidle2' });
+                    
+                    const metrics = await page.evaluate(() => {
+                      const memory = performance.memory || {};
+                      const navigation = performance.getEntriesByType('navigation')[0] || {};
+                      
+                      return {
+                        memoryUsage: memory.usedJSHeapSize || 0,
+                        domNodes: document.querySelectorAll('*').length,
+                        loadTime: navigation.loadEventEnd - navigation.navigationStart || 0,
+                        domContentLoaded: navigation.domContentLoadedEventEnd - navigation.navigationStart || 0
+                      };
+                    });
+                    
+                    console.log('Runtime Performance Metrics:');
+                    console.log('  Memory Usage:', Math.round(metrics.memoryUsage / 1024 / 1024) + 'MB');
+                    console.log('  DOM Nodes:', metrics.domNodes);
+                    console.log('  Load Time:', metrics.loadTime + 'ms');
+                    console.log('  DOM Content Loaded:', metrics.domContentLoaded + 'ms');
+                    
+                    if (metrics.memoryUsage > 104857600) {
+                      console.log('ALERT: High memory usage:', Math.round(metrics.memoryUsage / 1024 / 1024) + 'MB');
+                    }
+                    
+                    if (metrics.domNodes > 1500) {
+                      console.log('WARNING: High DOM node count:', metrics.domNodes);
+                    }
+                    
+                  } catch (error) {
+                    console.error('Runtime performance check failed:', error.message);
+                  } finally {
+                    await browser.close();
+                  }
+                })();
+                " 2>/dev/null || echo "Runtime performance check failed"
+              }
+              
+              check_service_worker_performance() {
+                echo "Checking Service Worker performance..."
+                
+                sw_status=$(curl -s "$FRONTEND_URL/sw.js" -w "%{http_code}" -o /dev/null)
+                
+                if [[ "$sw_status" == "200" ]]; then
+                  echo "Service Worker: Available"
+                  
+                  cache_test=$(curl -s "$FRONTEND_URL" -H "Cache-Control: no-cache" -w "%{time_total}" -o /dev/null)
+                  cached_test=$(curl -s "$FRONTEND_URL" -w "%{time_total}" -o /dev/null)
+                  
+                  echo "Cache performance:"
+                  echo "  No cache: ${cache_test}s"
+                  echo "  With cache: ${cached_test}s"
+                  
+                  cache_improvement=$(echo "scale=2; ($cache_test - $cached_test) / $cache_test * 100" | bc)
+                  echo "  Cache improvement: ${cache_improvement}%"
+                  
+                  if (( $(echo "$cache_improvement < 20" | bc -l) )); then
+                    echo "WARNING: Low cache performance improvement: ${cache_improvement}%"
+                  fi
+                else
+                  echo "WARNING: Service Worker not available (HTTP $sw_status)"
+                fi
+              }
+              
+              echo "Running frontend performance checks..."
+              check_core_web_vitals
+              check_bundle_performance
+              check_runtime_performance
+              check_service_worker_performance
+              
+              echo "Frontend performance monitoring completed at $(date)"
