@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Graph;
-using Microsoft.Graph.Auth;
-using Microsoft.Identity.Client;
+using Azure.Identity;
 
 namespace AttendancePlatform.Integrations.Api.Services
 {
@@ -332,14 +331,8 @@ namespace AttendancePlatform.Integrations.Api.Services
                     throw new InvalidOperationException("Microsoft Graph configuration is missing");
                 }
 
-                var app = ConfidentialClientApplicationBuilder
-                    .Create(clientId)
-                    .WithClientSecret(clientSecret)
-                    .WithAuthority($"https://login.microsoftonline.com/{tenantId}")
-                    .Build();
-
-                var authProvider = new ClientCredentialProvider(app);
-                _graphServiceClient = new GraphServiceClient(authProvider);
+                var credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+                _graphServiceClient = new GraphServiceClient(credential);
             }
 
             await Task.CompletedTask;

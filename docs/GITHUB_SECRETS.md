@@ -66,3 +66,11 @@ az ad sp create-for-rbac --name "hudur-acr-sp" --role "AcrPush" --scopes "/subsc
 ```
 
 Use the output to populate `AZURE_CLIENT_ID` and `AZURE_CLIENT_SECRET`.
+
+## Microsoft Graph Configuration Secrets
+
+- `MICROSOFT_GRAPH_CLIENT_ID`: Azure AD application client ID for Microsoft Graph API
+- `MICROSOFT_GRAPH_CLIENT_SECRET`: Azure AD application client secret for Microsoft Graph API  
+- `MICROSOFT_GRAPH_TENANT_ID`: Azure AD tenant ID for Microsoft Graph API
+- `AZURE_FACE_API_ENDPOINT`: Azure Face API endpoint for face recognition service
+- `AZURE_FACE_API_KEY`: Azure Face API subscription key
