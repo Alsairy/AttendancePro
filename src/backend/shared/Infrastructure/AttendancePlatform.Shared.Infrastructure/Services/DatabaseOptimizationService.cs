@@ -205,7 +205,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
 
                 builder.MaxPoolSize = 100;
                 builder.MinPoolSize = 10;
-                builder.ConnectionTimeout = 30;
+                builder.ConnectTimeout = 30;
                 builder.CommandTimeout = 60;
                 builder.Pooling = true;
 
@@ -258,8 +258,8 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
         private async Task OptimizeAttendanceQueriesAsync()
         {
             var optimizedQuery = _context.AttendanceRecords
-                .Where(ar => ar.Date >= DateTime.Today.AddDays(-30))
-                .Select(ar => new { ar.Id, ar.UserId, ar.Date, ar.CheckInTime, ar.CheckOutTime, ar.Status })
+                .Where(ar => ar.Timestamp >= DateTime.Today.AddDays(-30))
+                .Select(ar => new { ar.Id, ar.UserId, ar.Timestamp, ar.Status })
                 .AsNoTracking();
 
             await optimizedQuery.LoadAsync();
@@ -288,13 +288,13 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
         private async Task OptimizeAnalyticsQueriesAsync()
         {
             var monthlyStats = await _context.AttendanceRecords
-                .Where(ar => ar.Date >= DateTime.Today.AddDays(-30))
-                .GroupBy(ar => new { ar.UserId, Month = ar.Date.Month })
+                .Where(ar => ar.Timestamp >= DateTime.Today.AddDays(-30))
+                .GroupBy(ar => new { ar.UserId, Month = ar.Timestamp.Month })
                 .Select(g => new { g.Key.UserId, g.Key.Month, Count = g.Count() })
                 .AsNoTracking()
                 .ToListAsync();
 
-            _logger.LogInformation($"Optimized analytics query returned {monthlyStats.Count} results");
+            _logger.LogInformation($"Optimized analytics query returned {monthlyStats.Count()} results");
         }
 
         private async Task<double> CalculateAverageResponseTimeAsync()

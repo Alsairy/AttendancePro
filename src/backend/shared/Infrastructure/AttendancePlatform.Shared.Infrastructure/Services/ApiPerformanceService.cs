@@ -96,10 +96,10 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
                 _logger.LogInformation($"Invalidating cache with pattern: {pattern}");
 
                 var memoryField = _memoryCache.GetType().GetField("_cache", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (memoryField?.GetValue(_memoryCache) is IDictionary memoryDict)
+                if (memoryField?.GetValue(_memoryCache) is System.Collections.IDictionary memoryDict)
                 {
                     var keysToRemove = new List<object>();
-                    foreach (DictionaryEntry entry in memoryDict)
+                    foreach (System.Collections.DictionaryEntry entry in memoryDict)
                     {
                         if (entry.Key.ToString().Contains(pattern))
                         {
@@ -403,9 +403,9 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
             try
             {
                 var field = _memoryCache.GetType().GetField("_cache", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (field?.GetValue(_memoryCache) is IDictionary cache)
+                if (field?.GetValue(_memoryCache) is System.Collections.IDictionary cache)
                 {
-                    return cache.Count * 1024;
+                    return cache.Count * 1024L;
                 }
             }
             catch (Exception ex)

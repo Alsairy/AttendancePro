@@ -168,8 +168,7 @@ namespace AttendancePlatform.Shared.Infrastructure.GraphQL
                         UserId = input.UserId,
                         TenantId = input.TenantId,
                         Timestamp = input.Timestamp,
-                        Status = input.Status,
-                        Location = input.Location,
+                        Status = Enum.Parse<AttendanceStatus>(input.Status),
                         CreatedAt = DateTime.UtcNow
                     };
 
@@ -193,7 +192,7 @@ namespace AttendancePlatform.Shared.Infrastructure.GraphQL
                         TenantId = input.TenantId,
                         StartDate = input.StartDate,
                         EndDate = input.EndDate,
-                        LeaveType = input.LeaveType,
+                        LeaveType = Enum.Parse<LeaveType>(input.LeaveType),
                         Reason = input.Reason,
                         Status = LeaveRequestStatus.Pending,
                         CreatedAt = DateTime.UtcNow
@@ -230,7 +229,6 @@ namespace AttendancePlatform.Shared.Infrastructure.GraphQL
             Field(x => x.UserId);
             Field(x => x.Timestamp);
             Field(x => x.Status);
-            Field(x => x.Location, nullable: true);
             Field(x => x.CreatedAt);
         }
     }
@@ -279,7 +277,6 @@ namespace AttendancePlatform.Shared.Infrastructure.GraphQL
             Field(x => x.TenantId);
             Field(x => x.Timestamp);
             Field(x => x.Status);
-            Field(x => x.Location, nullable: true);
         }
     }
 
