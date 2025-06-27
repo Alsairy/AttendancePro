@@ -27,10 +27,9 @@ namespace AttendancePlatform.Integrations.Api.Services
                 var user = new User
                 {
                     Id = Guid.NewGuid(),
-                    Username = scimUser.UserName ?? string.Empty,
-                    Email = scimUser.Emails?.FirstOrDefault()?.Value,
-                    FirstName = scimUser.Name?.GivenName,
-                    LastName = scimUser.Name?.FamilyName,
+                    Email = scimUser.UserName ?? scimUser.Emails?.FirstOrDefault()?.Value ?? string.Empty,
+                    FirstName = scimUser.Name?.GivenName ?? string.Empty,
+                    LastName = scimUser.Name?.FamilyName ?? string.Empty,
                     IsActive = scimUser.Active,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -44,7 +43,7 @@ namespace AttendancePlatform.Integrations.Api.Services
                 {
                     ResourceType = "User",
                     Created = user.CreatedAt,
-                    LastModified = user.UpdatedAt,
+                    LastModified = user.UpdatedAt ?? user.CreatedAt,
                     Location = $"/scim/v2/Users/{user.Id}",
                     Version = "1"
                 };
@@ -82,8 +81,7 @@ namespace AttendancePlatform.Integrations.Api.Services
                 var user = await _context.Users.FindAsync(Guid.Parse(userId));
                 if (user == null) return null;
 
-                user.Username = scimUser.UserName ?? string.Empty;
-                user.Email = scimUser.Emails?.FirstOrDefault()?.Value;
+                user.Email = scimUser.UserName ?? scimUser.Emails?.FirstOrDefault()?.Value ?? user.Email;
                 user.FirstName = scimUser.Name?.GivenName;
                 user.LastName = scimUser.Name?.FamilyName;
                 user.IsActive = scimUser.Active;
@@ -133,7 +131,7 @@ namespace AttendancePlatform.Integrations.Api.Services
                     if (filter.Contains("userName"))
                     {
                         var userName = ExtractFilterValue(filter, "userName");
-                        query = query.Where(u => u.Username.Contains(userName));
+                        query = query.Where(u => u.Email.Contains(userName));
                     }
                 }
 
@@ -171,7 +169,7 @@ namespace AttendancePlatform.Integrations.Api.Services
                 {
                     ResourceType = "Group",
                     Created = role.CreatedAt,
-                    LastModified = role.UpdatedAt,
+                    LastModified = role.UpdatedAt ?? role.CreatedAt,
                     Location = $"/scim/v2/Groups/{role.Id}",
                     Version = "1"
                 };
@@ -282,7 +280,15 @@ namespace AttendancePlatform.Integrations.Api.Services
 
                 if (user == null || role == null) return false;
 
-                user.RoleId = role.Id;
+                var existingUserRole = user.UserRoles.FirstOrDefault();
+                if (existingUserRole != null)
+                {
+                    existingUserRole.RoleId = role.Id;
+                }
+                else
+                {
+                    user.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = role.Id });
+                }
                 user.UpdatedAt = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
@@ -304,7 +310,7 @@ namespace AttendancePlatform.Integrations.Api.Services
                 var user = await _context.Users.FindAsync(Guid.Parse(userId));
                 if (user == null) return false;
 
-                user.RoleId = null;
+                user.UserRoles.Clear();
                 user.UpdatedAt = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
@@ -411,7 +417,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             return new ScimUserDto
             {
                 Id = user.Id.ToString(),
-                UserName = user.Username ?? string.Empty,
+                UserName = user.Email ?? string.Empty,
                 Name = new ScimNameDto
                 {
                     GivenName = user.FirstName,
@@ -428,7 +434,7 @@ namespace AttendancePlatform.Integrations.Api.Services
                 {
                     ResourceType = "User",
                     Created = user.CreatedAt,
-                    LastModified = user.UpdatedAt,
+                    LastModified = user.UpdatedAt ?? user.CreatedAt,
                     Location = $"/scim/v2/Users/{user.Id}",
                     Version = "1"
                 }
@@ -445,7 +451,7 @@ namespace AttendancePlatform.Integrations.Api.Services
                 {
                     ResourceType = "Group",
                     Created = role.CreatedAt,
-                    LastModified = role.UpdatedAt,
+                    LastModified = role.UpdatedAt ?? role.CreatedAt,
                     Location = $"/scim/v2/Groups/{role.Id}",
                     Version = "1"
                 }

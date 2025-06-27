@@ -52,6 +52,7 @@ namespace AttendancePlatform.Integrations.Api.Services
         public List<ScimGroupMembershipDto> Groups { get; set; }
         public ScimEnterpriseUserDto EnterpriseUser { get; set; }
         public ScimMetaDto Meta { get; set; }
+        public string[] Schemas { get; set; }
     }
 
     public class ScimGroupDto
@@ -61,6 +62,7 @@ namespace AttendancePlatform.Integrations.Api.Services
         public string DisplayName { get; set; }
         public List<ScimGroupMemberDto> Members { get; set; }
         public ScimMetaDto Meta { get; set; }
+        public string[] Schemas { get; set; }
     }
 
     public class ScimNameDto

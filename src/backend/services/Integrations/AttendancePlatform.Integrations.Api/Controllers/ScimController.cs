@@ -161,13 +161,4 @@ namespace AttendancePlatform.Integrations.Api.Controllers
         }
     }
 
-    public static class ScimUserDtoExtensions
-    {
-        public static string[] Schemas { get; set; }
-    }
-
-    public static class ScimGroupDtoExtensions
-    {
-        public static string[] Schemas { get; set; }
-    }
 }

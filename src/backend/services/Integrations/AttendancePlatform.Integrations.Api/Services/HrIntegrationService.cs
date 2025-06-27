@@ -52,7 +52,6 @@ namespace AttendancePlatform.Integrations.Api.Services
                         var newUser = new User
                         {
                             Id = Guid.NewGuid(),
-                            Username = hrEmployee.Email,
                             Email = hrEmployee.Email,
                             FirstName = hrEmployee.FirstName,
                             LastName = hrEmployee.LastName,
@@ -78,8 +77,8 @@ namespace AttendancePlatform.Integrations.Api.Services
                     TenantId = Guid.NewGuid()
                 };
 
-                _context.HrSyncLogs.Add(syncStatus);
-                await _context.SaveChangesAsync();
+                _logger.LogInformation("HR Sync completed: {HrSystemType}, Records: {EmployeesSynced}", 
+                    hrSystemType, syncedCount);
 
                 _logger.LogInformation("HR sync completed successfully. Synced {Count} employees", syncedCount);
                 return true;
@@ -223,10 +222,7 @@ namespace AttendancePlatform.Integrations.Api.Services
         {
             try
             {
-                var lastSync = await _context.HrSyncLogs
-                    .Where(h => h.HrSystemType == hrSystemType)
-                    .OrderByDescending(h => h.SyncTime)
-                    .FirstOrDefaultAsync();
+                HrSyncLog lastSync = null;
 
                 return new HrSyncStatusDto
                 {
