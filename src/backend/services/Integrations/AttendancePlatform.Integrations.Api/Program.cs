@@ -96,6 +96,13 @@ builder.Services.AddSharedInfrastructure();
 builder.Services.AddSecurityServices(builder.Configuration);
 
 // Register integration services
+builder.Services.AddScoped<IScimService, ScimService>();
+builder.Services.AddScoped<IHrIntegrationService, HrIntegrationService>();
+builder.Services.AddScoped<IMicrosoftGraphService, MicrosoftGraphService>();
+builder.Services.AddScoped<IGoogleWorkspaceService, GoogleWorkspaceService>();
+builder.Services.AddScoped<IActiveDirectoryService, ActiveDirectoryService>();
+builder.Services.AddScoped<IPayrollIntegrationService, PayrollIntegrationService>();
+builder.Services.AddScoped<IntegrationServices>();
 
 // HTTP Client for external services
 builder.Services.AddHttpClient();
