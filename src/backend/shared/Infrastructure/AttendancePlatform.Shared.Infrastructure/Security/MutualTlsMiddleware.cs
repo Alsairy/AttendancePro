@@ -63,7 +63,10 @@ public class MutualTlsMiddleware
             
             if (_options.TrustedCertificateAuthorities?.Any() == true)
             {
-                chain.ChainPolicy.ExtraStore.AddRange(_options.TrustedCertificateAuthorities);
+                foreach (var cert in _options.TrustedCertificateAuthorities)
+                {
+                    chain.ChainPolicy.ExtraStore.Add(cert);
+                }
             }
 
             var isValid = chain.Build(certificate);

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using AttendancePlatform.Shared.Infrastructure.Services;
 
 namespace AttendancePlatform.Shared.Infrastructure.Security;
 

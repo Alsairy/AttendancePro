@@ -7,6 +7,8 @@ public interface IEncryptionService
 {
     string Encrypt(string plainText);
     string Decrypt(string cipherText);
+    Task<string> EncryptAsync(string plainText);
+    Task<string> DecryptAsync(string cipherText);
     string HashPassword(string password);
     bool VerifyPassword(string password, string hashedPassword);
     string GenerateSecureToken(int length = 32);
@@ -128,6 +130,16 @@ public class EncryptionService : IEncryptionService
         {
             return false;
         }
+    }
+
+    public async Task<string> EncryptAsync(string plainText)
+    {
+        return await Task.FromResult(Encrypt(plainText));
+    }
+
+    public async Task<string> DecryptAsync(string cipherText)
+    {
+        return await Task.FromResult(Decrypt(cipherText));
     }
 
     public string GenerateSecureToken(int length = 32)

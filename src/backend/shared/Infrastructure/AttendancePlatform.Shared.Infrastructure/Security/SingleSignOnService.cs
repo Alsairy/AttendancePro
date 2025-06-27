@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AttendancePlatform.Shared.Infrastructure.Services;
 
 namespace AttendancePlatform.Shared.Infrastructure.Security;
 

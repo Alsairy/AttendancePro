@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using QRCoder;
 using OtpNet;
+using AttendancePlatform.Shared.Infrastructure.Services;
 
 namespace AttendancePlatform.Shared.Infrastructure.Security;
 
@@ -88,7 +89,8 @@ public class MultiFactorAuthenticationService : IMultiFactorAuthenticationServic
             var secretBytes = Base32Encoding.ToBytes(secretKey);
             
             var totp = new Totp(secretBytes, step: _options.TimeStepSeconds);
-            var isValid = totp.VerifyTotp(token, out var timeStepMatched, window: _options.TimeWindow);
+            var verificationWindow = new VerificationWindow(previous: _options.TimeWindow, future: _options.TimeWindow);
+            var isValid = totp.VerifyTotp(token, out var timeStepMatched, verificationWindow);
 
             if (isValid)
             {
