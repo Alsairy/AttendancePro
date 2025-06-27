@@ -33,6 +33,7 @@ jobs:
     - name: Build Docker image
       run: |
         SERVICE_LOWER=$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]')
+        echo "SERVICE_LOWER=${SERVICE_LOWER}" >> $GITHUB_ENV
         if [ "${{ matrix.service }}" = "frontend" ]; then
           docker build -t hudur/${SERVICE_LOWER}:scan -f src/frontend/Dockerfile .
         elif [ "${{ matrix.service }}" = "api-gateway" ]; then
@@ -44,7 +45,7 @@ jobs:
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: 'hudur/${{ matrix.service | lower }}:scan'
+        image-ref: 'hudur/${{ env.SERVICE_LOWER }}:scan'
         format: 'sarif'
         output: 'trivy-${{ matrix.service }}.sarif'
     
@@ -80,14 +81,14 @@ jobs:
     - name: Audit frontend dependencies
       working-directory: src/frontend/attendancepro-frontend
       run: |
-        npm audit --audit-level=high || echo "Moderate vulnerabilities found but continuing..."
-        npm audit fix --dry-run || echo "Audit fix dry-run completed with warnings"
+        npm audit --audit-level=high || true
+        npm audit fix --dry-run || true
     
     - name: Audit mobile dependencies
       working-directory: src/mobile/AttendanceMobile
       run: |
-        npm audit --audit-level=high || echo "Moderate vulnerabilities found but continuing..."
-        npm audit fix --dry-run || echo "Audit fix dry-run completed with warnings"
+        npm audit --audit-level=high || true
+        npm audit fix --dry-run || true
 
   secrets-scan:
     name: Secrets Scanning
