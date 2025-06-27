@@ -1,0 +1,171 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hudur-platform-sa
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-platform-sa
+    app.kubernetes.io/part-of: hudur-platform
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hudur-monitoring-sa
+  namespace: hudur-monitoring
+  labels:
+    app.kubernetes.io/name: hudur-monitoring-sa
+    app.kubernetes.io/part-of: hudur-platform
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hudur-platform-cluster-role
+  labels:
+    app.kubernetes.io/name: hudur-platform-cluster-role
+    app.kubernetes.io/part-of: hudur-platform
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints", "configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses", "networkpolicies"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["pods", "nodes"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: hudur-platform
+  name: hudur-platform-role
+  labels:
+    app.kubernetes.io/name: hudur-platform-role
+    app.kubernetes.io/part-of: hudur-platform
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints", "configmaps"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: hudur-monitoring
+  name: hudur-monitoring-role
+  labels:
+    app.kubernetes.io/name: hudur-monitoring-role
+    app.kubernetes.io/part-of: hudur-platform
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints", "configmaps"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["metrics.k8s.io"]
+  resources: ["pods", "nodes"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hudur-platform-cluster-binding
+  labels:
+    app.kubernetes.io/name: hudur-platform-cluster-binding
+    app.kubernetes.io/part-of: hudur-platform
+subjects:
+- kind: ServiceAccount
+  name: hudur-platform-sa
+  namespace: hudur-platform
+roleRef:
+  kind: ClusterRole
+  name: hudur-platform-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hudur-platform-binding
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-platform-binding
+    app.kubernetes.io/part-of: hudur-platform
+subjects:
+- kind: ServiceAccount
+  name: hudur-platform-sa
+  namespace: hudur-platform
+roleRef:
+  kind: Role
+  name: hudur-platform-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hudur-monitoring-binding
+  namespace: hudur-monitoring
+  labels:
+    app.kubernetes.io/name: hudur-monitoring-binding
+    app.kubernetes.io/part-of: hudur-platform
+subjects:
+- kind: ServiceAccount
+  name: hudur-monitoring-sa
+  namespace: hudur-monitoring
+roleRef:
+  kind: Role
+  name: hudur-monitoring-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hudur-backup-sa
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-backup-sa
+    app.kubernetes.io/part-of: hudur-platform
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: hudur-platform
+  name: hudur-backup-role
+  labels:
+    app.kubernetes.io/name: hudur-backup-role
+    app.kubernetes.io/part-of: hudur-platform
+rules:
+- apiGroups: [""]
+  resources: ["pods", "configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["batch"]
+  resources: ["jobs"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hudur-backup-binding
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-backup-binding
+    app.kubernetes.io/part-of: hudur-platform
+subjects:
+- kind: ServiceAccount
+  name: hudur-backup-sa
+  namespace: hudur-platform
+roleRef:
+  kind: Role
+  name: hudur-backup-role
+  apiGroup: rbac.authorization.k8s.io
