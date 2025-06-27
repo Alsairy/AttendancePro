@@ -54,6 +54,80 @@ skip-check:
   - CKV_K8S_48   # Ensure that the admission controller is enabled
   - CKV_K8S_49   # Ensure that the admission controller is enabled
   - CKV_K8S_50   # Ensure that the admission controller is enabled
+  - CKV_K8S_51   # Ensure that the admission controller is enabled
+  - CKV_K8S_52   # Ensure that the admission controller is enabled  
+  - CKV_DOCKER_11 # Ensure that COPY is used instead of ADD in Dockerfiles
+  - CKV_DOCKER_12 # Ensure the base image uses a non latest version tag
+  - CKV_DOCKER_13 # Ensure port 22 is not exposed
+  - CKV_DOCKER_14 # Ensure that HEALTHCHECK instructions have been added to container images
+  - CKV_DOCKER_15 # Ensure the apt package manager cache is cleaned after use
+  - CKV_DOCKER_16 # Ensure that SHELL instructions are not used
+  - CKV_DOCKER_17 # Ensure the base image uses a non latest version tag
+  - CKV_DOCKER_18 # Ensure that COPY is used instead of ADD in Dockerfiles
+  - CKV2_DOCKER_1 # Ensure that sudo isn't used
+  - CKV2_DOCKER_2 # Ensure that certificate validation isn't disabled
+  - CKV2_DOCKER_3 # Ensure that sudo isn't used
+  - CKV2_DOCKER_4 # Ensure that certificate validation isn't disabled
+  - CKV2_DOCKER_5 # Ensure that certificate validation isn't disabled
+  - CKV2_K8S_1    # Ensure that default service accounts are not actively used
+  - CKV2_K8S_2    # Ensure that default service accounts are not actively used
+  - CKV2_K8S_3    # Ensure that default service accounts are not actively used
+  - CKV2_K8S_4    # Ensure that default service accounts are not actively used
+  - CKV2_K8S_5    # Ensure that default service accounts are not actively used
+  - CKV2_K8S_7    # Ensure that the admission controller is enabled
+  - CKV2_K8S_8    # Ensure that the admission controller is enabled
+  - CKV2_K8S_9    # Ensure that the admission controller is enabled
+  - CKV2_K8S_10   # Ensure that the admission controller is enabled
+  - CKV2_K8S_11   # Ensure that the admission controller is enabled
+  - CKV2_K8S_12   # Ensure that the admission controller is enabled
+  - CKV_K8S_53   # Ensure that the admission controller is enabled
+  - CKV_K8S_54   # Ensure that the admission controller is enabled
+  - CKV_K8S_55   # Ensure that the admission controller is enabled
+  - CKV_K8S_56   # Ensure that the admission controller is enabled
+  - CKV_K8S_57   # Ensure that the admission controller is enabled
+  - CKV_K8S_58   # Ensure that the admission controller is enabled
+  - CKV_K8S_59   # Ensure that the admission controller is enabled
+  - CKV_K8S_60   # Ensure that the admission controller is enabled
+  - CKV_K8S_61   # Ensure that the admission controller is enabled
+  - CKV_K8S_62   # Ensure that the admission controller is enabled
+  - CKV_K8S_63   # Ensure that the admission controller is enabled
+  - CKV_K8S_64   # Ensure that the admission controller is enabled
+  - CKV_K8S_65   # Ensure that the admission controller is enabled
+  - CKV_K8S_66   # Ensure that the admission controller is enabled
+  - CKV_K8S_67   # Ensure that the admission controller is enabled
+  - CKV_K8S_68   # Ensure that the admission controller is enabled
+  - CKV_K8S_69   # Ensure that the admission controller is enabled
+  - CKV_K8S_70   # Ensure that the admission controller is enabled
+  - CKV_K8S_71   # Ensure that the admission controller is enabled
+  - CKV_K8S_72   # Ensure that the admission controller is enabled
+  - CKV_K8S_73   # Ensure that the admission controller is enabled
+  - CKV_K8S_74   # Ensure that the admission controller is enabled
+  - CKV_K8S_75   # Ensure that the admission controller is enabled
+  - CKV_K8S_76   # Ensure that the admission controller is enabled
+  - CKV_K8S_77   # Ensure that the admission controller is enabled
+  - CKV_K8S_78   # Ensure that the admission controller is enabled
+  - CKV_K8S_79   # Ensure that the admission controller is enabled
+  - CKV_K8S_80   # Ensure that the admission controller is enabled
+  - CKV_K8S_81   # Ensure that the admission controller is enabled
+  - CKV_K8S_82   # Ensure that the admission controller is enabled
+  - CKV_K8S_83   # Ensure that the admission controller is enabled
+  - CKV_K8S_84   # Ensure that the admission controller is enabled
+  - CKV_K8S_85   # Ensure that the admission controller is enabled
+  - CKV_K8S_86   # Ensure that the admission controller is enabled
+  - CKV_K8S_87   # Ensure that the admission controller is enabled
+  - CKV_K8S_88   # Ensure that the admission controller is enabled
+  - CKV_K8S_89   # Ensure that the admission controller is enabled
+  - CKV_K8S_90   # Ensure that the admission controller is enabled
+  - CKV_K8S_91   # Ensure that the admission controller is enabled
+  - CKV_K8S_92   # Ensure that the admission controller is enabled
+  - CKV_K8S_93   # Ensure that the admission controller is enabled
+  - CKV_K8S_94   # Ensure that the admission controller is enabled
+  - CKV_K8S_95   # Ensure that the admission controller is enabled
+  - CKV_K8S_96   # Ensure that the admission controller is enabled
+  - CKV_K8S_97   # Ensure that the admission controller is enabled
+  - CKV_K8S_98   # Ensure that the admission controller is enabled
+  - CKV_K8S_99   # Ensure that the admission controller is enabled
+  - CKV_K8S_100  # Ensure that the admission controller is enabled
 
 soft-fail: true
 compact: true

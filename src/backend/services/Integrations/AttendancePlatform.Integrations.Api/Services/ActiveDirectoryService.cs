@@ -614,7 +614,7 @@ namespace AttendancePlatform.Integrations.Api.Services
         {
             return new AdUserDto
             {
-                UserPrincipalName = user.UserPrincipalName,
+                UserPrincipalName = user.UserPrincipalName ?? string.Empty,
                 SamAccountName = user.SamAccountName,
                 DisplayName = user.DisplayName,
                 GivenName = user.GivenName,

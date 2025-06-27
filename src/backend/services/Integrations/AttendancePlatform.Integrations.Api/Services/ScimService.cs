@@ -27,7 +27,7 @@ namespace AttendancePlatform.Integrations.Api.Services
                 var user = new User
                 {
                     Id = Guid.NewGuid(),
-                    Username = scimUser.UserName,
+                    Username = scimUser.UserName ?? string.Empty,
                     Email = scimUser.Emails?.FirstOrDefault()?.Value,
                     FirstName = scimUser.Name?.GivenName,
                     LastName = scimUser.Name?.FamilyName,
@@ -82,7 +82,7 @@ namespace AttendancePlatform.Integrations.Api.Services
                 var user = await _context.Users.FindAsync(Guid.Parse(userId));
                 if (user == null) return null;
 
-                user.Username = scimUser.UserName;
+                user.Username = scimUser.UserName ?? string.Empty;
                 user.Email = scimUser.Emails?.FirstOrDefault()?.Value;
                 user.FirstName = scimUser.Name?.GivenName;
                 user.LastName = scimUser.Name?.FamilyName;
@@ -411,7 +411,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             return new ScimUserDto
             {
                 Id = user.Id.ToString(),
-                UserName = user.Username,
+                UserName = user.Username ?? string.Empty,
                 Name = new ScimNameDto
                 {
                     GivenName = user.FirstName,

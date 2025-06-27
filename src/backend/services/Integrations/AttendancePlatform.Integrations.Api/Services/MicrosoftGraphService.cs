@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
+using Microsoft.Graph.Models.ODataErrors;
 using Azure.Identity;
 
 namespace AttendancePlatform.Integrations.Api.Services
@@ -26,8 +27,8 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                var users = await graphClient.Users.Request().GetAsync();
-                return users.CurrentPage;
+                var users = await graphClient.Users.GetAsync();
+                return users.Value;
             }
             catch (Exception ex)
             {
@@ -41,7 +42,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                return await graphClient.Users[userId].Request().GetAsync();
+                return await graphClient.Users[userId].GetAsync();
             }
             catch (Exception ex)
             {
@@ -55,7 +56,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                return await graphClient.Users.Request().AddAsync(user);
+                return await graphClient.Users.PostAsync(user);
             }
             catch (Exception ex)
             {
@@ -69,7 +70,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                await graphClient.Users[userId].Request().UpdateAsync(user);
+                await graphClient.Users[userId].PatchAsync(user);
                 return await GetUserAsync(userId);
             }
             catch (Exception ex)
@@ -84,7 +85,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                await graphClient.Users[userId].Request().DeleteAsync();
+                await graphClient.Users[userId].DeleteAsync();
                 return true;
             }
             catch (Exception ex)
@@ -99,8 +100,8 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                var groups = await graphClient.Groups.Request().GetAsync();
-                return groups.CurrentPage;
+                var groups = await graphClient.Groups.GetAsync();
+                return groups.Value;
             }
             catch (Exception ex)
             {
@@ -114,7 +115,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                return await graphClient.Groups[groupId].Request().GetAsync();
+                return await graphClient.Groups[groupId].GetAsync();
             }
             catch (Exception ex)
             {
@@ -128,7 +129,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                return await graphClient.Groups.Request().AddAsync(group);
+                return await graphClient.Groups.PostAsync(group);
             }
             catch (Exception ex)
             {
@@ -142,7 +143,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                await graphClient.Groups[groupId].Request().UpdateAsync(group);
+                await graphClient.Groups[groupId].PatchAsync(group);
                 return await GetGroupAsync(groupId);
             }
             catch (Exception ex)
@@ -157,7 +158,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                await graphClient.Groups[groupId].Request().DeleteAsync();
+                await graphClient.Groups[groupId].DeleteAsync();
                 return true;
             }
             catch (Exception ex)
@@ -172,12 +173,11 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                var directoryObject = new DirectoryObject
+                var requestBody = new ReferenceCreate
                 {
-                    Id = userId
+                    OdataId = $"https://graph.microsoft.com/v1.0/directoryObjects/{userId}"
                 };
-
-                await graphClient.Groups[groupId].Members.References.Request().AddAsync(directoryObject);
+                await graphClient.Groups[groupId].Members.Ref.PostAsync(requestBody);
                 return true;
             }
             catch (Exception ex)
@@ -192,7 +192,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                await graphClient.Groups[groupId].Members[userId].Reference.Request().DeleteAsync();
+                await graphClient.Groups[groupId].Members[userId].Ref.DeleteAsync();
                 return true;
             }
             catch (Exception ex)
@@ -207,10 +207,10 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                var members = await graphClient.Groups[groupId].Members.Request().GetAsync();
+                var members = await graphClient.Groups[groupId].Members.GetAsync();
                 var users = new List<User>();
 
-                foreach (var member in members.CurrentPage)
+                foreach (var member in members.Value)
                 {
                     if (member is User user)
                     {
@@ -232,11 +232,12 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                var events = await graphClient.Users[userId].Calendar.Events.Request()
-                    .Filter($"start/dateTime ge '{startTime:yyyy-MM-ddTHH:mm:ss.fffK}' and end/dateTime le '{endTime:yyyy-MM-ddTHH:mm:ss.fffK}'")
-                    .GetAsync();
+                var events = await graphClient.Users[userId].Calendar.Events.GetAsync(requestConfiguration =>
+                {
+                    requestConfiguration.QueryParameters.Filter = $"start/dateTime ge '{startTime:yyyy-MM-ddTHH:mm:ss.fffK}' and end/dateTime le '{endTime:yyyy-MM-ddTHH:mm:ss.fffK}'";
+                });
 
-                return events.CurrentPage;
+                return events.Value;
             }
             catch (Exception ex)
             {
@@ -250,7 +251,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                return await graphClient.Users[userId].Calendar.Events.Request().AddAsync(calendarEvent);
+                return await graphClient.Users[userId].Calendar.Events.PostAsync(calendarEvent);
             }
             catch (Exception ex)
             {
@@ -264,8 +265,8 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                await graphClient.Users[userId].Calendar.Events[eventId].Request().UpdateAsync(calendarEvent);
-                return await graphClient.Users[userId].Calendar.Events[eventId].Request().GetAsync();
+                await graphClient.Users[userId].Calendar.Events[eventId].PatchAsync(calendarEvent);
+                return await graphClient.Users[userId].Calendar.Events[eventId].GetAsync();
             }
             catch (Exception ex)
             {
@@ -279,7 +280,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                await graphClient.Users[userId].Calendar.Events[eventId].Request().DeleteAsync();
+                await graphClient.Users[userId].Calendar.Events[eventId].DeleteAsync();
                 return true;
             }
             catch (Exception ex)
@@ -294,8 +295,8 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                var directoryObjects = await graphClient.DirectoryObjects.Request().GetAsync();
-                return directoryObjects.CurrentPage;
+                var directoryObjects = await graphClient.DirectoryObjects.GetAsync();
+                return directoryObjects.Value;
             }
             catch (Exception ex)
             {
@@ -309,7 +310,7 @@ namespace AttendancePlatform.Integrations.Api.Services
             try
             {
                 var graphClient = await GetGraphServiceClientAsync();
-                await graphClient.Me.Request().GetAsync();
+                await graphClient.Me.GetAsync();
                 return true;
             }
             catch (Exception ex)

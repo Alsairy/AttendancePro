@@ -285,7 +285,7 @@ jobs:
           - leave-management
           - notifications
           - analytics
-          - workflow-engine
+          - WorkflowEngine
           - integrations
           - api-gateway
           - frontend
