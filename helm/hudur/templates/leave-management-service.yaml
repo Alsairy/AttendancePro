@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hudur.fullname" . }}-leavemanagement
+  labels:
+    {{- include "hudur.labels" . | nindent 4 }}
+    app.kubernetes.io/component: leavemanagement
+spec:
+  replicas: {{ .Values.leaveManagement.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "hudur.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: leavemanagement
+  template:
+    metadata:
+      labels:
+        {{- include "hudur.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: leavemanagement
+    spec:
+      serviceAccountName: {{ include "hudur.serviceAccountName" . }}
+      containers:
+      - name: leavemanagement
+        image: "{{ .Values.leaveManagement.image.repository }}:{{ .Values.leaveManagement.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.leaveManagement.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        - name: https
+          containerPort: 8443
+          protocol: TCP
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: {{ .Values.global.environment }}
+        - name: ASPNETCORE_URLS
+          value: "https://+:8443;http://+:8080"
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "hudur.fullname" . }}-secrets
+              key: database-connection-string
+        - name: Redis__ConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "hudur.fullname" . }}-secrets
+              key: redis-connection-string
+        - name: LeaveSettings__MultiLevelApproval
+          value: "{{ .Values.leaveManagement.multiLevelApproval.enabled }}"
+        - name: LeaveSettings__MaxApprovalLevels
+          value: "{{ .Values.leaveManagement.multiLevelApproval.maxLevels }}"
+        - name: ComplianceSettings__Enabled
+          value: "{{ .Values.leaveManagement.compliance.enabled }}"
+        - name: PolicySettings__AutoApproval
+          value: "{{ .Values.leaveManagement.policies.autoApproval }}"
+        - name: PolicySettings__CarryOverEnabled
+          value: "{{ .Values.leaveManagement.policies.carryOver }}"
+        - name: AuthenticationService__BaseUrl
+          value: "http://{{ include "hudur.fullname" . }}-authentication:{{ .Values.authentication.service.port }}"
+        - name: WorkflowService__BaseUrl
+          value: "http://{{ include "hudur.fullname" . }}-workflow:{{ .Values.workflow.service.port }}"
+        - name: NotificationService__BaseUrl
+          value: "http://{{ include "hudur.fullname" . }}-notifications:{{ .Values.notifications.service.port }}"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          {{- toYaml .Values.leaveManagement.resources | nindent 10 }}
+        volumeMounts:
+        - name: certificates
+          mountPath: /app/certificates
+          readOnly: true
+      volumes:
+      - name: certificates
+        secret:
+          secretName: {{ include "hudur.fullname" . }}-tls-certs
+      {{- with .Values.leaveManagement.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.leaveManagement.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.leaveManagement.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hudur.fullname" . }}-leavemanagement
+  labels:
+    {{- include "hudur.labels" . | nindent 4 }}
+    app.kubernetes.io/component: leavemanagement
+spec:
+  type: {{ .Values.leaveManagement.service.type }}
+  ports:
+  - port: {{ .Values.leaveManagement.service.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  - port: {{ .Values.leaveManagement.service.httpsPort }}
+    targetPort: https
+    protocol: TCP
+    name: https
+  selector:
+    {{- include "hudur.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: leavemanagement
+---
+{{- if .Values.leaveManagement.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "hudur.fullname" . }}-leavemanagement
+  labels:
+    {{- include "hudur.labels" . | nindent 4 }}
+    app.kubernetes.io/component: leavemanagement
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "hudur.fullname" . }}-leavemanagement
+  minReplicas: {{ .Values.leaveManagement.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.leaveManagement.autoscaling.maxReplicas }}
+  metrics:
+  {{- if .Values.leaveManagement.autoscaling.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.leaveManagement.autoscaling.targetCPUUtilizationPercentage }}
+  {{- end }}
+  {{- if .Values.leaveManagement.autoscaling.targetMemoryUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.leaveManagement.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- end }}
+{{- end }}
