@@ -50,8 +50,7 @@ namespace AttendancePlatform.Tests.Performance
             })
             .WithLoadSimulations(
                 Simulation.RampingInject(rate: 1000, interval: TimeSpan.FromSeconds(1), during: TimeSpan.FromMinutes(2)),
-                Simulation.KeepConstant(copies: 10000, during: TimeSpan.FromMinutes(5)),
-                Simulation.RampingInject(rate: -1000, interval: TimeSpan.FromSeconds(1), during: TimeSpan.FromMinutes(2))
+                Simulation.KeepConstant(copies: 10000, during: TimeSpan.FromMinutes(5))
             );
 
             var stats = NBomberRunner
@@ -112,8 +111,7 @@ namespace AttendancePlatform.Tests.Performance
             })
             .WithLoadSimulations(
                 Simulation.RampingInject(rate: 800, interval: TimeSpan.FromSeconds(1), during: TimeSpan.FromMinutes(3)),
-                Simulation.KeepConstant(copies: 5000, during: TimeSpan.FromMinutes(10)),
-                Simulation.RampingInject(rate: -800, interval: TimeSpan.FromSeconds(1), during: TimeSpan.FromMinutes(3))
+                Simulation.KeepConstant(copies: 5000, during: TimeSpan.FromMinutes(10))
             );
 
             var stats = NBomberRunner
@@ -172,8 +170,7 @@ namespace AttendancePlatform.Tests.Performance
             })
             .WithLoadSimulations(
                 Simulation.RampingInject(rate: 500, interval: TimeSpan.FromSeconds(1), during: TimeSpan.FromMinutes(2)),
-                Simulation.KeepConstant(copies: 2000, during: TimeSpan.FromMinutes(5)),
-                Simulation.RampingInject(rate: -500, interval: TimeSpan.FromSeconds(1), during: TimeSpan.FromMinutes(2))
+                Simulation.KeepConstant(copies: 2000, during: TimeSpan.FromMinutes(5))
             );
 
             var stats = NBomberRunner
