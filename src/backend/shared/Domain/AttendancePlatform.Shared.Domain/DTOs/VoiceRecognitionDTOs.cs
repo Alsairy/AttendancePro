@@ -187,28 +187,28 @@ namespace AttendancePlatform.Shared.Domain.DTOs
     public class VoiceSecurityDto
     {
         public Guid UserId { get; set; }
-        public byte[] VoiceData { get; set; }
-        public string SecurityContext { get; set; }
-        public Dictionary<string, object> SecurityParameters { get; set; }
+        public byte[] VoiceData { get; set; } = Array.Empty<byte>();
+        public string SecurityContext { get; set; } = string.Empty;
+        public Dictionary<string, object> SecurityParameters { get; set; } = new();
     }
 
     public class VoiceSecurityResultDto
     {
         public bool IsSecure { get; set; }
         public float SecurityScore { get; set; }
-        public IEnumerable<string> SecurityFlags { get; set; }
+        public IEnumerable<string> SecurityFlags { get; set; } = new List<string>();
         public bool AntiSpoofingPassed { get; set; }
-        public string RiskLevel { get; set; }
+        public string RiskLevel { get; set; } = string.Empty;
     }
 
     public class CreateCustomCommandDto
     {
-        public string Command { get; set; }
-        public string Action { get; set; }
-        public IEnumerable<string> Aliases { get; set; }
-        public Dictionary<string, string> Parameters { get; set; }
+        public string Command { get; set; } = string.Empty;
+        public string Action { get; set; } = string.Empty;
+        public IEnumerable<string> Aliases { get; set; } = new List<string>();
+        public Dictionary<string, string> Parameters { get; set; } = new();
         public bool RequiresBiometric { get; set; }
         public Guid TenantId { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
     }
 }
