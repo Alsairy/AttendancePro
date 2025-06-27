@@ -39,10 +39,9 @@
     <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.7.0-rc.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.0" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.7.0" />
-    <PackageReference Include="GraphQL" Version="7.6.1" />
-    <PackageReference Include="GraphQL.Types" Version="7.6.1" />
-    <PackageReference Include="GraphQL.Server.Core" Version="7.6.0" />
-    <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="7.6.0" />
+    <PackageReference Include="GraphQL" Version="7.8.0" />
+    <PackageReference Include="GraphQL.Server.Core" Version="5.2.2" />
+    <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="5.2.2" />
   </ItemGroup>
 
   <ItemGroup>
