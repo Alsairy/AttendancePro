@@ -1,0 +1,127 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hudur-version-control
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-version-control
+    app.kubernetes.io/part-of: hudur-platform
+data:
+  current-version: "1.0.0"
+  previous-version: "0.9.0"
+  rollback-enabled: "true"
+  version-history: |
+    1.0.0:
+      - date: "2025-06-27"
+      - description: "Initial production release with comprehensive microservices"
+      - features:
+        - "Authentication with 2FA and biometric support"
+        - "Advanced attendance tracking with GPS geofencing"
+        - "Face recognition with privacy controls"
+        - "Leave management with multi-level approval"
+        - "Real-time notifications and analytics"
+        - "Complete monitoring and observability stack"
+      - rollback-safe: true
+    0.9.0:
+      - date: "2025-06-20"
+      - description: "Pre-production release with core features"
+      - features:
+        - "Basic authentication and attendance"
+        - "Simple leave management"
+        - "Basic reporting"
+      - rollback-safe: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hudur-rollback-config
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-rollback-config
+    app.kubernetes.io/part-of: hudur-platform
+data:
+  rollback-strategy: "blue-green"
+  rollback-timeout: "300s"
+  health-check-timeout: "60s"
+  rollback-verification-steps: |
+    - name: "database-compatibility"
+      command: "kubectl exec -n hudur-platform deployment/hudur-authentication -- /app/scripts/db-compatibility-check.sh"
+      timeout: "30s"
+    - name: "service-health"
+      command: "kubectl get pods -n hudur-platform -l app.kubernetes.io/part-of=hudur-platform --field-selector=status.phase=Running"
+      timeout: "60s"
+    - name: "api-endpoints"
+      command: "kubectl exec -n hudur-platform deployment/hudur-api-gateway -- /app/scripts/api-health-check.sh"
+      timeout: "30s"
+  rollback-notification-webhook: "https://hooks.slack.com/services/HUDUR/PLATFORM/ROLLBACK"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hudur-version-backup
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-version-backup
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: backup
+        image: hudurprodacr.azurecr.io/hudur/backup-utility:latest
+        env:
+        - name: BACKUP_TYPE
+          value: "version-backup"
+        - name: VERSION
+          valueFrom:
+            configMapKeyRef:
+              name: hudur-version-control
+              key: current-version
+        - name: DATABASE_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: hudur-secrets
+              key: database-connection-string
+        - name: STORAGE_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: hudur-secrets
+              key: blob-storage-connection-string
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Creating version backup for version $VERSION"
+          
+          pg_dump "$DATABASE_CONNECTION_STRING" > /tmp/hudur-db-backup-$VERSION.sql
+          
+          az storage blob upload \
+            --connection-string "$STORAGE_CONNECTION_STRING" \
+            --container-name version-backups \
+            --name "hudur-db-backup-$VERSION.sql" \
+            --file /tmp/hudur-db-backup-$VERSION.sql
+          
+          kubectl get configmaps -n hudur-platform -o yaml > /tmp/hudur-config-backup-$VERSION.yaml
+          kubectl get secrets -n hudur-platform -o yaml > /tmp/hudur-secrets-backup-$VERSION.yaml
+          
+          az storage blob upload \
+            --connection-string "$STORAGE_CONNECTION_STRING" \
+            --container-name version-backups \
+            --name "hudur-config-backup-$VERSION.yaml" \
+            --file /tmp/hudur-config-backup-$VERSION.yaml
+          
+          az storage blob upload \
+            --connection-string "$STORAGE_CONNECTION_STRING" \
+            --container-name version-backups \
+            --name "hudur-secrets-backup-$VERSION.yaml" \
+            --file /tmp/hudur-secrets-backup-$VERSION.yaml
+          
+          echo "Version backup completed successfully"
+        volumeMounts:
+        - name: backup-storage
+          mountPath: /backup
+      volumes:
+      - name: backup-storage
+        persistentVolumeClaim:
+          claimName: hudur-backup-pvc
