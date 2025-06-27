@@ -24,7 +24,7 @@ builder.Services.AddControllers();
 // Add infrastructure services with SQL Server database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? 
                        (builder.Environment.IsDevelopment() ? 
-                        "Server=localhost;Database=AttendancePlatform;Trusted_Connection=true;TrustServerCertificate=true;" :
+                        "Server=localhost;Database=AttendancePlatform;Trusted_Connection=true;Encrypt=true;" :
                         "Server=localhost;Database=AttendancePlatform;Trusted_Connection=true;Encrypt=true;");
 
 builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
