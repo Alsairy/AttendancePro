@@ -1,0 +1,269 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hudur-database-monitoring-config
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-database-monitoring
+    app.kubernetes.io/part-of: hudur-platform
+data:
+  monitoring-config.yml: |
+    database:
+      connection_string: "${DATABASE_CONNECTION_STRING}"
+      monitoring_interval: 30
+      performance_thresholds:
+        query_execution_time_ms: 1000
+        connection_pool_usage_percent: 80
+        deadlock_count_per_hour: 5
+        blocking_queries_count: 10
+      
+    metrics:
+      - name: "query_execution_time"
+        query: |
+          SELECT 
+            AVG(total_elapsed_time / execution_count) as avg_execution_time_ms,
+            MAX(total_elapsed_time / execution_count) as max_execution_time_ms,
+            COUNT(*) as query_count
+          FROM sys.dm_exec_query_stats
+          WHERE last_execution_time > DATEADD(minute, -5, GETDATE())
+        
+      - name: "connection_pool_stats"
+        query: |
+          SELECT 
+            counter_name,
+            cntr_value
+          FROM sys.dm_os_performance_counters 
+          WHERE object_name LIKE '%:General Statistics%'
+          AND counter_name IN ('User Connections', 'Logical Connections')
+        
+      - name: "index_usage_stats"
+        query: |
+          SELECT 
+            OBJECT_NAME(s.object_id) as table_name,
+            i.name as index_name,
+            s.user_seeks + s.user_scans + s.user_lookups as total_reads,
+            s.user_updates as total_writes,
+            CASE 
+              WHEN s.user_seeks + s.user_scans + s.user_lookups = 0 THEN 0
+              ELSE CAST(s.user_updates as float) / (s.user_seeks + s.user_scans + s.user_lookups)
+            END as write_read_ratio
+          FROM sys.dm_db_index_usage_stats s
+          INNER JOIN sys.indexes i ON s.object_id = i.object_id AND s.index_id = i.index_id
+          WHERE s.database_id = DB_ID()
+          AND s.user_seeks + s.user_scans + s.user_lookups > 0
+          ORDER BY total_reads DESC
+        
+      - name: "blocking_queries"
+        query: |
+          SELECT 
+            blocking_session_id,
+            session_id,
+            wait_type,
+            wait_time,
+            wait_resource
+          FROM sys.dm_exec_requests
+          WHERE blocking_session_id <> 0
+        
+      - name: "deadlock_detection"
+        query: |
+          SELECT 
+            COUNT(*) as deadlock_count
+          FROM sys.dm_exec_requests
+          WHERE last_wait_type = 'LCK_M_X'
+          AND wait_time > 5000
+
+    alerts:
+      - name: "high_query_execution_time"
+        condition: "avg_execution_time_ms > 1000"
+        severity: "warning"
+        message: "Average query execution time exceeds 1 second"
+        
+      - name: "connection_pool_exhaustion"
+        condition: "connection_pool_usage > 80"
+        severity: "critical"
+        message: "Database connection pool usage exceeds 80%"
+        
+      - name: "deadlock_detected"
+        condition: "deadlock_count > 0"
+        severity: "warning"
+        message: "Database deadlocks detected"
+        
+      - name: "blocking_queries_detected"
+        condition: "blocking_queries_count > 5"
+        severity: "warning"
+        message: "Multiple blocking queries detected"
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hudur-database-performance-monitor
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-database-performance-monitor
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: database-monitor
+            image: hudurprodacr.azurecr.io/hudur/database-monitor:latest
+            env:
+            - name: DATABASE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: hudur-database-secret
+                  key: connection-string
+            - name: MONITORING_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: hudur-database-monitoring-config
+                  key: monitoring-config.yml
+            command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Starting database performance monitoring at $(date)"
+              
+              check_query_performance() {
+                echo "Checking query performance..."
+                
+                sqlcmd -S "$DATABASE_SERVER" -d "$DATABASE_NAME" -U "$DATABASE_USER" -P "$DATABASE_PASSWORD" -Q "
+                SELECT 
+                  TOP 10
+                  SUBSTRING(qt.text, (qs.statement_start_offset/2)+1, 
+                    ((CASE qs.statement_end_offset 
+                        WHEN -1 THEN DATALENGTH(qt.text)
+                        ELSE qs.statement_end_offset 
+                    END - qs.statement_start_offset)/2)+1) AS statement_text,
+                  qs.execution_count,
+                  qs.total_elapsed_time / qs.execution_count AS avg_elapsed_time,
+                  qs.total_logical_reads / qs.execution_count AS avg_logical_reads,
+                  qs.total_physical_reads / qs.execution_count AS avg_physical_reads
+                FROM sys.dm_exec_query_stats qs
+                CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) qt
+                WHERE qs.total_elapsed_time / qs.execution_count > 1000
+                ORDER BY qs.total_elapsed_time / qs.execution_count DESC
+                " -h -1 -s "," -W | while IFS=, read -r query exec_count avg_time avg_logical avg_physical; do
+                  if [[ -n "$query" && "$avg_time" -gt 1000 ]]; then
+                    echo "ALERT: Slow query detected - Avg time: ${avg_time}ms"
+                    echo "Query: $query"
+                    
+                    curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                      -H "Content-Type: application/json" \
+                      -d "[{
+                        \"labels\": {
+                          \"alertname\": \"SlowQueryDetected\",
+                          \"severity\": \"warning\",
+                          \"service\": \"database\",
+                          \"query_time\": \"${avg_time}ms\"
+                        },
+                        \"annotations\": {
+                          \"summary\": \"Slow database query detected\",
+                          \"description\": \"Query execution time: ${avg_time}ms exceeds threshold\"
+                        }
+                      }]"
+                  fi
+                done
+              }
+              
+              check_connection_pool() {
+                echo "Checking connection pool status..."
+                
+                pool_stats=$(sqlcmd -S "$DATABASE_SERVER" -d "$DATABASE_NAME" -U "$DATABASE_USER" -P "$DATABASE_PASSWORD" -Q "
+                SELECT 
+                  counter_name,
+                  cntr_value
+                FROM sys.dm_os_performance_counters 
+                WHERE object_name LIKE '%:General Statistics%'
+                AND counter_name IN ('User Connections', 'Logical Connections')
+                " -h -1 -s "," -W)
+                
+                echo "$pool_stats" | while IFS=, read -r counter_name cntr_value; do
+                  if [[ "$counter_name" == "User Connections" && "$cntr_value" -gt 80 ]]; then
+                    echo "ALERT: High connection pool usage: $cntr_value"
+                    
+                    curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                      -H "Content-Type: application/json" \
+                      -d "[{
+                        \"labels\": {
+                          \"alertname\": \"HighConnectionPoolUsage\",
+                          \"severity\": \"critical\",
+                          \"service\": \"database\",
+                          \"connection_count\": \"$cntr_value\"
+                        },
+                        \"annotations\": {
+                          \"summary\": \"Database connection pool usage is high\",
+                          \"description\": \"Connection count: $cntr_value exceeds safe threshold\"
+                        }
+                      }]"
+                  fi
+                done
+              }
+              
+              check_index_usage() {
+                echo "Checking index usage statistics..."
+                
+                sqlcmd -S "$DATABASE_SERVER" -d "$DATABASE_NAME" -U "$DATABASE_USER" -P "$DATABASE_PASSWORD" -Q "
+                SELECT 
+                  OBJECT_NAME(s.object_id) as table_name,
+                  i.name as index_name,
+                  s.user_seeks + s.user_scans + s.user_lookups as total_reads,
+                  s.user_updates as total_writes,
+                  CASE 
+                    WHEN s.user_seeks + s.user_scans + s.user_lookups = 0 THEN 0
+                    ELSE CAST(s.user_updates as float) / (s.user_seeks + s.user_scans + s.user_lookups)
+                  END as write_read_ratio
+                FROM sys.dm_db_index_usage_stats s
+                INNER JOIN sys.indexes i ON s.object_id = i.object_id AND s.index_id = i.index_id
+                WHERE s.database_id = DB_ID()
+                AND s.user_seeks + s.user_scans + s.user_lookups = 0
+                AND s.user_updates > 100
+                " -h -1 -s "," -W | while IFS=, read -r table_name index_name total_reads total_writes ratio; do
+                  if [[ -n "$index_name" && "$total_reads" -eq 0 && "$total_writes" -gt 100 ]]; then
+                    echo "ALERT: Unused index detected - Table: $table_name, Index: $index_name"
+                    echo "Write operations: $total_writes, Read operations: $total_reads"
+                  fi
+                done
+              }
+              
+              check_blocking_queries() {
+                echo "Checking for blocking queries..."
+                
+                blocking_count=$(sqlcmd -S "$DATABASE_SERVER" -d "$DATABASE_NAME" -U "$DATABASE_USER" -P "$DATABASE_PASSWORD" -Q "
+                SELECT COUNT(*) as blocking_count
+                FROM sys.dm_exec_requests
+                WHERE blocking_session_id <> 0
+                " -h -1 -W | tail -n 1 | tr -d ' ')
+                
+                if [[ "$blocking_count" -gt 5 ]]; then
+                  echo "ALERT: Multiple blocking queries detected: $blocking_count"
+                  
+                  curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                    -H "Content-Type: application/json" \
+                    -d "[{
+                      \"labels\": {
+                        \"alertname\": \"BlockingQueriesDetected\",
+                        \"severity\": \"warning\",
+                        \"service\": \"database\",
+                        \"blocking_count\": \"$blocking_count\"
+                      },
+                      \"annotations\": {
+                        \"summary\": \"Multiple blocking database queries detected\",
+                        \"description\": \"$blocking_count blocking queries are affecting performance\"
+                      }
+                    }]"
+                fi
+              }
+              
+              echo "Running database performance checks..."
+              check_query_performance
+              check_connection_pool
+              check_index_usage
+              check_blocking_queries
+              
+              echo "Database performance monitoring completed at $(date)"
