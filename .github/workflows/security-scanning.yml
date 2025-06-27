@@ -16,14 +16,14 @@ jobs:
     strategy:
       matrix:
         service: 
-          - authentication
-          - attendance
-          - face-recognition
-          - leave-management
-          - notifications
-          - analytics
-          - workflow-engine
-          - integrations
+          - Authentication
+          - Attendance
+          - FaceRecognition
+          - LeaveManagement
+          - Notifications
+          - Analytics
+          - WorkflowEngine
+          - Integrations
           - api-gateway
           - frontend
     
@@ -101,7 +101,6 @@ jobs:
       uses: gitleaks/gitleaks-action@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
 
   infrastructure-security:
     name: Infrastructure Security Scan

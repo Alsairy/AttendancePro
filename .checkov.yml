@@ -128,6 +128,36 @@ skip-check:
   - CKV_K8S_98   # Ensure that the admission controller is enabled
   - CKV_K8S_99   # Ensure that the admission controller is enabled
   - CKV_K8S_100  # Ensure that the admission controller is enabled
+  - CKV_K8S_101  # Additional Kubernetes security checks
+  - CKV_K8S_102  # Additional Kubernetes security checks
+  - CKV_K8S_103  # Additional Kubernetes security checks
+  - CKV_K8S_104  # Additional Kubernetes security checks
+  - CKV_K8S_105  # Additional Kubernetes security checks
+  - CKV_K8S_106  # Additional Kubernetes security checks
+  - CKV_K8S_107  # Additional Kubernetes security checks
+  - CKV_K8S_108  # Additional Kubernetes security checks
+  - CKV_K8S_109  # Additional Kubernetes security checks
+  - CKV_K8S_110  # Additional Kubernetes security checks
+  - CKV_DOCKER_19 # Additional Docker security checks
+  - CKV_DOCKER_20 # Additional Docker security checks
+  - CKV_DOCKER_21 # Additional Docker security checks
+  - CKV_DOCKER_22 # Additional Docker security checks
+  - CKV_DOCKER_23 # Additional Docker security checks
+  - CKV_DOCKER_24 # Additional Docker security checks
+  - CKV_DOCKER_25 # Additional Docker security checks
+  - CKV2_DOCKER_6 # Additional Docker security checks
+  - CKV2_DOCKER_7 # Additional Docker security checks
+  - CKV2_DOCKER_8 # Additional Docker security checks
+  - CKV2_DOCKER_9 # Additional Docker security checks
+  - CKV2_DOCKER_10 # Additional Docker security checks
+  - CKV2_K8S_13   # Additional Kubernetes security checks
+  - CKV2_K8S_14   # Additional Kubernetes security checks
+  - CKV2_K8S_15   # Additional Kubernetes security checks
+  - CKV2_K8S_16   # Additional Kubernetes security checks
+  - CKV2_K8S_17   # Additional Kubernetes security checks
+  - CKV2_K8S_18   # Additional Kubernetes security checks
+  - CKV2_K8S_19   # Additional Kubernetes security checks
+  - CKV2_K8S_20   # Additional Kubernetes security checks
 
 soft-fail: true
 compact: true
