@@ -116,10 +116,4 @@ namespace AttendancePlatform.Shared.Infrastructure.Middleware
         public int MaxRequests { get; set; } = 100;
         public int WindowSizeInMinutes { get; set; } = 1;
     }
-
-    public class RateLimitInfo
-    {
-        public int RequestCount { get; set; }
-        public DateTime WindowStart { get; set; }
-    }
 }
