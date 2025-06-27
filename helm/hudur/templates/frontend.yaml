@@ -1,0 +1,146 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hudur.fullname" . }}-frontend
+  labels:
+    {{- include "hudur.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "hudur.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: frontend
+  template:
+    metadata:
+      labels:
+        {{- include "hudur.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: frontend
+    spec:
+      serviceAccountName: {{ include "hudur.serviceAccountName" . }}
+      containers:
+      - name: frontend
+        image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        - name: https
+          containerPort: 443
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          value: {{ .Values.global.environment }}
+        - name: REACT_APP_API_BASE_URL
+          value: "https://api.{{ .Values.global.domain }}"
+        - name: REACT_APP_DOMAIN
+          value: {{ .Values.global.domain }}
+        - name: REACT_APP_ENVIRONMENT
+          value: {{ .Values.global.environment }}
+        - name: REACT_APP_VERSION
+          value: {{ .Chart.AppVersion }}
+        - name: REACT_APP_FACE_RECOGNITION_ENABLED
+          value: "{{ .Values.faceRecognition.enabled }}"
+        - name: REACT_APP_GEOFENCING_ENABLED
+          value: "{{ .Values.attendance.geofencing.enabled }}"
+        - name: REACT_APP_BEACON_ENABLED
+          value: "{{ .Values.attendance.beacon.enabled }}"
+        - name: REACT_APP_OFFLINE_ENABLED
+          value: "{{ .Values.attendance.offline.enabled }}"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          {{- toYaml .Values.frontend.resources | nindent 10 }}
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: certificates
+          mountPath: /etc/ssl/certs/hudur
+          readOnly: true
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: {{ include "hudur.fullname" . }}-nginx-config
+      - name: certificates
+        secret:
+          secretName: {{ include "hudur.fullname" . }}-tls-certs
+      {{- with .Values.frontend.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.frontend.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.frontend.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hudur.fullname" . }}-frontend
+  labels:
+    {{- include "hudur.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+spec:
+  type: {{ .Values.frontend.service.type }}
+  ports:
+  - port: {{ .Values.frontend.service.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  - port: {{ .Values.frontend.service.httpsPort }}
+    targetPort: https
+    protocol: TCP
+    name: https
+  selector:
+    {{- include "hudur.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+---
+{{- if .Values.frontend.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "hudur.fullname" . }}-frontend
+  labels:
+    {{- include "hudur.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "hudur.fullname" . }}-frontend
+  minReplicas: {{ .Values.frontend.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.frontend.autoscaling.maxReplicas }}
+  metrics:
+  {{- if .Values.frontend.autoscaling.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.frontend.autoscaling.targetCPUUtilizationPercentage }}
+  {{- end }}
+  {{- if .Values.frontend.autoscaling.targetMemoryUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.frontend.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- end }}
+{{- end }}
