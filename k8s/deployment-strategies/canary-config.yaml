@@ -1,0 +1,319 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hudur-canary-config
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-canary-config
+    app.kubernetes.io/part-of: hudur-platform
+data:
+  canary-weight-start: "10"
+  canary-weight-step: "25"
+  canary-weight-max: "100"
+  health-check-interval: "60"
+  promotion-wait-time: "300"
+  error-threshold: "5"
+  latency-threshold: "1000"
+  success-rate-threshold: "95"
+  canary-analysis-duration: "600"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: hudur-canary-vs
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-canary-vs
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  hosts:
+  - hudur.sa
+  - hudur-api-gateway.hudur-platform.svc.cluster.local
+  gateways:
+  - hudur-gateway
+  - mesh
+  http:
+  - match:
+    - headers:
+        canary:
+          exact: "true"
+    route:
+    - destination:
+        host: hudur-api-gateway
+        subset: canary
+      weight: 100
+  - route:
+    - destination:
+        host: hudur-api-gateway
+        subset: stable
+      weight: 90
+    - destination:
+        host: hudur-api-gateway
+        subset: canary
+      weight: 10
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: hudur-canary-dr
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-canary-dr
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  host: hudur-api-gateway
+  subsets:
+  - name: stable
+    labels:
+      version: stable
+    trafficPolicy:
+      connectionPool:
+        tcp:
+          maxConnections: 100
+        http:
+          http1MaxPendingRequests: 50
+          maxRequestsPerConnection: 10
+      outlierDetection:
+        consecutiveErrors: 3
+        interval: 30s
+        baseEjectionTime: 30s
+  - name: canary
+    labels:
+      version: canary
+    trafficPolicy:
+      connectionPool:
+        tcp:
+          maxConnections: 50
+        http:
+          http1MaxPendingRequests: 25
+          maxRequestsPerConnection: 5
+      outlierDetection:
+        consecutiveErrors: 2
+        interval: 15s
+        baseEjectionTime: 15s
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hudur-canary-validation
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-canary-validation
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: canary-validator
+        image: hudurprodacr.azurecr.io/hudur/canary-validator:latest
+        env:
+        - name: PROMETHEUS_URL
+          value: "http://prometheus.hudur-monitoring.svc.cluster.local:9090"
+        - name: ERROR_THRESHOLD
+          valueFrom:
+            configMapKeyRef:
+              name: hudur-canary-config
+              key: error-threshold
+        - name: LATENCY_THRESHOLD
+          valueFrom:
+            configMapKeyRef:
+              name: hudur-canary-config
+              key: latency-threshold
+        - name: SUCCESS_RATE_THRESHOLD
+          valueFrom:
+            configMapKeyRef:
+              name: hudur-canary-config
+              key: success-rate-threshold
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Starting canary validation at $(date)"
+          
+          query_prometheus() {
+            local query=$1
+            local result
+            
+            result=$(curl -s -G "$PROMETHEUS_URL/api/v1/query" \
+              --data-urlencode "query=$query" | \
+              jq -r '.data.result[0].value[1] // "0"')
+            
+            echo "$result"
+          }
+          
+          validate_canary_metrics() {
+            local version=$1
+            
+            echo "Validating metrics for $version version..."
+            
+            local error_rate_query="rate(http_requests_total{version=\"$version\",status=~\"5..\"}[5m]) / rate(http_requests_total{version=\"$version\"}[5m]) * 100"
+            local error_rate
+            error_rate=$(query_prometheus "$error_rate_query")
+            
+            local latency_query="histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{version=\"$version\"}[5m])) * 1000"
+            local latency_p99
+            latency_p99=$(query_prometheus "$latency_query")
+            
+            local success_rate_query="rate(http_requests_total{version=\"$version\",status=~\"2..\"}[5m]) / rate(http_requests_total{version=\"$version\"}[5m]) * 100"
+            local success_rate
+            success_rate=$(query_prometheus "$success_rate_query")
+            
+            echo "$version metrics:"
+            echo "  Error rate: ${error_rate}%"
+            echo "  Latency P99: ${latency_p99}ms"
+            echo "  Success rate: ${success_rate}%"
+            
+            local validation_passed=true
+            
+            if (( $(echo "$error_rate > $ERROR_THRESHOLD" | bc -l) )); then
+              echo "✗ $version error rate (${error_rate}%) exceeds threshold (${ERROR_THRESHOLD}%)"
+              validation_passed=false
+            else
+              echo "✓ $version error rate within threshold"
+            fi
+            
+            if (( $(echo "$latency_p99 > $LATENCY_THRESHOLD" | bc -l) )); then
+              echo "✗ $version latency P99 (${latency_p99}ms) exceeds threshold (${LATENCY_THRESHOLD}ms)"
+              validation_passed=false
+            else
+              echo "✓ $version latency within threshold"
+            fi
+            
+            if (( $(echo "$success_rate < $SUCCESS_RATE_THRESHOLD" | bc -l) )); then
+              echo "✗ $version success rate (${success_rate}%) below threshold (${SUCCESS_RATE_THRESHOLD}%)"
+              validation_passed=false
+            else
+              echo "✓ $version success rate above threshold"
+            fi
+            
+            if [ "$validation_passed" = true ]; then
+              return 0
+            else
+              return 1
+            fi
+          }
+          
+          compare_versions() {
+            echo "Comparing canary vs stable performance..."
+            
+            local canary_error_rate
+            canary_error_rate=$(query_prometheus "rate(http_requests_total{version=\"canary\",status=~\"5..\"}[5m]) / rate(http_requests_total{version=\"canary\"}[5m]) * 100")
+            
+            local stable_error_rate
+            stable_error_rate=$(query_prometheus "rate(http_requests_total{version=\"stable\",status=~\"5..\"}[5m]) / rate(http_requests_total{version=\"stable\"}[5m]) * 100")
+            
+            local canary_latency
+            canary_latency=$(query_prometheus "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{version=\"canary\"}[5m])) * 1000")
+            
+            local stable_latency
+            stable_latency=$(query_prometheus "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{version=\"stable\"}[5m])) * 1000")
+            
+            echo "Comparison results:"
+            echo "  Canary error rate: ${canary_error_rate}%"
+            echo "  Stable error rate: ${stable_error_rate}%"
+            echo "  Canary latency P99: ${canary_latency}ms"
+            echo "  Stable latency P99: ${stable_latency}ms"
+            
+            local comparison_passed=true
+            
+            if (( $(echo "$canary_error_rate > $stable_error_rate + 2" | bc -l) )); then
+              echo "✗ Canary error rate significantly higher than stable"
+              comparison_passed=false
+            else
+              echo "✓ Canary error rate acceptable compared to stable"
+            fi
+            
+            if (( $(echo "$canary_latency > $stable_latency + 200" | bc -l) )); then
+              echo "✗ Canary latency significantly higher than stable"
+              comparison_passed=false
+            else
+              echo "✓ Canary latency acceptable compared to stable"
+            fi
+            
+            if [ "$comparison_passed" = true ]; then
+              return 0
+            else
+              return 1
+            fi
+          }
+          
+          run_load_test() {
+            echo "Running load test against canary deployment..."
+            
+            local total_requests=100
+            local concurrent_requests=10
+            local success_count=0
+            
+            for i in $(seq 1 $concurrent_requests); do
+              (
+                for j in $(seq 1 $((total_requests / concurrent_requests))); do
+                  response=$(curl -s -o /dev/null -w "%{http_code}" \
+                    -H "canary: true" \
+                    --max-time 10 \
+                    "http://hudur-api-gateway.hudur-platform.svc.cluster.local/health")
+                  
+                  if [[ "$response" =~ ^2[0-9][0-9]$ ]]; then
+                    echo "success" >> /tmp/load_test_results
+                  else
+                    echo "failure" >> /tmp/load_test_results
+                  fi
+                done
+              ) &
+            done
+            
+            wait
+            
+            local success_count
+            success_count=$(grep -c "success" /tmp/load_test_results 2>/dev/null || echo "0")
+            local success_rate
+            success_rate=$((success_count * 100 / total_requests))
+            
+            echo "Load test results:"
+            echo "  Total requests: $total_requests"
+            echo "  Successful requests: $success_count"
+            echo "  Success rate: ${success_rate}%"
+            
+            if [ "$success_rate" -ge "$SUCCESS_RATE_THRESHOLD" ]; then
+              echo "✓ Load test passed"
+              return 0
+            else
+              echo "✗ Load test failed"
+              return 1
+            fi
+          }
+          
+          echo "Starting comprehensive canary validation..."
+          
+          validation_passed=true
+          
+          echo "Waiting for metrics to stabilize..."
+          sleep 60
+          
+          if ! validate_canary_metrics "canary"; then
+            validation_passed=false
+          fi
+          
+          if ! validate_canary_metrics "stable"; then
+            validation_passed=false
+          fi
+          
+          if ! compare_versions; then
+            validation_passed=false
+          fi
+          
+          if ! run_load_test; then
+            validation_passed=false
+          fi
+          
+          if [ "$validation_passed" = true ]; then
+            echo "🎉 Canary validation passed successfully!"
+            echo "Canary deployment is ready for promotion"
+            echo "Validation completed at $(date)"
+            exit 0
+          else
+            echo "❌ Canary validation failed!"
+            echo "Canary deployment should be rolled back"
+            echo "Validation completed at $(date)"
+            exit 1
+          fi
