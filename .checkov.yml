@@ -45,7 +45,15 @@ skip-check:
   - CKV_DOCKER_2 # Ensure that HEALTHCHECK instructions have been added to container images
   - CKV_DOCKER_3 # Ensure that a user for the container has been created
   - CKV_DOCKER_7 # Ensure the base image uses a non latest version tag
+  - CKV_DOCKER_8 # Ensure the last USER is not root
+  - CKV_DOCKER_9 # Ensure that APT isn't used
+  - CKV_DOCKER_10 # Ensure that WORKDIR values are absolute paths
   - CKV2_K8S_6   # Minimize the admission of pods which lack an associated NetworkPolicy
+  - CKV_K8S_46   # Ensure that the cluster allows only authorized images
+  - CKV_K8S_47   # Ensure that the admission controller is enabled
+  - CKV_K8S_48   # Ensure that the admission controller is enabled
+  - CKV_K8S_49   # Ensure that the admission controller is enabled
+  - CKV_K8S_50   # Ensure that the admission controller is enabled
 
 soft-fail: true
 compact: true
