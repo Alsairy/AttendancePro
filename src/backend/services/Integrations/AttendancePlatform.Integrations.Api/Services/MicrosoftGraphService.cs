@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Graph;
+using Microsoft.Graph.Models;
 using Azure.Identity;
 
 namespace AttendancePlatform.Integrations.Api.Services

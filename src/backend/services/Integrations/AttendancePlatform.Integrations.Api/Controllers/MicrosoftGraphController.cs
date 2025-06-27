@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using AttendancePlatform.Integrations.Api.Services;
 using Microsoft.Graph;
+using Microsoft.Graph.Models;
 using System.Threading.Tasks;
 
 namespace AttendancePlatform.Integrations.Api.Controllers
