@@ -24,8 +24,8 @@ configMapGenerator:
 secretGenerator:
   - name: argocd-gitops-secrets
     literals:
-      - GITHUB_TOKEN=changeme
-      - REGISTRY_PASSWORD=changeme
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - REGISTRY_PASSWORD=${REGISTRY_PASSWORD}
 
 generatorOptions:
   disableNameSuffixHash: true

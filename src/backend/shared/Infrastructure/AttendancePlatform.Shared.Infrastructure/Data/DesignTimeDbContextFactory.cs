@@ -12,7 +12,8 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<AttendancePlatformDbContext>();
             
-            var connectionString = "Server=host.docker.internal,1433;Database=AttendancePlatform;User Id=sa;Password=AttendanceP@ssw0rd123;TrustServerCertificate=true";
+            var connectionString = Environment.GetEnvironmentVariable("DESIGN_TIME_CONNECTION_STRING") ?? 
+                                          "Server=host.docker.internal,1433;Database=AttendancePlatform;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=true";
             
             optionsBuilder.UseSqlServer(connectionString, b => {
                 b.MigrationsAssembly(typeof(AttendancePlatformDbContext).Assembly.FullName);
