@@ -44,27 +44,27 @@ namespace AttendancePlatform.Shared.Domain.DTOs
     public class TeamDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public Guid TenantId { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; }
-        public IEnumerable<TeamMemberDto> Members { get; set; }
+        public IEnumerable<TeamMemberDto> Members { get; set; } = new List<TeamMemberDto>();
     }
 
     public class CreateTeamDto
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public Guid TenantId { get; set; }
-        public IEnumerable<Guid> InitialMembers { get; set; }
+        public IEnumerable<Guid> InitialMembers { get; set; } = new List<Guid>();
     }
 
     public class UpdateTeamDto
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public bool IsActive { get; set; }
     }
 

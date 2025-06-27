@@ -192,7 +192,7 @@ namespace AttendancePlatform.Shared.Infrastructure.GraphQL
                         TenantId = input.TenantId,
                         StartDate = input.StartDate,
                         EndDate = input.EndDate,
-                        LeaveType = Enum.TryParse<LeaveType>(input.LeaveType, out var leaveType) ? leaveType : LeaveType.Annual,
+                        LeaveTypeId = Guid.TryParse(input.LeaveType, out var leaveTypeId) ? leaveTypeId : Guid.Empty,
                         Reason = input.Reason,
                         Status = LeaveRequestStatus.Pending,
                         CreatedAt = DateTime.UtcNow
@@ -241,7 +241,7 @@ namespace AttendancePlatform.Shared.Infrastructure.GraphQL
             Field(x => x.UserId);
             Field(x => x.StartDate);
             Field(x => x.EndDate);
-            Field(x => x.LeaveType);
+            Field(x => x.LeaveTypeId);
             Field(x => x.Reason, nullable: true);
             Field<LeaveRequestStatusType>("status");
             Field(x => x.CreatedAt);

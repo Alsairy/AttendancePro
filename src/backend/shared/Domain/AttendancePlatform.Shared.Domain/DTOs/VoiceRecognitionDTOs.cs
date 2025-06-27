@@ -180,8 +180,8 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public float NoiseLevel { get; set; }
         public float Clarity { get; set; }
         public bool IsAcceptable { get; set; }
-        public IEnumerable<string> QualityIssues { get; set; }
-        public string Recommendation { get; set; }
+        public IEnumerable<string> QualityIssues { get; set; } = new List<string>();
+        public string Recommendation { get; set; } = string.Empty;
     }
 
     public class VoiceSecurityDto
