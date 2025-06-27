@@ -1,0 +1,175 @@
+groups:
+  - name: attendance_business_rules
+    rules:
+      - alert: AttendanceComplianceViolation
+        expr: sum(rate(attendance_policy_violations_total[1h])) > 5
+        for: 15m
+        labels:
+          severity: warning
+          service: compliance
+          category: attendance
+        annotations:
+          summary: "Attendance policy violations detected"
+          description: "More than 5 attendance policy violations per hour"
+
+      - alert: OvertimeThresholdExceeded
+        expr: sum(overtime_hours_total) by (department) > 100
+        for: 1h
+        labels:
+          severity: warning
+          service: workforce-management
+          category: overtime
+        annotations:
+          summary: "Overtime threshold exceeded in {{ $labels.department }}"
+          description: "Department {{ $labels.department }} has exceeded 100 hours of overtime"
+
+      - alert: AbsenteeismRateHigh
+        expr: sum(rate(absenteeism_incidents_total[24h])) / sum(rate(expected_attendance_total[24h])) * 100 > 15
+        for: 2h
+        labels:
+          severity: warning
+          service: hr-analytics
+          category: absenteeism
+        annotations:
+          summary: "High absenteeism rate detected"
+          description: "Absenteeism rate is above 15% for the last 24 hours"
+
+  - name: leave_management_rules
+    rules:
+      - alert: LeaveBalanceDeficit
+        expr: leave_balance_days < 0
+        for: 5m
+        labels:
+          severity: critical
+          service: leave-management
+          category: balance
+        annotations:
+          summary: "Negative leave balance detected for user {{ $labels.user_id }}"
+          description: "User {{ $labels.user_id }} has a negative leave balance of {{ $value }} days"
+
+      - alert: LeaveApprovalBacklog
+        expr: sum(leave_requests_pending_total) > 20
+        for: 4h
+        labels:
+          severity: warning
+          service: leave-management
+          category: approval
+        annotations:
+          summary: "Leave approval backlog detected"
+          description: "More than 20 leave requests are pending approval for over 4 hours"
+
+      - alert: UnauthorizedLeavePattern
+        expr: increase(unauthorized_leave_total[7d]) > 3
+        for: 1h
+        labels:
+          severity: warning
+          service: compliance
+          category: leave
+        annotations:
+          summary: "Unauthorized leave pattern detected for user {{ $labels.user_id }}"
+          description: "User {{ $labels.user_id }} has taken unauthorized leave 3+ times in the last week"
+
+  - name: performance_kpi_rules
+    rules:
+      - alert: ProductivityDecline
+        expr: avg_over_time(productivity_score[7d]) < 70
+        for: 2h
+        labels:
+          severity: warning
+          service: performance-analytics
+          category: productivity
+        annotations:
+          summary: "Productivity decline detected in {{ $labels.department }}"
+          description: "Average productivity score has been below 70% for the last week"
+
+      - alert: EngagementScoreLow
+        expr: employee_engagement_score < 60
+        for: 1h
+        labels:
+          severity: warning
+          service: hr-analytics
+          category: engagement
+        annotations:
+          summary: "Low employee engagement score"
+          description: "Employee engagement score is below 60% for {{ $labels.department }}"
+
+      - alert: TurnoverRateHigh
+        expr: rate(employee_turnover_total[30d]) * 100 > 10
+        for: 6h
+        labels:
+          severity: critical
+          service: hr-analytics
+          category: turnover
+        annotations:
+          summary: "High employee turnover rate"
+          description: "Employee turnover rate exceeds 10% monthly rate"
+
+  - name: compliance_rules
+    rules:
+      - alert: GDPRComplianceViolation
+        expr: increase(gdpr_violations_total[1h]) > 0
+        for: 1m
+        labels:
+          severity: critical
+          service: compliance
+          category: gdpr
+        annotations:
+          summary: "GDPR compliance violation detected"
+          description: "GDPR violation detected: {{ $labels.violation_type }}"
+
+      - alert: DataRetentionPolicyViolation
+        expr: increase(data_retention_violations_total[1h]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          service: compliance
+          category: data-retention
+        annotations:
+          summary: "Data retention policy violation"
+          description: "Data retention policy violation detected for {{ $labels.data_type }}"
+
+      - alert: AuditLogGap
+        expr: increase(audit_log_entries_total[1h]) == 0
+        for: 2h
+        labels:
+          severity: critical
+          service: compliance
+          category: audit
+        annotations:
+          summary: "Audit log gap detected"
+          description: "No audit log entries recorded for the last 2 hours - potential compliance issue"
+
+  - name: financial_rules
+    rules:
+      - alert: PayrollDiscrepancy
+        expr: abs(calculated_payroll_total - expected_payroll_total) / expected_payroll_total * 100 > 5
+        for: 30m
+        labels:
+          severity: critical
+          service: payroll
+          category: discrepancy
+        annotations:
+          summary: "Payroll calculation discrepancy detected"
+          description: "Payroll discrepancy of {{ $value }}% detected for period {{ $labels.pay_period }}"
+
+      - alert: OvertimeCostThreshold
+        expr: overtime_cost_total > 50000
+        for: 1h
+        labels:
+          severity: warning
+          service: cost-management
+          category: overtime
+        annotations:
+          summary: "Overtime cost threshold exceeded"
+          description: "Overtime costs have exceeded $50,000 threshold"
+
+      - alert: BudgetVariance
+        expr: abs(actual_labor_cost - budgeted_labor_cost) / budgeted_labor_cost * 100 > 15
+        for: 4h
+        labels:
+          severity: warning
+          service: financial-analytics
+          category: budget
+        annotations:
+          summary: "Labor cost budget variance detected"
+          description: "Labor cost variance of {{ $value }}% from budget for {{ $labels.department }}"
