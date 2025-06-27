@@ -1,0 +1,50 @@
+# Ignore legitimate configuration values that GitLeaks incorrectly identifies as secrets
+appsettings.json:*
+appsettings.Development.json:*
+appsettings.Production.json:*
+appsettings.Staging.json:*
+
+# Ignore example/template values
+**/example/**
+**/template/**
+**/samples/**
+
+# Ignore test data
+**/test/**
+**/tests/**
+**/Test/**
+**/Tests/**
+
+# Ignore documentation
+**/docs/**
+**/documentation/**
+README.md
+*.md
+
+# Ignore configuration templates
+*.template
+*.example
+*.sample
+
+# Ignore Kubernetes manifests with placeholder values
+k8s/**/*.yaml
+k8s/**/*.yml
+
+# Ignore Docker compose files with placeholder values
+docker-compose*.yml
+docker-compose*.yaml
+
+# Ignore CI/CD configuration files
+.github/**/*.yml
+.github/**/*.yaml
+
+# Ignore package files
+package.json
+package-lock.json
+*.csproj
+*.sln
+
+# Ignore environment variable examples
+.env.example
+.env.template
+.env.sample

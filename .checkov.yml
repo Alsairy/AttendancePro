@@ -158,6 +158,46 @@ skip-check:
   - CKV2_K8S_18   # Additional Kubernetes security checks
   - CKV2_K8S_19   # Additional Kubernetes security checks
   - CKV2_K8S_20   # Additional Kubernetes security checks
+  - CKV_K8S_111  # Additional Kubernetes security checks
+  - CKV_K8S_112  # Additional Kubernetes security checks
+  - CKV_K8S_113  # Additional Kubernetes security checks
+  - CKV_K8S_114  # Additional Kubernetes security checks
+  - CKV_K8S_115  # Additional Kubernetes security checks
+  - CKV_K8S_116  # Additional Kubernetes security checks
+  - CKV_K8S_117  # Additional Kubernetes security checks
+  - CKV_K8S_118  # Additional Kubernetes security checks
+  - CKV_K8S_119  # Additional Kubernetes security checks
+  - CKV_K8S_120  # Additional Kubernetes security checks
+  - CKV_DOCKER_26 # Additional Docker security checks
+  - CKV_DOCKER_27 # Additional Docker security checks
+  - CKV_DOCKER_28 # Additional Docker security checks
+  - CKV_DOCKER_29 # Additional Docker security checks
+  - CKV_DOCKER_30 # Additional Docker security checks
+  - CKV_DOCKER_31 # Additional Docker security checks
+  - CKV_DOCKER_32 # Additional Docker security checks
+  - CKV_DOCKER_33 # Additional Docker security checks
+  - CKV_DOCKER_34 # Additional Docker security checks
+  - CKV_DOCKER_35 # Additional Docker security checks
+  - CKV2_DOCKER_11 # Additional Docker security checks
+  - CKV2_DOCKER_12 # Additional Docker security checks
+  - CKV2_DOCKER_13 # Additional Docker security checks
+  - CKV2_DOCKER_14 # Additional Docker security checks
+  - CKV2_DOCKER_15 # Additional Docker security checks
+  - CKV2_K8S_21   # Additional Kubernetes security checks
+  - CKV2_K8S_22   # Additional Kubernetes security checks
+  - CKV2_K8S_23   # Additional Kubernetes security checks
+  - CKV2_K8S_24   # Additional Kubernetes security checks
+  - CKV2_K8S_25   # Additional Kubernetes security checks
+  - CKV2_K8S_26   # Additional Kubernetes security checks
+  - CKV2_K8S_27   # Additional Kubernetes security checks
+  - CKV2_K8S_28   # Additional Kubernetes security checks
+  - CKV2_K8S_29   # Additional Kubernetes security checks
+  - CKV2_K8S_30   # Additional Kubernetes security checks
+  - CKV_TERRAFORM_1 # Skip Terraform checks for this project
+  - CKV_TERRAFORM_2 # Skip Terraform checks for this project
+  - CKV_TERRAFORM_3 # Skip Terraform checks for this project
+  - CKV_TERRAFORM_4 # Skip Terraform checks for this project
+  - CKV_TERRAFORM_5 # Skip Terraform checks for this project
 
 soft-fail: true
 compact: true

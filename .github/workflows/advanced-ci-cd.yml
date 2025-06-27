@@ -91,10 +91,13 @@ jobs:
       with:
         sarif_file: 'trivy-results.sarif'
 
-    - name: Run CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
       with:
         languages: 'csharp,javascript,typescript'
+    
+    - name: Run CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
 
     - name: OWASP Dependency Check
       uses: dependency-check/Dependency-Check_Action@main
