@@ -40,10 +40,13 @@ namespace AttendancePlatform.Tests.Integration
         [Fact]
         public async Task AuthenticationService_ShouldIntegrateWithUserManagement()
         {
+            var testEmail = Environment.GetEnvironmentVariable("TEST_INTEGRATION_EMAIL") ?? "integration@hudur.sa";
+            var testPassword = Environment.GetEnvironmentVariable("TEST_INTEGRATION_PASSWORD") ?? "TestPassword123!";
+            
             var registerRequest = new
             {
-                Email = "integration@hudur.sa",
-                Password = "IntegrationTest123!",
+                Email = testEmail,
+                Password = testPassword,
                 FirstName = "Integration",
                 LastName = "Test"
             };
@@ -53,8 +56,8 @@ namespace AttendancePlatform.Tests.Integration
 
             var loginRequest = new
             {
-                Email = "integration@hudur.sa",
-                Password = "IntegrationTest123!"
+                Email = testEmail,
+                Password = testPassword
             };
 
             var loginResponse = await _client.PostAsJsonAsync("/api/auth/login", loginRequest);
@@ -242,10 +245,13 @@ namespace AttendancePlatform.Tests.Integration
 
         private async Task<string> GetValidTokenAsync()
         {
+            var testEmail = Environment.GetEnvironmentVariable("TEST_ADMIN_EMAIL") ?? "admin@hudur.sa";
+            var testPassword = Environment.GetEnvironmentVariable("TEST_ADMIN_PASSWORD") ?? "TestPassword123!";
+            
             var loginRequest = new
             {
-                Email = "admin@hudur.sa",
-                Password = "AdminPassword123!"
+                Email = testEmail,
+                Password = testPassword
             };
 
             var response = await _client.PostAsJsonAsync("/api/auth/login", loginRequest);

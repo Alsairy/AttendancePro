@@ -48,7 +48,8 @@ namespace AttendancePlatform.Tests.Security
 
             foreach (var payload in maliciousPayloads)
             {
-                var request = new { Email = payload, Password = "password" };
+                var testPassword = Environment.GetEnvironmentVariable("TEST_SECURITY_PASSWORD") ?? "TestSecurityPassword123!";
+                var request = new { Email = payload, Password = testPassword };
                 var response = await Client.PostAsJsonAsync("/api/auth/login", request);
                 
                 response.StatusCode.Should().BeOneOf(HttpStatusCode.BadRequest, HttpStatusCode.Unauthorized);
@@ -122,7 +123,8 @@ namespace AttendancePlatform.Tests.Security
             Client.DefaultRequestHeaders.Add("Origin", "https://malicious-site.com");
             Client.DefaultRequestHeaders.Add("Referer", "https://malicious-site.com");
 
-            var response = await Client.PostAsJsonAsync("/api/auth/login", new { Email = "test@hudur.sa", Password = "password" });
+            var testPassword = Environment.GetEnvironmentVariable("TEST_SECURITY_PASSWORD") ?? "TestSecurityPassword123!";
+            var response = await Client.PostAsJsonAsync("/api/auth/login", new { Email = "test@hudur.sa", Password = testPassword });
             
             response.StatusCode.Should().BeOneOf(HttpStatusCode.Forbidden, HttpStatusCode.BadRequest, HttpStatusCode.Unauthorized);
         }
@@ -164,7 +166,8 @@ namespace AttendancePlatform.Tests.Security
         [Fact]
         public async Task Api_ShouldLogSecurityEvents()
         {
-            var maliciousRequest = new { Email = "'; DROP TABLE Users; --", Password = "password" };
+            var testPassword = Environment.GetEnvironmentVariable("TEST_SECURITY_PASSWORD") ?? "TestSecurityPassword123!";
+            var maliciousRequest = new { Email = "'; DROP TABLE Users; --", Password = testPassword };
             await Client.PostAsJsonAsync("/api/auth/login", maliciousRequest);
             
             Assert.True(true); // Placeholder - would check logs in real implementation
@@ -177,7 +180,7 @@ namespace AttendancePlatform.Tests.Security
             {
                 new { Email = "", Password = "" },
                 new { Email = "not-an-email", Password = "123" },
-                new { Email = new string('a', 1000) + "@test.com", Password = "password" },
+                new { Email = new string('a', 1000) + "@test.com", Password = Environment.GetEnvironmentVariable("TEST_SECURITY_PASSWORD") ?? "TestSecurityPassword123!" },
                 new { Email = "test@test.com", Password = new string('a', 1000) }
             };
 
