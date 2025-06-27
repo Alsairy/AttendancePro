@@ -1,85 +1,149 @@
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
+  external_labels:
+    cluster: 'hudur-production'
+    environment: 'production'
 
 rule_files:
   - "alert_rules.yml"
+  - "business_rules.yml"
+  - "sla_rules.yml"
 
-# Alerting disabled - no alertmanager deployed
-# alerting:
-#   alertmanagers:
-#     - static_configs:
-#         - targets:
-#           - alertmanager:9093
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+      path_prefix: /alertmanager
+      scheme: http
 
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
+    scrape_interval: 15s
 
-  - job_name: 'authentication-service'
-    static_configs:
-      - targets: ['authentication-service:80']
-    metrics_path: '/metrics'
-    scrape_interval: 10s
-
-  - job_name: 'attendance-service'
+  # Core Microservices
+  - job_name: 'attendance-api'
     static_configs:
       - targets: ['attendance-service:80']
     metrics_path: '/metrics'
-    scrape_interval: 10s
+    scrape_interval: 30s
+    scrape_timeout: 10s
 
-  - job_name: 'analytics-service'
+  - job_name: 'authentication-api'
     static_configs:
-      - targets: ['analytics-service:80']
+      - targets: ['authentication-service:80']
     metrics_path: '/metrics'
-    scrape_interval: 10s
+    scrape_interval: 30s
+    scrape_timeout: 10s
 
-  - job_name: 'face-recognition-service'
+  - job_name: 'face-recognition-api'
     static_configs:
       - targets: ['face-recognition-service:80']
     metrics_path: '/metrics'
-    scrape_interval: 10s
+    scrape_interval: 30s
+    scrape_timeout: 10s
 
-  - job_name: 'leave-management-service'
+  - job_name: 'leave-management-api'
     static_configs:
       - targets: ['leave-management-service:80']
     metrics_path: '/metrics'
-    scrape_interval: 10s
+    scrape_interval: 30s
+    scrape_timeout: 10s
 
-  - job_name: 'business-intelligence-service'
+  - job_name: 'user-management-api'
     static_configs:
-      - targets: ['business-intelligence-service:80']
+      - targets: ['user-management-service:80']
     metrics_path: '/metrics'
-    scrape_interval: 10s
+    scrape_interval: 30s
+    scrape_timeout: 10s
 
-  - job_name: 'integrations-service'
+  - job_name: 'tenant-management-api'
     static_configs:
-      - targets: ['integrations-service:80']
+      - targets: ['tenant-management-service:80']
     metrics_path: '/metrics'
-    scrape_interval: 10s
+    scrape_interval: 30s
+    scrape_timeout: 10s
 
-  - job_name: 'collaboration-service'
+  - job_name: 'notifications-api'
     static_configs:
-      - targets: ['collaboration-service:80']
+      - targets: ['notifications-service:80']
     metrics_path: '/metrics'
-    scrape_interval: 10s
+    scrape_interval: 30s
+    scrape_timeout: 10s
 
-  - job_name: 'workflow-engine-service'
+  - job_name: 'webhooks-api'
+    static_configs:
+      - targets: ['webhooks-service:80']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Advanced Services
+  - job_name: 'analytics-api'
+    static_configs:
+      - targets: ['analytics-service:80']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  - job_name: 'workflow-engine-api'
     static_configs:
       - targets: ['workflow-engine-service:80']
     metrics_path: '/metrics'
-    scrape_interval: 10s
+    scrape_interval: 30s
+    scrape_timeout: 10s
 
-  - job_name: 'frontend'
+  - job_name: 'integrations-api'
     static_configs:
-      - targets: ['frontend:80']
+      - targets: ['integrations-service:80']
     metrics_path: '/metrics'
     scrape_interval: 30s
+    scrape_timeout: 10s
+
+  - job_name: 'collaboration-api'
+    static_configs:
+      - targets: ['collaboration-service:80']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  - job_name: 'voice-recognition-api'
+    static_configs:
+      - targets: ['voice-recognition-service:80']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  - job_name: 'monitoring-api'
+    static_configs:
+      - targets: ['monitoring-service:80']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  - job_name: 'compliance-api'
+    static_configs:
+      - targets: ['compliance-service:80']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Infrastructure Components
+  - job_name: 'api-gateway'
+    static_configs:
+      - targets: ['api-gateway:80']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+    scrape_timeout: 10s
 
   - job_name: 'redis'
     static_configs:
       - targets: ['redis:6379']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
 
   - job_name: 'rabbitmq'
     static_configs:
@@ -88,8 +152,23 @@ scrape_configs:
   - job_name: 'sql-server'
     static_configs:
       - targets: ['sql-server:1433']
+    metrics_path: '/metrics'
+    scrape_interval: 60s
+
+  - job_name: 'frontend'
+    static_configs:
+      - targets: ['frontend:80']
+    metrics_path: '/metrics'
     scrape_interval: 30s
 
   - job_name: 'node-exporter'
     static_configs:
       - targets: ['node-exporter:9100']
+
+  # Business Metrics Collection
+  - job_name: 'business-metrics'
+    static_configs:
+      - targets: ['monitoring-service:80']
+    metrics_path: '/api/monitoring/metrics'
+    scrape_interval: 60s
+    scrape_timeout: 30s
