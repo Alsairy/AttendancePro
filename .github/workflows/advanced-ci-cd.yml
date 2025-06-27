@@ -279,14 +279,14 @@ jobs:
     strategy:
       matrix:
         service: 
-          - authentication
-          - attendance
-          - face-recognition
-          - leave-management
-          - notifications
-          - analytics
+          - Authentication
+          - Attendance
+          - FaceRecognition
+          - LeaveManagement
+          - Notifications
+          - Analytics
           - WorkflowEngine
-          - integrations
+          - Integrations
           - api-gateway
           - frontend
     
