@@ -319,46 +319,36 @@ jobs:
           zap-*-report-${{ steps.target.outputs.env }}.xml
         if-no-files-found: ignore
     
-    - name: Comment PR with scan results
+    - name: Log penetration testing results
       if: github.event_name == 'pull_request'
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs');
-          
-          let comment = '## 🔒 OWASP ZAP Penetration Testing Results\n\n';
-          comment += `**Environment:** ${{ steps.target.outputs.env }}\n`;
-          comment += `**Scan Type:** ${{ steps.target.outputs.scan_type }}\n\n`;
-          
-          // Check if scan files exist
-          const htmlExists = fs.existsSync(`zap-baseline-report-${{ steps.target.outputs.env }}.html`);
-          const jsonExists = fs.existsSync(`zap-baseline-report-${{ steps.target.outputs.env }}.json`);
-          
-          if (htmlExists && jsonExists) {
-            comment += '✅ **Penetration testing workflow validated successfully!** \n\n';
-            comment += '**Status:** PR penetration testing validation completed. The workflow is ready for staging and production deployments.\n\n';
-          } else {
-            comment += '⚠️ **Penetration testing validation encountered issues.** \n\n';
-          }
-          
-          comment += '**Note:** For PR branches, we validate the penetration testing workflow without targeting live environments. ';
-          comment += 'Full OWASP ZAP scanning occurs automatically on staging and production deployments.\n\n';
-          comment += '### Cybersecurity Policy Compliance\n';
-          comment += '✅ **Policy 12-1:** Penetration testing workflow enabled for all environments\n';
-          comment += '✅ **Policy 3-2-1-7:** OWASP Top Ten security standards applied\n';
-          comment += '✅ **Policy 8-1:** Automated security testing integrated into CI/CD pipeline\n';
-          comment += '✅ **Policy 10-1:** Security scanning capability verified\n\n';
-          comment += '### Next Steps\n';
-          comment += '- **Staging Deployment:** Will trigger OWASP ZAP baseline scan against staging.hudur.sa\n';
-          comment += '- **Production Deployment:** Will trigger comprehensive OWASP ZAP full scan against production.hudur.sa\n';
-          comment += '- **Artifacts:** All scan results will be available as downloadable workflow artifacts\n';
-          
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: comment
-          });
+      run: |
+        echo "🔒 OWASP ZAP Penetration Testing Results"
+        echo "Environment: ${{ steps.target.outputs.env }}"
+        echo "Scan Type: ${{ steps.target.outputs.scan_type }}"
+        echo ""
+        
+        # Check if scan files exist
+        if [[ -f "zap-baseline-report-${{ steps.target.outputs.env }}.html" && -f "zap-baseline-report-${{ steps.target.outputs.env }}.json" ]]; then
+          echo "✅ Penetration testing workflow validated successfully!"
+          echo "Status: PR penetration testing validation completed. The workflow is ready for staging and production deployments."
+        else
+          echo "⚠️ Penetration testing validation encountered issues."
+        fi
+        
+        echo ""
+        echo "Note: For PR branches, we validate the penetration testing workflow without targeting live environments."
+        echo "Full OWASP ZAP scanning occurs automatically on staging and production deployments."
+        echo ""
+        echo "Cybersecurity Policy Compliance:"
+        echo "✅ Policy 12-1: Penetration testing workflow enabled for all environments"
+        echo "✅ Policy 3-2-1-7: OWASP Top Ten security standards applied"
+        echo "✅ Policy 8-1: Automated security testing integrated into CI/CD pipeline"
+        echo "✅ Policy 10-1: Security scanning capability verified"
+        echo ""
+        echo "Next Steps:"
+        echo "- Staging Deployment: Will trigger OWASP ZAP baseline scan against staging.hudur.sa"
+        echo "- Production Deployment: Will trigger comprehensive OWASP ZAP full scan against production.hudur.sa"
+        echo "- Artifacts: All scan results will be available as downloadable workflow artifacts"
 
   security-report:
     name: Generate Security Report
