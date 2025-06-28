@@ -1,0 +1,273 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hudur-blue-green-config
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-blue-green-config
+    app.kubernetes.io/part-of: hudur-platform
+data:
+  deployment-strategy: "blue-green"
+  health-check-timeout: "300"
+  rollback-on-failure: "true"
+  cleanup-old-env: "false"
+  validation-endpoints: |
+    - /health
+    - /api/health
+    - /api/v1/health
+    - /metrics
+  smoke-tests: |
+    - name: "authentication-health"
+      endpoint: "/api/auth/health"
+      expected-status: 200
+    - name: "attendance-health"
+      endpoint: "/api/attendance/health"
+      expected-status: 200
+    - name: "face-recognition-health"
+      endpoint: "/api/face-recognition/health"
+      expected-status: 200
+    - name: "leave-management-health"
+      endpoint: "/api/leave/health"
+      expected-status: 200
+    - name: "notifications-health"
+      endpoint: "/api/notifications/health"
+      expected-status: 200
+    - name: "analytics-health"
+      endpoint: "/api/analytics/health"
+      expected-status: 200
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hudur-api-gateway-blue
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-api-gateway
+    app.kubernetes.io/part-of: hudur-platform
+    version: blue
+spec:
+  selector:
+    app.kubernetes.io/name: hudur-api-gateway
+    version: blue
+  ports:
+  - port: 80
+    targetPort: 8080
+    name: http
+  - port: 443
+    targetPort: 8443
+    name: https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hudur-api-gateway-green
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-api-gateway
+    app.kubernetes.io/part-of: hudur-platform
+    version: green
+spec:
+  selector:
+    app.kubernetes.io/name: hudur-api-gateway
+    version: green
+  ports:
+  - port: 80
+    targetPort: 8080
+    name: http
+  - port: 443
+    targetPort: 8443
+    name: https
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hudur-blue-green-ingress
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-blue-green-ingress
+    app.kubernetes.io/part-of: hudur-platform
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+spec:
+  tls:
+  - hosts:
+    - hudur.sa
+    - staging.hudur.sa
+    secretName: hudur-tls-secret
+  rules:
+  - host: hudur.sa
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hudur-api-gateway
+            port:
+              number: 80
+  - host: staging.hudur.sa
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hudur-api-gateway
+            port:
+              number: 80
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hudur-deployment-validation
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-deployment-validation
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: deployment-validator
+        image: hudurprodacr.azurecr.io/hudur/deployment-validator:latest
+        env:
+        - name: VALIDATION_TARGET
+          value: "production"
+        - name: HEALTH_CHECK_TIMEOUT
+          valueFrom:
+            configMapKeyRef:
+              name: hudur-blue-green-config
+              key: health-check-timeout
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Starting deployment validation at $(date)"
+          
+          check_endpoint() {
+            local endpoint=$1
+            local expected_status=$2
+            local service_name=$3
+            
+            echo "Checking $service_name endpoint: $endpoint"
+            
+            response=$(curl -s -o /dev/null -w "%{http_code}" \
+              --max-time 30 \
+              "http://hudur-api-gateway.hudur-platform.svc.cluster.local$endpoint")
+            
+            if [ "$response" -eq "$expected_status" ]; then
+              echo "✓ $service_name health check passed (HTTP $response)"
+              return 0
+            else
+              echo "✗ $service_name health check failed (HTTP $response, expected $expected_status)"
+              return 1
+            fi
+          }
+          
+          echo "Running comprehensive health checks..."
+          
+          validation_passed=true
+          
+          check_endpoint "/api/auth/health" 200 "Authentication" || validation_passed=false
+          check_endpoint "/api/attendance/health" 200 "Attendance" || validation_passed=false
+          check_endpoint "/api/face-recognition/health" 200 "Face Recognition" || validation_passed=false
+          check_endpoint "/api/leave/health" 200 "Leave Management" || validation_passed=false
+          check_endpoint "/api/notifications/health" 200 "Notifications" || validation_passed=false
+          check_endpoint "/api/analytics/health" 200 "Analytics" || validation_passed=false
+          
+          check_endpoint "/health" 200 "API Gateway" || validation_passed=false
+          
+          check_endpoint "/metrics" 200 "Metrics" || validation_passed=false
+          
+          echo "Running functional tests..."
+          
+          echo "Testing authentication flow..."
+          auth_response=$(curl -s -X POST \
+            "http://hudur-api-gateway.hudur-platform.svc.cluster.local/api/auth/login" \
+            -H "Content-Type: application/json" \
+            -d '{"email":"test@hudur.sa","password":"TestPassword123!"}' \
+            -w "%{http_code}")
+          
+          if [[ "$auth_response" =~ 200|401 ]]; then
+            echo "✓ Authentication endpoint is responsive"
+          else
+            echo "✗ Authentication endpoint failed"
+            validation_passed=false
+          fi
+          
+          echo "Testing attendance endpoints..."
+          attendance_response=$(curl -s -o /dev/null -w "%{http_code}" \
+            --max-time 30 \
+            "http://hudur-api-gateway.hudur-platform.svc.cluster.local/api/attendance/records")
+          
+          if [[ "$attendance_response" =~ 200|401|403 ]]; then
+            echo "✓ Attendance endpoint is responsive"
+          else
+            echo "✗ Attendance endpoint failed"
+            validation_passed=false
+          fi
+          
+          echo "Checking database connectivity..."
+          db_check=$(kubectl run db-check --image=postgres:15 --rm -i --restart=Never -- \
+            psql "$DATABASE_CONNECTION_STRING" -c "SELECT 1;" 2>/dev/null || echo "failed")
+          
+          if [[ "$db_check" != "failed" ]]; then
+            echo "✓ Database connectivity check passed"
+          else
+            echo "✗ Database connectivity check failed"
+            validation_passed=false
+          fi
+          
+          echo "Checking Redis connectivity..."
+          redis_check=$(kubectl run redis-check --image=redis:7-alpine --rm -i --restart=Never -- \
+            redis-cli -h hudur-redis.hudur-platform.svc.cluster.local ping 2>/dev/null || echo "failed")
+          
+          if [[ "$redis_check" == "PONG" ]]; then
+            echo "✓ Redis connectivity check passed"
+          else
+            echo "✗ Redis connectivity check failed"
+            validation_passed=false
+          fi
+          
+          echo "Running performance validation..."
+          
+          response_time=$(curl -s -o /dev/null -w "%{time_total}" \
+            "http://hudur-api-gateway.hudur-platform.svc.cluster.local/health")
+          
+          if (( $(echo "$response_time < 2.0" | bc -l) )); then
+            echo "✓ Response time validation passed ($response_time seconds)"
+          else
+            echo "✗ Response time validation failed ($response_time seconds > 2.0)"
+            validation_passed=false
+          fi
+          
+          echo "Running security validation..."
+          
+          security_headers=$(curl -s -I \
+            "http://hudur-api-gateway.hudur-platform.svc.cluster.local/health" | \
+            grep -E "(X-Frame-Options|X-Content-Type-Options|X-XSS-Protection|Strict-Transport-Security)")
+          
+          if [[ -n "$security_headers" ]]; then
+            echo "✓ Security headers validation passed"
+          else
+            echo "✗ Security headers validation failed"
+            validation_passed=false
+          fi
+          
+          if [ "$validation_passed" = true ]; then
+            echo "🎉 All deployment validations passed successfully!"
+            echo "Deployment validation completed at $(date)"
+            exit 0
+          else
+            echo "❌ Deployment validation failed!"
+            echo "Please check the logs above for specific failures"
+            exit 1
+          fi

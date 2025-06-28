@@ -1,0 +1,273 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: hudur-system
+  labels:
+    app: grafana
+    component: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+      component: server
+  template:
+    metadata:
+      labels:
+        app: grafana
+        component: server
+    spec:
+      serviceAccountName: grafana
+      containers:
+      - name: grafana
+        image: grafana/grafana:10.2.0
+        ports:
+        - containerPort: 3000
+          name: web
+        env:
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: grafana-secrets
+              key: admin-password
+        - name: GF_DATABASE_TYPE
+          value: "postgres"
+        - name: GF_DATABASE_HOST
+          value: "postgresql:5432"
+        - name: GF_DATABASE_NAME
+          value: "grafana"
+        - name: GF_DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: grafana-secrets
+              key: db-username
+        - name: GF_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: grafana-secrets
+              key: db-password
+        - name: GF_SERVER_ROOT_URL
+          value: "https://grafana.hudur.sa"
+        - name: GF_SECURITY_COOKIE_SECURE
+          value: "true"
+        - name: GF_SECURITY_COOKIE_SAMESITE
+          value: "strict"
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "false"
+        - name: GF_USERS_ALLOW_SIGN_UP
+          value: "false"
+        - name: GF_SMTP_ENABLED
+          value: "true"
+        - name: GF_SMTP_HOST
+          value: "smtp.hudur.sa:587"
+        - name: GF_SMTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: grafana-secrets
+              key: smtp-username
+        - name: GF_SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: grafana-secrets
+              key: smtp-password
+        - name: GF_SMTP_FROM_ADDRESS
+          value: "grafana@hudur.sa"
+        volumeMounts:
+        - name: grafana-storage
+          mountPath: /var/lib/grafana
+        - name: grafana-config
+          mountPath: /etc/grafana/provisioning
+        - name: grafana-dashboards
+          mountPath: /var/lib/grafana/dashboards
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: grafana-storage
+        persistentVolumeClaim:
+          claimName: grafana-pvc
+      - name: grafana-config
+        configMap:
+          name: grafana-config
+      - name: grafana-dashboards
+        configMap:
+          name: grafana-dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+  namespace: hudur-system
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+        isDefault: true
+        editable: false
+      - name: Jaeger
+        type: jaeger
+        access: proxy
+        url: http://jaeger-query:16686
+        editable: false
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki:3100
+        editable: false
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        updateIntervalSeconds: 10
+        allowUiUpdates: true
+        options:
+          path: /var/lib/grafana/dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: hudur-system
+data:
+  monitoring-overview.json: |
+    {
+      "dashboard": {
+        "id": null,
+        "title": "Hudur AttendancePro - System Overview",
+        "tags": ["hudur", "monitoring", "system"],
+        "timezone": "browser",
+        "panels": [
+          {
+            "id": 1,
+            "title": "Service Health",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "up",
+                "legendFormat": "{{job}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+          },
+          {
+            "id": 2,
+            "title": "Request Rate",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "sum(rate(http_requests_total[5m])) by (service)",
+                "legendFormat": "{{service}}"
+              }
+            ],
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+          }
+        ],
+        "time": {"from": "now-1h", "to": "now"},
+        "refresh": "30s"
+      }
+    }
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+  namespace: hudur-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: fast-ssd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: hudur-system
+  labels:
+    app: grafana
+    component: server
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3000
+    targetPort: 3000
+    name: web
+  selector:
+    app: grafana
+    component: server
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: grafana
+  namespace: hudur-system
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-secrets
+  namespace: hudur-system
+type: Opaque
+data:
+  admin-password: YWRtaW4xMjM0NTY=  # admin123456 (base64)
+  db-username: Z3JhZmFuYQ==  # grafana (base64)
+  db-password: Z3JhZmFuYTEyMzQ1Ng==  # grafana123456 (base64)
+  smtp-username: Z3JhZmFuYUBodWR1ci5zYQ==  # grafana@hudur.sa (base64)
+  smtp-password: c210cDEyMzQ1Ng==  # smtp123456 (base64)
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  namespace: hudur-system
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: grafana-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - Grafana'
+spec:
+  tls:
+  - hosts:
+    - grafana.hudur.sa
+    secretName: grafana-tls
+  rules:
+  - host: grafana.hudur.sa
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 3000

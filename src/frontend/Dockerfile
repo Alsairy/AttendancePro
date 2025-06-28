@@ -5,13 +5,13 @@ FROM node:20-alpine AS build
 WORKDIR /app
 
 # Copy package files
-COPY src/frontend/attendance-web-app/package*.json ./
+COPY src/frontend/attendancepro-frontend/package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies (including devDependencies for build tools like TypeScript)
+RUN npm ci
 
 # Copy source code
-COPY src/frontend/attendance-web-app/ ./
+COPY src/frontend/attendancepro-frontend/ ./
 
 # Build the application
 RUN npm run build
@@ -65,10 +65,8 @@ EOF
 # Copy built application from build stage
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Create non-root user for security
-RUN addgroup -g 1001 -S nginx && \
-    adduser -S -D -H -u 1001 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx && \
-    chown -R nginx:nginx /usr/share/nginx/html && \
+# Use existing nginx user and set proper permissions
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
     chown -R nginx:nginx /var/cache/nginx && \
     chown -R nginx:nginx /var/log/nginx && \
     chown -R nginx:nginx /etc/nginx/conf.d

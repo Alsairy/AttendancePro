@@ -1,0 +1,259 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hudur-backup-config
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-backup-config
+    app.kubernetes.io/part-of: hudur-platform
+data:
+  backup-schedule: "0 2 * * *"
+  retention-days: "30"
+  backup-types: |
+    - database
+    - persistent-volumes
+    - kubernetes-resources
+    - application-configs
+  backup-destinations: |
+    - azure-blob-storage
+    - azure-backup-vault
+    - cross-region-replication
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hudur-database-backup
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-database-backup
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  schedule: "0 2 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: database-backup
+            image: hudurprodacr.azurecr.io/hudur/backup-utility:latest
+            env:
+            - name: BACKUP_TYPE
+              value: "database"
+            - name: DATABASE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: hudur-secrets
+                  key: database-connection-string
+            - name: STORAGE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: hudur-secrets
+                  key: blob-storage-connection-string
+            - name: BACKUP_RETENTION_DAYS
+              valueFrom:
+                configMapKeyRef:
+                  name: hudur-backup-config
+                  key: retention-days
+            command:
+            - /bin/bash
+            - -c
+            - |
+              TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+              BACKUP_FILE="hudur-db-backup-$TIMESTAMP.sql"
+              
+              echo "Starting database backup at $(date)"
+              
+              pg_dump "$DATABASE_CONNECTION_STRING" > /tmp/$BACKUP_FILE
+              
+              if [ $? -eq 0 ]; then
+                echo "Database dump successful, uploading to Azure Blob Storage"
+                az storage blob upload \
+                  --connection-string "$STORAGE_CONNECTION_STRING" \
+                  --container-name database-backups \
+                  --name "$BACKUP_FILE" \
+                  --file /tmp/$BACKUP_FILE
+                
+                if [ $? -eq 0 ]; then
+                  echo "Backup uploaded successfully"
+                  
+                  echo "Cleaning up old backups (retention: $BACKUP_RETENTION_DAYS days)"
+                  CUTOFF_DATE=$(date -d "$BACKUP_RETENTION_DAYS days ago" +%Y%m%d)
+                  
+                  az storage blob list \
+                    --connection-string "$STORAGE_CONNECTION_STRING" \
+                    --container-name database-backups \
+                    --query "[?properties.lastModified < '$CUTOFF_DATE'].name" \
+                    --output tsv | while read blob; do
+                    if [ ! -z "$blob" ]; then
+                      az storage blob delete \
+                        --connection-string "$STORAGE_CONNECTION_STRING" \
+                        --container-name database-backups \
+                        --name "$blob"
+                      echo "Deleted old backup: $blob"
+                    fi
+                  done
+                else
+                  echo "Failed to upload backup to Azure Blob Storage"
+                  exit 1
+                fi
+              else
+                echo "Database dump failed"
+                exit 1
+              fi
+              
+              rm -f /tmp/$BACKUP_FILE
+              echo "Database backup completed at $(date)"
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: hudur-backup-pvc
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hudur-pv-backup
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-pv-backup
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: hudur-backup-sa
+          containers:
+          - name: pv-backup
+            image: hudurprodacr.azurecr.io/hudur/backup-utility:latest
+            env:
+            - name: BACKUP_TYPE
+              value: "persistent-volumes"
+            - name: STORAGE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: hudur-secrets
+                  key: blob-storage-connection-string
+            command:
+            - /bin/bash
+            - -c
+            - |
+              TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+              
+              echo "Starting persistent volume backup at $(date)"
+              
+              kubectl get pv -o yaml > /tmp/pv-backup-$TIMESTAMP.yaml
+              kubectl get pvc -A -o yaml > /tmp/pvc-backup-$TIMESTAMP.yaml
+              
+              tar -czf /tmp/pv-backup-$TIMESTAMP.tar.gz -C /tmp pv-backup-$TIMESTAMP.yaml pvc-backup-$TIMESTAMP.yaml
+              
+              az storage blob upload \
+                --connection-string "$STORAGE_CONNECTION_STRING" \
+                --container-name pv-backups \
+                --name "pv-backup-$TIMESTAMP.tar.gz" \
+                --file /tmp/pv-backup-$TIMESTAMP.tar.gz
+              
+              if [ $? -eq 0 ]; then
+                echo "Persistent volume backup uploaded successfully"
+              else
+                echo "Failed to upload persistent volume backup"
+                exit 1
+              fi
+              
+              rm -f /tmp/pv-backup-$TIMESTAMP.*
+              echo "Persistent volume backup completed at $(date)"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hudur-k8s-resources-backup
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-k8s-resources-backup
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  schedule: "0 4 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: hudur-backup-sa
+          containers:
+          - name: k8s-resources-backup
+            image: hudurprodacr.azurecr.io/hudur/backup-utility:latest
+            env:
+            - name: BACKUP_TYPE
+              value: "kubernetes-resources"
+            - name: STORAGE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: hudur-secrets
+                  key: blob-storage-connection-string
+            command:
+            - /bin/bash
+            - -c
+            - |
+              TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+              BACKUP_DIR="/tmp/k8s-backup-$TIMESTAMP"
+              
+              echo "Starting Kubernetes resources backup at $(date)"
+              
+              mkdir -p $BACKUP_DIR
+              
+              kubectl get all -n hudur-platform -o yaml > $BACKUP_DIR/all-resources.yaml
+              kubectl get configmaps -n hudur-platform -o yaml > $BACKUP_DIR/configmaps.yaml
+              kubectl get secrets -n hudur-platform -o yaml > $BACKUP_DIR/secrets.yaml
+              kubectl get ingresses -n hudur-platform -o yaml > $BACKUP_DIR/ingresses.yaml
+              kubectl get networkpolicies -n hudur-platform -o yaml > $BACKUP_DIR/networkpolicies.yaml
+              kubectl get podsecuritypolicies -o yaml > $BACKUP_DIR/podsecuritypolicies.yaml
+              kubectl get clusterroles -o yaml > $BACKUP_DIR/clusterroles.yaml
+              kubectl get clusterrolebindings -o yaml > $BACKUP_DIR/clusterrolebindings.yaml
+              
+              tar -czf /tmp/k8s-resources-backup-$TIMESTAMP.tar.gz -C /tmp k8s-backup-$TIMESTAMP
+              
+              az storage blob upload \
+                --connection-string "$STORAGE_CONNECTION_STRING" \
+                --container-name k8s-backups \
+                --name "k8s-resources-backup-$TIMESTAMP.tar.gz" \
+                --file /tmp/k8s-resources-backup-$TIMESTAMP.tar.gz
+              
+              if [ $? -eq 0 ]; then
+                echo "Kubernetes resources backup uploaded successfully"
+              else
+                echo "Failed to upload Kubernetes resources backup"
+                exit 1
+              fi
+              
+              rm -rf $BACKUP_DIR /tmp/k8s-resources-backup-$TIMESTAMP.tar.gz
+              echo "Kubernetes resources backup completed at $(date)"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hudur-backup-pvc
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-backup-pvc
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: managed-premium

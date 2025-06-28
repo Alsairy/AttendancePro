@@ -1,0 +1,366 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hudur-api-monitoring-config
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-api-monitoring
+    app.kubernetes.io/part-of: hudur-platform
+data:
+  monitoring-config.yml: |
+    api:
+      monitoring_interval: 15
+      performance_thresholds:
+        response_time_ms: 500
+        error_rate_percent: 5
+        throughput_rps: 1000
+        cache_hit_rate_percent: 80
+        memory_usage_mb: 512
+      
+    endpoints:
+      - name: "authentication"
+        path: "/api/auth/*"
+        thresholds:
+          response_time_ms: 200
+          error_rate_percent: 2
+          throughput_rps: 500
+        
+      - name: "attendance"
+        path: "/api/attendance/*"
+        thresholds:
+          response_time_ms: 300
+          error_rate_percent: 3
+          throughput_rps: 800
+        
+      - name: "users"
+        path: "/api/users/*"
+        thresholds:
+          response_time_ms: 250
+          error_rate_percent: 2
+          throughput_rps: 400
+        
+      - name: "reports"
+        path: "/api/reports/*"
+        thresholds:
+          response_time_ms: 1000
+          error_rate_percent: 5
+          throughput_rps: 100
+        
+      - name: "analytics"
+        path: "/api/analytics/*"
+        thresholds:
+          response_time_ms: 800
+          error_rate_percent: 4
+          throughput_rps: 200
+        
+      - name: "graphql"
+        path: "/graphql"
+        thresholds:
+          response_time_ms: 400
+          error_rate_percent: 3
+          throughput_rps: 600
+
+    metrics:
+      - name: "api_response_time"
+        query: |
+          SELECT 
+            endpoint,
+            AVG(response_time_ms) as avg_response_time,
+            MAX(response_time_ms) as max_response_time,
+            MIN(response_time_ms) as min_response_time,
+            PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY response_time_ms) as p95_response_time,
+            COUNT(*) as request_count
+          FROM api_metrics 
+          WHERE timestamp > NOW() - INTERVAL '5 minutes'
+          GROUP BY endpoint
+        
+      - name: "api_error_rate"
+        query: |
+          SELECT 
+            endpoint,
+            COUNT(CASE WHEN status_code >= 400 THEN 1 END) * 100.0 / COUNT(*) as error_rate,
+            COUNT(CASE WHEN status_code >= 500 THEN 1 END) as server_errors,
+            COUNT(CASE WHEN status_code >= 400 AND status_code < 500 THEN 1 END) as client_errors
+          FROM api_metrics 
+          WHERE timestamp > NOW() - INTERVAL '5 minutes'
+          GROUP BY endpoint
+        
+      - name: "api_throughput"
+        query: |
+          SELECT 
+            endpoint,
+            COUNT(*) / 300.0 as requests_per_second,
+            COUNT(DISTINCT user_id) as unique_users,
+            AVG(request_size_bytes) as avg_request_size,
+            AVG(response_size_bytes) as avg_response_size
+          FROM api_metrics 
+          WHERE timestamp > NOW() - INTERVAL '5 minutes'
+          GROUP BY endpoint
+        
+      - name: "cache_performance"
+        query: |
+          SELECT 
+            cache_type,
+            SUM(cache_hits) * 100.0 / (SUM(cache_hits) + SUM(cache_misses)) as hit_rate,
+            SUM(cache_hits) as total_hits,
+            SUM(cache_misses) as total_misses,
+            AVG(cache_response_time_ms) as avg_cache_response_time
+          FROM cache_metrics 
+          WHERE timestamp > NOW() - INTERVAL '5 minutes'
+          GROUP BY cache_type
+
+    alerts:
+      - name: "high_api_response_time"
+        condition: "avg_response_time > 500"
+        severity: "warning"
+        message: "API response time is high"
+        
+      - name: "critical_api_response_time"
+        condition: "avg_response_time > 1000"
+        severity: "critical"
+        message: "API response time is critically high"
+        
+      - name: "high_error_rate"
+        condition: "error_rate > 5"
+        severity: "warning"
+        message: "API error rate is high"
+        
+      - name: "critical_error_rate"
+        condition: "error_rate > 10"
+        severity: "critical"
+        message: "API error rate is critically high"
+        
+      - name: "low_cache_hit_rate"
+        condition: "hit_rate < 80"
+        severity: "warning"
+        message: "Cache hit rate is below threshold"
+        
+      - name: "api_throughput_anomaly"
+        condition: "requests_per_second < 10 OR requests_per_second > 2000"
+        severity: "warning"
+        message: "API throughput is outside normal range"
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hudur-api-performance-monitor
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-api-performance-monitor
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: api-monitor
+            image: hudurprodacr.azurecr.io/hudur/api-monitor:latest
+            env:
+            - name: API_BASE_URL
+              value: "https://api.hudur.sa"
+            - name: MONITORING_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: hudur-api-monitoring-config
+                  key: monitoring-config.yml
+            - name: PROMETHEUS_URL
+              value: "http://prometheus.hudur-platform.svc.cluster.local:9090"
+            command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Starting API performance monitoring at $(date)"
+              
+              check_api_response_times() {
+                echo "Checking API response times..."
+                
+                endpoints=("/api/auth/health" "/api/attendance/health" "/api/users/health" "/api/reports/health" "/api/analytics/health" "/graphql")
+                
+                for endpoint in "${endpoints[@]}"; do
+                  start_time=$(date +%s%3N)
+                  
+                  response=$(curl -s -w "%{http_code},%{time_total}" -o /dev/null "$API_BASE_URL$endpoint" || echo "000,999")
+                  
+                  end_time=$(date +%s%3N)
+                  response_time=$((end_time - start_time))
+                  
+                  IFS=',' read -r status_code time_total <<< "$response"
+                  
+                  echo "Endpoint: $endpoint, Status: $status_code, Response Time: ${response_time}ms"
+                  
+                  if [[ "$response_time" -gt 1000 ]]; then
+                    echo "ALERT: Critical response time for $endpoint: ${response_time}ms"
+                    
+                    curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                      -H "Content-Type: application/json" \
+                      -d "[{
+                        \"labels\": {
+                          \"alertname\": \"CriticalApiResponseTime\",
+                          \"severity\": \"critical\",
+                          \"service\": \"api\",
+                          \"endpoint\": \"$endpoint\",
+                          \"response_time\": \"${response_time}ms\"
+                        },
+                        \"annotations\": {
+                          \"summary\": \"Critical API response time detected\",
+                          \"description\": \"Endpoint $endpoint response time: ${response_time}ms exceeds critical threshold\"
+                        }
+                      }]"
+                  elif [[ "$response_time" -gt 500 ]]; then
+                    echo "WARNING: High response time for $endpoint: ${response_time}ms"
+                    
+                    curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                      -H "Content-Type: application/json" \
+                      -d "[{
+                        \"labels\": {
+                          \"alertname\": \"HighApiResponseTime\",
+                          \"severity\": \"warning\",
+                          \"service\": \"api\",
+                          \"endpoint\": \"$endpoint\",
+                          \"response_time\": \"${response_time}ms\"
+                        },
+                        \"annotations\": {
+                          \"summary\": \"High API response time detected\",
+                          \"description\": \"Endpoint $endpoint response time: ${response_time}ms exceeds warning threshold\"
+                        }
+                      }]"
+                  fi
+                  
+                  cat <<EOF | curl -X POST "$PROMETHEUS_URL/api/v1/write" \
+                    -H "Content-Type: application/x-protobuf" \
+                    -H "Content-Encoding: snappy" \
+                    --data-binary @-
+              api_response_time_ms{endpoint="$endpoint",method="GET"} $response_time $(date +%s)000
+              api_response_status{endpoint="$endpoint",method="GET",status_code="$status_code"} 1 $(date +%s)000
+              EOF
+                done
+              }
+              
+              check_cache_performance() {
+                echo "Checking cache performance..."
+                
+                cache_endpoints=("/api/cache/stats" "/api/cache/redis/stats")
+                
+                for cache_endpoint in "${cache_endpoints[@]}"; do
+                  cache_stats=$(curl -s "$API_BASE_URL$cache_endpoint" || echo '{"hit_rate": 0, "total_hits": 0, "total_misses": 0}')
+                  
+                  hit_rate=$(echo "$cache_stats" | jq -r '.hit_rate // 0')
+                  total_hits=$(echo "$cache_stats" | jq -r '.total_hits // 0')
+                  total_misses=$(echo "$cache_stats" | jq -r '.total_misses // 0')
+                  
+                  echo "Cache endpoint: $cache_endpoint, Hit rate: $hit_rate%, Hits: $total_hits, Misses: $total_misses"
+                  
+                  if (( $(echo "$hit_rate < 80" | bc -l) )); then
+                    echo "ALERT: Low cache hit rate for $cache_endpoint: $hit_rate%"
+                    
+                    curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                      -H "Content-Type: application/json" \
+                      -d "[{
+                        \"labels\": {
+                          \"alertname\": \"LowCacheHitRate\",
+                          \"severity\": \"warning\",
+                          \"service\": \"cache\",
+                          \"endpoint\": \"$cache_endpoint\",
+                          \"hit_rate\": \"$hit_rate%\"
+                        },
+                        \"annotations\": {
+                          \"summary\": \"Low cache hit rate detected\",
+                          \"description\": \"Cache endpoint $cache_endpoint hit rate: $hit_rate% is below 80% threshold\"
+                        }
+                      }]"
+                  fi
+                done
+              }
+              
+              check_api_throughput() {
+                echo "Checking API throughput..."
+                
+                current_rps=$(curl -s "$PROMETHEUS_URL/api/v1/query?query=sum(rate(http_requests_total[1m]))" | jq -r '.data.result[0].value[1] // "0"')
+                
+                echo "Current API throughput: $current_rps requests/second"
+                
+                if (( $(echo "$current_rps > 2000" | bc -l) )); then
+                  echo "ALERT: Very high API throughput: $current_rps RPS"
+                  
+                  curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                    -H "Content-Type: application/json" \
+                    -d "[{
+                      \"labels\": {
+                        \"alertname\": \"HighApiThroughput\",
+                        \"severity\": \"warning\",
+                        \"service\": \"api\",
+                        \"throughput\": \"${current_rps}rps\"
+                      },
+                      \"annotations\": {
+                        \"summary\": \"Very high API throughput detected\",
+                        \"description\": \"API throughput: ${current_rps} RPS exceeds normal operating range\"
+                      }
+                    }]"
+                elif (( $(echo "$current_rps < 10" | bc -l) )); then
+                  echo "ALERT: Very low API throughput: $current_rps RPS"
+                  
+                  curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                    -H "Content-Type: application/json" \
+                    -d "[{
+                      \"labels\": {
+                        \"alertname\": \"LowApiThroughput\",
+                        \"severity\": \"warning\",
+                        \"service\": \"api\",
+                        \"throughput\": \"${current_rps}rps\"
+                      },
+                      \"annotations\": {
+                        \"summary\": \"Very low API throughput detected\",
+                        \"description\": \"API throughput: ${current_rps} RPS is below normal operating range\"
+                      }
+                    }]"
+                fi
+              }
+              
+              check_graphql_performance() {
+                echo "Checking GraphQL performance..."
+                
+                graphql_query='{"query": "{ users(first: 10) { id email firstName lastName } }"}'
+                
+                start_time=$(date +%s%3N)
+                
+                graphql_response=$(curl -s -X POST "$API_BASE_URL/graphql" \
+                  -H "Content-Type: application/json" \
+                  -d "$graphql_query" \
+                  -w "%{http_code}" -o /tmp/graphql_response.json)
+                
+                end_time=$(date +%s%3N)
+                graphql_response_time=$((end_time - start_time))
+                
+                echo "GraphQL query response time: ${graphql_response_time}ms"
+                
+                if [[ "$graphql_response_time" -gt 800 ]]; then
+                  echo "ALERT: Slow GraphQL query: ${graphql_response_time}ms"
+                  
+                  curl -X POST http://hudur-alertmanager.hudur-platform.svc.cluster.local:9093/api/v1/alerts \
+                    -H "Content-Type: application/json" \
+                    -d "[{
+                      \"labels\": {
+                        \"alertname\": \"SlowGraphQLQuery\",
+                        \"severity\": \"warning\",
+                        \"service\": \"graphql\",
+                        \"response_time\": \"${graphql_response_time}ms\"
+                      },
+                      \"annotations\": {
+                        \"summary\": \"Slow GraphQL query detected\",
+                        \"description\": \"GraphQL query response time: ${graphql_response_time}ms exceeds threshold\"
+                      }
+                    }]"
+                fi
+              }
+              
+              echo "Running API performance checks..."
+              check_api_response_times
+              check_cache_performance
+              check_api_throughput
+              check_graphql_performance
+              
+              echo "API performance monitoring completed at $(date)"

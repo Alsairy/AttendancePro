@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hudur-attendance-platform
+  namespace: argocd
+spec:
+  source:
+    helm:
+      parameters:
+        - name: global.environment
+          value: production
+        - name: global.domain
+          value: hudur.sa
+        - name: global.imageRegistry
+          value: hudurprodacr.azurecr.io
+        - name: ingress.enabled
+          value: "true"
+        - name: monitoring.prometheus.enabled
+          value: "true"
+        - name: monitoring.grafana.enabled
+          value: "true"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

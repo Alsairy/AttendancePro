@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: hudur-gitops
+  namespace: argocd
+
+resources:
+  - ../argocd/argocd-install.yaml
+  - ../argocd/application.yaml
+  - ../argocd/repository.yaml
+
+patchesStrategicMerge:
+  - patches/argocd-server-patch.yaml
+  - patches/application-patch.yaml
+
+configMapGenerator:
+  - name: argocd-gitops-config
+    literals:
+      - ENVIRONMENT=production
+      - DOMAIN=hudur.sa
+      - REGISTRY=hudurprodacr.azurecr.io
+
+secretGenerator:
+  - name: argocd-gitops-secrets
+    literals:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - REGISTRY_PASSWORD=${REGISTRY_PASSWORD}
+
+generatorOptions:
+  disableNameSuffixHash: true

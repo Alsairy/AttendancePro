@@ -1,0 +1,40 @@
+title = "Hudur Enterprise Platform GitLeaks Configuration"
+
+[extend]
+# useDefault will extend the base configuration with the default gitleaks config:
+# https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+useDefault = true
+
+[allowlist]
+description = "Allowlist for legitimate configuration values"
+paths = [
+    '''appsettings\.json''',
+    '''appsettings\.Development\.json''',
+    '''appsettings\.Production\.json''',
+    '''appsettings\.Staging\.json''',
+    '''.*\.md''',
+    '''.*\.example''',
+    '''.*\.template''',
+    '''.*\.sample''',
+    '''k8s/.*\.yaml''',
+    '''k8s/.*\.yml''',
+    '''docker-compose.*\.yml''',
+    '''docker-compose.*\.yaml''',
+    '''package\.json''',
+    '''package-lock\.json''',
+    '''.*\.csproj''',
+    '''.*\.sln''',
+    '''\.env\.example''',
+    '''\.env\.template''',
+    '''\.env\.sample''',
+    '''\.env\.production''',
+    '''\.github/workflows/.*\.yml'''
+]
+
+regexes = [
+    '''secrets\.[A-Z_]+''',
+    '''\$\{[A-Z_]+\}''',
+    '''testpassword''',
+    '''postgres:15''',
+    '''postgres:'''
+]

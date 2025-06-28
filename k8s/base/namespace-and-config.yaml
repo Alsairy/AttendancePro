@@ -14,7 +14,7 @@ metadata:
   namespace: hudur
 data:
   # Database configuration
-  ConnectionStrings__DefaultConnection: "Server=sql-server-service;Database=Hudur;User Id=sa;Password=$(DB_PASSWORD);TrustServerCertificate=true"
+  ConnectionStrings__DefaultConnection: "Server=sql-server-service;Database=Hudur;User Id=sa;Password=$(DB_PASSWORD);Encrypt=true"
   
   # JWT configuration
   Jwt__Key: "$(JWT_SECRET_KEY)"

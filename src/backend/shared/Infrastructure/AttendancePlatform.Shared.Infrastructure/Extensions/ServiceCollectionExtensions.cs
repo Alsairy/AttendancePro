@@ -97,6 +97,16 @@ namespace AttendancePlatform.Shared.Infrastructure.Extensions
             services.AddScoped<IAuditLogService, AuditLogService>();
             services.AddScoped<IComplianceReportingService, ComplianceReportingService>();
             
+            services.AddScoped<IMultiFactorAuthenticationService, MultiFactorAuthenticationService>();
+            services.AddScoped<IEnhancedRoleBasedAccessControlService, EnhancedRoleBasedAccessControlService>();
+            services.AddScoped<ISingleSignOnService, SingleSignOnService>();
+            
+            services.Configure<MfaOptions>(configuration.GetSection("MFA"));
+            
+            services.Configure<MutualTlsOptions>(configuration.GetSection("MutualTls"));
+            
+            services.Configure<SsoOptions>(configuration.GetSection("SSO"));
+            
             services.Configure<RateLimitOptions>(options =>
             {
                 options.MaxRequests = configuration.GetValue<int>("RATE_LIMIT_REQUESTS_PER_MINUTE", 100);

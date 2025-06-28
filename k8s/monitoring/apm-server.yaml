@@ -1,0 +1,184 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apm-server
+  namespace: hudur-system
+  labels:
+    app: apm-server
+    component: apm
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: apm-server
+      component: apm
+  template:
+    metadata:
+      labels:
+        app: apm-server
+        component: apm
+    spec:
+      serviceAccountName: apm-server
+      containers:
+      - name: apm-server
+        image: docker.elastic.co/apm/apm-server:8.11.0
+        ports:
+        - containerPort: 8200
+          name: apm
+        env:
+        - name: ELASTICSEARCH_HOSTS
+          value: "https://elasticsearch-client:9200"
+        - name: ELASTICSEARCH_USERNAME
+          value: "apm_system"
+        - name: ELASTICSEARCH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-secrets
+              key: elastic-password
+        - name: KIBANA_HOST
+          value: "http://kibana:5601"
+        volumeMounts:
+        - name: apm-config
+          mountPath: /usr/share/apm-server/apm-server.yml
+          subPath: apm-server.yml
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8200
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8200
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      volumes:
+      - name: apm-config
+        configMap:
+          name: apm-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apm-config
+  namespace: hudur-system
+data:
+  apm-server.yml: |
+    apm-server:
+      host: "0.0.0.0:8200"
+      rum:
+        enabled: true
+        event_rate:
+          limit: 300
+          lru_size: 1000
+        allow_origins: ["*"]
+        library_pattern: "node_modules|bower_components|~"
+        exclude_from_grouping: "^/webpack"
+        source_mapping:
+          cache:
+            expiration: 5m
+          index_pattern: "apm-*-sourcemap*"
+      kibana:
+        enabled: true
+        host: "http://kibana:5601"
+      agent:
+        config:
+          cache:
+            expiration: 30s
+
+    output.elasticsearch:
+      hosts: ["https://elasticsearch-client:9200"]
+      username: "apm_system"
+      password: "${ELASTICSEARCH_PASSWORD}"
+      ssl:
+        enabled: true
+        verification_mode: none
+
+    setup.kibana:
+      host: "http://kibana:5601"
+
+    setup.template:
+      enabled: true
+      pattern: "apm-*"
+      settings:
+        index:
+          number_of_shards: 1
+          number_of_replicas: 1
+
+    logging:
+      level: info
+      to_files: true
+      files:
+        path: /var/log/apm-server
+        name: apm-server
+        keepfiles: 7
+        permissions: 0644
+
+    monitoring:
+      enabled: true
+      elasticsearch:
+        hosts: ["https://elasticsearch-client:9200"]
+        username: "apm_system"
+        password: "${ELASTICSEARCH_PASSWORD}"
+        ssl:
+          enabled: true
+          verification_mode: none
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apm-server
+  namespace: hudur-system
+  labels:
+    app: apm-server
+    component: apm
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8200
+    targetPort: 8200
+    name: apm
+  selector:
+    app: apm-server
+    component: apm
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: apm-server
+  namespace: hudur-system
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: apm-server-ingress
+  namespace: hudur-system
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - apm.hudur.sa
+    secretName: apm-server-tls
+  rules:
+  - host: apm.hudur.sa
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: apm-server
+            port:
+              number: 8200

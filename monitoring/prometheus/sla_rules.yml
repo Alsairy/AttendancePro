@@ -1,0 +1,192 @@
+groups:
+  - name: sla_availability
+    rules:
+      - alert: ServiceAvailabilitySLABreach
+        expr: avg_over_time(up[5m]) < 0.999
+        for: 1m
+        labels:
+          severity: critical
+          service: "{{ $labels.job }}"
+          category: availability
+          sla_type: availability
+        annotations:
+          summary: "Service availability SLA breach for {{ $labels.job }}"
+          description: "Service {{ $labels.job }} availability is below 99.9% SLA requirement"
+          current_availability: "{{ $value | humanizePercentage }}"
+          sla_requirement: "99.9%"
+
+      - alert: APIResponseTimeSLABreach
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service)) > 1
+        for: 5m
+        labels:
+          severity: warning
+          service: "{{ $labels.service }}"
+          category: performance
+          sla_type: response_time
+        annotations:
+          summary: "API response time SLA breach for {{ $labels.service }}"
+          description: "95th percentile response time exceeds 1 second SLA for {{ $labels.service }}"
+          current_response_time: "{{ $value }}s"
+          sla_requirement: "1s"
+
+      - alert: ErrorRateSLABreach
+        expr: sum(rate(http_requests_total{code!~"2.."}[5m])) by (service) / sum(rate(http_requests_total[5m])) by (service) * 100 > 1
+        for: 10m
+        labels:
+          severity: warning
+          service: "{{ $labels.service }}"
+          category: reliability
+          sla_type: error_rate
+        annotations:
+          summary: "Error rate SLA breach for {{ $labels.service }}"
+          description: "Error rate exceeds 1% SLA requirement for {{ $labels.service }}"
+          current_error_rate: "{{ $value }}%"
+          sla_requirement: "1%"
+
+  - name: sla_business_metrics
+    rules:
+      - alert: AttendanceProcessingSLABreach
+        expr: histogram_quantile(0.95, sum(rate(attendance_processing_duration_seconds_bucket[5m])) by (le)) > 30
+        for: 5m
+        labels:
+          severity: warning
+          service: attendance
+          category: processing_time
+          sla_type: business_process
+        annotations:
+          summary: "Attendance processing time SLA breach"
+          description: "95th percentile attendance processing time exceeds 30 seconds SLA"
+          current_processing_time: "{{ $value }}s"
+          sla_requirement: "30s"
+
+      - alert: LeaveApprovalSLABreach
+        expr: avg_over_time(leave_approval_duration_hours[24h]) > 48
+        for: 2h
+        labels:
+          severity: critical
+          service: leave-management
+          category: approval_time
+          sla_type: business_process
+        annotations:
+          summary: "Leave approval time SLA breach"
+          description: "Average leave approval time exceeds 48 hours SLA"
+          current_approval_time: "{{ $value }}h"
+          sla_requirement: "48h"
+
+      - alert: BiometricAuthenticationSLABreach
+        expr: histogram_quantile(0.95, sum(rate(biometric_authentication_duration_seconds_bucket[5m])) by (le)) > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: face-recognition
+          category: authentication_time
+          sla_type: user_experience
+        annotations:
+          summary: "Biometric authentication time SLA breach"
+          description: "95th percentile biometric authentication time exceeds 5 seconds SLA"
+          current_auth_time: "{{ $value }}s"
+          sla_requirement: "5s"
+
+  - name: sla_data_processing
+    rules:
+      - alert: ReportGenerationSLABreach
+        expr: histogram_quantile(0.95, sum(rate(report_generation_duration_seconds_bucket[5m])) by (le, report_type)) > 300
+        for: 10m
+        labels:
+          severity: warning
+          service: analytics
+          category: report_generation
+          sla_type: data_processing
+        annotations:
+          summary: "Report generation SLA breach for {{ $labels.report_type }}"
+          description: "95th percentile report generation time exceeds 5 minutes SLA"
+          current_generation_time: "{{ $value }}s"
+          sla_requirement: "300s"
+
+      - alert: DataSyncSLABreach
+        expr: time() - last_successful_data_sync_timestamp > 3600
+        for: 5m
+        labels:
+          severity: critical
+          service: integrations
+          category: data_sync
+          sla_type: data_freshness
+        annotations:
+          summary: "Data synchronization SLA breach"
+          description: "Data sync has not completed successfully within 1 hour SLA"
+          last_sync_age: "{{ $value }}s"
+          sla_requirement: "3600s"
+
+      - alert: BackupCompletionSLABreach
+        expr: time() - last_successful_backup_timestamp > 86400
+        for: 1h
+        labels:
+          severity: critical
+          service: backup
+          category: data_protection
+          sla_type: backup_frequency
+        annotations:
+          summary: "Backup completion SLA breach"
+          description: "Database backup has not completed successfully within 24 hours SLA"
+          last_backup_age: "{{ $value }}s"
+          sla_requirement: "86400s"
+
+  - name: sla_recovery_metrics
+    rules:
+      - alert: RecoveryTimeObjectiveBreach
+        expr: service_downtime_duration_seconds > 1800
+        for: 1m
+        labels:
+          severity: critical
+          service: "{{ $labels.service }}"
+          category: disaster_recovery
+          sla_type: rto
+        annotations:
+          summary: "Recovery Time Objective (RTO) breach for {{ $labels.service }}"
+          description: "Service {{ $labels.service }} has been down for more than 30 minutes (RTO)"
+          current_downtime: "{{ $value }}s"
+          rto_requirement: "1800s"
+
+      - alert: RecoveryPointObjectiveBreach
+        expr: time() - last_successful_backup_timestamp > 14400
+        for: 5m
+        labels:
+          severity: critical
+          service: backup
+          category: disaster_recovery
+          sla_type: rpo
+        annotations:
+          summary: "Recovery Point Objective (RPO) breach"
+          description: "Last successful backup is older than 4 hours (RPO)"
+          data_loss_window: "{{ $value }}s"
+          rpo_requirement: "14400s"
+
+  - name: sla_customer_experience
+    rules:
+      - alert: UserSatisfactionSLABreach
+        expr: avg_over_time(user_satisfaction_score[24h]) < 4.0
+        for: 4h
+        labels:
+          severity: warning
+          service: user-experience
+          category: satisfaction
+          sla_type: customer_experience
+        annotations:
+          summary: "User satisfaction SLA breach"
+          description: "Average user satisfaction score is below 4.0/5.0 SLA"
+          current_satisfaction: "{{ $value }}/5.0"
+          sla_requirement: "4.0/5.0"
+
+      - alert: SupportResponseTimeSLABreach
+        expr: avg_over_time(support_response_time_minutes[24h]) > 60
+        for: 2h
+        labels:
+          severity: warning
+          service: support
+          category: response_time
+          sla_type: customer_support
+        annotations:
+          summary: "Support response time SLA breach"
+          description: "Average support response time exceeds 1 hour SLA"
+          current_response_time: "{{ $value }}m"
+          sla_requirement: "60m"

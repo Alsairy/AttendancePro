@@ -1,0 +1,220 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hudur-platform-network-policy
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-platform-network-policy
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: istio-system
+    - namespaceSelector:
+        matchLabels:
+          name: hudur-platform
+    - namespaceSelector:
+        matchLabels:
+          name: hudur-monitoring
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 9090
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: hudur-platform
+    - namespaceSelector:
+        matchLabels:
+          name: hudur-monitoring
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 5432
+    - protocol: TCP
+      port: 6379
+    - protocol: TCP
+      port: 9090
+    - protocol: TCP
+      port: 3000
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hudur-monitoring-network-policy
+  namespace: hudur-monitoring
+  labels:
+    app.kubernetes.io/name: hudur-monitoring-network-policy
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: hudur-platform
+    - namespaceSelector:
+        matchLabels:
+          name: hudur-monitoring
+    - namespaceSelector:
+        matchLabels:
+          name: istio-system
+    ports:
+    - protocol: TCP
+      port: 9090
+    - protocol: TCP
+      port: 3000
+    - protocol: TCP
+      port: 9093
+    - protocol: TCP
+      port: 9200
+    - protocol: TCP
+      port: 5601
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: hudur-platform
+    - namespaceSelector:
+        matchLabels:
+          name: hudur-monitoring
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 9090
+    - protocol: TCP
+      port: 8080
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all-default
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: deny-all-default
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: allow-dns
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-database-access
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: allow-database-access
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: database-client
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/component: database
+    ports:
+    - protocol: TCP
+      port: 5432
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 5432
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-redis-access
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: allow-redis-access
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: cache-client
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/component: cache
+    ports:
+    - protocol: TCP
+      port: 6379
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 6379

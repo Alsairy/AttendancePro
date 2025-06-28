@@ -1,0 +1,488 @@
+name: Advanced CI/CD Pipeline - Hudur AttendancePro
+
+on:
+  push:
+    branches: [ main, develop, 'feature/*', 'hotfix/*' ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      deployment_environment:
+        description: 'Target deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+      deployment_strategy:
+        description: 'Deployment strategy'
+        required: true
+        default: 'blue-green'
+        type: choice
+        options:
+        - blue-green
+        - canary
+        - rolling
+
+env:
+  REGISTRY: hudurprodacr.azurecr.io
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+jobs:
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.changes.outputs.backend }}
+      frontend: ${{ steps.changes.outputs.frontend }}
+      mobile: ${{ steps.changes.outputs.mobile }}
+      infrastructure: ${{ steps.changes.outputs.infrastructure }}
+      docs: ${{ steps.changes.outputs.docs }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          backend:
+            - 'src/backend/**'
+            - 'docker-compose*.yml'
+            - 'Dockerfile*'
+          frontend:
+            - 'src/frontend/**'
+            - 'src/frontend/attendancepro-frontend/**'
+          mobile:
+            - 'src/mobile/**'
+          infrastructure:
+            - 'k8s/**'
+            - 'helm/**'
+            - 'infrastructure/**'
+            - '.github/workflows/**'
+          docs:
+            - 'docs/**'
+            - '*.md'
+
+  security-scan:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend == 'true' || needs.detect-changes.outputs.frontend == 'true'
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: 'csharp,javascript,typescript'
+    
+    - name: Run CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+
+    - name: OWASP Dependency Check
+      uses: dependency-check/Dependency-Check_Action@main
+      with:
+        project: 'Hudur-AttendancePro'
+        path: '.'
+        format: 'ALL'
+
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    needs: [detect-changes, security-scan]
+    if: needs.detect-changes.outputs.backend == 'true'
+    strategy:
+      matrix:
+        test-type: [unit, integration, performance, security]
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: hudur_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Restore dependencies
+      run: dotnet restore Hudur.sln
+
+    - name: Build solution
+      run: dotnet build Hudur.sln --no-restore --configuration Release
+
+    - name: Run Unit Tests
+      if: matrix.test-type == 'unit'
+      run: |
+        dotnet test tests/unit/AttendancePlatform.Tests.Unit.csproj \
+          --no-build --configuration Release \
+          --logger trx --results-directory TestResults \
+          --collect:"XPlat Code Coverage" \
+          --settings coverlet.runsettings
+
+    - name: Run Integration Tests
+      if: matrix.test-type == 'integration'
+      env:
+        ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=hudur_test;Username=postgres;Password=testpassword"
+        ConnectionStrings__Redis: "localhost:6379"
+      run: |
+        dotnet test tests/integration/AttendancePlatform.Tests.Integration.csproj \
+          --no-build --configuration Release \
+          --logger trx --results-directory TestResults
+
+    - name: Run Performance Tests
+      if: matrix.test-type == 'performance'
+      run: |
+        dotnet test tests/performance/AttendancePlatform.Tests.Performance.csproj \
+          --no-build --configuration Release \
+          --logger trx --results-directory TestResults
+
+    - name: Run Security Tests
+      if: matrix.test-type == 'security'
+      run: |
+        dotnet test tests/security/AttendancePlatform.Tests.Security.csproj \
+          --no-build --configuration Release \
+          --logger trx --results-directory TestResults
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results-${{ matrix.test-type }}
+        path: TestResults/
+
+    - name: Upload coverage reports to Codecov
+      if: matrix.test-type == 'unit'
+      uses: codecov/codecov-action@v3
+      with:
+        directory: TestResults
+        flags: backend
+
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    needs: [detect-changes, security-scan]
+    if: needs.detect-changes.outputs.frontend == 'true'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: src/frontend/attendancepro-frontend/package-lock.json
+    
+    - name: Install dependencies
+      working-directory: src/frontend/attendancepro-frontend
+      run: npm ci
+    
+    - name: Run linting
+      working-directory: src/frontend/attendancepro-frontend
+      run: npm run lint
+    
+    - name: Run type checking
+      working-directory: src/frontend/attendancepro-frontend
+      run: npm run type-check
+    
+    - name: Run unit tests
+      working-directory: src/frontend/attendancepro-frontend
+      run: npm run test:coverage
+    
+    - name: Run E2E tests
+      working-directory: src/frontend/attendancepro-frontend
+      run: npm run test:e2e
+    
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        directory: src/frontend/attendancepro-frontend/coverage
+        flags: frontend
+
+  mobile-tests:
+    name: Mobile Tests
+    runs-on: ubuntu-latest
+    needs: [detect-changes, security-scan]
+    if: needs.detect-changes.outputs.mobile == 'true'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: src/mobile/AttendanceMobile/package-lock.json
+    
+    - name: Install dependencies
+      working-directory: src/mobile/AttendanceMobile
+      run: npm ci
+    
+    - name: Run tests
+      working-directory: src/mobile/AttendanceMobile
+      run: npm test
+
+  build-images:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [detect-changes, backend-tests, frontend-tests]
+    if: always() && (needs.backend-tests.result == 'success' || needs.backend-tests.result == 'skipped') && (needs.frontend-tests.result == 'success' || needs.frontend-tests.result == 'skipped')
+    strategy:
+      matrix:
+        service: 
+          - Authentication
+          - Attendance
+          - FaceRecognition
+          - LeaveManagement
+          - Notifications
+          - Analytics
+          - WorkflowEngine
+          - Integrations
+          - api-gateway
+          - frontend
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ghcr.io/${{ github.repository_owner }}/hudur-${{ matrix.service | lower }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix=pr-${{ github.event.number }}-,enable=${{ github.event_name == 'pull_request' }}
+          type=raw,value=latest,enable={{is_default_branch}}
+    
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ${{ matrix.service == 'frontend' && 'src/frontend/Dockerfile' || matrix.service == 'api-gateway' && 'src/backend/gateways/Dockerfile' || format('src/backend/services/{0}/Dockerfile', matrix.service) }}
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-images]
+    if: github.ref == 'refs/heads/develop' || github.event_name == 'workflow_dispatch'
+    environment: staging
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Set up Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: '3.12.0'
+    
+    - name: Get AKS credentials
+      run: |
+        az aks get-credentials --resource-group hudur-rg --name hudur-aks-staging
+    
+    - name: Deploy with Helm (Blue-Green)
+      run: |
+        helm upgrade --install hudur-staging ./helm/hudur \
+          --namespace hudur-staging \
+          --create-namespace \
+          --set image.tag=${{ github.sha }} \
+          --set environment=staging \
+          --set deployment.strategy=blue-green \
+          --wait --timeout=10m
+    
+    - name: Run smoke tests
+      run: |
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=hudur -n hudur-staging --timeout=300s
+        kubectl run smoke-test --image=curlimages/curl --rm -i --restart=Never -- \
+          curl -f http://hudur-api-gateway.hudur-staging.svc.cluster.local/health
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-images, deploy-staging]
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.deployment_environment == 'production')
+    environment: production
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Set up Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: '3.12.0'
+    
+    - name: Get AKS credentials
+      run: |
+        az aks get-credentials --resource-group hudur-rg --name hudur-aks-production
+    
+    - name: Deploy with Canary Strategy
+      if: github.event.inputs.deployment_strategy == 'canary' || github.event.inputs.deployment_strategy == ''
+      run: |
+        # Deploy canary version (10% traffic)
+        helm upgrade --install hudur-canary ./helm/hudur \
+          --namespace hudur-production \
+          --create-namespace \
+          --set image.tag=${{ github.sha }} \
+          --set environment=production \
+          --set deployment.strategy=canary \
+          --set canary.weight=10 \
+          --wait --timeout=15m
+        
+        # Wait and monitor metrics
+        sleep 300
+        
+        # If metrics are good, promote to 50%
+        helm upgrade hudur-canary ./helm/hudur \
+          --namespace hudur-production \
+          --set image.tag=${{ github.sha }} \
+          --set environment=production \
+          --set deployment.strategy=canary \
+          --set canary.weight=50 \
+          --wait --timeout=15m
+        
+        # Wait and monitor again
+        sleep 300
+        
+        # Full deployment
+        helm upgrade hudur-production ./helm/hudur \
+          --namespace hudur-production \
+          --set image.tag=${{ github.sha }} \
+          --set environment=production \
+          --set deployment.strategy=rolling \
+          --wait --timeout=15m
+
+    - name: Deploy with Blue-Green Strategy
+      if: github.event.inputs.deployment_strategy == 'blue-green'
+      run: |
+        # Deploy to green environment
+        helm upgrade --install hudur-green ./helm/hudur \
+          --namespace hudur-production-green \
+          --create-namespace \
+          --set image.tag=${{ github.sha }} \
+          --set environment=production \
+          --set deployment.strategy=blue-green \
+          --wait --timeout=15m
+        
+        # Run comprehensive tests on green
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=hudur -n hudur-production-green --timeout=600s
+        
+        # Switch traffic to green
+        kubectl patch service hudur-api-gateway -n hudur-production \
+          -p '{"spec":{"selector":{"version":"green"}}}'
+        
+        # Clean up blue environment after successful deployment
+        sleep 300
+        helm uninstall hudur-blue -n hudur-production-blue || true
+
+    - name: Run production health checks
+      run: |
+        kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=hudur -n hudur-production --timeout=600s
+        
+        # Comprehensive health check
+        for i in {1..10}; do
+          if kubectl run health-check-$i --image=curlimages/curl --rm -i --restart=Never -- \
+            curl -f https://hudur.sa/api/health; then
+            echo "Health check $i passed"
+          else
+            echo "Health check $i failed"
+            exit 1
+          fi
+          sleep 30
+        done
+
+  notify:
+    name: Notify Deployment Status
+    runs-on: ubuntu-latest
+    needs: [deploy-staging, deploy-production]
+    if: always()
+    
+    steps:
+    - name: Notify Success
+      if: needs.deploy-production.result == 'success'
+      run: |
+        echo "🚀 Hudur AttendancePro successfully deployed to production!"
+        echo "Environment: https://hudur.sa"
+        echo "Staging: https://staging.hudur.sa"
+    
+    - name: Notify Failure
+      if: needs.deploy-production.result == 'failure' || needs.deploy-staging.result == 'failure'
+      run: |
+        echo "❌ Deployment failed. Please check the logs."
+        exit 1

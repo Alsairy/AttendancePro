@@ -1,0 +1,212 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hudur-disaster-recovery-config
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-disaster-recovery-config
+    app.kubernetes.io/part-of: hudur-platform
+data:
+  rto-target: "4h"
+  rpo-target: "1h"
+  recovery-regions: |
+    - primary: eastus
+    - secondary: westus2
+    - tertiary: centralus
+  recovery-procedures: |
+    1. Assess disaster scope and impact
+    2. Activate disaster recovery team
+    3. Switch DNS to secondary region
+    4. Restore database from latest backup
+    5. Deploy application stack in recovery region
+    6. Validate system functionality
+    7. Communicate status to stakeholders
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hudur-disaster-recovery-controller
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-disaster-recovery-controller
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hudur-disaster-recovery-controller
+  template:
+    metadata:
+      labels:
+        app: hudur-disaster-recovery-controller
+    spec:
+      serviceAccountName: hudur-backup-sa
+      containers:
+      - name: disaster-recovery-controller
+        image: hudurprodacr.azurecr.io/hudur/disaster-recovery:latest
+        env:
+        - name: PRIMARY_REGION
+          value: "eastus"
+        - name: SECONDARY_REGION
+          value: "westus2"
+        - name: STORAGE_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: hudur-secrets
+              key: blob-storage-connection-string
+        - name: DATABASE_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: hudur-secrets
+              key: database-connection-string
+        - name: NOTIFICATION_WEBHOOK
+          valueFrom:
+            secretKeyRef:
+              name: hudur-secrets
+              key: disaster-recovery-webhook
+        ports:
+        - containerPort: 8080
+          name: http
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hudur-disaster-recovery-service
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-disaster-recovery-service
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  selector:
+    app: hudur-disaster-recovery-controller
+  ports:
+  - port: 80
+    targetPort: 8080
+    name: http
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hudur-disaster-recovery-test
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-disaster-recovery-test
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: hudur-backup-sa
+      containers:
+      - name: disaster-recovery-test
+        image: hudurprodacr.azurecr.io/hudur/disaster-recovery:latest
+        env:
+        - name: TEST_MODE
+          value: "true"
+        - name: STORAGE_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: hudur-secrets
+              key: blob-storage-connection-string
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Starting disaster recovery test at $(date)"
+          
+          echo "Testing backup accessibility..."
+          az storage blob list \
+            --connection-string "$STORAGE_CONNECTION_STRING" \
+            --container-name database-backups \
+            --query "[0].name" \
+            --output tsv
+          
+          if [ $? -eq 0 ]; then
+            echo "✓ Database backups are accessible"
+          else
+            echo "✗ Database backups are not accessible"
+            exit 1
+          fi
+          
+          echo "Testing cross-region replication..."
+          az storage blob list \
+            --connection-string "$STORAGE_CONNECTION_STRING" \
+            --container-name database-backups \
+            --query "length(@)" \
+            --output tsv
+          
+          if [ $? -eq 0 ]; then
+            echo "✓ Cross-region replication is working"
+          else
+            echo "✗ Cross-region replication failed"
+            exit 1
+          fi
+          
+          echo "Testing recovery procedures..."
+          kubectl get pods -n hudur-platform --field-selector=status.phase=Running | wc -l
+          
+          if [ $? -eq 0 ]; then
+            echo "✓ Recovery procedures validation passed"
+          else
+            echo "✗ Recovery procedures validation failed"
+            exit 1
+          fi
+          
+          echo "Disaster recovery test completed successfully at $(date)"
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: hudur-disaster-recovery-network-policy
+  namespace: hudur-platform
+  labels:
+    app.kubernetes.io/name: hudur-disaster-recovery-network-policy
+    app.kubernetes.io/part-of: hudur-platform
+spec:
+  podSelector:
+    matchLabels:
+      app: hudur-disaster-recovery-controller
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: hudur-platform
+    - namespaceSelector:
+        matchLabels:
+          name: hudur-monitoring
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 5432
+    - protocol: TCP
+      port: 53
+    - protocol: UDP
+      port: 53

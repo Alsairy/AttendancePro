@@ -1,341 +1,273 @@
-# 🚀 Hudur - Enterprise Workforce Management Platform
+# 🚀 Hudur Enterprise Platform
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
-[![Security Score](https://img.shields.io/badge/security-91%2F100-brightgreen.svg)](./SECURITY_VALIDATION_REPORT.md)
-[![React](https://img.shields.io/badge/React-18.0-blue.svg)](https://reactjs.org/)
-[![React Native](https://img.shields.io/badge/React%20Native-0.72-blue.svg)](https://reactnative.dev/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
-[![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-blue.svg)](https://kubernetes.io/)
-[![CI/CD](https://github.com/your-org/hudur/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/your-org/hudur/actions)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Alsairy/AttendancePro?utm_source=oss&utm_medium=github&utm_campaign=Alsairy%2FAttendancePro&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
-> **🌟 World-Class Enterprise Platform** - Complete workforce management solution with AI-powered analytics, real-time collaboration, and comprehensive business intelligence.
+**Enterprise-Grade Workforce Management Platform**
 
-## 📋 Table of Contents
+Hudur is a comprehensive, cloud-native workforce management platform designed for organizations of all sizes. Built with modern microservices architecture, it delivers scalable attendance tracking, leave management, and workforce analytics with enterprise-grade security and compliance.
 
-- [🎯 Overview](#-overview)
-- [✨ Key Features](#-key-features)
-- [🏗️ Architecture](#️-architecture)
-- [🚀 Quick Start](#-quick-start)
-- [📱 Mobile Apps](#-mobile-apps)
-- [🔧 Development](#-development)
-- [🚀 Deployment](#-deployment)
-- [🔗 Integrations](#-integrations)
-- [📊 Analytics](#-analytics)
-- [🔒 Security](#-security)
-- [📚 Documentation](#-documentation)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
+## 🌟 **Key Features**
 
-## 🎯 Overview
+### **🎯 Multi-Modal Attendance Tracking**
+- **GPS Geofencing**: Location-based check-in/out with customizable boundaries
+- **Facial Recognition**: AI-powered biometric authentication with liveness detection
+- **Beacon Proximity**: Bluetooth beacon-based attendance for indoor environments
+- **QR Code & NFC**: Quick scan options for kiosks and mobile devices
+- **Manual Entry**: Flexible manual attendance with approval workflows
 
-Hudur is a **production-ready enterprise workforce management platform** featuring cutting-edge technology, AI-powered analytics, and comprehensive business intelligence. Built with modern microservices architecture and designed for global scale.
+### **📋 Advanced Leave Management**
+- **Smart Request System**: Automated leave request routing and approval workflows
+- **Balance Tracking**: Real-time leave balance calculations with policy enforcement
+- **Calendar Integration**: Seamless integration with Microsoft 365 and Google Workspace
+- **Compliance Reporting**: Automated compliance reports for HR and payroll systems
 
-### 🌟 **Why Hudur?**
+### **🤖 AI-Powered Analytics**
+- **Predictive Insights**: ML.NET-powered attendance forecasting and trend analysis
+- **Anomaly Detection**: Automatic identification of unusual attendance patterns
+- **Performance Metrics**: Employee engagement scoring and productivity analytics
+- **Risk Assessment**: Turnover and absenteeism prediction with actionable insights
 
-- **🤖 AI-Powered**: Predictive analytics and anomaly detection
-- **📊 Business Intelligence**: Real-time dashboards and custom reporting
-- **🔄 Workflow Automation**: Visual workflow designer with business rules
-- **💬 Real-Time Collaboration**: Chat, video, and team collaboration
-- **🔗 Enterprise Integrations**: 9+ major platform integrations
-- **📱 Mobile-First**: Native iOS/Android apps with offline support
-- **⚡ High Performance**: Event sourcing, CQRS, advanced caching
-- **🔒 Enterprise Security**: Multi-factor auth, RBAC, audit trails
+## 🏗️ **Architecture Overview**
 
-## ✨ Key Features
+Hudur is built on a modern, cloud-native microservices architecture designed for scalability, reliability, and maintainability.
 
-### 🎯 **Core Functionality**
-- **Multi-Modal Attendance**: GPS, Face Recognition, BLE Beacons, Manual
-- **Leave Management**: Comprehensive leave tracking and approval workflows
-- **Time Tracking**: Precise time logging with geofencing
-- **Shift Management**: Flexible scheduling and shift assignments
-- **Reporting**: Advanced analytics and custom report generation
+### **Technology Stack**
+- **Backend**: .NET 8 microservices with Entity Framework Core
+- **Frontend**: React 18 with TypeScript and Material-UI
+- **Mobile**: React Native for iOS and Android
+- **Database**: PostgreSQL with Redis caching
+- **Message Queue**: Azure Service Bus for async communication
+- **API Gateway**: Ocelot for routing and load balancing
+- **Authentication**: JWT with Azure Active Directory integration
+- **Monitoring**: Prometheus, Grafana, and Application Insights
 
-### 🤖 **AI & Analytics**
-- **Predictive Analytics**: Attendance forecasting and trend analysis
-- **Anomaly Detection**: Automatic identification of unusual patterns
-- **Workforce Intelligence**: Employee engagement and performance insights
-- **Risk Assessment**: Absenteeism and turnover prediction
-
-### 🔄 **Workflow & Automation**
-- **Visual Workflow Designer**: Drag-and-drop workflow creation
-- **Business Rules Engine**: Dynamic rule creation and execution
-- **Approval Workflows**: Multi-step approval processes
-- **Event-Driven Automation**: Trigger-based process automation
-
-### 💬 **Collaboration**
-- **Team Chat**: Real-time messaging with channels and DMs
-- **Video Conferencing**: WebRTC-based video calls
-- **Screen Sharing**: Remote collaboration capabilities
-- **Document Sharing**: Real-time document collaboration
-
-## 🏗️ Architecture
-
-### **Microservices Overview**
+### **Microservices Architecture**
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   API Gateway   │    │   Frontend      │    │   Mobile Apps   │
-│   (Ocelot)      │    │   (React)       │    │ (React Native)  │
+│   Web Client    │    │  Mobile Apps    │    │  External APIs  │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          └───────────────────────┼───────────────────────┘
                                  │
-    ┌────────────────────────────┼────────────────────────────┐
-    │                            │                            │
-┌───▼───┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐
-│ Auth  │ │Attendance│ │  Face   │ │  Leave  │ │Analytics│ │Workflow │
-│Service│ │ Service │ │Recognition│ │ Mgmt    │ │Service  │ │ Engine  │
-└───────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘
+                    ┌─────────────────┐
+                    │   API Gateway   │
+                    └─────────────────┘
+                                 │
+         ┌───────────────────────┼───────────────────────┐
+         │                       │                       │
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  Authentication │    │   Attendance    │    │ Leave Management│
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  Notifications  │    │   Analytics     │    │  Integrations   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         └───────────────────────┼───────────────────────┘
+                                 │
+                    ┌─────────────────┐
+                    │   Shared Data   │
+                    └─────────────────┘
 ```
 
-### **Technology Stack**
-
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| **Frontend** | React 18 + TypeScript | Modern SPA with type safety |
-| **Mobile** | React Native 0.72 | Cross-platform native apps |
-| **Backend** | .NET 8 + C# | High-performance microservices |
-| **Database** | PostgreSQL + Redis | Primary data + caching |
-| **Message Queue** | RabbitMQ + MassTransit | Event-driven communication |
-| **Caching** | Redis + Varnish + Nginx | Multi-layer performance optimization |
-| **Container** | Docker + Kubernetes | Scalable deployment |
-| **Monitoring** | Prometheus + Grafana | Comprehensive observability |
-
-## 🚀 Quick Start
+## 🚀 **Quick Start**
 
 ### **Prerequisites**
+- .NET 8 SDK
+- Node.js 18+ and npm/yarn
+- PostgreSQL 15+
+- Redis 6+
 - Docker & Docker Compose
-- .NET 8 SDK (for development)
-- Node.js 18+ (for development)
-- Git
 
-### **1. Clone Repository**
-```bash
-git clone https://github.com/your-org/hudur.git
-cd hudur
-```
+### **Local Development Setup**
 
-### **2. Environment Setup**
-```bash
-# Copy environment template
-cp .env.example .env
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Alsairy/AttendancePro.git
+   cd AttendancePro
+   ```
 
-# Update configuration (edit with your values)
-nano .env
-```
+2. **Start infrastructure services**
+   ```bash
+   docker-compose up -d postgres redis
+   ```
 
-### **3. Quick Start with Docker**
-```bash
-# Start all services
-docker-compose up -d
+3. **Configure environment variables**
+   ```bash
+   cp .env.example .env.development
+   # Edit .env.development with your configuration
+   ```
 
-# Check service status
-docker-compose ps
+4. **Run backend services**
+   ```bash
+   cd src/backend
+   dotnet restore
+   dotnet run --project services/Authentication/AttendancePlatform.Authentication.Api
+   ```
 
-# View logs
-docker-compose logs -f
-```
+5. **Run frontend application**
+   ```bash
+   cd src/frontend/attendancepro-frontend
+   npm install
+   npm start
+   ```
 
-### **4. Access Applications**
-- **Web App**: http://localhost:3000
-- **API Gateway**: http://localhost:5000
-- **API Docs**: http://localhost:5000/swagger
-- **Monitoring**: http://localhost:3001
-
-### **5. Default Login**
-```
-Email: admin@hudur.sa
-Password: Admin123!
-```
-
-## 📱 Mobile Apps
-
-### **Features**
-- **Multi-Modal Authentication**: Face, fingerprint, GPS, BLE
-- **Offline-First**: Work without internet connectivity
-- **Real-Time Sync**: Automatic data synchronization
-- **Camera Integration**: Face capture and recognition
-- **Location Services**: GPS tracking with geofencing
-- **Push Notifications**: Real-time alerts
-
-### **Development Setup**
-```bash
-# Navigate to mobile app
-cd src/mobile/AttendanceMobile
-
-# Install dependencies
-npm install
-
-# iOS Development
-npx react-native run-ios
-
-# Android Development
-npx react-native run-android
-```
-
-### **Supported Platforms**
-- **iOS 12+**: Native iOS with Face ID integration
-- **Android 8+**: Native Android with fingerprint auth
-
-## 🔧 Development
-
-### **Backend Development**
-```bash
-# Navigate to backend service
-cd src/backend/services/Authentication/Hudur.Authentication.Api
-
-# Restore packages
-dotnet restore
-
-# Run service
-dotnet run
-
-# Run tests
-dotnet test
-```
-
-### **Frontend Development**
-```bash
-# Navigate to frontend
-cd src/frontend/hudur-frontend
-
-# Install dependencies
-npm install
-
-# Start development server
-npm start
-
-# Run tests
-npm test
-
-# Build for production
-npm run build
-```
-
-### **Database Setup**
-```bash
-# Run migrations
-dotnet ef database update
-
-# Seed sample data
-dotnet run --seed-data
-```
-
-## 🚀 Deployment
+6. **Access the application**
+   - Frontend: http://localhost:3000
+   - API Gateway: http://localhost:5000
+   - Swagger UI: http://localhost:5000/swagger
 
 ### **Docker Deployment**
-```bash
-# Build all images
-./scripts/build-and-deploy.sh
 
-# Deploy to production
-docker-compose -f docker-compose.production.yml up -d
-```
+1. **Build and deploy**
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Deploy to production**
+   ```bash
+   docker-compose -f docker-compose.prod.yml up -d
+   ```
 
 ### **Kubernetes Deployment**
-```bash
-# Apply configurations
-kubectl apply -f k8s/
 
-# Check deployment
-kubectl get pods -n hudur
+1. **Apply configurations**
+   ```bash
+   kubectl apply -f k8s/base/
+   kubectl apply -f k8s/overlays/production/
+   ```
 
-# Access via port-forward
-kubectl port-forward svc/frontend 3000:3000
-```
+2. **Verify deployment**
+   ```bash
+   kubectl get pods -n attendance-pro
+   ```
 
-### **Helm Deployment**
-```bash
-# Install with Helm
-helm install hudur ./helm/hudur
+## 📊 **Monitoring & Observability**
 
-# Upgrade
-helm upgrade hudur ./helm/hudur
+### **Health Checks**
+- API Health: `/health`
+- Database Health: `/health/database`
+- Redis Health: `/health/redis`
 
-# Status
-helm status hudur
-```
+### **Metrics & Logging**
+- **Prometheus**: Metrics collection at `/metrics`
+- **Grafana**: Dashboards for system monitoring
+- **Application Insights**: Distributed tracing and performance monitoring
+- **Structured Logging**: JSON-formatted logs with correlation IDs
 
-## 🔗 Integrations
-
-### **Supported Platforms**
-| Platform | Features | Status |
-|----------|----------|--------|
-| **Microsoft 365** | SSO, Calendar, Teams, OneDrive | ✅ Complete |
-| **Google Workspace** | SSO, Gmail, Calendar, Drive | ✅ Complete |
-| **Salesforce** | CRM, Contacts, Opportunities | ✅ Complete |
-| **Slack** | Messaging, Notifications | ✅ Complete |
-| **Zoom** | Video Conferencing | ✅ Complete |
-| **DocuSign** | E-Signatures | ✅ Complete |
-| **Jira** | Project Management | ✅ Complete |
-| **Tableau** | Data Visualization | ✅ Complete |
-| **Power BI** | Business Intelligence | ✅ Complete |
-
-## 📊 Analytics
-
-### **AI-Powered Insights**
-- **Attendance Forecasting**: Predict future attendance patterns
-- **Anomaly Detection**: Identify unusual behavior automatically
-- **Performance Analytics**: Employee engagement scoring
-- **Risk Assessment**: Turnover and absenteeism prediction
-
-### **Business Intelligence**
-- **Real-Time Dashboards**: Live KPI monitoring
-- **Custom Reports**: Drag-and-drop report builder
-- **Data Export**: Excel, PDF, CSV formats
-- **Scheduled Reports**: Automated report delivery
-
-## 🔒 Security
+## 🔒 **Security Features**
 
 ### **Authentication & Authorization**
-- **Multi-Factor Authentication**: SMS, Email, App-based 2FA
-- **Single Sign-On**: Enterprise identity provider integration
-- **Role-Based Access Control**: Granular permission management
-- **Session Management**: Secure session handling
+- **Multi-factor Authentication**: SMS, Email, and Authenticator app support
+- **Role-based Access Control**: Granular permissions system
+- **JWT Tokens**: Secure, stateless authentication
+- **Azure AD Integration**: Enterprise SSO support
 
 ### **Data Protection**
-- **Encryption**: AES-256 for data at rest and in transit
-- **GDPR Compliance**: Data protection and privacy controls
+- **Encryption at Rest**: Database and file storage encryption
+- **Encryption in Transit**: TLS 1.3 for all communications
+- **PII Protection**: Automatic data masking and anonymization
 - **Audit Trails**: Comprehensive activity logging
-- **Vulnerability Scanning**: Regular security assessments
 
-## 📚 Documentation
+### **Compliance**
+- **GDPR Compliance**: Data privacy and right to be forgotten
+- **SOC 2 Type II**: Security and availability controls
+- **ISO 27001**: Information security management
+- **HIPAA Ready**: Healthcare data protection capabilities
 
-### **Available Documentation**
-- **[API Documentation](docs/API_DOCUMENTATION.md)**: Complete REST API reference
-- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)**: Production deployment instructions
-- **[User Manual](docs/USER_MANUAL.md)**: End-user documentation
-- **[Testing Report](docs/TESTING_REPORT.md)**: Comprehensive testing validation
-- **[Architecture Guide](docs/ARCHITECTURE.md)**: Technical architecture details
+## 🌍 **Internationalization**
 
-### **Interactive API Docs**
-Visit http://localhost:5000/swagger for interactive API documentation with live testing capabilities.
+Hudur supports multiple languages and regions:
 
-## 🤝 Contributing
+- **Languages**: English, Arabic, French, Spanish, German
+- **Time Zones**: Automatic detection and conversion
+- **Currencies**: Multi-currency support for payroll integration
+- **Date Formats**: Localized date and time formatting
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+## 🔌 **Integrations**
 
-### **Quick Contribution Steps**
+### **HR Systems**
+- **Workday**: Employee data synchronization
+- **BambooHR**: Comprehensive HR integration
+- **ADP**: Payroll and benefits integration
+- **SAP SuccessFactors**: Enterprise HR suite
+
+### **Communication**
+- **Microsoft Teams**: Notifications and bot integration
+- **Slack**: Real-time alerts and commands
+- **Email**: SMTP and Exchange integration
+- **SMS**: Twilio and Azure Communication Services
+
+### **Calendar Systems**
+- **Microsoft 365**: Calendar and meeting integration
+- **Google Workspace**: Calendar synchronization
+- **Outlook**: Desktop and web integration
+
+## 📈 **Performance & Scalability**
+
+### **Performance Metrics**
+- **Response Time**: < 200ms for 95% of API calls
+- **Throughput**: 10,000+ concurrent users
+- **Availability**: 99.9% uptime SLA
+- **Scalability**: Auto-scaling based on demand
+
+### **Caching Strategy**
+- **Redis**: Session and frequently accessed data
+- **CDN**: Static assets and images
+- **Application Cache**: In-memory caching for hot paths
+- **Database Query Cache**: Optimized query performance
+
+## 🛠️ **Development**
+
+### **Code Quality**
+- **Code Coverage**: > 80% test coverage requirement
+- **Static Analysis**: SonarQube integration
+- **Security Scanning**: Automated vulnerability detection
+- **Performance Testing**: Load testing with k6
+
+### **CI/CD Pipeline**
+- **Automated Testing**: Unit, integration, and E2E tests
+- **Code Quality Gates**: Quality checks before deployment
+- **Blue-Green Deployment**: Zero-downtime deployments
+- **Rollback Capability**: Automatic rollback on failure
+
+## 📚 **Documentation**
+
+### **API Documentation**
+- **OpenAPI/Swagger**: Interactive API documentation
+- **Postman Collections**: Ready-to-use API collections
+- **SDK Documentation**: Client library documentation
+
+### **User Guides**
+- **Administrator Guide**: System configuration and management
+- **User Manual**: End-user functionality guide
+- **Mobile App Guide**: Mobile application usage
+- **Integration Guide**: Third-party integration instructions
+
+## 🤝 **Contributing**
+
+We welcome contributions from the community! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
+
+### **Development Workflow**
 1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
 
-### **Development Guidelines**
-- Follow existing code style and conventions
-- Add tests for new functionality
-- Update documentation for API changes
-- Ensure all tests pass before submitting PR
+### **Code Standards**
+- Follow C# coding conventions for backend
+- Use ESLint and Prettier for frontend
+- Write comprehensive unit tests
+- Document public APIs
+- Follow semantic versioning
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support & Community
+## 📞 **Support & Community**
 
 ### **Getting Help**
-- **📖 Documentation**: Comprehensive guides and API reference
+- **📖 Documentation**: [docs.hudur.sa](https://docs.hudur.sa)
+- **💬 Community Forum**: [community.hudur.sa](https://community.hudur.sa)
 - **🐛 Issues**: [GitHub Issues](https://github.com/your-org/hudur/issues) for bug reports
 - **💬 Discussions**: [GitHub Discussions](https://github.com/your-org/hudur/discussions) for Q&A
 - **📧 Email**: support@hudur.sa for enterprise support
@@ -345,8 +277,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **🍴 Fork** to contribute or customize for your needs
 - **📢 Share** with others who might benefit
 
----
-
 ## 🌟 **Ready to Transform Your Workforce Management?**
 
 Hudur combines cutting-edge technology with enterprise-grade reliability to deliver a comprehensive workforce management solution. Whether you're a startup or enterprise, Hudur scales with your needs.
@@ -354,7 +284,6 @@ Hudur combines cutting-edge technology with enterprise-grade reliability to deli
 **[Get Started Today →](docs/getting-started.md)**
 
 ---
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Alsairy/AttendancePro?utm_source=oss&utm_medium=github&utm_campaign=Alsairy%2FAttendancePro&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
 <div align="center">
 
@@ -363,4 +292,3 @@ Hudur combines cutting-edge technology with enterprise-grade reliability to deli
 [Website](https://hudur.sa) • [Documentation](docs/) • [API Reference](docs/api/) • [Support](mailto:support@hudur.sa)
 
 </div>
-

@@ -64,7 +64,7 @@ Database connection string
 */}}
 {{- define "hudur.databaseConnectionString" -}}
 {{- if .Values.postgresql.enabled }}
-{{- printf "Server=%s-postgresql;Database=%s;User Id=postgres;Password=%s;TrustServerCertificate=true" .Release.Name .Values.postgresql.auth.database .Values.postgresql.auth.postgresPassword }}
+{{- printf "Server=%s-postgresql;Database=%s;User Id=postgres;Password=%s;Encrypt=true;" .Release.Name .Values.postgresql.auth.database .Values.postgresql.auth.postgresPassword }}
 {{- else }}
 {{- .Values.externalDatabase.connectionString }}
 {{- end }}

@@ -17,7 +17,8 @@
     <PackageReference Include="Google.Apis.Admin.Directory.directory_v1" Version="1.68.0.3421" />
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.68.0.3421" />
     <PackageReference Include="Microsoft.Graph" Version="5.56.0" />
-    <PackageReference Include="Microsoft.Graph.Auth" Version="1.0.0-preview.7" />
+    <PackageReference Include="Azure.Identity" Version="1.12.1" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="8.0.0" />
     <PackageReference Include="DotNetForce" Version="2.4.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
