@@ -44,6 +44,10 @@ namespace AttendancePlatform.Shared.Domain.Entities
         
         public DateTime? LastLoginAt { get; set; }
         
+        public DateTime? LastLoginDate { get; set; }
+        
+        public DateTime? CreatedDate { get; set; } = DateTime.UtcNow;
+        
         public string? PasswordHash { get; set; }
         
         public string? PasswordSalt { get; set; }
@@ -51,6 +55,16 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public DateTime? PasswordChangedAt { get; set; }
         
         public bool RequirePasswordChange { get; set; } = false;
+        
+        public bool IsSuspended { get; set; } = false;
+        
+        public string? RefreshToken { get; set; }
+        
+        public DateTime? RefreshTokenExpiryTime { get; set; }
+        
+        public string? PasswordResetToken { get; set; }
+        
+        public DateTime? PasswordResetTokenExpiry { get; set; }
         
         // public int FailedLoginAttempts { get; set; } = 0;
         

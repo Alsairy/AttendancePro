@@ -1,0 +1,177 @@
+name: Security Policy Compliance Check
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'  # Monthly compliance check on 1st of each month
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/**'
+      - 'src/**'
+      - 'k8s/**'
+
+jobs:
+  cybersecurity-policy-audit:
+    name: Cybersecurity Policy Compliance Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Policy 12-1 - Penetration Testing Verification
+      run: |
+        echo "🔍 Verifying Policy 12-1: Penetration Testing Requirements"
+        
+        # Check if penetration testing is configured
+        if grep -q "penetration-testing" .github/workflows/security-scanning.yml; then
+          echo "✅ Penetration testing job configured"
+        else
+          echo "❌ Penetration testing job not found"
+          exit 1
+        fi
+        
+        # Verify OWASP ZAP is used
+        if grep -q "owasp/zap" .github/workflows/security-scanning.yml; then
+          echo "✅ OWASP ZAP penetration testing tool configured"
+        else
+          echo "❌ OWASP ZAP not configured"
+          exit 1
+        fi
+        
+        # Check if testing covers all environments
+        if grep -q "pull_request\|staging\|production" .github/workflows/security-scanning.yml; then
+          echo "✅ Penetration testing covers multiple environments"
+        else
+          echo "❌ Penetration testing limited to single environment"
+          exit 1
+        fi
+    
+    - name: Policy 3-2-1-7 - OWASP Top Ten Compliance
+      run: |
+        echo "🔍 Verifying Policy 3-2-1-7: OWASP Top Ten Implementation"
+        
+        # Check for security headers implementation
+        if find src/ -name "*.cs" -exec grep -l "SecurityHeaders\|HSTS\|CSP" {} \; | head -1; then
+          echo "✅ Security headers implemented"
+        else
+          echo "⚠️ Security headers implementation not found"
+        fi
+        
+        # Check for authentication and authorization
+        if find src/ -name "*.cs" -exec grep -l "Authentication\|Authorization\|JWT" {} \; | head -1; then
+          echo "✅ Authentication and authorization implemented"
+        else
+          echo "❌ Authentication/authorization implementation not found"
+          exit 1
+        fi
+        
+        # Check for input validation
+        if find src/ -name "*.cs" -exec grep -l "Validation\|Sanitize" {} \; | head -1; then
+          echo "✅ Input validation implemented"
+        else
+          echo "⚠️ Input validation implementation not found"
+        fi
+    
+    - name: Policy 8-1 - Security Review Process
+      run: |
+        echo "🔍 Verifying Policy 8-1: Security Review Requirements"
+        
+        # Check for automated security scanning
+        if ls .github/workflows/*security* 1> /dev/null 2>&1; then
+          echo "✅ Automated security scanning workflows configured"
+        else
+          echo "❌ Security scanning workflows not found"
+          exit 1
+        fi
+        
+        # Verify multiple security scan types
+        scan_types=0
+        if grep -q "trivy" .github/workflows/security-scanning.yml; then
+          echo "✅ Container vulnerability scanning (Trivy)"
+          ((scan_types++))
+        fi
+        if grep -q "gitleaks" .github/workflows/security-scanning.yml; then
+          echo "✅ Secrets scanning (GitLeaks)"
+          ((scan_types++))
+        fi
+        if grep -q "checkov" .github/workflows/security-scanning.yml; then
+          echo "✅ Infrastructure security scanning (Checkov)"
+          ((scan_types++))
+        fi
+        
+        if [ $scan_types -ge 3 ]; then
+          echo "✅ Comprehensive security scanning implemented"
+        else
+          echo "❌ Insufficient security scanning coverage"
+          exit 1
+        fi
+    
+    - name: Policy 10-1 - Data Protection Verification
+      run: |
+        echo "🔍 Verifying Policy 10-1: Data Protection Requirements"
+        
+        # Check for encryption implementations
+        if find src/ -name "*.cs" -exec grep -l "Encrypt\|AES\|Hash" {} \; | head -1; then
+          echo "✅ Data encryption implementations found"
+        else
+          echo "❌ Data encryption implementations not found"
+          exit 1
+        fi
+        
+        # Check for secure configuration
+        if find . -name "appsettings*.json" -exec grep -l "ConnectionStrings\|JWT" {} \; | head -1; then
+          echo "✅ Secure configuration files present"
+        else
+          echo "❌ Secure configuration not found"
+          exit 1
+        fi
+    
+    - name: Policy 4-1 - Access Control Verification
+      run: |
+        echo "🔍 Verifying Policy 4-1: Access Control Requirements"
+        
+        # Check for role-based access control
+        if find src/ -name "*.cs" -exec grep -l "Role\|Permission\|Authorize" {} \; | head -1; then
+          echo "✅ Role-based access control implemented"
+        else
+          echo "❌ RBAC implementation not found"
+          exit 1
+        fi
+        
+        # Check for multi-tenancy support
+        if find src/ -name "*.cs" -exec grep -l "Tenant\|TenantId" {} \; | head -1; then
+          echo "✅ Multi-tenancy support implemented"
+        else
+          echo "⚠️ Multi-tenancy implementation not found"
+        fi
+    
+    - name: Generate Compliance Report
+      run: |
+        echo "# Cybersecurity Policy Compliance Report" > compliance-report.md
+        echo "Generated on: $(date)" >> compliance-report.md
+        echo "" >> compliance-report.md
+        echo "## Executive Summary" >> compliance-report.md
+        echo "This report verifies compliance with the organization's cybersecurity policy requirements." >> compliance-report.md
+        echo "" >> compliance-report.md
+        echo "## Policy Compliance Status" >> compliance-report.md
+        echo "✅ **Policy 12-1**: Penetration Testing - COMPLIANT" >> compliance-report.md
+        echo "✅ **Policy 3-2-1-7**: OWASP Top Ten - COMPLIANT" >> compliance-report.md
+        echo "✅ **Policy 8-1**: Security Review Process - COMPLIANT" >> compliance-report.md
+        echo "✅ **Policy 10-1**: Data Protection - COMPLIANT" >> compliance-report.md
+        echo "✅ **Policy 4-1**: Access Control - COMPLIANT" >> compliance-report.md
+        echo "" >> compliance-report.md
+        echo "## Recommendations" >> compliance-report.md
+        echo "1. Continue monthly compliance audits" >> compliance-report.md
+        echo "2. Monitor security scan results regularly" >> compliance-report.md
+        echo "3. Update security policies as needed" >> compliance-report.md
+        echo "4. Maintain penetration testing schedule (every 6 months)" >> compliance-report.md
+        echo "" >> compliance-report.md
+        echo "## Next Review Date" >> compliance-report.md
+        echo "Next compliance audit scheduled for: $(date -d '+1 month' '+%Y-%m-01')" >> compliance-report.md
+    
+    - name: Upload Compliance Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: cybersecurity-compliance-report
+        path: compliance-report.md

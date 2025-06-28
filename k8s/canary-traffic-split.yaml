@@ -1,0 +1,41 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: hudur-attendance-canary
+  namespace: production
+spec:
+  hosts:
+  - production.hudur.sa
+  http:
+  - match:
+    - headers:
+        canary:
+          exact: "true"
+    route:
+    - destination:
+        host: hudur-attendance-service
+        subset: canary
+  - route:
+    - destination:
+        host: hudur-attendance-service
+        subset: stable
+      weight: 90
+    - destination:
+        host: hudur-attendance-service
+        subset: canary
+      weight: 10
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: hudur-attendance-canary
+  namespace: production
+spec:
+  host: hudur-attendance-service
+  subsets:
+  - name: stable
+    labels:
+      version: stable
+  - name: canary
+    labels:
+      version: canary
