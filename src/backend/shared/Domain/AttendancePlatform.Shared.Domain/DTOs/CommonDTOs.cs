@@ -188,6 +188,10 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public string? ManagerName { get; set; }
         public IEnumerable<string> Roles { get; set; } = new List<string>();
         public string? NotificationPreferences { get; set; }
+        public bool IsActive { get; set; } = true;
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? LastLoginDate { get; set; }
+        public bool IsSuspended { get; set; } = false;
         public string FullName => $"{FirstName} {LastName}";
     }
 
