@@ -53,9 +53,9 @@ const KioskLoginPage: React.FC = () => {
       const result = await response.json()
 
       if (response.ok && result.isSuccess) {
-        localStorage.setItem('kiosk_token', result.token)
-        localStorage.setItem('kiosk_id', result.kioskId)
-        localStorage.setItem('kiosk_expires_at', result.expiresAt)
+        SecureStorage.setToken(result.token, { maxAge: 60 * 60 * 8 })
+        sessionStorage.setItem('kiosk_id', result.kioskId)
+        sessionStorage.setItem('kiosk_expires_at', result.expiresAt)
         
         toast.success('Kiosk authenticated successfully')
         navigate('/kiosk/attendance')

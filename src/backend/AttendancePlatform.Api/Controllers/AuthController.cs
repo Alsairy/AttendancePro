@@ -24,6 +24,7 @@ namespace AttendancePlatform.Api.Controllers
         }
 
         [HttpPost("login")]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult<ApiResponse<Application.DTOs.LoginResponse>>> Login([FromBody] Application.DTOs.LoginRequest request)
         {
             if (!ModelState.IsValid)
@@ -42,6 +43,7 @@ namespace AttendancePlatform.Api.Controllers
         }
 
         [HttpPost("register")]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult<ApiResponse<Application.DTOs.UserDto>>> Register([FromBody] Application.DTOs.RegisterRequest request)
         {
             if (!ModelState.IsValid)
@@ -94,6 +96,7 @@ namespace AttendancePlatform.Api.Controllers
 
         [HttpPost("change-password")]
         [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult<ApiResponse<bool>>> ChangePassword([FromBody] Application.DTOs.ChangePasswordRequest request)
         {
             if (!ModelState.IsValid)
@@ -132,6 +135,7 @@ namespace AttendancePlatform.Api.Controllers
         }
 
         [HttpPost("reset-password")]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult<ApiResponse<bool>>> ResetPassword([FromBody] Application.DTOs.ResetPasswordRequest request)
         {
             if (!ModelState.IsValid)

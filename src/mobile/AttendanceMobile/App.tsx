@@ -176,19 +176,19 @@ function App(): JSX.Element {
 
   const checkAuthStatus = async () => {
     try {
-      const token = await AsyncStorage.getItem('authToken');
+      const token = await SecureTokenStorage.getToken();
       if (token) {
         const userData = await AuthService.getUser();
         if (userData) {
           setUser(userData);
           setIsAuthenticated(true);
         } else {
-          await AsyncStorage.removeItem('authToken');
+          await SecureTokenStorage.removeToken();
         }
       }
     } catch (error) {
       console.error('Auth check error:', error);
-      await AsyncStorage.removeItem('authToken');
+      await SecureTokenStorage.removeToken();
     }
   };
 
@@ -225,7 +225,10 @@ function App(): JSX.Element {
   const handleLogin = async (credentials: LoginCredentials) => {
     try {
       const response = await AuthService.login(credentials);
-      await AsyncStorage.setItem('authToken', response.token);
+      await SecureTokenStorage.setToken(response.token);
+      if (response.refreshToken) {
+        await SecureTokenStorage.setRefreshToken(response.refreshToken);
+      }
       setUser(response.user);
       setIsAuthenticated(true);
     } catch (error) {
