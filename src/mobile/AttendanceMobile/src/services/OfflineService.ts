@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import SecureTokenStorage from '../utils/SecureTokenStorage';
 import { useOfflineStore } from '../store/offlineStore';
 
 export class OfflineService {
@@ -107,7 +108,7 @@ export class OfflineService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${await AsyncStorage.getItem('auth_token')}`,
+        'Authorization': `Bearer ${await SecureTokenStorage.getToken()}`,
       },
       body: JSON.stringify(item.data),
     });
