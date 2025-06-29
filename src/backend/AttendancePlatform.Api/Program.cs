@@ -13,6 +13,8 @@ using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using StackExchange.Redis;
+using AttendancePlatform.Api.Services;
+using AttendancePlatform.Api.Middleware;
 
 [assembly: InternalsVisibleTo("AttendancePlatform.Tests.Integration")]
 
@@ -64,6 +66,10 @@ builder.Services.AddScoped<IJwtTokenService, AttendancePlatform.Api.Services.Jwt
 builder.Services.AddScoped<ITwoFactorService, AttendancePlatform.Api.Services.TwoFactorService>();
 builder.Services.AddScoped<AttendancePlatform.Application.Services.IEmailService, AttendancePlatform.Api.Services.EmailService>();
 builder.Services.AddScoped<IRefreshTokenService, AttendancePlatform.Api.Services.RefreshTokenService>();
+builder.Services.AddScoped<ILoggingService, LoggingService>();
+builder.Services.AddScoped<IComplianceService, ComplianceService>();
+builder.Services.AddScoped<ISecurityService, SecurityService>();
+builder.Services.AddScoped<IMonitoringService, MonitoringService>();
 
 // Configure JWT authentication
 var jwtSettings = builder.Configuration.GetSection("JWT");
@@ -93,6 +99,16 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
+    options.SuppressXFrameOptionsHeader = false;
+    options.Cookie.Name = "__RequestVerificationToken";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+});
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -167,8 +183,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.GlobalExceptionMiddleware>();
+app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.InputSanitizationMiddleware>();
+app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.HtmlSanitizationMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
+app.UseMiddleware<RateLimitingMiddleware>();
+app.UseMiddleware<CsrfValidationMiddleware>();
 
 app.UseCors("AllowAll");
 
