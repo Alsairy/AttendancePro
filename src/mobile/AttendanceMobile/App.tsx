@@ -48,6 +48,7 @@ import { AppTheme } from './src/types/Theme';
 // Utils
 import { theme } from './src/utils/theme';
 import { Colors } from './src/utils/colors';
+import SecureTokenStorage from './src/utils/SecureTokenStorage';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

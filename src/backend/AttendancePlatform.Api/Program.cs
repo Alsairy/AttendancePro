@@ -194,8 +194,8 @@ app.UseHttpsRedirection();
 app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.GlobalExceptionMiddleware>();
 app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.InputSanitizationMiddleware>();
 app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.HtmlSanitizationMiddleware>();
-app.UseMiddleware<SecurityHeadersMiddleware>();
-app.UseMiddleware<RateLimitingMiddleware>();
+app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.SecurityHeadersMiddleware>();
+app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.RateLimitingMiddleware>();
 app.UseMiddleware<CsrfValidationMiddleware>();
 
 app.UseCors("AllowAll");
