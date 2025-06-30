@@ -329,15 +329,12 @@ namespace AttendancePlatform.Api.Services
 
         private string HashPassword(string password)
         {
-            using var sha256 = SHA256.Create();
-            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(hashedBytes);
+            return BCrypt.Net.BCrypt.HashPassword(password);
         }
 
         private bool VerifyPassword(string password, string hash)
         {
-            var hashedPassword = HashPassword(password);
-            return hashedPassword == hash;
+            return BCrypt.Net.BCrypt.Verify(password, hash);
         }
 
         private Application.DTOs.UserDto MapToUserDto(User user)

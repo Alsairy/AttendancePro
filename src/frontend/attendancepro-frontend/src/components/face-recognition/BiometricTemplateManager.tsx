@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Trash2, Eye, EyeOff, Plus, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { Button } from '../ui/button'
+import Button from '../ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { Badge } from '../ui/badge'

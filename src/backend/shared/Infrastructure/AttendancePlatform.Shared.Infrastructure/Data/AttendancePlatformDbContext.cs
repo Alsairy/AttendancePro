@@ -487,10 +487,10 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.Property(e => e.UserId).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
-                entity.Property(e => e.Type).HasMaxLength(50).HasDefaultValue("info");
+                entity.Property(e => e.Type).HasDefaultValue(NotificationType.System);
                 entity.Property(e => e.Data).HasColumnType("nvarchar(max)");
                 entity.Property(e => e.ActionUrl).HasMaxLength(500);
-                entity.Property(e => e.Priority).HasMaxLength(20).HasDefaultValue("normal");
+                entity.Property(e => e.Priority).HasDefaultValue(NotificationPriority.Normal);
                 entity.Property(e => e.Category).HasMaxLength(100);
                 entity.Property(e => e.Source).HasMaxLength(100);
                 entity.Property(e => e.CorrelationId).HasMaxLength(50);
@@ -506,7 +506,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.Property(e => e.UserId).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
-                entity.Property(e => e.Type).HasMaxLength(50).HasDefaultValue("info");
+                entity.Property(e => e.Type).HasDefaultValue(NotificationType.System);
                 entity.Property(e => e.Data).HasColumnType("nvarchar(max)");
                 entity.Property(e => e.RecurrencePattern).HasMaxLength(100);
                 entity.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("pending");

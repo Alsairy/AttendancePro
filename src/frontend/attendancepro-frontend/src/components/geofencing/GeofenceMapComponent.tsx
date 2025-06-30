@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { MapPin, Navigation, AlertCircle, CheckCircle, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
 
-import { Button } from '../ui/button'
+import Button from '../ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Badge } from '../ui/badge'
 import { Alert, AlertDescription } from '../ui/alert'

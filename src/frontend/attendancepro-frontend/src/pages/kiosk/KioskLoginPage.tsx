@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button } from '../../components/ui/button'
-import { Input } from '../../components/ui/input'
+import Button from '../../components/ui/Button'
+import Input from '../../components/ui/Input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import { Label } from '../../components/ui/label'
 import { Alert, AlertDescription } from '../../components/ui/alert'
 import { Loader2, Monitor, Shield } from 'lucide-react'
 import { toast } from 'sonner'
+import SecureStorage from '../../utils/secureStorage'
 
 interface KioskAuthData {
   kioskId: string
@@ -105,7 +106,7 @@ const KioskLoginPage: React.FC = () => {
                   type="text"
                   placeholder="Enter Kiosk ID"
                   value={authData.kioskId}
-                  onChange={(e) => handleInputChange('kioskId', e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('kioskId', e.target.value)}
                   onKeyPress={handleKeyPress}
                   className="h-12 text-lg"
                   autoComplete="off"
@@ -122,7 +123,7 @@ const KioskLoginPage: React.FC = () => {
                   type="password"
                   placeholder="Enter Access Code"
                   value={authData.accessCode}
-                  onChange={(e) => handleInputChange('accessCode', e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange('accessCode', e.target.value)}
                   onKeyPress={handleKeyPress}
                   className="h-12 text-lg"
                   autoComplete="off"

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { MapPin, AlertCircle, CheckCircle, Settings, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { Button } from '../ui/button'
+import Button from '../ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Alert, AlertDescription } from '../ui/alert'
 import { Badge } from '../ui/badge'

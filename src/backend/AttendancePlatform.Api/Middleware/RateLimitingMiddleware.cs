@@ -25,20 +25,28 @@ namespace AttendancePlatform.Api.Middleware
 
             var requests = _requests.GetOrAdd(clientId, _ => new List<DateTime>());
 
+            bool rateLimitExceeded = false;
             lock (requests)
             {
                 requests.RemoveAll(r => now - r > _timeWindow);
                 
                 if (requests.Count >= _maxRequests)
                 {
-                    _logger.LogWarning("Rate limit exceeded for client {ClientId}", clientId);
-                    context.Response.StatusCode = 429;
-                    context.Response.Headers.Add("Retry-After", "60");
-                    await context.Response.WriteAsync("Rate limit exceeded");
-                    return;
+                    rateLimitExceeded = true;
                 }
+                else
+                {
+                    requests.Add(now);
+                }
+            }
 
-                requests.Add(now);
+            if (rateLimitExceeded)
+            {
+                _logger.LogWarning("Rate limit exceeded for client {ClientId}", clientId);
+                context.Response.StatusCode = 429;
+                context.Response.Headers.Add("Retry-After", "60");
+                await context.Response.WriteAsync("Rate limit exceeded");
+                return;
             }
 
             await _next(context);

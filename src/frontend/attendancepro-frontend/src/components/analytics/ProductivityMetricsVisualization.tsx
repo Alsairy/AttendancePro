@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Badge } from '../ui/badge'
-import { Button } from '../ui/button'
+import Button from '../ui/Button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { ProductivityMetric } from '../../services/analyticsService'
 
