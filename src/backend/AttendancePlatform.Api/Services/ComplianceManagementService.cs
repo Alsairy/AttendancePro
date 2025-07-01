@@ -449,11 +449,11 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Type { get; set; }
-        public string Version { get; set; }
-        public string Status { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Type { get; set; }
+        public required string Version { get; set; }
+        public required string Status { get; set; }
         public int RequirementsCount { get; set; }
         public double ComplianceScore { get; set; }
         public DateTime LastAssessmentDate { get; set; }
@@ -466,12 +466,12 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
         public Guid FrameworkId { get; set; }
-        public string FrameworkName { get; set; }
+        public required string FrameworkName { get; set; }
         public DateTime AssessmentDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public double Score { get; set; }
         public double PassingScore { get; set; }
-        public string AssessorName { get; set; }
+        public required string AssessorName { get; set; }
         public int FindingsCount { get; set; }
         public int CriticalFindings { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -480,8 +480,8 @@ namespace AttendancePlatform.Api.Services
     public class ComplianceManagementReportDto
     {
         public Guid TenantId { get; set; }
-        public string FrameworkType { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string FrameworkType { get; set; }
+        public required string ReportPeriod { get; set; }
         public double OverallComplianceScore { get; set; }
         public int TotalRequirements { get; set; }
         public int MetRequirements { get; set; }
@@ -498,12 +498,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid FrameworkId { get; set; }
-        public string RequirementCode { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
+        public required string RequirementCode { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
         public double ComplianceScore { get; set; }
         public DateTime LastReviewDate { get; set; }
         public DateTime NextReviewDate { get; set; }
@@ -513,13 +513,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string AuditType { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string AuditType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; }
-        public string AuditorName { get; set; }
+        public required string Status { get; set; }
+        public required string AuditorName { get; set; }
         public double? Score { get; set; }
         public int Findings { get; set; }
         public int CriticalFindings { get; set; }

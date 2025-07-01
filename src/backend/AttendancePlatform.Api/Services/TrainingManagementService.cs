@@ -436,15 +436,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ProgramCode { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
+        public required string ProgramCode { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
         public int Duration { get; set; }
-        public string DifficultyLevel { get; set; }
+        public required string DifficultyLevel { get; set; }
         public int MaxParticipants { get; set; }
-        public string Status { get; set; }
-        public string InstructorName { get; set; }
+        public required string Status { get; set; }
+        public required string InstructorName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime EnrollmentDeadline { get; set; }
@@ -457,10 +457,10 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid ProgramId { get; set; }
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
-        public string EmployeeEmail { get; set; }
+        public required string EmployeeName { get; set; }
+        public required string EmployeeEmail { get; set; }
         public DateTime EnrollmentDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public double Progress { get; set; }
         public DateTime? CompletionDate { get; set; }
     }
@@ -469,16 +469,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid ProgramId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
         public int SessionNumber { get; set; }
         public int Duration { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public string InstructorName { get; set; }
-        public string Location { get; set; }
+        public required string InstructorName { get; set; }
+        public required string Location { get; set; }
         public int MaxAttendees { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -487,13 +487,13 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
         public Guid ProgramId { get; set; }
-        public string ProgramTitle { get; set; }
+        public required string ProgramTitle { get; set; }
         public DateTime CompletionDate { get; set; }
         public double Score { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public bool CertificationIssued { get; set; }
         public DateTime? ExpiryDate { get; set; }
-        public string Feedback { get; set; }
+        public required string Feedback { get; set; }
     }
 
     public class TrainingCertificationDto
@@ -501,13 +501,13 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
         public Guid ProgramId { get; set; }
-        public string CertificationNumber { get; set; }
-        public string CertificationName { get; set; }
+        public required string CertificationNumber { get; set; }
+        public required string CertificationName { get; set; }
         public DateTime IssueDate { get; set; }
         public DateTime ExpiryDate { get; set; }
-        public string Status { get; set; }
-        public string IssuingAuthority { get; set; }
-        public string VerificationCode { get; set; }
+        public required string Status { get; set; }
+        public required string IssuingAuthority { get; set; }
+        public required string VerificationCode { get; set; }
     }
 
     public class TrainingAnalyticsDto
@@ -533,7 +533,7 @@ namespace AttendancePlatform.Api.Services
     public class TrainingReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public int TotalPrograms { get; set; }
         public int NewPrograms { get; set; }
         public int CompletedPrograms { get; set; }
@@ -553,8 +553,8 @@ namespace AttendancePlatform.Api.Services
     public class TrainingCategoryDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int ProgramCount { get; set; }
         public bool IsActive { get; set; }
     }

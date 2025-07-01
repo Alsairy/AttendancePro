@@ -376,6 +376,7 @@ namespace AttendancePlatform.Api.Services
                     {
                         Id = d.Id,
                         Name = d.Name,
+                        Content = "Document content not available",
                         ProjectId = d.ProjectId ?? Guid.Empty,
                         CreatedBy = d.UploadedById,
                         CreatedAt = d.UploadedAt,
@@ -493,8 +494,8 @@ namespace AttendancePlatform.Api.Services
     public class TeamDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public Guid TenantId { get; set; }
         public DateTime CreatedAt { get; set; }
         public int MemberCount { get; set; }
@@ -504,19 +505,19 @@ namespace AttendancePlatform.Api.Services
     public class TeamMemberDto
     {
         public Guid UserId { get; set; }
-        public string UserName { get; set; }
-        public string Role { get; set; }
+        public required string UserName { get; set; }
+        public required string Role { get; set; }
         public DateTime JoinedAt { get; set; }
     }
 
     public class CollaborationProjectDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public Guid TenantId { get; set; }
         public Guid? TeamId { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -526,12 +527,12 @@ namespace AttendancePlatform.Api.Services
     public class CollaborationTaskDto
     {
         public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
         public Guid ProjectId { get; set; }
         public Guid? AssignedUserId { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public DateTime? DueDate { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -539,8 +540,8 @@ namespace AttendancePlatform.Api.Services
     public class CollaborationDocumentDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Content { get; set; }
+        public required string Name { get; set; }
+        public required string Content { get; set; }
         public Guid ProjectId { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -553,8 +554,8 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid TeamId { get; set; }
         public Guid UserId { get; set; }
-        public string Content { get; set; }
-        public string MessageType { get; set; }
+        public required string Content { get; set; }
+        public required string MessageType { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

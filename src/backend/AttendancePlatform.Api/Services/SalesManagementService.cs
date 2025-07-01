@@ -389,21 +389,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string OpportunityNumber { get; set; }
-        public string OpportunityName { get; set; }
-        public string Description { get; set; }
-        public string AccountName { get; set; }
-        public string ContactName { get; set; }
-        public string ContactEmail { get; set; }
-        public string SalesStage { get; set; }
+        public required string OpportunityNumber { get; set; }
+        public required string OpportunityName { get; set; }
+        public required string Description { get; set; }
+        public required string AccountName { get; set; }
+        public required string ContactName { get; set; }
+        public required string ContactEmail { get; set; }
+        public required string SalesStage { get; set; }
         public double Probability { get; set; }
         public decimal Amount { get; set; }
         public DateTime ExpectedCloseDate { get; set; }
-        public string SalesRepresentative { get; set; }
-        public string LeadSource { get; set; }
-        public string CompetitorAnalysis { get; set; }
-        public string NextSteps { get; set; }
-        public string Status { get; set; }
+        public required string SalesRepresentative { get; set; }
+        public required string LeadSource { get; set; }
+        public required string CompetitorAnalysis { get; set; }
+        public required string NextSteps { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -412,11 +412,11 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string QuoteNumber { get; set; }
-        public string QuoteName { get; set; }
-        public string CustomerName { get; set; }
-        public string CustomerEmail { get; set; }
-        public string SalesRepresentative { get; set; }
+        public required string QuoteNumber { get; set; }
+        public required string QuoteName { get; set; }
+        public required string CustomerName { get; set; }
+        public required string CustomerEmail { get; set; }
+        public required string SalesRepresentative { get; set; }
         public DateTime QuoteDate { get; set; }
         public DateTime ExpirationDate { get; set; }
         public decimal SubTotal { get; set; }
@@ -424,8 +424,8 @@ namespace AttendancePlatform.Api.Services
         public decimal TotalAmount { get; set; }
         public double DiscountPercentage { get; set; }
         public decimal DiscountAmount { get; set; }
-        public string Terms { get; set; }
-        public string Status { get; set; }
+        public required string Terms { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -434,20 +434,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string OrderNumber { get; set; }
-        public string CustomerName { get; set; }
-        public string CustomerEmail { get; set; }
-        public string SalesRepresentative { get; set; }
+        public required string OrderNumber { get; set; }
+        public required string CustomerName { get; set; }
+        public required string CustomerEmail { get; set; }
+        public required string SalesRepresentative { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime RequiredDate { get; set; }
-        public string ShippingAddress { get; set; }
-        public string BillingAddress { get; set; }
+        public required string ShippingAddress { get; set; }
+        public required string BillingAddress { get; set; }
         public decimal SubTotal { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal ShippingAmount { get; set; }
         public decimal TotalAmount { get; set; }
-        public string PaymentTerms { get; set; }
-        public string Status { get; set; }
+        public required string PaymentTerms { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -476,8 +476,8 @@ namespace AttendancePlatform.Api.Services
     public class SalesReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalOpportunities { get; set; }
         public int WonOpportunities { get; set; }
         public int LostOpportunities { get; set; }
@@ -495,15 +495,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PipelineNumber { get; set; }
-        public string PipelineName { get; set; }
-        public string Description { get; set; }
-        public string Stage { get; set; }
+        public required string PipelineNumber { get; set; }
+        public required string PipelineName { get; set; }
+        public required string Description { get; set; }
+        public required string Stage { get; set; }
         public int StageOrder { get; set; }
         public double Probability { get; set; }
         public int ExpectedDuration { get; set; }
-        public string RequiredActions { get; set; }
-        public string ExitCriteria { get; set; }
+        public required string RequiredActions { get; set; }
+        public required string ExitCriteria { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -513,12 +513,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string TeamNumber { get; set; }
-        public string TeamName { get; set; }
-        public string Description { get; set; }
-        public string TeamLead { get; set; }
+        public required string TeamNumber { get; set; }
+        public required string TeamName { get; set; }
+        public required string Description { get; set; }
+        public required string TeamLead { get; set; }
         public int TeamSize { get; set; }
-        public string Territory { get; set; }
+        public required string Territory { get; set; }
         public decimal QuotaTarget { get; set; }
         public decimal QuotaAchieved { get; set; }
         public double QuotaAttainment { get; set; }

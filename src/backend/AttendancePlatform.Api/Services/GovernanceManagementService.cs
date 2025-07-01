@@ -361,22 +361,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PolicyNumber { get; set; }
-        public string PolicyName { get; set; }
-        public string Description { get; set; }
-        public string PolicyType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
+        public required string PolicyNumber { get; set; }
+        public required string PolicyName { get; set; }
+        public required string Description { get; set; }
+        public required string PolicyType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
         public DateTime EffectiveDate { get; set; }
         public DateTime ReviewDate { get; set; }
         public DateTime? ExpirationDate { get; set; }
-        public string Owner { get; set; }
-        public string Approver { get; set; }
-        public string Priority { get; set; }
-        public string ComplianceFramework { get; set; }
-        public string EnforcementLevel { get; set; }
-        public string ViolationPenalty { get; set; }
+        public required string Owner { get; set; }
+        public required string Approver { get; set; }
+        public required string Priority { get; set; }
+        public required string ComplianceFramework { get; set; }
+        public required string EnforcementLevel { get; set; }
+        public required string ViolationPenalty { get; set; }
         public bool TrainingRequired { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -386,20 +386,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string FrameworkNumber { get; set; }
-        public string FrameworkName { get; set; }
-        public string Description { get; set; }
-        public string FrameworkType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
-        public string StandardsCompliance { get; set; }
+        public required string FrameworkNumber { get; set; }
+        public required string FrameworkName { get; set; }
+        public required string Description { get; set; }
+        public required string FrameworkType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
+        public required string StandardsCompliance { get; set; }
         public DateTime ImplementationDate { get; set; }
-        public string ReviewCycle { get; set; }
+        public required string ReviewCycle { get; set; }
         public DateTime NextReview { get; set; }
-        public string Owner { get; set; }
-        public string Stakeholders { get; set; }
-        public string MaturityLevel { get; set; }
+        public required string Owner { get; set; }
+        public required string Stakeholders { get; set; }
+        public required string MaturityLevel { get; set; }
         public double EffectivenessScore { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -429,8 +429,8 @@ namespace AttendancePlatform.Api.Services
     public class GovernanceReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalPolicies { get; set; }
         public int ReviewedPolicies { get; set; }
         public int UpdatedPolicies { get; set; }
@@ -451,15 +451,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AuditNumber { get; set; }
-        public string AuditName { get; set; }
-        public string Description { get; set; }
-        public string AuditType { get; set; }
-        public string AuditScope { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
-        public string Auditor { get; set; }
-        public string AuditLead { get; set; }
+        public required string AuditNumber { get; set; }
+        public required string AuditName { get; set; }
+        public required string Description { get; set; }
+        public required string AuditType { get; set; }
+        public required string AuditScope { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
+        public required string Auditor { get; set; }
+        public required string AuditLead { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int PlannedDuration { get; set; }
@@ -469,7 +469,7 @@ namespace AttendancePlatform.Api.Services
         public int HighFindings { get; set; }
         public int MediumFindings { get; set; }
         public int LowFindings { get; set; }
-        public string OverallRating { get; set; }
+        public required string OverallRating { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -478,13 +478,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RiskNumber { get; set; }
-        public string RiskName { get; set; }
-        public string Description { get; set; }
-        public string RiskType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string RiskNumber { get; set; }
+        public required string RiskName { get; set; }
+        public required string Description { get; set; }
+        public required string RiskType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public double Probability { get; set; }
         public string Impact { get; set; }
         public double RiskScore { get; set; }

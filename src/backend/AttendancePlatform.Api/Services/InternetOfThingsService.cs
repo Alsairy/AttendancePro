@@ -376,20 +376,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string DeviceNumber { get; set; }
-        public string DeviceName { get; set; }
-        public string Description { get; set; }
-        public string DeviceType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Manufacturer { get; set; }
-        public string Model { get; set; }
-        public string SerialNumber { get; set; }
-        public string FirmwareVersion { get; set; }
-        public string HardwareVersion { get; set; }
-        public string Location { get; set; }
-        public string IPAddress { get; set; }
-        public string MACAddress { get; set; }
+        public required string DeviceNumber { get; set; }
+        public required string DeviceName { get; set; }
+        public required string Description { get; set; }
+        public required string DeviceType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Manufacturer { get; set; }
+        public required string Model { get; set; }
+        public required string SerialNumber { get; set; }
+        public required string FirmwareVersion { get; set; }
+        public required string HardwareVersion { get; set; }
+        public required string Location { get; set; }
+        public required string IPAddress { get; set; }
+        public required string MACAddress { get; set; }
         public DateTime? LastSeen { get; set; }
         public double BatteryLevel { get; set; }
         public double SignalStrength { get; set; }
@@ -405,20 +405,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string DataNumber { get; set; }
-        public string DataName { get; set; }
-        public string Description { get; set; }
-        public string DataType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string DataNumber { get; set; }
+        public required string DataName { get; set; }
+        public required string Description { get; set; }
+        public required string DataType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid DeviceId { get; set; }
-        public string SensorType { get; set; }
-        public string SensorValue { get; set; }
-        public string Unit { get; set; }
+        public required string SensorType { get; set; }
+        public required string SensorValue { get; set; }
+        public required string Unit { get; set; }
         public DateTime Timestamp { get; set; }
-        public string Quality { get; set; }
+        public required string Quality { get; set; }
         public double Accuracy { get; set; }
-        public string Location { get; set; }
+        public required string Location { get; set; }
         public bool AlertTriggered { get; set; }
         public double ThresholdMin { get; set; }
         public double ThresholdMax { get; set; }
@@ -454,8 +454,8 @@ namespace AttendancePlatform.Api.Services
     public class IoTReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalDevices { get; set; }
         public int DevicesDeployed { get; set; }
         public int DevicesRetired { get; set; }
@@ -478,26 +478,26 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string GatewayNumber { get; set; }
-        public string GatewayName { get; set; }
-        public string Description { get; set; }
-        public string GatewayType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Manufacturer { get; set; }
-        public string Model { get; set; }
-        public string SerialNumber { get; set; }
-        public string FirmwareVersion { get; set; }
-        public string Location { get; set; }
-        public string IPAddress { get; set; }
-        public string MACAddress { get; set; }
+        public required string GatewayNumber { get; set; }
+        public required string GatewayName { get; set; }
+        public required string Description { get; set; }
+        public required string GatewayType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Manufacturer { get; set; }
+        public required string Model { get; set; }
+        public required string SerialNumber { get; set; }
+        public required string FirmwareVersion { get; set; }
+        public required string Location { get; set; }
+        public required string IPAddress { get; set; }
+        public required string MACAddress { get; set; }
         public int ConnectedDevices { get; set; }
         public int MaxDevices { get; set; }
         public double DataThroughput { get; set; }
         public double Uptime { get; set; }
         public DateTime? LastMaintenance { get; set; }
         public DateTime? NextMaintenance { get; set; }
-        public string SecurityLevel { get; set; }
+        public required string SecurityLevel { get; set; }
         public bool EncryptionEnabled { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -507,21 +507,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AutomationNumber { get; set; }
-        public string AutomationName { get; set; }
-        public string Description { get; set; }
-        public string AutomationType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string TriggerCondition { get; set; }
-        public string Action { get; set; }
-        public string Schedule { get; set; }
-        public string Priority { get; set; }
+        public required string AutomationNumber { get; set; }
+        public required string AutomationName { get; set; }
+        public required string Description { get; set; }
+        public required string AutomationType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string TriggerCondition { get; set; }
+        public required string Action { get; set; }
+        public required string Schedule { get; set; }
+        public required string Priority { get; set; }
         public DateTime? LastTriggered { get; set; }
         public int TriggerCount { get; set; }
         public double SuccessRate { get; set; }
         public double AverageExecutionTime { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public bool IsEnabled { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

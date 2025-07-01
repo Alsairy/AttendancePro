@@ -91,6 +91,7 @@ namespace AttendancePlatform.Api.Services
                 {
                     Id = instance.Id,
                     WorkflowDefinitionId = workflowId,
+                    WorkflowName = workflowDefinition.Name,
                     Status = instance.Status,
                     StartedAt = instance.StartedAt,
                     CurrentStep = instance.CurrentStep,
@@ -323,8 +324,8 @@ namespace AttendancePlatform.Api.Services
     public class WorkflowDefinitionDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public Guid TenantId { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -335,30 +336,30 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid WorkflowDefinitionId { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
-        public string CurrentStep { get; set; }
-        public string WorkflowName { get; set; }
-        public Dictionary<string, object> Parameters { get; set; }
+        public required string CurrentStep { get; set; }
+        public required string WorkflowName { get; set; }
+        public Dictionary<string, object> Parameters { get; set; } = new();
     }
 
     public class WorkflowTaskDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? DueDate { get; set; }
-        public string Priority { get; set; }
+        public required string Priority { get; set; }
     }
 
     public class WorkflowExecutionReportDto
     {
         public Guid InstanceId { get; set; }
-        public string WorkflowName { get; set; }
-        public string Status { get; set; }
+        public required string WorkflowName { get; set; }
+        public required string Status { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
         public TimeSpan? Duration { get; set; }

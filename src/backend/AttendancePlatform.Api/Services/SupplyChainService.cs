@@ -162,7 +162,7 @@ namespace AttendancePlatform.Api.Services
                     CreatedBy = "Procurement Manager",
                     CreatedAt = DateTime.UtcNow.AddDays(-7)
                 },
-                new PurchaseOrderDto
+                new SupplyChainPurchaseOrderDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -346,7 +346,7 @@ namespace AttendancePlatform.Api.Services
                     RenewalDate = DateTime.UtcNow.AddDays(155),
                     CreatedAt = DateTime.UtcNow.AddDays(-200)
                 },
-                new ContractDto
+                new SupplyChainContractDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -409,15 +409,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Category { get; set; }
-        public string ContactPerson { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Address { get; set; }
-        public string Status { get; set; }
+        public required string Name { get; set; }
+        public required string Category { get; set; }
+        public required string ContactPerson { get; set; }
+        public required string Email { get; set; }
+        public required string Phone { get; set; }
+        public required string Address { get; set; }
+        public required string Status { get; set; }
         public double Rating { get; set; }
-        public string PaymentTerms { get; set; }
+        public required string PaymentTerms { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -426,14 +426,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string OrderNumber { get; set; }
+        public required string OrderNumber { get; set; }
         public Guid SupplierId { get; set; }
-        public string SupplierName { get; set; }
+        public required string SupplierName { get; set; }
         public decimal TotalAmount { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime ExpectedDeliveryDate { get; set; }
-        public string CreatedBy { get; set; }
+        public required string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -459,7 +459,7 @@ namespace AttendancePlatform.Api.Services
     public class SupplierPerformanceDto
     {
         public Guid SupplierId { get; set; }
-        public string SupplierName { get; set; }
+        public required string SupplierName { get; set; }
         public double OnTimeDeliveryRate { get; set; }
         public double QualityScore { get; set; }
         public double CostCompetitiveness { get; set; }
@@ -473,12 +473,12 @@ namespace AttendancePlatform.Api.Services
     public class DeliveryTrackingDto
     {
         public Guid OrderId { get; set; }
-        public string OrderNumber { get; set; }
-        public string SupplierName { get; set; }
-        public string TrackingNumber { get; set; }
-        public string Status { get; set; }
+        public required string OrderNumber { get; set; }
+        public required string SupplierName { get; set; }
+        public required string TrackingNumber { get; set; }
+        public required string Status { get; set; }
         public DateTime EstimatedDeliveryDate { get; set; }
-        public string CurrentLocation { get; set; }
+        public required string CurrentLocation { get; set; }
         public DateTime LastUpdated { get; set; }
     }
 
@@ -500,14 +500,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ContractNumber { get; set; }
+        public required string ContractNumber { get; set; }
         public Guid SupplierId { get; set; }
-        public string SupplierName { get; set; }
-        public string ContractType { get; set; }
+        public required string SupplierName { get; set; }
+        public required string ContractType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal Value { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime RenewalDate { get; set; }
         public DateTime CreatedAt { get; set; }
     }

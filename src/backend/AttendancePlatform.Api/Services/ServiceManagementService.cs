@@ -354,21 +354,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ServiceNumber { get; set; }
-        public string ServiceName { get; set; }
-        public string Description { get; set; }
-        public string ServiceType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string ServiceLevel { get; set; }
+        public required string ServiceNumber { get; set; }
+        public required string ServiceName { get; set; }
+        public required string Description { get; set; }
+        public required string ServiceType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string ServiceLevel { get; set; }
         public decimal Price { get; set; }
-        public string Currency { get; set; }
-        public string BillingCycle { get; set; }
-        public string ServiceProvider { get; set; }
-        public string ServiceManager { get; set; }
-        public string AvailabilityHours { get; set; }
-        public string ResponseTime { get; set; }
-        public string ResolutionTime { get; set; }
+        public required string Currency { get; set; }
+        public required string BillingCycle { get; set; }
+        public required string ServiceProvider { get; set; }
+        public required string ServiceManager { get; set; }
+        public required string AvailabilityHours { get; set; }
+        public required string ResponseTime { get; set; }
+        public required string ResolutionTime { get; set; }
         public double CustomerSatisfaction { get; set; }
         public double UpTime { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -379,14 +379,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RequestNumber { get; set; }
-        public string RequestTitle { get; set; }
-        public string Description { get; set; }
-        public string RequestType { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string Requester { get; set; }
-        public string AssignedTo { get; set; }
+        public required string RequestNumber { get; set; }
+        public required string RequestTitle { get; set; }
+        public required string Description { get; set; }
+        public required string RequestType { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string Requester { get; set; }
+        public required string AssignedTo { get; set; }
         public DateTime RequestedDate { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime? CompletedDate { get; set; }
@@ -421,8 +421,8 @@ namespace AttendancePlatform.Api.Services
     public class ServiceReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalServices { get; set; }
         public int ActiveServices { get; set; }
         public int ServiceRequests { get; set; }
@@ -442,20 +442,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string SlaNumber { get; set; }
-        public string SlaName { get; set; }
-        public string Description { get; set; }
-        public string ServiceType { get; set; }
-        public string CustomerName { get; set; }
+        public required string SlaNumber { get; set; }
+        public required string SlaName { get; set; }
+        public required string Description { get; set; }
+        public required string ServiceType { get; set; }
+        public required string CustomerName { get; set; }
         public DateTime EffectiveDate { get; set; }
         public DateTime ExpirationDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public double AvailabilityTarget { get; set; }
         public double ResponseTimeTarget { get; set; }
         public double ResolutionTimeTarget { get; set; }
         public double CustomerSatisfactionTarget { get; set; }
-        public string PenaltyClause { get; set; }
-        public string ReviewFrequency { get; set; }
+        public required string PenaltyClause { get; set; }
+        public required string ReviewFrequency { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -464,22 +464,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string IncidentNumber { get; set; }
-        public string IncidentTitle { get; set; }
-        public string Description { get; set; }
-        public string IncidentType { get; set; }
-        public string Severity { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string AffectedService { get; set; }
-        public string ReportedBy { get; set; }
-        public string AssignedTo { get; set; }
+        public required string IncidentNumber { get; set; }
+        public required string IncidentTitle { get; set; }
+        public required string Description { get; set; }
+        public required string IncidentType { get; set; }
+        public required string Severity { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string AffectedService { get; set; }
+        public required string ReportedBy { get; set; }
+        public required string AssignedTo { get; set; }
         public DateTime OccurredAt { get; set; }
         public DateTime? ResolvedAt { get; set; }
         public double? ResolutionTime { get; set; }
-        public string ImpactAssessment { get; set; }
-        public string RootCause { get; set; }
-        public string Resolution { get; set; }
+        public required string ImpactAssessment { get; set; }
+        public required string RootCause { get; set; }
+        public required string Resolution { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

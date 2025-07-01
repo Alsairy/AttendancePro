@@ -595,10 +595,10 @@ namespace AttendancePlatform.Api.Services
                 },
                 CategoryBreakdown = new Dictionary<string, ProcurementCategoryStatsDto>
                 {
-                    { "IT Equipment", new ProcurementCategoryStatsDto { Orders = 25, Spend = 185000.00m, Savings = 8500.00m } },
-                    { "Office Supplies", new ProcurementCategoryStatsDto { Orders = 35, Spend = 95000.00m, Savings = 4200.00m } },
-                    { "Professional Services", new ProcurementCategoryStatsDto { Orders = 15, Spend = 75000.00m, Savings = 3800.00m } },
-                    { "Maintenance", new ProcurementCategoryStatsDto { Orders = 10, Spend = 45000.00m, Savings = 2100.00m } }
+                    { "IT Equipment", new ProcurementCategoryStatsDto { Category = "IT Equipment", Orders = 25, Spend = 185000.00m, Savings = 8500.00m } },
+                    { "Office Supplies", new ProcurementCategoryStatsDto { Category = "Office Supplies", Orders = 35, Spend = 95000.00m, Savings = 4200.00m } },
+                    { "Professional Services", new ProcurementCategoryStatsDto { Category = "Professional Services", Orders = 15, Spend = 75000.00m, Savings = 3800.00m } },
+                    { "Maintenance", new ProcurementCategoryStatsDto { Category = "Maintenance", Orders = 10, Spend = 45000.00m, Savings = 2100.00m } }
                 },
                 ComplianceMetrics = new Dictionary<string, double>
                 {
@@ -695,12 +695,12 @@ namespace AttendancePlatform.Api.Services
                 BudgetUtilization = 65.0,
                 CategoryBudgets = new Dictionary<string, ProcurementBudgetCategoryDto>
                 {
-                    { "IT Equipment", new ProcurementBudgetCategoryDto { Allocated = 400000.00m, Spent = 285000.00m, Committed = 50000.00m, Available = 65000.00m } },
-                    { "Office Supplies", new ProcurementBudgetCategoryDto { Allocated = 200000.00m, Spent = 145000.00m, Committed = 25000.00m, Available = 30000.00m } },
-                    { "Professional Services", new ProcurementBudgetCategoryDto { Allocated = 150000.00m, Spent = 95000.00m, Committed = 20000.00m, Available = 35000.00m } },
-                    { "Maintenance", new ProcurementBudgetCategoryDto { Allocated = 100000.00m, Spent = 65000.00m, Committed = 15000.00m, Available = 20000.00m } },
-                    { "Marketing", new ProcurementBudgetCategoryDto { Allocated = 100000.00m, Spent = 45000.00m, Committed = 10000.00m, Available = 45000.00m } },
-                    { "Travel", new ProcurementBudgetCategoryDto { Allocated = 50000.00m, Spent = 15000.00m, Committed = 5000.00m, Available = 30000.00m } }
+                    { "IT Equipment", new ProcurementBudgetCategoryDto { Category = "IT Equipment", Status = "Active", Allocated = 400000.00m, Spent = 285000.00m, Committed = 50000.00m, Available = 65000.00m } },
+                    { "Office Supplies", new ProcurementBudgetCategoryDto { Category = "Office Supplies", Status = "Active", Allocated = 200000.00m, Spent = 145000.00m, Committed = 25000.00m, Available = 30000.00m } },
+                    { "Professional Services", new ProcurementBudgetCategoryDto { Category = "Professional Services", Status = "Active", Allocated = 150000.00m, Spent = 95000.00m, Committed = 20000.00m, Available = 35000.00m } },
+                    { "Maintenance", new ProcurementBudgetCategoryDto { Category = "Maintenance", Status = "Active", Allocated = 100000.00m, Spent = 65000.00m, Committed = 15000.00m, Available = 20000.00m } },
+                    { "Marketing", new ProcurementBudgetCategoryDto { Category = "Marketing", Status = "Active", Allocated = 100000.00m, Spent = 45000.00m, Committed = 10000.00m, Available = 45000.00m } },
+                    { "Travel", new ProcurementBudgetCategoryDto { Category = "Travel", Status = "Active", Allocated = 50000.00m, Spent = 15000.00m, Committed = 5000.00m, Available = 30000.00m } }
                 },
                 QuarterlySpending = new Dictionary<string, decimal>
                 {
@@ -729,23 +729,23 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RequestNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
+        public required string RequestNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
         public Guid RequestedBy { get; set; }
-        public string RequesterName { get; set; }
-        public string Department { get; set; }
+        public required string RequesterName { get; set; }
+        public required string Department { get; set; }
         public decimal TotalAmount { get; set; }
-        public string Currency { get; set; }
+        public required string Currency { get; set; }
         public DateTime RequestedDeliveryDate { get; set; }
-        public string Justification { get; set; }
+        public required string Justification { get; set; }
         public bool ApprovalRequired { get; set; }
-        public string BudgetCode { get; set; }
+        public required string BudgetCode { get; set; }
         public Guid? ApprovedBy { get; set; }
-        public string ApproverName { get; set; }
+        public string? ApproverName { get; set; }
         public DateTime? ApprovalDate { get; set; }
         public int DaysWaiting { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -756,22 +756,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string OrderNumber { get; set; }
+        public required string OrderNumber { get; set; }
         public Guid PurchaseRequestId { get; set; }
         public Guid SupplierId { get; set; }
-        public string SupplierName { get; set; }
-        public string SupplierContact { get; set; }
+        public required string SupplierName { get; set; }
+        public required string SupplierContact { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime ExpectedDeliveryDate { get; set; }
         public DateTime? ReceivedDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public decimal TotalAmount { get; set; }
-        public string Currency { get; set; }
-        public string PaymentTerms { get; set; }
-        public string DeliveryAddress { get; set; }
-        public string SpecialInstructions { get; set; }
+        public required string Currency { get; set; }
+        public required string PaymentTerms { get; set; }
+        public required string DeliveryAddress { get; set; }
+        public required string SpecialInstructions { get; set; }
         public Guid CreatedBy { get; set; }
-        public string CreatorName { get; set; }
+        public required string CreatorName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -780,32 +780,32 @@ namespace AttendancePlatform.Api.Services
     {
         public DateTime ReceivedDate { get; set; }
         public Guid ReceivedBy { get; set; }
-        public string ReceiverName { get; set; }
-        public string ReceiptNotes { get; set; }
+        public required string ReceiverName { get; set; }
+        public required string ReceiptNotes { get; set; }
         public bool FullyReceived { get; set; }
         public List<string> PartialItems { get; set; }
-        public string QualityStatus { get; set; }
+        public required string QualityStatus { get; set; }
     }
 
     public class ProcurementSupplierDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string SupplierCode { get; set; }
-        public string CompanyName { get; set; }
-        public string ContactName { get; set; }
-        public string ContactEmail { get; set; }
-        public string ContactPhone { get; set; }
-        public string Address { get; set; }
-        public string TaxId { get; set; }
-        public string PaymentTerms { get; set; }
+        public required string SupplierCode { get; set; }
+        public required string CompanyName { get; set; }
+        public required string ContactName { get; set; }
+        public required string ContactEmail { get; set; }
+        public required string ContactPhone { get; set; }
+        public required string Address { get; set; }
+        public required string TaxId { get; set; }
+        public required string PaymentTerms { get; set; }
         public List<string> Categories { get; set; }
         public double Rating { get; set; }
-        public string Status { get; set; }
-        public string CertificationLevel { get; set; }
-        public string DeliveryCapability { get; set; }
+        public required string Status { get; set; }
+        public required string CertificationLevel { get; set; }
+        public required string DeliveryCapability { get; set; }
         public decimal MinimumOrderValue { get; set; }
-        public string Currency { get; set; }
+        public required string Currency { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -814,18 +814,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid SupplierId { get; set; }
-        public string EvaluationNumber { get; set; }
+        public required string EvaluationNumber { get; set; }
         public DateTime EvaluationDate { get; set; }
         public Guid EvaluatedBy { get; set; }
-        public string EvaluatorName { get; set; }
-        public string Period { get; set; }
+        public required string EvaluatorName { get; set; }
+        public required string Period { get; set; }
         public double QualityScore { get; set; }
         public double DeliveryScore { get; set; }
         public double ServiceScore { get; set; }
         public double PricingScore { get; set; }
         public double OverallScore { get; set; }
-        public string Comments { get; set; }
-        public string Recommendations { get; set; }
+        public required string Comments { get; set; }
+        public required string Recommendations { get; set; }
         public DateTime NextEvaluationDate { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -834,23 +834,23 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ContractNumber { get; set; }
+        public required string ContractNumber { get; set; }
         public Guid SupplierId { get; set; }
-        public string SupplierName { get; set; }
-        public string ContractType { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public required string SupplierName { get; set; }
+        public required string ContractType { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime RenewalDate { get; set; }
         public decimal ContractValue { get; set; }
-        public string Currency { get; set; }
-        public string PaymentTerms { get; set; }
-        public string Status { get; set; }
+        public required string Currency { get; set; }
+        public required string PaymentTerms { get; set; }
+        public required string Status { get; set; }
         public bool AutoRenewal { get; set; }
-        public string RenewalTerms { get; set; }
+        public required string RenewalTerms { get; set; }
         public Guid CreatedBy { get; set; }
-        public string CreatorName { get; set; }
+        public required string CreatorName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -876,7 +876,7 @@ namespace AttendancePlatform.Api.Services
     public class ProcurementReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public int TotalRequests { get; set; }
         public int ApprovedRequests { get; set; }
         public int PendingRequests { get; set; }
@@ -896,6 +896,7 @@ namespace AttendancePlatform.Api.Services
 
     public class ProcurementCategoryStatsDto
     {
+        public required string Category { get; set; }
         public int Orders { get; set; }
         public decimal Spend { get; set; }
         public decimal Savings { get; set; }
@@ -921,6 +922,8 @@ namespace AttendancePlatform.Api.Services
 
     public class ProcurementBudgetCategoryDto
     {
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public decimal Allocated { get; set; }
         public decimal Spent { get; set; }
         public decimal Committed { get; set; }

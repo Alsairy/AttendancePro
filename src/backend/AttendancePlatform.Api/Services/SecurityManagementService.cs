@@ -69,6 +69,7 @@ namespace AttendancePlatform.Api.Services
                     Severity = "Medium",
                     Status = "Investigating",
                     Category = "Access Control",
+                    Resolution = "Under investigation",
                     ReportedBy = "Security System",
                     AssignedTo = "Security Team",
                     OccurredAt = DateTime.UtcNow.AddHours(-2),
@@ -84,6 +85,7 @@ namespace AttendancePlatform.Api.Services
                     Severity = "High",
                     Status = "Resolved",
                     Category = "Network Security",
+                    Resolution = "Blocked suspicious traffic",
                     ReportedBy = "Network Monitor",
                     AssignedTo = "IT Security",
                     OccurredAt = DateTime.UtcNow.AddDays(-1),
@@ -441,32 +443,32 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string IncidentNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Severity { get; set; }
-        public string Status { get; set; }
-        public string Category { get; set; }
-        public string ReportedBy { get; set; }
-        public string AssignedTo { get; set; }
+        public required string IncidentNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Severity { get; set; }
+        public required string Status { get; set; }
+        public required string Category { get; set; }
+        public required string ReportedBy { get; set; }
+        public required string AssignedTo { get; set; }
         public DateTime OccurredAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? ResolvedAt { get; set; }
-        public string Resolution { get; set; }
+        public required string Resolution { get; set; }
     }
 
     public class SecurityManagementAuditDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string AuditType { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string AuditType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; }
-        public string AuditorName { get; set; }
+        public required string Status { get; set; }
+        public required string AuditorName { get; set; }
         public double? Score { get; set; }
         public int Findings { get; set; }
         public int CriticalFindings { get; set; }
@@ -489,14 +491,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Version { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Version { get; set; }
         public DateTime EffectiveDate { get; set; }
         public DateTime ReviewDate { get; set; }
-        public string Status { get; set; }
-        public string ApprovedBy { get; set; }
+        public required string Status { get; set; }
+        public required string ApprovedBy { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -504,7 +506,7 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid TenantId { get; set; }
         public double OverallRiskScore { get; set; }
-        public string RiskLevel { get; set; }
+        public required string RiskLevel { get; set; }
         public List<string> HighRiskAreas { get; set; }
         public List<string> MediumRiskAreas { get; set; }
         public List<string> LowRiskAreas { get; set; }
@@ -516,13 +518,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AlertType { get; set; }
-        public string Severity { get; set; }
-        public string Message { get; set; }
-        public string Source { get; set; }
+        public required string AlertType { get; set; }
+        public required string Severity { get; set; }
+        public required string Message { get; set; }
+        public required string Source { get; set; }
         public DateTime TriggeredAt { get; set; }
-        public string Status { get; set; }
-        public string AffectedResource { get; set; }
+        public required string Status { get; set; }
+        public required string AffectedResource { get; set; }
     }
 
     public class SecurityMetricsDto
@@ -546,15 +548,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Severity { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Severity { get; set; }
         public double CvssScore { get; set; }
-        public string Status { get; set; }
-        public string AffectedSystem { get; set; }
+        public required string Status { get; set; }
+        public required string AffectedSystem { get; set; }
         public DateTime DiscoveredDate { get; set; }
         public DateTime DueDate { get; set; }
-        public string AssignedTo { get; set; }
+        public required string AssignedTo { get; set; }
     }
 
     public class SecurityDashboardDto

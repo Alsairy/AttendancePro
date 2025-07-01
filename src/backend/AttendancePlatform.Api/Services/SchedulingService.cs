@@ -131,10 +131,10 @@ namespace AttendancePlatform.Api.Services
             await Task.CompletedTask;
             return new List<ShiftDto>
             {
-                new ShiftDto { Id = Guid.NewGuid(), Name = "Morning Shift", StartTime = TimeSpan.FromHours(6), EndTime = TimeSpan.FromHours(14), IsActive = true },
-                new ShiftDto { Id = Guid.NewGuid(), Name = "Day Shift", StartTime = TimeSpan.FromHours(9), EndTime = TimeSpan.FromHours(17), IsActive = true },
-                new ShiftDto { Id = Guid.NewGuid(), Name = "Evening Shift", StartTime = TimeSpan.FromHours(14), EndTime = TimeSpan.FromHours(22), IsActive = true },
-                new ShiftDto { Id = Guid.NewGuid(), Name = "Night Shift", StartTime = TimeSpan.FromHours(22), EndTime = TimeSpan.FromHours(6), IsActive = true }
+                new ShiftDto { Id = Guid.NewGuid(), Name = "Morning Shift", Description = "Early morning work shift", StartTime = TimeSpan.FromHours(6), EndTime = TimeSpan.FromHours(14), IsActive = true },
+                new ShiftDto { Id = Guid.NewGuid(), Name = "Day Shift", Description = "Standard day work shift", StartTime = TimeSpan.FromHours(9), EndTime = TimeSpan.FromHours(17), IsActive = true },
+                new ShiftDto { Id = Guid.NewGuid(), Name = "Evening Shift", Description = "Evening work shift", StartTime = TimeSpan.FromHours(14), EndTime = TimeSpan.FromHours(22), IsActive = true },
+                new ShiftDto { Id = Guid.NewGuid(), Name = "Night Shift", Description = "Night work shift", StartTime = TimeSpan.FromHours(22), EndTime = TimeSpan.FromHours(6), IsActive = true }
             };
         }
 
@@ -333,12 +333,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
+        public required string EmployeeName { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
-        public string ShiftType { get; set; }
-        public string Status { get; set; }
+        public required string ShiftType { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -346,8 +346,8 @@ namespace AttendancePlatform.Api.Services
     public class ShiftDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public bool IsActive { get; set; }
@@ -356,12 +356,12 @@ namespace AttendancePlatform.Api.Services
 
     public class ScheduleConflictDto
     {
-        public string ConflictType { get; set; }
+        public required string ConflictType { get; set; }
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
+        public required string EmployeeName { get; set; }
         public DateTime Date { get; set; }
-        public string Description { get; set; }
-        public string Severity { get; set; }
+        public required string Description { get; set; }
+        public required string Severity { get; set; }
     }
 
     public class ScheduleOptimizationDto
@@ -389,13 +389,13 @@ namespace AttendancePlatform.Api.Services
         public bool IsAvailable { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
-        public string PreferredShift { get; set; }
+        public required string PreferredShift { get; set; }
     }
 
     public class ScheduleReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public int TotalEmployees { get; set; }
         public double TotalScheduledHours { get; set; }
         public double OvertimeHours { get; set; }
@@ -408,19 +408,19 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
-        public string RequestType { get; set; }
+        public required string EmployeeName { get; set; }
+        public required string RequestType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime RequestedAt { get; set; }
     }
 
     public class ScheduleTemplateDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
     }

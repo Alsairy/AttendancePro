@@ -361,24 +361,24 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PipelineNumber { get; set; }
-        public string PipelineName { get; set; }
-        public string Description { get; set; }
-        public string PipelineType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Repository { get; set; }
-        public string Branch { get; set; }
-        public string TriggerType { get; set; }
-        public string BuildTool { get; set; }
-        public string TestFramework { get; set; }
-        public string DeploymentTarget { get; set; }
+        public required string PipelineNumber { get; set; }
+        public required string PipelineName { get; set; }
+        public required string Description { get; set; }
+        public required string PipelineType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Repository { get; set; }
+        public required string Branch { get; set; }
+        public required string TriggerType { get; set; }
+        public required string BuildTool { get; set; }
+        public required string TestFramework { get; set; }
+        public required string DeploymentTarget { get; set; }
         public DateTime? LastRun { get; set; }
         public DateTime? NextRun { get; set; }
         public int RunCount { get; set; }
         public double SuccessRate { get; set; }
         public double AverageDuration { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -387,21 +387,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string DeploymentNumber { get; set; }
-        public string DeploymentName { get; set; }
-        public string Description { get; set; }
-        public string DeploymentType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Environment { get; set; }
-        public string Version { get; set; }
+        public required string DeploymentNumber { get; set; }
+        public required string DeploymentName { get; set; }
+        public required string Description { get; set; }
+        public required string DeploymentType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Environment { get; set; }
+        public required string Version { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public double Duration { get; set; }
         public double SuccessRate { get; set; }
         public bool RollbackRequired { get; set; }
-        public string DeployedBy { get; set; }
-        public string ApprovedBy { get; set; }
+        public required string DeployedBy { get; set; }
+        public required string ApprovedBy { get; set; }
         public int ArtifactsDeployed { get; set; }
         public int ServicesUpdated { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -431,8 +431,8 @@ namespace AttendancePlatform.Api.Services
     public class DevOpsReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalPipelines { get; set; }
         public int PipelineRuns { get; set; }
         public int SuccessfulRuns { get; set; }
@@ -454,22 +454,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string EnvironmentNumber { get; set; }
-        public string EnvironmentName { get; set; }
-        public string Description { get; set; }
-        public string EnvironmentType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Provider { get; set; }
-        public string Region { get; set; }
-        public string ResourceGroup { get; set; }
-        public string Namespace { get; set; }
-        public string URL { get; set; }
-        public string HealthStatus { get; set; }
+        public required string EnvironmentNumber { get; set; }
+        public required string EnvironmentName { get; set; }
+        public required string Description { get; set; }
+        public required string EnvironmentType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Provider { get; set; }
+        public required string Region { get; set; }
+        public required string ResourceGroup { get; set; }
+        public required string Namespace { get; set; }
+        public required string URL { get; set; }
+        public required string HealthStatus { get; set; }
         public double Uptime { get; set; }
         public DateTime? LastDeployment { get; set; }
-        public string Version { get; set; }
-        public string Owner { get; set; }
+        public required string Version { get; set; }
+        public required string Owner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -478,13 +478,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string MonitoringNumber { get; set; }
-        public string MonitoringName { get; set; }
-        public string Description { get; set; }
-        public string MonitoringType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string MetricsCollected { get; set; }
+        public required string MonitoringNumber { get; set; }
+        public required string MonitoringName { get; set; }
+        public required string Description { get; set; }
+        public required string MonitoringType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string MetricsCollected { get; set; }
         public int AlertsConfigured { get; set; }
         public int DashboardsCreated { get; set; }
         public DateTime? LastAlert { get; set; }

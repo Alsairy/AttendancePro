@@ -229,10 +229,10 @@ namespace AttendancePlatform.Api.Services
                 },
                 TopSkills = new List<SkillDetailDto>
                 {
-                    new SkillDetailDto { Name = "JavaScript", Proficiency = 4.2, EmployeeCount = 85 },
-                    new SkillDetailDto { Name = "Project Management", Proficiency = 3.8, EmployeeCount = 125 },
-                    new SkillDetailDto { Name = "Data Analysis", Proficiency = 3.6, EmployeeCount = 67 },
-                    new SkillDetailDto { Name = "Customer Service", Proficiency = 4.1, EmployeeCount = 98 }
+                    new SkillDetailDto { Name = "JavaScript", Category = "Technical", Proficiency = 4.2, EmployeeCount = 85 },
+                    new SkillDetailDto { Name = "Project Management", Category = "Leadership", Proficiency = 3.8, EmployeeCount = 125 },
+                    new SkillDetailDto { Name = "Data Analysis", Category = "Analytical", Proficiency = 3.6, EmployeeCount = 67 },
+                    new SkillDetailDto { Name = "Customer Service", Category = "Communication", Proficiency = 4.1, EmployeeCount = 98 }
                 },
                 SkillDevelopmentNeeds = new List<string>
                 {
@@ -600,12 +600,12 @@ namespace AttendancePlatform.Api.Services
     public class ProductivityAnalysisDto
     {
         public Guid TenantId { get; set; }
-        public string AnalysisPeriod { get; set; }
+        public required string AnalysisPeriod { get; set; }
         public double OverallProductivityScore { get; set; }
-        public string ProductivityTrend { get; set; }
-        public Dictionary<string, double> DepartmentProductivity { get; set; }
-        public List<string> ProductivityFactors { get; set; }
-        public List<string> ImprovementAreas { get; set; }
+        public required string ProductivityTrend { get; set; }
+        public required Dictionary<string, double> DepartmentProductivity { get; set; }
+        public required List<string> ProductivityFactors { get; set; }
+        public required List<string> ImprovementAreas { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
@@ -613,10 +613,10 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid TenantId { get; set; }
         public double OverallAttendanceRate { get; set; }
-        public string AttendanceTrend { get; set; }
-        public Dictionary<string, double> MonthlyAttendance { get; set; }
-        public Dictionary<string, double> DepartmentAttendance { get; set; }
-        public Dictionary<string, int> AbsenteeismReasons { get; set; }
+        public required string AttendanceTrend { get; set; }
+        public required Dictionary<string, double> MonthlyAttendance { get; set; }
+        public required Dictionary<string, double> DepartmentAttendance { get; set; }
+        public required Dictionary<string, int> AbsenteeismReasons { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
@@ -627,10 +627,10 @@ namespace AttendancePlatform.Api.Services
         public int HighPerformers { get; set; }
         public int AveragePerformers { get; set; }
         public int LowPerformers { get; set; }
-        public string PerformanceTrend { get; set; }
-        public List<string> TopPerformingDepartments { get; set; }
-        public Dictionary<string, int> PerformanceDistribution { get; set; }
-        public Dictionary<string, double> KeyPerformanceIndicators { get; set; }
+        public required string PerformanceTrend { get; set; }
+        public required List<string> TopPerformingDepartments { get; set; }
+        public required Dictionary<string, int> PerformanceDistribution { get; set; }
+        public required Dictionary<string, double> KeyPerformanceIndicators { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
@@ -640,9 +640,9 @@ namespace AttendancePlatform.Api.Services
         public int CurrentCapacity { get; set; }
         public int OptimalCapacity { get; set; }
         public double CapacityUtilization { get; set; }
-        public Dictionary<string, WorkforceCapacityDetailDto> DepartmentCapacity { get; set; }
-        public List<string> SkillGaps { get; set; }
-        public Dictionary<string, int> RecruitmentNeeds { get; set; }
+        public required Dictionary<string, WorkforceCapacityDetailDto> DepartmentCapacity { get; set; }
+        public required List<string> SkillGaps { get; set; }
+        public required Dictionary<string, int> RecruitmentNeeds { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
@@ -659,16 +659,17 @@ namespace AttendancePlatform.Api.Services
         public int TotalSkills { get; set; }
         public int CriticalSkills { get; set; }
         public int SkillGaps { get; set; }
-        public Dictionary<string, int> SkillCategories { get; set; }
-        public List<SkillDetailDto> TopSkills { get; set; }
-        public List<string> SkillDevelopmentNeeds { get; set; }
-        public List<string> TrainingRecommendations { get; set; }
+        public required Dictionary<string, int> SkillCategories { get; set; }
+        public required List<SkillDetailDto> TopSkills { get; set; }
+        public required List<string> SkillDevelopmentNeeds { get; set; }
+        public required List<string> TrainingRecommendations { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
     public class SkillDetailDto
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
+        public required string Category { get; set; }
         public double Proficiency { get; set; }
         public int EmployeeCount { get; set; }
     }
@@ -679,10 +680,10 @@ namespace AttendancePlatform.Api.Services
         public double OverallTurnoverRate { get; set; }
         public double VoluntaryTurnoverRate { get; set; }
         public double InvoluntaryTurnoverRate { get; set; }
-        public string TurnoverTrend { get; set; }
-        public Dictionary<string, double> DepartmentTurnover { get; set; }
-        public Dictionary<string, int> TurnoverReasons { get; set; }
-        public List<string> RetentionStrategies { get; set; }
+        public required string TurnoverTrend { get; set; }
+        public required Dictionary<string, double> DepartmentTurnover { get; set; }
+        public required Dictionary<string, int> TurnoverReasons { get; set; }
+        public required List<string> RetentionStrategies { get; set; }
         public decimal CostOfTurnover { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
@@ -692,11 +693,11 @@ namespace AttendancePlatform.Api.Services
         public Guid TenantId { get; set; }
         public decimal AverageSalary { get; set; }
         public decimal MedianSalary { get; set; }
-        public SalaryRangeDto SalaryRange { get; set; }
-        public Dictionary<string, decimal> DepartmentCompensation { get; set; }
-        public PayEquityDto PayEquityAnalysis { get; set; }
-        public Dictionary<string, double> BenefitsUtilization { get; set; }
-        public string CompensationTrend { get; set; }
+        public required SalaryRangeDto SalaryRange { get; set; }
+        public required Dictionary<string, decimal> DepartmentCompensation { get; set; }
+        public required PayEquityDto PayEquityAnalysis { get; set; }
+        public required Dictionary<string, double> BenefitsUtilization { get; set; }
+        public required string CompensationTrend { get; set; }
         public double MarketComparison { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
@@ -718,12 +719,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid TenantId { get; set; }
         public double DiversityIndex { get; set; }
-        public Dictionary<string, double> GenderDistribution { get; set; }
-        public Dictionary<string, double> EthnicityDistribution { get; set; }
-        public Dictionary<string, double> AgeDistribution { get; set; }
-        public Dictionary<string, double> LeadershipDiversity { get; set; }
+        public required Dictionary<string, double> GenderDistribution { get; set; }
+        public required Dictionary<string, double> EthnicityDistribution { get; set; }
+        public required Dictionary<string, double> AgeDistribution { get; set; }
+        public required Dictionary<string, double> LeadershipDiversity { get; set; }
         public double InclusionScore { get; set; }
-        public List<string> DiversityInitiatives { get; set; }
+        public required List<string> DiversityInitiatives { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
@@ -731,38 +732,38 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid TenantId { get; set; }
         public double OverallEngagementScore { get; set; }
-        public string EngagementTrend { get; set; }
-        public Dictionary<string, double> DepartmentEngagement { get; set; }
-        public Dictionary<string, double> EngagementFactors { get; set; }
+        public required string EngagementTrend { get; set; }
+        public required Dictionary<string, double> DepartmentEngagement { get; set; }
+        public required Dictionary<string, double> EngagementFactors { get; set; }
         public int HighlyEngaged { get; set; }
         public int ModeratelyEngaged { get; set; }
         public int Disengaged { get; set; }
-        public List<string> EngagementDrivers { get; set; }
-        public List<string> ActionItems { get; set; }
+        public required List<string> EngagementDrivers { get; set; }
+        public required List<string> ActionItems { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
     public class WorkforceReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportType { get; set; }
-        public string ReportTitle { get; set; }
+        public required string ReportType { get; set; }
+        public required string ReportTitle { get; set; }
         public DateTime GeneratedAt { get; set; }
-        public string Summary { get; set; }
-        public List<string> KeyFindings { get; set; }
-        public List<string> Recommendations { get; set; }
-        public List<string> DataSources { get; set; }
+        public required string Summary { get; set; }
+        public required List<string> KeyFindings { get; set; }
+        public required List<string> Recommendations { get; set; }
+        public required List<string> DataSources { get; set; }
     }
 
     public class WorkforceForecastDto
     {
         public Guid TenantId { get; set; }
-        public string ForecastPeriod { get; set; }
+        public required string ForecastPeriod { get; set; }
         public int ProjectedHeadcount { get; set; }
         public double ProjectedGrowthRate { get; set; }
-        public Dictionary<string, WorkforceForecastDetailDto> DepartmentForecasts { get; set; }
-        public List<string> SkillDemandForecast { get; set; }
-        public Dictionary<string, int> RecruitmentPlan { get; set; }
+        public required Dictionary<string, WorkforceForecastDetailDto> DepartmentForecasts { get; set; }
+        public required List<string> SkillDemandForecast { get; set; }
+        public required Dictionary<string, int> RecruitmentPlan { get; set; }
         public decimal BudgetImpact { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
@@ -777,12 +778,12 @@ namespace AttendancePlatform.Api.Services
     public class BenchmarkingDto
     {
         public Guid TenantId { get; set; }
-        public string Industry { get; set; }
-        public string CompanySize { get; set; }
-        public Dictionary<string, BenchmarkDetailDto> Benchmarks { get; set; }
-        public string CompetitivePosition { get; set; }
-        public List<string> ImprovementAreas { get; set; }
-        public List<string> BestPractices { get; set; }
+        public required string Industry { get; set; }
+        public required string CompanySize { get; set; }
+        public required Dictionary<string, BenchmarkDetailDto> Benchmarks { get; set; }
+        public required string CompetitivePosition { get; set; }
+        public required List<string> ImprovementAreas { get; set; }
+        public required List<string> BestPractices { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
@@ -806,17 +807,17 @@ namespace AttendancePlatform.Api.Services
         public int TerminationsThisMonth { get; set; }
         public int OpenPositions { get; set; }
         public int TrainingHours { get; set; }
-        public Dictionary<string, int> PerformanceDistribution { get; set; }
-        public Dictionary<string, string> DepartmentHealth { get; set; }
+        public required Dictionary<string, int> PerformanceDistribution { get; set; }
+        public required Dictionary<string, string> DepartmentHealth { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
     public class CustomAnalyticsDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

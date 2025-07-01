@@ -307,21 +307,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string InitiativeNumber { get; set; }
-        public string InitiativeName { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string InitiativeOwner { get; set; }
-        public string Department { get; set; }
+        public required string InitiativeNumber { get; set; }
+        public required string InitiativeName { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string InitiativeOwner { get; set; }
+        public required string Department { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ExpectedEndDate { get; set; }
         public decimal Budget { get; set; }
         public decimal SpentToDate { get; set; }
-        public string BusinessValue { get; set; }
-        public string TechnicalComplexity { get; set; }
-        public string RiskLevel { get; set; }
+        public required string BusinessValue { get; set; }
+        public required string TechnicalComplexity { get; set; }
+        public required string RiskLevel { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -330,13 +330,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AssessmentNumber { get; set; }
-        public string AssessmentName { get; set; }
+        public required string AssessmentNumber { get; set; }
+        public required string AssessmentName { get; set; }
         public DateTime AssessmentDate { get; set; }
-        public string AssessorName { get; set; }
-        public string AssessorRole { get; set; }
+        public required string AssessorName { get; set; }
+        public required string AssessorRole { get; set; }
         public double OverallMaturityScore { get; set; }
-        public string MaturityLevel { get; set; }
+        public required string MaturityLevel { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -345,14 +345,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RoadmapNumber { get; set; }
-        public string RoadmapName { get; set; }
-        public string Description { get; set; }
-        public string TimeHorizon { get; set; }
+        public required string RoadmapNumber { get; set; }
+        public required string RoadmapName { get; set; }
+        public required string Description { get; set; }
+        public required string TimeHorizon { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal TotalBudget { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -361,21 +361,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AdoptionNumber { get; set; }
-        public string TechnologyName { get; set; }
-        public string TechnologyCategory { get; set; }
-        public string Vendor { get; set; }
-        public string Version { get; set; }
-        public string AdoptionStage { get; set; }
+        public required string AdoptionNumber { get; set; }
+        public required string TechnologyName { get; set; }
+        public required string TechnologyCategory { get; set; }
+        public required string Vendor { get; set; }
+        public required string Version { get; set; }
+        public required string AdoptionStage { get; set; }
         public DateTime AdoptionDate { get; set; }
-        public string AdoptionReason { get; set; }
-        public string BusinessDriver { get; set; }
+        public required string AdoptionReason { get; set; }
+        public required string BusinessDriver { get; set; }
         public decimal AdoptionCost { get; set; }
         public decimal OngoingCost { get; set; }
         public double ROI { get; set; }
         public double UserSatisfaction { get; set; }
         public double TechnicalPerformance { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -400,8 +400,8 @@ namespace AttendancePlatform.Api.Services
     public class DigitalReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalInitiatives { get; set; }
         public int SuccessfulInitiatives { get; set; }
         public int FailedInitiatives { get; set; }
@@ -416,44 +416,44 @@ namespace AttendancePlatform.Api.Services
 
     public class DigitalTrendDto
     {
-        public string TrendName { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string TrendStrength { get; set; }
-        public string MarketPotential { get; set; }
-        public string TimeHorizon { get; set; }
+        public required string TrendName { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string TrendStrength { get; set; }
+        public required string MarketPotential { get; set; }
+        public required string TimeHorizon { get; set; }
         public double RelevanceScore { get; set; }
         public double AdoptionRate { get; set; }
     }
 
     public class DigitalPartnershipDto
     {
-        public string PartnershipName { get; set; }
-        public string PartnerName { get; set; }
-        public string PartnershipType { get; set; }
-        public string PartnershipCategory { get; set; }
+        public required string PartnershipName { get; set; }
+        public required string PartnerName { get; set; }
+        public required string PartnershipType { get; set; }
+        public required string PartnershipCategory { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal PartnershipValue { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
     }
 
     public class DigitalCapabilityDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string CapabilityNumber { get; set; }
-        public string CapabilityName { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string MaturityLevel { get; set; }
+        public required string CapabilityNumber { get; set; }
+        public required string CapabilityName { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string MaturityLevel { get; set; }
         public double CurrentScore { get; set; }
         public double TargetScore { get; set; }
-        public string BusinessValue { get; set; }
-        public string StrategicImportance { get; set; }
+        public required string BusinessValue { get; set; }
+        public required string StrategicImportance { get; set; }
         public decimal InvestmentRequired { get; set; }
         public double ExpectedROI { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -461,9 +461,9 @@ namespace AttendancePlatform.Api.Services
     public class DigitalGovernanceDto
     {
         public Guid TenantId { get; set; }
-        public string GovernanceFramework { get; set; }
+        public required string GovernanceFramework { get; set; }
         public DateTime LastUpdated { get; set; }
-        public string GovernanceMaturity { get; set; }
+        public required string GovernanceMaturity { get; set; }
         public double GovernanceScore { get; set; }
         public DateTime GeneratedAt { get; set; }
     }

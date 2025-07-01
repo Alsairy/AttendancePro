@@ -340,20 +340,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ProductNumber { get; set; }
-        public string ProductName { get; set; }
-        public string Description { get; set; }
-        public string ProductType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
+        public required string ProductNumber { get; set; }
+        public required string ProductName { get; set; }
+        public required string Description { get; set; }
+        public required string ProductType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
         public decimal Price { get; set; }
         public decimal Cost { get; set; }
         public double Margin { get; set; }
         public DateTime LaunchDate { get; set; }
         public DateTime? EndOfLifeDate { get; set; }
-        public string ProductManager { get; set; }
-        public string DevelopmentTeam { get; set; }
+        public required string ProductManager { get; set; }
+        public required string DevelopmentTeam { get; set; }
         public decimal SalesTarget { get; set; }
         public decimal ActualSales { get; set; }
         public double MarketShare { get; set; }
@@ -366,18 +366,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string CatalogNumber { get; set; }
-        public string CatalogName { get; set; }
-        public string Description { get; set; }
-        public string CatalogType { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
+        public required string CatalogNumber { get; set; }
+        public required string CatalogName { get; set; }
+        public required string Description { get; set; }
+        public required string CatalogType { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
         public int ProductCount { get; set; }
         public int CategoryCount { get; set; }
         public DateTime LastUpdated { get; set; }
         public DateTime PublishedDate { get; set; }
         public DateTime ExpirationDate { get; set; }
-        public string CatalogManager { get; set; }
+        public required string CatalogManager { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -392,8 +392,8 @@ namespace AttendancePlatform.Api.Services
         public decimal TotalRevenue { get; set; }
         public decimal AverageProductPrice { get; set; }
         public double AverageMargin { get; set; }
-        public string TopPerformingProduct { get; set; }
-        public string LowestPerformingProduct { get; set; }
+        public required string TopPerformingProduct { get; set; }
+        public required string LowestPerformingProduct { get; set; }
         public double CustomerSatisfactionAverage { get; set; }
         public double MarketShareTotal { get; set; }
         public decimal ProductDevelopmentCost { get; set; }
@@ -404,8 +404,8 @@ namespace AttendancePlatform.Api.Services
     public class ProductReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalProducts { get; set; }
         public int LaunchedProducts { get; set; }
         public int DiscontinuedProducts { get; set; }
@@ -423,15 +423,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string CategoryNumber { get; set; }
-        public string CategoryName { get; set; }
-        public string Description { get; set; }
-        public string CategoryType { get; set; }
+        public required string CategoryNumber { get; set; }
+        public required string CategoryName { get; set; }
+        public required string Description { get; set; }
+        public required string CategoryType { get; set; }
         public int ProductCount { get; set; }
         public decimal TotalRevenue { get; set; }
         public double MarketShare { get; set; }
         public double GrowthRate { get; set; }
-        public string CompetitivePosition { get; set; }
+        public required string CompetitivePosition { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -441,18 +441,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string LifecycleNumber { get; set; }
-        public string ProductName { get; set; }
-        public string CurrentStage { get; set; }
-        public string StageDescription { get; set; }
+        public required string LifecycleNumber { get; set; }
+        public required string ProductName { get; set; }
+        public required string CurrentStage { get; set; }
+        public required string StageDescription { get; set; }
         public int TimeInStage { get; set; }
         public int ExpectedDuration { get; set; }
-        public string NextStage { get; set; }
+        public required string NextStage { get; set; }
         public double StageProgress { get; set; }
         public double RevenueGrowth { get; set; }
         public double MarketPenetration { get; set; }
-        public string CompetitivePosition { get; set; }
-        public string InvestmentLevel { get; set; }
+        public required string CompetitivePosition { get; set; }
+        public required string InvestmentLevel { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

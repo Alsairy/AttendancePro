@@ -106,9 +106,9 @@ namespace AttendancePlatform.Api.Services
                     CommunicationPlan = "Email notifications 1 week, 3 days, and 1 day before implementation",
                     ApprovalWorkflow = new List<ChangeApprovalStepDto>
                     {
-                        new ChangeApprovalStepDto { StepName = "Technical Review", Approver = "Technical Lead", Status = "Approved", ApprovedAt = DateTime.UtcNow.AddDays(-5) },
-                        new ChangeApprovalStepDto { StepName = "Security Review", Approver = "Security Manager", Status = "Approved", ApprovedAt = DateTime.UtcNow.AddDays(-3) },
-                        new ChangeApprovalStepDto { StepName = "Business Approval", Approver = "IT Director", Status = "Approved", ApprovedAt = DateTime.UtcNow.AddDays(-1) }
+                        new ChangeApprovalStepDto { StepName = "Technical Review", Approver = "Technical Lead", Status = "Approved", Comments = "Technical review completed", ApprovedAt = DateTime.UtcNow.AddDays(-5) },
+                        new ChangeApprovalStepDto { StepName = "Security Review", Approver = "Security Manager", Status = "Approved", Comments = "Security review passed", ApprovedAt = DateTime.UtcNow.AddDays(-3) },
+                        new ChangeApprovalStepDto { StepName = "Business Approval", Approver = "IT Director", Status = "Approved", Comments = "Business approval granted", ApprovedAt = DateTime.UtcNow.AddDays(-1) }
                     },
                     CreatedAt = DateTime.UtcNow.AddDays(-10),
                     UpdatedAt = DateTime.UtcNow.AddDays(-1)
@@ -278,11 +278,11 @@ namespace AttendancePlatform.Api.Services
                     Status = "Approved",
                     ImplementationSteps = new List<ImplementationStepDto>
                     {
-                        new ImplementationStepDto { StepNumber = 1, StepName = "Pre-implementation Backup", Description = "Create full database backup", EstimatedDuration = 2, ResponsibleTeam = "Database Team", Dependencies = new List<string>() },
-                        new ImplementationStepDto { StepNumber = 2, StepName = "System Maintenance Mode", Description = "Put system in maintenance mode", EstimatedDuration = 0.5, ResponsibleTeam = "Operations Team", Dependencies = new List<string> { "Step 1" } },
-                        new ImplementationStepDto { StepNumber = 3, StepName = "Database Migration", Description = "Migrate database to new version", EstimatedDuration = 4, ResponsibleTeam = "Database Team", Dependencies = new List<string> { "Step 2" } },
-                        new ImplementationStepDto { StepNumber = 4, StepName = "Application Updates", Description = "Update application configurations", EstimatedDuration = 1, ResponsibleTeam = "Development Team", Dependencies = new List<string> { "Step 3" } },
-                        new ImplementationStepDto { StepNumber = 5, StepName = "System Testing", Description = "Comprehensive system testing", EstimatedDuration = 0.5, ResponsibleTeam = "QA Team", Dependencies = new List<string> { "Step 4" } }
+                        new ImplementationStepDto { StepNumber = 1, StepName = "Pre-implementation Backup", Description = "Create full database backup", EstimatedDuration = 2, ResponsibleTeam = "Database Team", Status = "Pending", Dependencies = new List<string>() },
+                        new ImplementationStepDto { StepNumber = 2, StepName = "System Maintenance Mode", Description = "Put system in maintenance mode", EstimatedDuration = 0.5, ResponsibleTeam = "Operations Team", Status = "Pending", Dependencies = new List<string> { "Step 1" } },
+                        new ImplementationStepDto { StepNumber = 3, StepName = "Database Migration", Description = "Migrate database to new version", EstimatedDuration = 4, ResponsibleTeam = "Database Team", Status = "Pending", Dependencies = new List<string> { "Step 2" } },
+                        new ImplementationStepDto { StepNumber = 4, StepName = "Application Updates", Description = "Update application configurations", EstimatedDuration = 1, ResponsibleTeam = "Development Team", Status = "Pending", Dependencies = new List<string> { "Step 3" } },
+                        new ImplementationStepDto { StepNumber = 5, StepName = "System Testing", Description = "Comprehensive system testing", EstimatedDuration = 0.5, ResponsibleTeam = "QA Team", Status = "Pending", Dependencies = new List<string> { "Step 4" } }
                     },
                     ResourceRequirements = new List<string>
                     {
@@ -352,11 +352,11 @@ namespace AttendancePlatform.Api.Services
                     },
                     RollbackSteps = new List<RollbackStepDto>
                     {
-                        new RollbackStepDto { StepNumber = 1, StepName = "Stop Applications", Description = "Gracefully stop all applications", EstimatedDuration = 0.25, ResponsibleTeam = "Operations Team" },
-                        new RollbackStepDto { StepNumber = 2, StepName = "Restore Database", Description = "Restore from pre-upgrade backup", EstimatedDuration = 2, ResponsibleTeam = "Database Team" },
-                        new RollbackStepDto { StepNumber = 3, StepName = "Revert Configurations", Description = "Restore original configurations", EstimatedDuration = 0.5, ResponsibleTeam = "Development Team" },
-                        new RollbackStepDto { StepNumber = 4, StepName = "Restart Applications", Description = "Start applications with original settings", EstimatedDuration = 0.25, ResponsibleTeam = "Operations Team" },
-                        new RollbackStepDto { StepNumber = 5, StepName = "Verify System", Description = "Verify system functionality", EstimatedDuration = 0.5, ResponsibleTeam = "QA Team" }
+                        new RollbackStepDto { StepNumber = 1, StepName = "Stop Applications", Description = "Gracefully stop all applications", EstimatedDuration = 0.25, ResponsibleTeam = "Operations Team", Status = "Pending" },
+                        new RollbackStepDto { StepNumber = 2, StepName = "Restore Database", Description = "Restore from pre-upgrade backup", EstimatedDuration = 2, ResponsibleTeam = "Database Team", Status = "Pending" },
+                        new RollbackStepDto { StepNumber = 3, StepName = "Revert Configurations", Description = "Restore original configurations", EstimatedDuration = 0.5, ResponsibleTeam = "Development Team", Status = "Pending" },
+                        new RollbackStepDto { StepNumber = 4, StepName = "Restart Applications", Description = "Start applications with original settings", EstimatedDuration = 0.25, ResponsibleTeam = "Operations Team", Status = "Pending" },
+                        new RollbackStepDto { StepNumber = 5, StepName = "Verify System", Description = "Verify system functionality", EstimatedDuration = 0.5, ResponsibleTeam = "QA Team", Status = "Pending" }
                     },
                     EstimatedRollbackTime = 3.5,
                     DecisionCriteria = new List<string>
@@ -670,31 +670,31 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RequestNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string ChangeType { get; set; }
-        public string Category { get; set; }
-        public string Priority { get; set; }
-        public string Urgency { get; set; }
-        public string Impact { get; set; }
-        public string RiskLevel { get; set; }
-        public string Status { get; set; }
+        public required string RequestNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string ChangeType { get; set; }
+        public required string Category { get; set; }
+        public required string Priority { get; set; }
+        public required string Urgency { get; set; }
+        public required string Impact { get; set; }
+        public required string RiskLevel { get; set; }
+        public required string Status { get; set; }
         public Guid RequestedBy { get; set; }
-        public string RequesterName { get; set; }
-        public string RequesterDepartment { get; set; }
-        public string BusinessJustification { get; set; }
-        public string TechnicalDescription { get; set; }
+        public required string RequesterName { get; set; }
+        public required string RequesterDepartment { get; set; }
+        public required string BusinessJustification { get; set; }
+        public required string TechnicalDescription { get; set; }
         public List<string> ExpectedBenefits { get; set; }
         public List<string> AffectedSystems { get; set; }
         public decimal EstimatedCost { get; set; }
         public int EstimatedDuration { get; set; }
         public DateTime PlannedStartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }
-        public string MaintenanceWindow { get; set; }
-        public string BackoutPlan { get; set; }
-        public string TestingPlan { get; set; }
-        public string CommunicationPlan { get; set; }
+        public required string MaintenanceWindow { get; set; }
+        public required string BackoutPlan { get; set; }
+        public required string TestingPlan { get; set; }
+        public required string CommunicationPlan { get; set; }
         public List<ChangeApprovalStepDto> ApprovalWorkflow { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -702,19 +702,19 @@ namespace AttendancePlatform.Api.Services
 
     public class ChangeApprovalStepDto
     {
-        public string StepName { get; set; }
-        public string Approver { get; set; }
-        public string Status { get; set; }
+        public required string StepName { get; set; }
+        public required string Approver { get; set; }
+        public required string Status { get; set; }
         public DateTime? ApprovedAt { get; set; }
-        public string Comments { get; set; }
+        public required string Comments { get; set; }
     }
 
     public class ChangeApprovalDto
     {
         public Guid ApproverId { get; set; }
-        public string ApproverName { get; set; }
-        public string ApprovalStatus { get; set; }
-        public string Comments { get; set; }
+        public required string ApproverName { get; set; }
+        public required string ApprovalStatus { get; set; }
+        public required string Comments { get; set; }
         public DateTime ApprovalDate { get; set; }
     }
 
@@ -722,18 +722,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid ChangeRequestId { get; set; }
-        public string AssessmentNumber { get; set; }
-        public string AssessmentType { get; set; }
-        public string AssessorName { get; set; }
-        public string AssessorRole { get; set; }
-        public string BusinessImpact { get; set; }
-        public string TechnicalImpact { get; set; }
-        public string SecurityImpact { get; set; }
-        public string PerformanceImpact { get; set; }
-        public string AvailabilityImpact { get; set; }
-        public string DataImpact { get; set; }
-        public string IntegrationImpact { get; set; }
-        public string UserImpact { get; set; }
+        public required string AssessmentNumber { get; set; }
+        public required string AssessmentType { get; set; }
+        public required string AssessorName { get; set; }
+        public required string AssessorRole { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string TechnicalImpact { get; set; }
+        public required string SecurityImpact { get; set; }
+        public required string PerformanceImpact { get; set; }
+        public required string AvailabilityImpact { get; set; }
+        public required string DataImpact { get; set; }
+        public required string IntegrationImpact { get; set; }
+        public required string UserImpact { get; set; }
         public double OverallRiskScore { get; set; }
         public List<string> RiskFactors { get; set; }
         public List<string> MitigationStrategies { get; set; }
@@ -747,14 +747,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PlanNumber { get; set; }
+        public required string PlanNumber { get; set; }
         public Guid ChangeRequestId { get; set; }
-        public string PlanName { get; set; }
-        public string Description { get; set; }
+        public required string PlanName { get; set; }
+        public required string Description { get; set; }
         public DateTime PlannedStartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }
         public double EstimatedDuration { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public List<ImplementationStepDto> ImplementationSteps { get; set; }
         public List<string> ResourceRequirements { get; set; }
         public List<string> RiskMitigations { get; set; }
@@ -766,12 +766,12 @@ namespace AttendancePlatform.Api.Services
     public class ImplementationStepDto
     {
         public int StepNumber { get; set; }
-        public string StepName { get; set; }
-        public string Description { get; set; }
+        public required string StepName { get; set; }
+        public required string Description { get; set; }
         public double EstimatedDuration { get; set; }
-        public string ResponsibleTeam { get; set; }
+        public required string ResponsibleTeam { get; set; }
         public List<string> Dependencies { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
     }
@@ -780,17 +780,17 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PlanNumber { get; set; }
+        public required string PlanNumber { get; set; }
         public Guid ChangeRequestId { get; set; }
-        public string PlanName { get; set; }
-        public string Description { get; set; }
+        public required string PlanName { get; set; }
+        public required string Description { get; set; }
         public List<string> TriggerConditions { get; set; }
         public List<RollbackStepDto> RollbackSteps { get; set; }
         public double EstimatedRollbackTime { get; set; }
         public List<string> DecisionCriteria { get; set; }
-        public string CommunicationPlan { get; set; }
+        public required string CommunicationPlan { get; set; }
         public List<string> PostRollbackActions { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -798,11 +798,11 @@ namespace AttendancePlatform.Api.Services
     public class RollbackStepDto
     {
         public int StepNumber { get; set; }
-        public string StepName { get; set; }
-        public string Description { get; set; }
+        public required string StepName { get; set; }
+        public required string Description { get; set; }
         public double EstimatedDuration { get; set; }
-        public string ResponsibleTeam { get; set; }
-        public string Status { get; set; }
+        public required string ResponsibleTeam { get; set; }
+        public required string Status { get; set; }
     }
 
     public class ChangeAnalyticsDto
@@ -839,7 +839,7 @@ namespace AttendancePlatform.Api.Services
 
     public class ChangeRequesterStatsDto
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public int RequestCount { get; set; }
         public double SuccessRate { get; set; }
     }
@@ -855,8 +855,8 @@ namespace AttendancePlatform.Api.Services
     public class ChangeReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalChanges { get; set; }
         public int SuccessfulChanges { get; set; }
         public int FailedChanges { get; set; }
@@ -889,20 +889,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string TemplateNumber { get; set; }
-        public string TemplateName { get; set; }
-        public string Description { get; set; }
-        public string ChangeType { get; set; }
-        public string Category { get; set; }
-        public string DefaultPriority { get; set; }
-        public string DefaultRiskLevel { get; set; }
+        public required string TemplateNumber { get; set; }
+        public required string TemplateName { get; set; }
+        public required string Description { get; set; }
+        public required string ChangeType { get; set; }
+        public required string Category { get; set; }
+        public required string DefaultPriority { get; set; }
+        public required string DefaultRiskLevel { get; set; }
         public int EstimatedDuration { get; set; }
         public List<string> RequiredApprovals { get; set; }
         public List<string> StandardSteps { get; set; }
         public List<string> RiskFactors { get; set; }
         public List<string> MitigationStrategies { get; set; }
         public List<string> TestingRequirements { get; set; }
-        public string CommunicationTemplate { get; set; }
+        public required string CommunicationTemplate { get; set; }
         public int UsageCount { get; set; }
         public double SuccessRate { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -918,12 +918,12 @@ namespace AttendancePlatform.Api.Services
     public class ChangeCalendarItemDto
     {
         public Guid ChangeRequestId { get; set; }
-        public string RequestNumber { get; set; }
-        public string Title { get; set; }
+        public required string RequestNumber { get; set; }
+        public required string Title { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string Impact { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string Impact { get; set; }
     }
 }

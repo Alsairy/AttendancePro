@@ -614,19 +614,19 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string EventCode { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string EventType { get; set; }
-        public string Category { get; set; }
+        public required string EventCode { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string EventType { get; set; }
+        public required string Category { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public Guid VenueId { get; set; }
-        public string VenueName { get; set; }
-        public string OrganizerName { get; set; }
+        public required string VenueName { get; set; }
+        public required string OrganizerName { get; set; }
         public int MaxAttendees { get; set; }
         public int RegistrationCount { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public bool IsPublic { get; set; }
         public bool RequiresRegistration { get; set; }
         public DateTime? RegistrationDeadline { get; set; }
@@ -638,14 +638,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid EventId { get; set; }
-        public string RegistrationNumber { get; set; }
+        public required string RegistrationNumber { get; set; }
         public Guid UserId { get; set; }
-        public string UserName { get; set; }
-        public string UserEmail { get; set; }
+        public required string UserName { get; set; }
+        public required string UserEmail { get; set; }
         public DateTime RegistrationDate { get; set; }
-        public string Status { get; set; }
-        public string AttendanceStatus { get; set; }
-        public string SpecialRequirements { get; set; }
+        public required string Status { get; set; }
+        public required string AttendanceStatus { get; set; }
+        public required string SpecialRequirements { get; set; }
     }
 
     public class EventCalendarDto
@@ -659,21 +659,21 @@ namespace AttendancePlatform.Api.Services
     public class EventCalendarItemDto
     {
         public Guid EventId { get; set; }
-        public string Title { get; set; }
+        public required string Title { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
-        public string EventType { get; set; }
-        public string VenueName { get; set; }
+        public required string EventType { get; set; }
+        public required string VenueName { get; set; }
     }
 
     public class EventReminderDto
     {
         public Guid Id { get; set; }
         public Guid EventId { get; set; }
-        public string ReminderType { get; set; }
+        public required string ReminderType { get; set; }
         public DateTime ReminderTime { get; set; }
-        public string Message { get; set; }
-        public string Status { get; set; }
+        public required string Message { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -682,9 +682,9 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid EventId { get; set; }
         public Guid UserId { get; set; }
-        public string UserName { get; set; }
+        public required string UserName { get; set; }
         public int Rating { get; set; }
-        public string Comments { get; set; }
+        public required string Comments { get; set; }
         public bool WouldRecommend { get; set; }
         public DateTime SubmittedAt { get; set; }
     }
@@ -709,7 +709,7 @@ namespace AttendancePlatform.Api.Services
     public class EventReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public int TotalEvents { get; set; }
         public int CompletedEvents { get; set; }
         public int CancelledEvents { get; set; }
@@ -745,11 +745,11 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid EventId { get; set; }
-        public string ResourceType { get; set; }
-        public string ResourceName { get; set; }
-        public string Description { get; set; }
+        public required string ResourceType { get; set; }
+        public required string ResourceName { get; set; }
+        public required string Description { get; set; }
         public int Quantity { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -757,11 +757,11 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int Capacity { get; set; }
-        public string Location { get; set; }
-        public List<string> Amenities { get; set; }
+        public required string Location { get; set; }
+        public required List<string> Amenities { get; set; }
         public bool IsActive { get; set; }
         public decimal BookingRate { get; set; }
         public DateTime CreatedAt { get; set; }

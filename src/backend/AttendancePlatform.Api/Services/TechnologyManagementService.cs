@@ -356,22 +356,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AssetNumber { get; set; }
-        public string AssetName { get; set; }
-        public string Description { get; set; }
-        public string AssetType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Vendor { get; set; }
-        public string Model { get; set; }
-        public string SerialNumber { get; set; }
+        public required string AssetNumber { get; set; }
+        public required string AssetName { get; set; }
+        public required string Description { get; set; }
+        public required string AssetType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Vendor { get; set; }
+        public required string Model { get; set; }
+        public required string SerialNumber { get; set; }
         public DateTime PurchaseDate { get; set; }
         public DateTime? WarrantyExpiration { get; set; }
         public decimal PurchaseCost { get; set; }
         public decimal CurrentValue { get; set; }
-        public string Location { get; set; }
-        public string Owner { get; set; }
-        public string MaintenanceSchedule { get; set; }
+        public required string Location { get; set; }
+        public required string Owner { get; set; }
+        public required string MaintenanceSchedule { get; set; }
         public DateTime? LastMaintenance { get; set; }
         public DateTime? NextMaintenance { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -382,21 +382,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RoadmapNumber { get; set; }
-        public string RoadmapName { get; set; }
-        public string Description { get; set; }
-        public string TimeHorizon { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
+        public required string RoadmapNumber { get; set; }
+        public required string RoadmapName { get; set; }
+        public required string Description { get; set; }
+        public required string TimeHorizon { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public decimal Budget { get; set; }
-        public string Priority { get; set; }
-        public string StrategicAlignment { get; set; }
-        public string TechnologyFocus { get; set; }
+        public required string Priority { get; set; }
+        public required string StrategicAlignment { get; set; }
+        public required string TechnologyFocus { get; set; }
         public double ExpectedROI { get; set; }
-        public string RiskLevel { get; set; }
+        public required string RiskLevel { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -423,8 +423,8 @@ namespace AttendancePlatform.Api.Services
     public class TechnologyReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalAssets { get; set; }
         public int NewAssets { get; set; }
         public int RetiredAssets { get; set; }
@@ -444,21 +444,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string StackNumber { get; set; }
-        public string StackName { get; set; }
-        public string Description { get; set; }
-        public string StackType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
-        public string Technologies { get; set; }
-        public string Architecture { get; set; }
-        public string Owner { get; set; }
-        public string MaintenanceLevel { get; set; }
-        public string SecurityRating { get; set; }
-        public string PerformanceRating { get; set; }
-        public string ScalabilityRating { get; set; }
-        public string CostRating { get; set; }
+        public required string StackNumber { get; set; }
+        public required string StackName { get; set; }
+        public required string Description { get; set; }
+        public required string StackType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
+        public required string Technologies { get; set; }
+        public required string Architecture { get; set; }
+        public required string Owner { get; set; }
+        public required string MaintenanceLevel { get; set; }
+        public required string SecurityRating { get; set; }
+        public required string PerformanceRating { get; set; }
+        public required string ScalabilityRating { get; set; }
+        public required string CostRating { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -467,21 +467,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string InnovationNumber { get; set; }
-        public string InnovationName { get; set; }
-        public string Description { get; set; }
-        public string InnovationType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string InnovationNumber { get; set; }
+        public required string InnovationName { get; set; }
+        public required string Description { get; set; }
+        public required string InnovationType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public decimal InvestmentLevel { get; set; }
         public double ExpectedROI { get; set; }
-        public string RiskLevel { get; set; }
+        public required string RiskLevel { get; set; }
         public int TechnologyReadiness { get; set; }
         public int MarketReadiness { get; set; }
-        public string CompetitiveAdvantage { get; set; }
+        public required string CompetitiveAdvantage { get; set; }
         public int TimeToMarket { get; set; }
-        public string ProjectLead { get; set; }
+        public required string ProjectLead { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ExpectedCompletion { get; set; }
         public DateTime CreatedAt { get; set; }

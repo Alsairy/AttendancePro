@@ -343,15 +343,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ProcessNumber { get; set; }
-        public string ProcessName { get; set; }
-        public string Description { get; set; }
-        public string ProcessType { get; set; }
-        public string ProcessOwner { get; set; }
-        public string Department { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
+        public required string ProcessNumber { get; set; }
+        public required string ProcessName { get; set; }
+        public required string Description { get; set; }
+        public required string ProcessType { get; set; }
+        public required string ProcessOwner { get; set; }
+        public required string Department { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
         public DateTime EffectiveDate { get; set; }
         public DateTime ReviewDate { get; set; }
         public double EstimatedDuration { get; set; }
@@ -366,18 +366,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string MetricNumber { get; set; }
-        public string MetricName { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string MeasurementUnit { get; set; }
-        public string Frequency { get; set; }
-        public string Status { get; set; }
-        public string Owner { get; set; }
+        public required string MetricNumber { get; set; }
+        public required string MetricName { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string MeasurementUnit { get; set; }
+        public required string Frequency { get; set; }
+        public required string Status { get; set; }
+        public required string Owner { get; set; }
         public double CurrentValue { get; set; }
         public double TargetValue { get; set; }
         public double ThresholdValue { get; set; }
-        public string Trend { get; set; }
+        public required string Trend { get; set; }
         public DateTime LastMeasured { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -405,8 +405,8 @@ namespace AttendancePlatform.Api.Services
     public class OperationalReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalProcesses { get; set; }
         public int OptimizedProcesses { get; set; }
         public double ProcessOptimizationRate { get; set; }
@@ -425,16 +425,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string EfficiencyNumber { get; set; }
-        public string EfficiencyName { get; set; }
-        public string Description { get; set; }
-        public string ProcessArea { get; set; }
-        public string MeasurementPeriod { get; set; }
+        public required string EfficiencyNumber { get; set; }
+        public required string EfficiencyName { get; set; }
+        public required string Description { get; set; }
+        public required string ProcessArea { get; set; }
+        public required string MeasurementPeriod { get; set; }
         public double BaselineValue { get; set; }
         public double CurrentValue { get; set; }
         public double TargetValue { get; set; }
         public double ImprovementPercentage { get; set; }
-        public string EfficiencyTrend { get; set; }
+        public required string EfficiencyTrend { get; set; }
         public DateTime LastMeasured { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -444,21 +444,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string IncidentNumber { get; set; }
-        public string IncidentTitle { get; set; }
-        public string Description { get; set; }
-        public string IncidentType { get; set; }
-        public string Severity { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string ReportedBy { get; set; }
-        public string AssignedTo { get; set; }
+        public required string IncidentNumber { get; set; }
+        public required string IncidentTitle { get; set; }
+        public required string Description { get; set; }
+        public required string IncidentType { get; set; }
+        public required string Severity { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string ReportedBy { get; set; }
+        public required string AssignedTo { get; set; }
         public DateTime OccurredAt { get; set; }
         public DateTime? ResolvedAt { get; set; }
         public double? ResolutionTime { get; set; }
-        public string ImpactAssessment { get; set; }
-        public string RootCause { get; set; }
-        public string Resolution { get; set; }
+        public required string ImpactAssessment { get; set; }
+        public required string RootCause { get; set; }
+        public required string Resolution { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

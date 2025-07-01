@@ -368,17 +368,17 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AssetTag { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string SerialNumber { get; set; }
+        public required string AssetTag { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string SerialNumber { get; set; }
         public DateTime PurchaseDate { get; set; }
         public decimal PurchasePrice { get; set; }
         public decimal CurrentValue { get; set; }
-        public string Status { get; set; }
-        public string Location { get; set; }
-        public string AssignedTo { get; set; }
+        public required string Status { get; set; }
+        public required string Location { get; set; }
+        public string? AssignedTo { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -388,27 +388,27 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
         public Guid AssetId { get; set; }
-        public string AssetName { get; set; }
+        public required string AssetName { get; set; }
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
+        public required string EmployeeName { get; set; }
         public DateTime AssignedDate { get; set; }
         public DateTime? ReturnDate { get; set; }
-        public string Status { get; set; }
-        public string Notes { get; set; }
+        public required string Status { get; set; }
+        public string? Notes { get; set; }
     }
 
     public class AssetMaintenanceDto
     {
         public Guid Id { get; set; }
         public Guid AssetId { get; set; }
-        public string MaintenanceType { get; set; }
-        public string Description { get; set; }
+        public required string MaintenanceType { get; set; }
+        public required string Description { get; set; }
         public DateTime ScheduledDate { get; set; }
         public DateTime? CompletedDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public decimal Cost { get; set; }
-        public string PerformedBy { get; set; }
-        public string Notes { get; set; }
+        public required string PerformedBy { get; set; }
+        public string? Notes { get; set; }
     }
 
     public class AssetAnalyticsDto
@@ -430,8 +430,8 @@ namespace AttendancePlatform.Api.Services
     public class AssetCategoryDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -441,7 +441,7 @@ namespace AttendancePlatform.Api.Services
         public Guid AssetId { get; set; }
         public decimal PurchasePrice { get; set; }
         public decimal CurrentValue { get; set; }
-        public string DepreciationMethod { get; set; }
+        public required string DepreciationMethod { get; set; }
         public int UsefulLife { get; set; }
         public decimal AnnualDepreciation { get; set; }
         public decimal AccumulatedDepreciation { get; set; }
@@ -453,12 +453,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid AssetId { get; set; }
-        public string Action { get; set; }
-        public string PerformedBy { get; set; }
+        public required string Action { get; set; }
+        public required string PerformedBy { get; set; }
         public DateTime Timestamp { get; set; }
-        public string Details { get; set; }
-        public string OldValue { get; set; }
-        public string NewValue { get; set; }
+        public required string Details { get; set; }
+        public string? OldValue { get; set; }
+        public required string NewValue { get; set; }
     }
 
     public class AssetReportDto

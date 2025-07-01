@@ -478,13 +478,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ProcessCode { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
+        public required string ProcessCode { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
         public int EstimatedDuration { get; set; }
         public List<ProcessStepDto> Steps { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -494,7 +494,7 @@ namespace AttendancePlatform.Api.Services
     public class ProcessStepDto
     {
         public int StepNumber { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public int Duration { get; set; }
         public bool IsRequired { get; set; }
     }
@@ -503,15 +503,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid ProcessId { get; set; }
-        public string InstanceNumber { get; set; }
+        public required string InstanceNumber { get; set; }
         public Guid InitiatedBy { get; set; }
-        public string InitiatorName { get; set; }
+        public required string InitiatorName { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public int CurrentStep { get; set; }
         public double Progress { get; set; }
-        public string Priority { get; set; }
+        public required string Priority { get; set; }
         public DateTime DueDate { get; set; }
     }
 
@@ -519,13 +519,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid InstanceId { get; set; }
-        public string TaskNumber { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string TaskNumber { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public Guid AssignedTo { get; set; }
-        public string AssigneeName { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string AssigneeName { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public DateTime DueDate { get; set; }
         public int EstimatedDuration { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -533,33 +533,33 @@ namespace AttendancePlatform.Api.Services
 
     public class ProcessTaskCompletionDto
     {
-        public string Outcome { get; set; }
-        public string Comments { get; set; }
+        public required string Outcome { get; set; }
+        public required string Comments { get; set; }
         public DateTime CompletedAt { get; set; }
     }
 
     public class ProcessApprovalDto
     {
         public Guid Id { get; set; }
-        public string ApprovalNumber { get; set; }
+        public required string ApprovalNumber { get; set; }
         public Guid ProcessInstanceId { get; set; }
-        public string ProcessName { get; set; }
+        public required string ProcessName { get; set; }
         public Guid RequestedBy { get; set; }
-        public string RequesterName { get; set; }
+        public required string RequesterName { get; set; }
         public Guid ApproverId { get; set; }
-        public string ApproverName { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string ApproverName { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public DateTime RequestedAt { get; set; }
         public DateTime DueDate { get; set; }
-        public string Description { get; set; }
+        public required string Description { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
     public class ProcessApprovalDecisionDto
     {
-        public string Decision { get; set; }
-        public string Comments { get; set; }
+        public required string Decision { get; set; }
+        public required string Comments { get; set; }
         public DateTime DecisionDate { get; set; }
     }
 
@@ -593,11 +593,11 @@ namespace AttendancePlatform.Api.Services
 
     public class OptimizationOpportunityDto
     {
-        public string Category { get; set; }
-        public string Description { get; set; }
-        public string Impact { get; set; }
+        public required string Category { get; set; }
+        public required string Description { get; set; }
+        public required string Impact { get; set; }
         public int EstimatedTimeSaving { get; set; }
-        public string ImplementationEffort { get; set; }
+        public required string ImplementationEffort { get; set; }
         public int Priority { get; set; }
     }
 
@@ -611,11 +611,11 @@ namespace AttendancePlatform.Api.Services
     public class ProcessAuditEventDto
     {
         public Guid EventId { get; set; }
-        public string EventType { get; set; }
-        public string Description { get; set; }
+        public required string EventType { get; set; }
+        public required string Description { get; set; }
         public Guid UserId { get; set; }
-        public string UserName { get; set; }
+        public required string UserName { get; set; }
         public DateTime Timestamp { get; set; }
-        public string Details { get; set; }
+        public required string Details { get; set; }
     }
 }

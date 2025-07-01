@@ -290,8 +290,11 @@ namespace AttendancePlatform.Api.Services
             return new CyberSecurityReportDto
             {
                 TenantId = tenantId,
+                ReportType = "Security Assessment Report",
                 ReportPeriod = $"{fromDate:yyyy-MM-dd} to {toDate:yyyy-MM-dd}",
                 ExecutiveSummary = "Security posture remains strong with 95% incident resolution rate and improved threat detection capabilities.",
+                FromDate = fromDate,
+                ToDate = toDate,
                 TotalIncidents = 45,
                 ResolvedIncidents = 42,
                 OpenIncidents = 3,
@@ -299,6 +302,8 @@ namespace AttendancePlatform.Api.Services
                 AverageResolutionTime = 3.8,
                 SecurityScore = 7.8,
                 ThreatLevel = "Medium",
+                TopThreats = new List<string> { "Phishing Attacks", "Malware", "Insider Threats", "DDoS Attacks", "Data Breaches" },
+                Recommendations = new List<string> { "Enhance email security", "Update security training", "Implement zero-trust architecture" },
                 GeneratedAt = DateTime.UtcNow
             };
         }
@@ -442,17 +447,17 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string IncidentNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string IncidentType { get; set; }
-        public string Severity { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
+        public required string IncidentNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string IncidentType { get; set; }
+        public required string Severity { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
         public DateTime DetectedAt { get; set; }
-        public string ReportedBy { get; set; }
-        public string AssignedTo { get; set; }
-        public string ImpactAssessment { get; set; }
+        public required string ReportedBy { get; set; }
+        public required string AssignedTo { get; set; }
+        public required string ImpactAssessment { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -461,16 +466,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AssessmentNumber { get; set; }
-        public string AssessmentName { get; set; }
-        public string AssessmentType { get; set; }
-        public string Scope { get; set; }
+        public required string AssessmentNumber { get; set; }
+        public required string AssessmentName { get; set; }
+        public required string AssessmentType { get; set; }
+        public required string Scope { get; set; }
         public DateTime AssessmentDate { get; set; }
-        public string AssessorName { get; set; }
-        public string AssessorOrganization { get; set; }
-        public string Status { get; set; }
+        public required string AssessorName { get; set; }
+        public required string AssessorOrganization { get; set; }
+        public required string Status { get; set; }
         public double OverallScore { get; set; }
-        public string SecurityMaturityLevel { get; set; }
+        public required string SecurityMaturityLevel { get; set; }
         public double IdentityAccessScore { get; set; }
         public double NetworkSecurityScore { get; set; }
         public double DataProtectionScore { get; set; }
@@ -487,17 +492,17 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ThreatId { get; set; }
-        public string ThreatName { get; set; }
-        public string ThreatType { get; set; }
-        public string ThreatCategory { get; set; }
-        public string Severity { get; set; }
+        public required string ThreatId { get; set; }
+        public required string ThreatName { get; set; }
+        public required string ThreatType { get; set; }
+        public required string ThreatCategory { get; set; }
+        public required string Severity { get; set; }
         public double ConfidenceLevel { get; set; }
-        public string Source { get; set; }
-        public string Description { get; set; }
+        public required string Source { get; set; }
+        public required string Description { get; set; }
         public double RelevanceScore { get; set; }
         public DateTime ExpirationDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -506,30 +511,30 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string VulnerabilityId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string CveId { get; set; }
+        public required string VulnerabilityId { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string CveId { get; set; }
         public double CvssScore { get; set; }
-        public string Severity { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
+        public required string Severity { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
         public DateTime DiscoveredDate { get; set; }
-        public string DiscoveryMethod { get; set; }
-        public string VulnerabilityType { get; set; }
-        public string AttackVector { get; set; }
-        public string AttackComplexity { get; set; }
-        public string PrivilegesRequired { get; set; }
-        public string UserInteraction { get; set; }
-        public string Scope { get; set; }
-        public string ConfidentialityImpact { get; set; }
-        public string IntegrityImpact { get; set; }
-        public string AvailabilityImpact { get; set; }
+        public required string DiscoveryMethod { get; set; }
+        public required string VulnerabilityType { get; set; }
+        public required string AttackVector { get; set; }
+        public required string AttackComplexity { get; set; }
+        public required string PrivilegesRequired { get; set; }
+        public required string UserInteraction { get; set; }
+        public required string Scope { get; set; }
+        public required string ConfidentialityImpact { get; set; }
+        public required string IntegrityImpact { get; set; }
+        public required string AvailabilityImpact { get; set; }
         public double ExploitabilityScore { get; set; }
         public double ImpactScore { get; set; }
-        public string TechnicalDetails { get; set; }
-        public string ProofOfConcept { get; set; }
-        public string AssignedTo { get; set; }
+        public required string TechnicalDetails { get; set; }
+        public required string ProofOfConcept { get; set; }
+        public required string AssignedTo { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -547,7 +552,7 @@ namespace AttendancePlatform.Api.Services
         public int LowIncidents { get; set; }
         public double AverageResolutionTime { get; set; }
         public double SecurityScore { get; set; }
-        public string ThreatLevel { get; set; }
+        public required string ThreatLevel { get; set; }
         public int VulnerabilityCount { get; set; }
         public int CriticalVulnerabilities { get; set; }
         public int HighVulnerabilities { get; set; }
@@ -561,15 +566,15 @@ namespace AttendancePlatform.Api.Services
     public class SecurityReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalIncidents { get; set; }
         public int ResolvedIncidents { get; set; }
         public int OpenIncidents { get; set; }
         public double ResolutionRate { get; set; }
         public double AverageResolutionTime { get; set; }
         public double SecurityScore { get; set; }
-        public string ThreatLevel { get; set; }
+        public required string ThreatLevel { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
@@ -624,15 +629,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ReportType { get; set; }
+        public required string ReportType { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
         public int TotalIncidents { get; set; }
         public int CriticalIncidents { get; set; }
         public int ResolvedIncidents { get; set; }
+        public int OpenIncidents { get; set; }
+        public double ResolutionRate { get; set; }
+        public double AverageResolutionTime { get; set; }
         public double SecurityScore { get; set; }
-        public List<string> TopThreats { get; set; }
-        public List<string> Recommendations { get; set; }
+        public required string ThreatLevel { get; set; }
+        public required List<string> TopThreats { get; set; }
+        public required List<string> Recommendations { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 }

@@ -255,33 +255,33 @@ namespace AttendancePlatform.Api.Services
         public int EmployeesProcessed { get; set; }
         public int RecordsProcessed { get; set; }
         public DateTime SyncedAt { get; set; }
-        public string Status { get; set; }
-        public List<string> Errors { get; set; }
+        public required string Status { get; set; }
+        public required List<string> Errors { get; set; }
     }
 
     public class PayrollProviderDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public bool IsActive { get; set; }
     }
 
     public class PayrollConfigurationDto
     {
         public Guid TenantId { get; set; }
-        public string ProviderName { get; set; }
-        public string ApiEndpoint { get; set; }
-        public string ApiKey { get; set; }
-        public string Status { get; set; }
+        public required string ProviderName { get; set; }
+        public required string ApiEndpoint { get; set; }
+        public required string ApiKey { get; set; }
+        public required string Status { get; set; }
         public DateTime ConfiguredAt { get; set; }
     }
 
     public class PayrollReportDto
     {
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
-        public string PayPeriod { get; set; }
+        public required string EmployeeName { get; set; }
+        public required string PayPeriod { get; set; }
         public decimal GrossPay { get; set; }
         public decimal NetPay { get; set; }
         public decimal Deductions { get; set; }
@@ -307,10 +307,10 @@ namespace AttendancePlatform.Api.Services
 
     public class PayrollAuditDto
     {
-        public string Action { get; set; }
-        public string User { get; set; }
+        public required string Action { get; set; }
+        public required string User { get; set; }
         public DateTime Timestamp { get; set; }
-        public string Details { get; set; }
+        public required string Details { get; set; }
     }
 
     public class PayrollComplianceDto
@@ -319,7 +319,7 @@ namespace AttendancePlatform.Api.Services
         public double ComplianceScore { get; set; }
         public bool MinimumWageCompliance { get; set; }
         public bool OvertimeCompliance { get; set; }
-        public string TaxComplianceStatus { get; set; }
+        public required string TaxComplianceStatus { get; set; }
         public bool LaborLawCompliance { get; set; }
         public List<string> Issues { get; set; }
         public DateTime ValidatedAt { get; set; }
@@ -339,11 +339,11 @@ namespace AttendancePlatform.Api.Services
     public class PayrollExportDto
     {
         public Guid TenantId { get; set; }
-        public string Format { get; set; }
-        public string FileName { get; set; }
+        public required string Format { get; set; }
+        public required string FileName { get; set; }
         public long FileSize { get; set; }
         public int RecordCount { get; set; }
         public DateTime ExportedAt { get; set; }
-        public string DownloadUrl { get; set; }
+        public required string DownloadUrl { get; set; }
     }
 }

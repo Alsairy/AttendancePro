@@ -101,11 +101,16 @@ namespace AttendancePlatform.Api.Services
                 return new AdvancedSentimentAnalysisDto
                 {
                     TenantId = tenantId,
-                    SentimentMetrics = sentiments,
-                    OverallSentiment = "Positive",
+                    SentimentMetrics = new Dictionary<string, double> { { "positive", 0.7 }, { "neutral", 0.2 }, { "negative", 0.1 } },
+                    OverallSentiment = 7.5,
                     SentimentScore = 7.5,
                     TrendDirection = "Improving",
-                    GeneratedAt = DateTime.UtcNow
+                    DepartmentSentiments = new Dictionary<string, double> { { "HR", 0.8 }, { "IT", 0.7 } },
+                    PositiveKeywords = new List<string> { "excellent", "great", "satisfied" },
+                    NegativeKeywords = new List<string> { "poor", "dissatisfied", "frustrated" },
+                    AnalysisDate = DateTime.UtcNow,
+                    GeneratedAt = DateTime.UtcNow,
+                    SampleSize = 100
                 };
             }
             catch (Exception ex)
@@ -121,8 +126,8 @@ namespace AttendancePlatform.Api.Services
             {
                 var anomalies = new List<AnomalyDto>
                 {
-                    new AnomalyDto { Type = "Attendance Spike", Description = "Unusual high attendance on Friday", Severity = "Low", DetectedAt = DateTime.UtcNow.AddHours(-2) },
-                    new AnomalyDto { Type = "Late Check-ins", Description = "Multiple late arrivals in Engineering", Severity = "Medium", DetectedAt = DateTime.UtcNow.AddHours(-4) }
+                    new AnomalyDto { Id = Guid.NewGuid(), Type = "Attendance Spike", Description = "Unusual high attendance on Friday", Severity = 0.3, Timestamp = DateTime.UtcNow.AddHours(-2), Data = new Dictionary<string, object>() },
+                    new AnomalyDto { Id = Guid.NewGuid(), Type = "Late Check-ins", Description = "Multiple late arrivals in Engineering", Severity = 0.6, Timestamp = DateTime.UtcNow.AddHours(-4), Data = new Dictionary<string, object>() }
                 };
 
                 return new AdvancedAnomalyDetectionDto
@@ -130,7 +135,7 @@ namespace AttendancePlatform.Api.Services
                     TenantId = tenantId,
                     Anomalies = anomalies,
                     TotalAnomalies = anomalies.Count,
-                    CriticalAnomalies = anomalies.Count(a => a.Severity == "High"),
+                    CriticalAnomalies = anomalies.Count(a => a.Severity >= 0.8),
                     GeneratedAt = DateTime.UtcNow
                 };
             }
@@ -213,13 +218,23 @@ namespace AttendancePlatform.Api.Services
                     new ClusterDto { Name = "Flexible Workers", Size = 32, Characteristics = "Variable attendance, high productivity" }
                 };
 
+                var clusterGroups = clusters.Select(c => new ClusterGroupDto
+                {
+                    ClusterId = 1,
+                    ClusterName = c.Name,
+                    MemberCount = c.Size,
+                    Characteristics = new Dictionary<string, object> { { "description", c.Characteristics } },
+                    CohesionScore = 0.85
+                }).ToList();
+
                 return new AdvancedClusterAnalysisDto
                 {
                     TenantId = tenantId,
-                    Clusters = clusters,
-                    OptimalClusters = 3,
+                    NumberOfClusters = clusters.Count,
+                    Clusters = clusterGroups,
                     SilhouetteScore = 0.72,
-                    GeneratedAt = DateTime.UtcNow
+                    AnalysisDate = DateTime.UtcNow,
+                    ClusteringMethod = "K-Means"
                 };
             }
             catch (Exception ex)
@@ -331,10 +346,10 @@ namespace AttendancePlatform.Api.Services
 
     public class PredictionDto
     {
-        public string Metric { get; set; }
+        public required string Metric { get; set; }
         public double PredictedValue { get; set; }
         public double Confidence { get; set; }
-        public string TimeFrame { get; set; }
+        public required string TimeFrame { get; set; }
     }
 
     public class BehavioralAnalyticsDto
@@ -348,26 +363,26 @@ namespace AttendancePlatform.Api.Services
 
     public class BehaviorPatternDto
     {
-        public string Pattern { get; set; }
+        public required string Pattern { get; set; }
         public double Frequency { get; set; }
-        public string Trend { get; set; }
+        public required string Trend { get; set; }
     }
 
     public class SentimentAnalysisDto
     {
         public Guid TenantId { get; set; }
         public List<SentimentMetricDto> SentimentMetrics { get; set; }
-        public string OverallSentiment { get; set; }
+        public required string OverallSentiment { get; set; }
         public double SentimentScore { get; set; }
-        public string TrendDirection { get; set; }
+        public required string TrendDirection { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
     public class SentimentMetricDto
     {
-        public string Category { get; set; }
+        public required string Category { get; set; }
         public double Score { get; set; }
-        public string Sentiment { get; set; }
+        public required string Sentiment { get; set; }
     }
 
     public class AdvancedAnomalyDetectionDto
@@ -384,7 +399,7 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid TenantId { get; set; }
         public List<ForecastDataDto> Forecasts { get; set; }
-        public string ModelType { get; set; }
+        public required string ModelType { get; set; }
         public double Accuracy { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
@@ -408,10 +423,10 @@ namespace AttendancePlatform.Api.Services
 
     public class CorrelationDto
     {
-        public string Variable1 { get; set; }
-        public string Variable2 { get; set; }
+        public required string Variable1 { get; set; }
+        public required string Variable2 { get; set; }
         public double Correlation { get; set; }
-        public string Strength { get; set; }
+        public required string Strength { get; set; }
     }
 
     public class ClusterAnalysisDto
@@ -425,17 +440,17 @@ namespace AttendancePlatform.Api.Services
 
     public class ClusterDto
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public int Size { get; set; }
-        public string Characteristics { get; set; }
+        public required string Characteristics { get; set; }
     }
 
     public class TimeSeriesAnalysisDto
     {
         public Guid TenantId { get; set; }
         public List<TimeSeriesDataDto> DataPoints { get; set; }
-        public string Trend { get; set; }
-        public string Seasonality { get; set; }
+        public required string Trend { get; set; }
+        public required string Seasonality { get; set; }
         public bool Stationarity { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
@@ -459,7 +474,7 @@ namespace AttendancePlatform.Api.Services
 
     public class MLInsightDto
     {
-        public string Model { get; set; }
+        public required string Model { get; set; }
         public double Accuracy { get; set; }
         public DateTime LastTrained { get; set; }
     }
@@ -471,7 +486,7 @@ namespace AttendancePlatform.Api.Services
         public int TotalEmployees { get; set; }
         public double AttendanceRate { get; set; }
         public int TodayCheckIns { get; set; }
-        public string AverageCheckInTime { get; set; }
+        public required string AverageCheckInTime { get; set; }
         public DateTime LastUpdated { get; set; }
     }
 
@@ -479,10 +494,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid TenantId { get; set; }
         public double OverallSentiment { get; set; }
-        public Dictionary<string, double> DepartmentSentiments { get; set; }
-        public List<string> PositiveKeywords { get; set; }
-        public List<string> NegativeKeywords { get; set; }
+        public required Dictionary<string, double> SentimentMetrics { get; set; }
+        public double SentimentScore { get; set; }
+        public required string TrendDirection { get; set; }
+        public required Dictionary<string, double> DepartmentSentiments { get; set; }
+        public required List<string> PositiveKeywords { get; set; }
+        public required List<string> NegativeKeywords { get; set; }
         public DateTime AnalysisDate { get; set; }
+        public DateTime GeneratedAt { get; set; }
         public int SampleSize { get; set; }
     }
 
@@ -493,13 +512,13 @@ namespace AttendancePlatform.Api.Services
         public List<ClusterGroupDto> Clusters { get; set; }
         public double SilhouetteScore { get; set; }
         public DateTime AnalysisDate { get; set; }
-        public string ClusteringMethod { get; set; }
+        public required string ClusteringMethod { get; set; }
     }
 
     public class ClusterGroupDto
     {
         public int ClusterId { get; set; }
-        public string ClusterName { get; set; }
+        public required string ClusterName { get; set; }
         public int MemberCount { get; set; }
         public Dictionary<string, object> Characteristics { get; set; }
         public double CohesionScore { get; set; }
@@ -511,7 +530,7 @@ namespace AttendancePlatform.Api.Services
         public List<AnomalyDto> Anomalies { get; set; }
         public double AnomalyScore { get; set; }
         public DateTime DetectionDate { get; set; }
-        public string DetectionMethod { get; set; }
+        public required string DetectionMethod { get; set; }
         public int TotalDataPoints { get; set; }
         public int AnomalousDataPoints { get; set; }
     }
@@ -519,8 +538,8 @@ namespace AttendancePlatform.Api.Services
     public class AnomalyDto
     {
         public Guid Id { get; set; }
-        public string Type { get; set; }
-        public string Description { get; set; }
+        public required string Type { get; set; }
+        public required string Description { get; set; }
         public double Severity { get; set; }
         public DateTime Timestamp { get; set; }
         public Dictionary<string, object> Data { get; set; }
@@ -530,7 +549,7 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ReportType { get; set; }
+        public required string ReportType { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
         public decimal TotalRevenue { get; set; }

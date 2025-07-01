@@ -187,8 +187,10 @@ namespace AttendancePlatform.Api.Services
                 _logger.LogError(ex, "Failed to process voice command for user {UserId}", userId);
                 return new VoiceCommandResultDto
                 {
+                    Command = "unknown",
                     Success = false,
-                    Response = "Voice command processing failed"
+                    Response = "Voice command processing failed",
+                    Confidence = 0.0
                 };
             }
         }
@@ -367,14 +369,14 @@ namespace AttendancePlatform.Api.Services
         public bool Success { get; set; }
         public Guid? TemplateId { get; set; }
         public double Quality { get; set; }
-        public string Message { get; set; }
+        public required string Message { get; set; }
     }
 
     public class VoiceVerificationResultDto
     {
         public bool IsMatch { get; set; }
         public double Confidence { get; set; }
-        public string Message { get; set; }
+        public required string Message { get; set; }
     }
 
     public class VoiceTemplateDto
@@ -387,17 +389,17 @@ namespace AttendancePlatform.Api.Services
 
     public class VoiceCommandResultDto
     {
-        public string Command { get; set; }
+        public required string Command { get; set; }
         public bool Success { get; set; }
-        public string Response { get; set; }
+        public required string Response { get; set; }
         public double Confidence { get; set; }
     }
 
     public class VoiceCommandDto
     {
-        public string Command { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
+        public required string Command { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
     }
 
     public class VoiceConfigurationDto
@@ -405,7 +407,7 @@ namespace AttendancePlatform.Api.Services
         public Guid TenantId { get; set; }
         public bool IsEnabled { get; set; }
         public double ConfidenceThreshold { get; set; }
-        public string Language { get; set; }
+        public required string Language { get; set; }
         public bool NoiseReduction { get; set; }
         public bool EchoSuppression { get; set; }
     }

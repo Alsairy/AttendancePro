@@ -367,7 +367,17 @@ namespace AttendancePlatform.Api.Services
                 var lead = new CrmLeadDto
                 {
                     Id = leadId,
+                    TenantId = Guid.NewGuid(),
+                    Name = "Converted Lead Company",
+                    ContactName = "Lead Contact",
+                    Email = "converted@example.com",
+                    Phone = "+1-555-0123",
+                    Source = "Direct",
                     Status = "Converted",
+                    Score = 100,
+                    AssignedToId = Guid.NewGuid(),
+                    AssignedToName = "Sales Representative",
+                    CreatedAt = DateTime.UtcNow,
                     ConvertedDate = DateTime.UtcNow
                 };
 
@@ -407,16 +417,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Industry { get; set; }
-        public string Size { get; set; }
+        public required string Name { get; set; }
+        public required string Industry { get; set; }
+        public required string Size { get; set; }
         public decimal Revenue { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public Guid AccountManagerId { get; set; }
-        public string AccountManagerName { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Address { get; set; }
+        public required string AccountManagerName { get; set; }
+        public required string Email { get; set; }
+        public required string Phone { get; set; }
+        public required string Address { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -425,10 +435,10 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
-        public string Name { get; set; }
-        public string Title { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
+        public required string Name { get; set; }
+        public required string Title { get; set; }
+        public required string Email { get; set; }
+        public required string Phone { get; set; }
         public bool IsPrimary { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -437,13 +447,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
-        public string Type { get; set; }
-        public string Subject { get; set; }
-        public string Description { get; set; }
+        public required string Type { get; set; }
+        public required string Subject { get; set; }
+        public required string Description { get; set; }
         public DateTime Date { get; set; }
         public int Duration { get; set; }
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
+        public required string EmployeeName { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -451,15 +461,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public Guid CustomerId { get; set; }
-        public string CustomerName { get; set; }
+        public required string CustomerName { get; set; }
         public decimal Value { get; set; }
-        public string Stage { get; set; }
+        public required string Stage { get; set; }
         public int Probability { get; set; }
         public DateTime ExpectedCloseDate { get; set; }
         public Guid OwnerId { get; set; }
-        public string OwnerName { get; set; }
+        public required string OwnerName { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -486,15 +496,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string ContactName { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Source { get; set; }
-        public string Status { get; set; }
+        public required string Name { get; set; }
+        public required string ContactName { get; set; }
+        public required string Email { get; set; }
+        public required string Phone { get; set; }
+        public required string Source { get; set; }
+        public required string Status { get; set; }
         public int Score { get; set; }
         public Guid AssignedToId { get; set; }
-        public string AssignedToName { get; set; }
+        public required string AssignedToName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? ConvertedDate { get; set; }
     }
@@ -508,7 +518,7 @@ namespace AttendancePlatform.Api.Services
         public decimal RevenueThisMonth { get; set; }
         public decimal SalesTarget { get; set; }
         public double SalesTargetProgress { get; set; }
-        public string TopPerformingSalesperson { get; set; }
+        public required string TopPerformingSalesperson { get; set; }
         public double CustomerSatisfactionScore { get; set; }
         public double LeadConversionRate { get; set; }
         public decimal AverageDealSize { get; set; }

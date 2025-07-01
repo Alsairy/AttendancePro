@@ -401,36 +401,36 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string DashboardNumber { get; set; }
-        public string DashboardName { get; set; }
-        public string Description { get; set; }
-        public string DashboardType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Layout { get; set; }
-        public string Theme { get; set; }
-        public string RefreshInterval { get; set; }
-        public string DataSources { get; set; }
+        public required string DashboardNumber { get; set; }
+        public required string DashboardName { get; set; }
+        public required string Description { get; set; }
+        public required string DashboardType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Layout { get; set; }
+        public required string Theme { get; set; }
+        public required string RefreshInterval { get; set; }
+        public required string DataSources { get; set; }
         public int WidgetCount { get; set; }
-        public string UserAccess { get; set; }
-        public string Permissions { get; set; }
-        public string FilterOptions { get; set; }
-        public string DrillDownCapability { get; set; }
-        public string ExportFormats { get; set; }
-        public string ScheduledReports { get; set; }
+        public required string UserAccess { get; set; }
+        public required string Permissions { get; set; }
+        public required string FilterOptions { get; set; }
+        public required string DrillDownCapability { get; set; }
+        public required string ExportFormats { get; set; }
+        public required string ScheduledReports { get; set; }
         public int AlertsConfigured { get; set; }
-        public string KPIMetrics { get; set; }
-        public string VisualizationTypes { get; set; }
-        public string InteractiveFeatures { get; set; }
+        public required string KPIMetrics { get; set; }
+        public required string VisualizationTypes { get; set; }
+        public required string InteractiveFeatures { get; set; }
         public bool MobileOptimized { get; set; }
         public bool ResponsiveDesign { get; set; }
         public bool AccessibilityCompliant { get; set; }
-        public string SecurityLevel { get; set; }
-        public string AuditTrail { get; set; }
-        public string PerformanceMetrics { get; set; }
-        public string BusinessValue { get; set; }
-        public string UsageStatistics { get; set; }
-        public string CreatedBy { get; set; }
+        public required string SecurityLevel { get; set; }
+        public required string AuditTrail { get; set; }
+        public required string PerformanceMetrics { get; set; }
+        public required string BusinessValue { get; set; }
+        public required string UsageStatistics { get; set; }
+        public required string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -439,35 +439,35 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ReportNumber { get; set; }
-        public string ReportName { get; set; }
-        public string Description { get; set; }
-        public string ReportType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string ReportPeriod { get; set; }
-        public string DataSources { get; set; }
+        public required string ReportNumber { get; set; }
+        public required string ReportName { get; set; }
+        public required string Description { get; set; }
+        public required string ReportType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string DataSources { get; set; }
         public int PageCount { get; set; }
         public int ChartCount { get; set; }
         public int TableCount { get; set; }
         public int KPICount { get; set; }
-        public string ExecutiveSummary { get; set; }
-        public string KeyFindings { get; set; }
-        public string Recommendations { get; set; }
-        public string DataQuality { get; set; }
-        public string AnalysisMethodology { get; set; }
-        public string Visualizations { get; set; }
-        public string Recipients { get; set; }
-        public string DistributionMethod { get; set; }
-        public string SecurityClassification { get; set; }
-        public string RetentionPeriod { get; set; }
-        public string ComplianceStandards { get; set; }
-        public string AuditTrail { get; set; }
-        public string BusinessImpact { get; set; }
-        public string ActionItems { get; set; }
+        public required string ExecutiveSummary { get; set; }
+        public required string KeyFindings { get; set; }
+        public required string Recommendations { get; set; }
+        public required string DataQuality { get; set; }
+        public required string AnalysisMethodology { get; set; }
+        public required string Visualizations { get; set; }
+        public required string Recipients { get; set; }
+        public required string DistributionMethod { get; set; }
+        public required string SecurityClassification { get; set; }
+        public required string RetentionPeriod { get; set; }
+        public required string ComplianceStandards { get; set; }
+        public required string AuditTrail { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string ActionItems { get; set; }
         public bool FollowUpRequired { get; set; }
         public DateTime NextReviewDate { get; set; }
-        public string GeneratedBy { get; set; }
+        public required string GeneratedBy { get; set; }
         public DateTime? GeneratedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -497,19 +497,19 @@ namespace AttendancePlatform.Api.Services
     public class BIInsightDto
     {
         public Guid TenantId { get; set; }
-        public string InsightType { get; set; }
-        public string InsightTitle { get; set; }
-        public string InsightDescription { get; set; }
+        public required string InsightType { get; set; }
+        public required string InsightTitle { get; set; }
+        public required string InsightDescription { get; set; }
         public double Confidence { get; set; }
-        public string BusinessImpact { get; set; }
-        public string RecommendedActions { get; set; }
-        public string DataSources { get; set; }
-        public string AnalysisMethod { get; set; }
-        public string KeyMetrics { get; set; }
-        public string RiskFactors { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string RecommendedActions { get; set; }
+        public required string DataSources { get; set; }
+        public required string AnalysisMethod { get; set; }
+        public required string KeyMetrics { get; set; }
+        public required string RiskFactors { get; set; }
         public double ExpectedROI { get; set; }
-        public string ImplementationEffort { get; set; }
-        public string TimeToValue { get; set; }
+        public required string ImplementationEffort { get; set; }
+        public required string TimeToValue { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 

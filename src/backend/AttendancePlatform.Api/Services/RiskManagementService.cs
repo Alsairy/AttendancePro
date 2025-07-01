@@ -385,12 +385,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AssessmentNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string AssessmentType { get; set; }
-        public string Status { get; set; }
-        public string AssessorName { get; set; }
+        public required string AssessmentNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string AssessmentType { get; set; }
+        public required string Status { get; set; }
+        public required string AssessorName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int RisksIdentified { get; set; }
@@ -404,17 +404,17 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RiskId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
+        public required string RiskId { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
         public int Probability { get; set; }
         public int Impact { get; set; }
         public int RiskScore { get; set; }
-        public string RiskLevel { get; set; }
-        public string Status { get; set; }
+        public required string RiskLevel { get; set; }
+        public required string Status { get; set; }
         public Guid OwnerId { get; set; }
-        public string OwnerName { get; set; }
+        public required string OwnerName { get; set; }
         public DateTime IdentifiedDate { get; set; }
         public DateTime LastReviewDate { get; set; }
         public DateTime NextReviewDate { get; set; }
@@ -425,14 +425,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid RiskId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Strategy { get; set; }
-        public List<string> Actions { get; set; }
-        public string ResponsibleParty { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Strategy { get; set; }
+        public required List<string> Actions { get; set; }
+        public required string ResponsibleParty { get; set; }
         public DateTime TargetDate { get; set; }
         public decimal Budget { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public double Progress { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -441,18 +441,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string IncidentNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public required string IncidentNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
         public Guid RiskId { get; set; }
-        public string RiskTitle { get; set; }
-        public string Severity { get; set; }
-        public string Status { get; set; }
+        public required string RiskTitle { get; set; }
+        public required string Severity { get; set; }
+        public required string Status { get; set; }
         public DateTime OccurredAt { get; set; }
         public DateTime DetectedAt { get; set; }
         public DateTime? ResolvedAt { get; set; }
-        public string ImpactAssessment { get; set; }
-        public string LessonsLearned { get; set; }
+        public required string ImpactAssessment { get; set; }
+        public required string LessonsLearned { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -468,7 +468,7 @@ namespace AttendancePlatform.Api.Services
         public int OverdueRisks { get; set; }
         public int RisksWithMitigation { get; set; }
         public double AverageRiskScore { get; set; }
-        public string RiskTrend { get; set; }
+        public required string RiskTrend { get; set; }
         public int IncidentsThisMonth { get; set; }
         public double MitigationEffectiveness { get; set; }
         public double RiskAppetiteUtilization { get; set; }
@@ -486,8 +486,8 @@ namespace AttendancePlatform.Api.Services
     public class RiskCategoryDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int RiskCount { get; set; }
         public bool IsActive { get; set; }
     }
@@ -495,7 +495,7 @@ namespace AttendancePlatform.Api.Services
     public class RiskReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public int TotalRisks { get; set; }
         public int NewRisks { get; set; }
         public int ClosedRisks { get; set; }
@@ -511,10 +511,10 @@ namespace AttendancePlatform.Api.Services
     public class RiskTrendAnalysisDto
     {
         public Guid TenantId { get; set; }
-        public string AnalysisPeriod { get; set; }
-        public string RiskTrend { get; set; }
+        public required string AnalysisPeriod { get; set; }
+        public required string RiskTrend { get; set; }
         public Dictionary<string, int> TrendData { get; set; }
-        public string IncidentTrend { get; set; }
+        public required string IncidentTrend { get; set; }
         public Dictionary<string, int> IncidentTrendData { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
@@ -529,7 +529,7 @@ namespace AttendancePlatform.Api.Services
         public int OverdueRisks { get; set; }
         public int NewRisksThisMonth { get; set; }
         public int ClosedRisksThisMonth { get; set; }
-        public string RiskTrend { get; set; }
+        public required string RiskTrend { get; set; }
         public double AverageRiskScore { get; set; }
         public double MitigationEffectiveness { get; set; }
         public int UpcomingReviews { get; set; }

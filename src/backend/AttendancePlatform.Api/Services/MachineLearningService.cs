@@ -366,26 +366,26 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ModelNumber { get; set; }
-        public string ModelName { get; set; }
-        public string Description { get; set; }
-        public string ModelType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Algorithm { get; set; }
-        public string Framework { get; set; }
-        public string Version { get; set; }
+        public required string ModelNumber { get; set; }
+        public required string ModelName { get; set; }
+        public required string Description { get; set; }
+        public required string ModelType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Algorithm { get; set; }
+        public required string Framework { get; set; }
+        public required string Version { get; set; }
         public double Accuracy { get; set; }
         public double Precision { get; set; }
         public double Recall { get; set; }
         public double F1Score { get; set; }
-        public string TrainingDataSize { get; set; }
-        public string ValidationDataSize { get; set; }
-        public string TestDataSize { get; set; }
+        public required string TrainingDataSize { get; set; }
+        public required string ValidationDataSize { get; set; }
+        public required string TestDataSize { get; set; }
         public DateTime? LastTraining { get; set; }
         public DateTime? NextTraining { get; set; }
         public int PredictionsGenerated { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -394,24 +394,24 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ExperimentNumber { get; set; }
-        public string ExperimentName { get; set; }
-        public string Description { get; set; }
-        public string ExperimentType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Hypothesis { get; set; }
-        public string Methodology { get; set; }
-        public string DatasetUsed { get; set; }
+        public required string ExperimentNumber { get; set; }
+        public required string ExperimentName { get; set; }
+        public required string Description { get; set; }
+        public required string ExperimentType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Hypothesis { get; set; }
+        public required string Methodology { get; set; }
+        public required string DatasetUsed { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public double Duration { get; set; }
         public double ResultsAccuracy { get; set; }
         public double ResultsPrecision { get; set; }
         public double ResultsRecall { get; set; }
-        public string Conclusions { get; set; }
-        public string Recommendations { get; set; }
-        public string Owner { get; set; }
+        public required string Conclusions { get; set; }
+        public required string Recommendations { get; set; }
+        public required string Owner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -429,7 +429,7 @@ namespace AttendancePlatform.Api.Services
         public int RunningExperiments { get; set; }
         public int FailedExperiments { get; set; }
         public double ExperimentSuccessRate { get; set; }
-        public string DataProcessed { get; set; }
+        public required string DataProcessed { get; set; }
         public double ComputeHoursUsed { get; set; }
         public decimal CostSavings { get; set; }
         public double BusinessValue { get; set; }
@@ -441,15 +441,15 @@ namespace AttendancePlatform.Api.Services
     public class MlReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalModels { get; set; }
         public int ModelsDeployed { get; set; }
         public int ModelsRetrained { get; set; }
         public double ModelAccuracy { get; set; }
         public int ExperimentsCompleted { get; set; }
         public double ExperimentSuccessRate { get; set; }
-        public string DataProcessed { get; set; }
+        public required string DataProcessed { get; set; }
         public double ComputeHoursUsed { get; set; }
         public decimal CostSavings { get; set; }
         public double ROI { get; set; }
@@ -463,21 +463,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string DatasetNumber { get; set; }
-        public string DatasetName { get; set; }
-        public string Description { get; set; }
-        public string DatasetType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string DataSource { get; set; }
+        public required string DatasetNumber { get; set; }
+        public required string DatasetName { get; set; }
+        public required string Description { get; set; }
+        public required string DatasetType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string DataSource { get; set; }
         public int RecordCount { get; set; }
         public int FeatureCount { get; set; }
-        public string DataSize { get; set; }
+        public required string DataSize { get; set; }
         public double DataQuality { get; set; }
         public DateTime? LastUpdated { get; set; }
-        public string UpdateFrequency { get; set; }
-        public string Owner { get; set; }
-        public string AccessLevel { get; set; }
+        public required string UpdateFrequency { get; set; }
+        public required string Owner { get; set; }
+        public required string AccessLevel { get; set; }
         public int UsageCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -487,21 +487,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PipelineNumber { get; set; }
-        public string PipelineName { get; set; }
-        public string Description { get; set; }
-        public string PipelineType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Steps { get; set; }
+        public required string PipelineNumber { get; set; }
+        public required string PipelineName { get; set; }
+        public required string Description { get; set; }
+        public required string PipelineType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Steps { get; set; }
         public int StepCount { get; set; }
         public DateTime? LastRun { get; set; }
         public DateTime? NextRun { get; set; }
         public int RunCount { get; set; }
         public double SuccessRate { get; set; }
         public double AverageDuration { get; set; }
-        public string Owner { get; set; }
-        public string ScheduleType { get; set; }
+        public required string Owner { get; set; }
+        public required string ScheduleType { get; set; }
         public bool IsAutomated { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

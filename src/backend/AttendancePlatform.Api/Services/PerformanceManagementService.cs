@@ -76,6 +76,7 @@ namespace AttendancePlatform.Api.Services
                         ReviewDate = DateTime.UtcNow.AddDays(-30),
                         ReviewerId = Guid.NewGuid(),
                         ReviewerName = "Manager Smith",
+                        Comments = "Excellent performance throughout the review period. Consistently meets and exceeds expectations.",
                         CreatedAt = DateTime.UtcNow.AddDays(-45)
                     });
                 }
@@ -316,22 +317,28 @@ namespace AttendancePlatform.Api.Services
                     Id = Guid.NewGuid(),
                     EmployeeId = employeeId,
                     SkillName = "Leadership",
+                    Category = "Soft Skills",
                     CurrentLevel = 4,
                     TargetLevel = 5,
                     AssessmentDate = DateTime.UtcNow.AddDays(-30),
                     AssessorName = "Senior Manager",
-                    Notes = "Strong leadership potential, needs more experience"
+                    Notes = "Strong leadership potential, needs more experience",
+                    Score = 4.0,
+                    Status = "Completed"
                 },
                 new PerformanceSkillAssessmentDto
                 {
                     Id = Guid.NewGuid(),
                     EmployeeId = employeeId,
                     SkillName = "Technical Skills",
+                    Category = "Technical Skills",
                     CurrentLevel = 5,
                     TargetLevel = 5,
                     AssessmentDate = DateTime.UtcNow.AddDays(-45),
                     AssessorName = "Technical Lead",
-                    Notes = "Excellent technical competency"
+                    Notes = "Excellent technical competency",
+                    Score = 5.0,
+                    Status = "Completed"
                 }
             };
         }
@@ -406,14 +413,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
-        public string ReviewPeriod { get; set; }
+        public required string EmployeeName { get; set; }
+        public required string ReviewPeriod { get; set; }
         public double OverallRating { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime ReviewDate { get; set; }
         public Guid ReviewerId { get; set; }
-        public string ReviewerName { get; set; }
-        public string Comments { get; set; }
+        public required string ReviewerName { get; set; }
+        public required string Comments { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -422,11 +429,11 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
         public double TargetValue { get; set; }
         public double CurrentValue { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -435,12 +442,12 @@ namespace AttendancePlatform.Api.Services
     public class PerformanceManagementMetricDto
     {
         public Guid EmployeeId { get; set; }
-        public string MetricName { get; set; }
+        public required string MetricName { get; set; }
         public double Value { get; set; }
         public double Target { get; set; }
-        public string Unit { get; set; }
+        public required string Unit { get; set; }
         public DateTime Date { get; set; }
-        public string Category { get; set; }
+        public required string Category { get; set; }
     }
 
     public class PerformanceAnalyticsDto
@@ -451,8 +458,8 @@ namespace AttendancePlatform.Api.Services
         public int HighPerformers { get; set; }
         public int LowPerformers { get; set; }
         public double GoalCompletionRate { get; set; }
-        public string PerformanceTrend { get; set; }
-        public string TopPerformingDepartment { get; set; }
+        public required string PerformanceTrend { get; set; }
+        public required string TopPerformingDepartment { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
@@ -460,10 +467,10 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public string FeedbackType { get; set; }
-        public string Content { get; set; }
+        public required string FeedbackType { get; set; }
+        public required string Content { get; set; }
         public Guid ProviderId { get; set; }
-        public string ProviderName { get; set; }
+        public required string ProviderName { get; set; }
         public bool IsAnonymous { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -486,24 +493,24 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public string SkillName { get; set; }
+        public required string SkillName { get; set; }
         public int CurrentLevel { get; set; }
         public int TargetLevel { get; set; }
         public DateTime AssessmentDate { get; set; }
-        public string AssessorName { get; set; }
-        public string Notes { get; set; }
+        public required string AssessorName { get; set; }
+        public required string Notes { get; set; }
     }
 
     public class CareerDevelopmentPlanDto
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public string CurrentRole { get; set; }
-        public string TargetRole { get; set; }
-        public List<string> DevelopmentGoals { get; set; }
-        public List<string> SkillGaps { get; set; }
-        public string Timeline { get; set; }
-        public string Status { get; set; }
+        public required string CurrentRole { get; set; }
+        public required string TargetRole { get; set; }
+        public required List<string> DevelopmentGoals { get; set; }
+        public required List<string> SkillGaps { get; set; }
+        public required string Timeline { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -512,14 +519,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public string SkillName { get; set; }
-        public string Category { get; set; }
+        public required string SkillName { get; set; }
+        public required string Category { get; set; }
         public int CurrentLevel { get; set; }
         public int TargetLevel { get; set; }
         public DateTime AssessmentDate { get; set; }
-        public string AssessorName { get; set; }
-        public string Notes { get; set; }
+        public required string AssessorName { get; set; }
+        public required string Notes { get; set; }
         public double Score { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
     }
 }

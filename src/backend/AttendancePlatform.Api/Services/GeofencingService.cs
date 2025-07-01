@@ -63,6 +63,7 @@ namespace AttendancePlatform.Api.Services
                     Id = Guid.NewGuid(), 
                     TenantId = tenantId,
                     Name = "Main Office", 
+                    Description = "Main office location",
                     Latitude = 24.7136, 
                     Longitude = 46.6753, 
                     Radius = 100,
@@ -75,6 +76,7 @@ namespace AttendancePlatform.Api.Services
                     Id = Guid.NewGuid(), 
                     TenantId = tenantId,
                     Name = "Branch Office", 
+                    Description = "Branch office location",
                     Latitude = 24.7236, 
                     Longitude = 46.6853, 
                     Radius = 75,
@@ -348,12 +350,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public double Radius { get; set; }
-        public string Type { get; set; }
+        public required string Type { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -363,15 +365,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
+        public required string EmployeeName { get; set; }
         public Guid GeofenceId { get; set; }
-        public string GeofenceName { get; set; }
-        public string ViolationType { get; set; }
+        public required string GeofenceName { get; set; }
+        public required string ViolationType { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public double Distance { get; set; }
         public DateTime OccurredAt { get; set; }
-        public string Severity { get; set; }
+        public required string Severity { get; set; }
     }
 
     public class GeofenceAnalyticsDto
@@ -381,7 +383,7 @@ namespace AttendancePlatform.Api.Services
         public int ActiveGeofences { get; set; }
         public int TotalViolations { get; set; }
         public double ComplianceRate { get; set; }
-        public string MostViolatedGeofence { get; set; }
+        public required string MostViolatedGeofence { get; set; }
         public double AverageAccuracy { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
@@ -393,7 +395,7 @@ namespace AttendancePlatform.Api.Services
         public double Longitude { get; set; }
         public double Accuracy { get; set; }
         public DateTime Timestamp { get; set; }
-        public string Source { get; set; }
+        public required string Source { get; set; }
     }
 
     public class GeofenceAlertConfigDto
@@ -409,10 +411,10 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid GeofenceId { get; set; }
-        public string GeofenceName { get; set; }
-        public string AlertType { get; set; }
-        public string Message { get; set; }
-        public string Severity { get; set; }
+        public required string GeofenceName { get; set; }
+        public required string AlertType { get; set; }
+        public required string Message { get; set; }
+        public required string Severity { get; set; }
         public DateTime TriggeredAt { get; set; }
         public bool IsActive { get; set; }
     }
@@ -440,9 +442,9 @@ namespace AttendancePlatform.Api.Services
 
     public class NearbyLocationDto
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public double Distance { get; set; }
-        public string Type { get; set; }
+        public required string Type { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
     }
@@ -450,15 +452,15 @@ namespace AttendancePlatform.Api.Services
     public class GeofenceUsageReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public int TotalGeofences { get; set; }
         public int ActiveGeofences { get; set; }
         public int TotalCheckIns { get; set; }
         public int ValidCheckIns { get; set; }
         public int InvalidCheckIns { get; set; }
         public double AccuracyRate { get; set; }
-        public string MostUsedGeofence { get; set; }
-        public string LeastUsedGeofence { get; set; }
+        public required string MostUsedGeofence { get; set; }
+        public required string LeastUsedGeofence { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 }

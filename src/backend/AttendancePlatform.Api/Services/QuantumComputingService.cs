@@ -374,14 +374,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string JobNumber { get; set; }
-        public string JobName { get; set; }
-        public string Description { get; set; }
-        public string JobType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
-        public string QuantumBackend { get; set; }
+        public required string JobNumber { get; set; }
+        public required string JobName { get; set; }
+        public required string Description { get; set; }
+        public required string JobType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
+        public required string QuantumBackend { get; set; }
         public int QubitCount { get; set; }
         public int CircuitDepth { get; set; }
         public int GateCount { get; set; }
@@ -390,10 +390,10 @@ namespace AttendancePlatform.Api.Services
         public int Shots { get; set; }
         public double Fidelity { get; set; }
         public double ErrorRate { get; set; }
-        public string SubmittedBy { get; set; }
+        public required string SubmittedBy { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public string Results { get; set; }
+        public required string Results { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -402,24 +402,24 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string CircuitNumber { get; set; }
-        public string CircuitName { get; set; }
-        public string Description { get; set; }
-        public string CircuitType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string CircuitNumber { get; set; }
+        public required string CircuitName { get; set; }
+        public required string Description { get; set; }
+        public required string CircuitType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public int QubitCount { get; set; }
         public int CircuitDepth { get; set; }
         public int GateCount { get; set; }
         public int ParameterCount { get; set; }
-        public string EntanglementStructure { get; set; }
+        public required string EntanglementStructure { get; set; }
         public int QuantumVolume { get; set; }
-        public string CircuitCode { get; set; }
+        public required string CircuitCode { get; set; }
         public double Accuracy { get; set; }
         public double TrainingTime { get; set; }
         public double ValidationScore { get; set; }
-        public string Author { get; set; }
-        public string Version { get; set; }
+        public required string Author { get; set; }
+        public required string Version { get; set; }
         public bool IsOptimized { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -451,8 +451,8 @@ namespace AttendancePlatform.Api.Services
     public class QuantumReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalJobs { get; set; }
         public int JobsCompleted { get; set; }
         public double JobsSuccessRate { get; set; }
@@ -474,24 +474,24 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AlgorithmNumber { get; set; }
-        public string AlgorithmName { get; set; }
-        public string Description { get; set; }
-        public string AlgorithmType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string ComplexityClass { get; set; }
-        public string QuantumAdvantage { get; set; }
+        public required string AlgorithmNumber { get; set; }
+        public required string AlgorithmName { get; set; }
+        public required string Description { get; set; }
+        public required string AlgorithmType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string ComplexityClass { get; set; }
+        public required string QuantumAdvantage { get; set; }
         public int QubitRequirement { get; set; }
-        public string GateComplexity { get; set; }
-        public string TimeComplexity { get; set; }
-        public string SpaceComplexity { get; set; }
+        public required string GateComplexity { get; set; }
+        public required string TimeComplexity { get; set; }
+        public required string SpaceComplexity { get; set; }
         public double Accuracy { get; set; }
         public double PerformanceGain { get; set; }
-        public string Author { get; set; }
-        public string Version { get; set; }
+        public required string Author { get; set; }
+        public required string Version { get; set; }
         public bool IsPatented { get; set; }
-        public string PublicationStatus { get; set; }
+        public required string PublicationStatus { get; set; }
         public int UsageCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -501,24 +501,24 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string SimulationNumber { get; set; }
-        public string SimulationName { get; set; }
-        public string Description { get; set; }
-        public string SimulationType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string SimulatorBackend { get; set; }
+        public required string SimulationNumber { get; set; }
+        public required string SimulationName { get; set; }
+        public required string Description { get; set; }
+        public required string SimulationType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string SimulatorBackend { get; set; }
         public int QubitCount { get; set; }
         public int SimulationDepth { get; set; }
         public int Shots { get; set; }
-        public string NoiseModel { get; set; }
+        public required string NoiseModel { get; set; }
         public double ExecutionTime { get; set; }
         public double MemoryUsage { get; set; }
         public double CPUHours { get; set; }
         public double Accuracy { get; set; }
         public double ConvergenceRate { get; set; }
-        public string Results { get; set; }
-        public string Owner { get; set; }
+        public required string Results { get; set; }
+        public required string Owner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

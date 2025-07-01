@@ -330,24 +330,42 @@ namespace AttendancePlatform.Api.Services
                 new FacilityDto
                 {
                     Id = Guid.NewGuid(),
+                    TenantId = Guid.NewGuid(),
                     Name = "Small Meeting Room A",
+                    FacilityCode = "MRA-001",
+                    Description = "Small meeting room with modern amenities for team meetings",
                     FacilityType = "Meeting Room",
                     Capacity = 8,
+                    Area = 25.5,
                     Location = "Building A, Floor 2",
-                    BookingRate = 75.00m,
+                    Status = "Available",
                     IsAvailable = true,
-                    Amenities = new List<string> { "WiFi", "Whiteboard", "Conference Phone" }
+                    Amenities = new List<string> { "Projector", "Whiteboard", "Video Conference" },
+                    OperatingHours = "8:00 AM - 6:00 PM",
+                    ContactPerson = "Facility Manager",
+                    ContactPhone = "+1-555-0123",
+                    BookingRate = 75.00m,
+                    CreatedAt = DateTime.UtcNow
                 },
                 new FacilityDto
                 {
                     Id = Guid.NewGuid(),
+                    TenantId = Guid.NewGuid(),
                     Name = "Training Room C",
+                    FacilityCode = "TRC-001",
+                    Description = "Large training room with modern presentation equipment",
                     FacilityType = "Training Room",
                     Capacity = 20,
+                    Area = 45.0,
                     Location = "Building B, Floor 1",
-                    BookingRate = 125.00m,
+                    Status = "Available",
                     IsAvailable = true,
-                    Amenities = new List<string> { "Projector", "WiFi", "Flipchart", "Coffee Station" }
+                    Amenities = new List<string> { "Projector", "WiFi", "Flipchart", "Coffee Station" },
+                    OperatingHours = "8:00 AM - 8:00 PM",
+                    ContactPerson = "Training Coordinator",
+                    ContactPhone = "+1-555-0456",
+                    BookingRate = 125.00m,
+                    CreatedAt = DateTime.UtcNow
                 }
             };
         }
@@ -374,10 +392,10 @@ namespace AttendancePlatform.Api.Services
                 },
                 FacilityTypeBreakdown = new Dictionary<string, FacilityTypeStatsDto>
                 {
-                    { "Conference Rooms", new FacilityTypeStatsDto { Count = 8, Bookings = 85, Revenue = 12750.00m, UtilizationRate = 72.5 } },
-                    { "Training Rooms", new FacilityTypeStatsDto { Count = 6, Bookings = 65, Revenue = 9875.00m, UtilizationRate = 68.3 } },
-                    { "Meeting Rooms", new FacilityTypeStatsDto { Count = 10, Bookings = 35, Revenue = 6125.00m, UtilizationRate = 45.2 } },
-                    { "Other", new FacilityTypeStatsDto { Count = 1, Bookings = 0, Revenue = 0.00m, UtilizationRate = 0.0 } }
+                    { "Conference Rooms", new FacilityTypeStatsDto { Count = 8, Bookings = 85, Revenue = 12750.00m, UtilizationRate = 72.5, Status = "Active", Description = "Conference room facilities" } },
+                    { "Training Rooms", new FacilityTypeStatsDto { Count = 6, Bookings = 65, Revenue = 9875.00m, UtilizationRate = 68.3, Status = "Active", Description = "Training room facilities" } },
+                    { "Meeting Rooms", new FacilityTypeStatsDto { Count = 10, Bookings = 35, Revenue = 6125.00m, UtilizationRate = 45.2, Status = "Active", Description = "Meeting room facilities" } },
+                    { "Other", new FacilityTypeStatsDto { Count = 1, Bookings = 0, Revenue = 0.00m, UtilizationRate = 0.0, Status = "Inactive", Description = "Other facility types" } }
                 },
                 MaintenanceRequests = 15,
                 CompletedMaintenance = 12,
@@ -588,16 +606,23 @@ namespace AttendancePlatform.Api.Services
                 AlarmSystemStatus = "Armed",
                 LastSecurityCheck = DateTime.UtcNow.AddHours(-2),
                 ActiveAccessCards = 25,
-                SecurityIncidents = new List<SecurityIncidentDto>
+                SecurityIncidents = new List<SecurityManagementIncidentDto>
                 {
-                    new SecurityIncidentDto
+                    new SecurityManagementIncidentDto
                     {
-                        IncidentId = Guid.NewGuid(),
-                        IncidentType = "Unauthorized Access Attempt",
-                        Severity = "Medium",
+                        Id = Guid.NewGuid(),
+                        TenantId = Guid.NewGuid(),
+                        IncidentNumber = "INC-20241227-001",
+                        Title = "Unauthorized Access Attempt",
                         Description = "Failed card swipe attempt at main entrance",
-                        Timestamp = DateTime.UtcNow.AddHours(-6),
-                        Status = "Resolved"
+                        Severity = "Medium",
+                        Status = "Resolved",
+                        Category = "Access Control",
+                        ReportedBy = "Security System",
+                        AssignedTo = "Security Team",
+                        OccurredAt = DateTime.UtcNow.AddHours(-6),
+                        CreatedAt = DateTime.UtcNow.AddHours(-6),
+                        Resolution = "Investigated and confirmed as employee with expired access card. Card reactivated."
                     }
                 },
                 SecurityMetrics = new Dictionary<string, object>
@@ -616,19 +641,19 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string FacilityCode { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string FacilityType { get; set; }
-        public string Location { get; set; }
+        public required string FacilityCode { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string FacilityType { get; set; }
+        public required string Location { get; set; }
         public int Capacity { get; set; }
         public double Area { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public bool IsAvailable { get; set; }
-        public List<string> Amenities { get; set; }
-        public string OperatingHours { get; set; }
-        public string ContactPerson { get; set; }
-        public string ContactPhone { get; set; }
+        public required List<string> Amenities { get; set; }
+        public required string OperatingHours { get; set; }
+        public required string ContactPerson { get; set; }
+        public required string ContactPhone { get; set; }
         public decimal BookingRate { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -638,41 +663,41 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid FacilityId { get; set; }
-        public string BookingNumber { get; set; }
+        public required string BookingNumber { get; set; }
         public Guid BookedBy { get; set; }
-        public string BookerName { get; set; }
-        public string BookerEmail { get; set; }
-        public string Purpose { get; set; }
+        public required string BookerName { get; set; }
+        public required string BookerEmail { get; set; }
+        public required string Purpose { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public int AttendeeCount { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime BookingDate { get; set; }
         public decimal TotalCost { get; set; }
-        public string SpecialRequirements { get; set; }
+        public required string SpecialRequirements { get; set; }
     }
 
     public class FacilityMaintenanceDto
     {
         public Guid Id { get; set; }
         public Guid FacilityId { get; set; }
-        public string RequestNumber { get; set; }
-        public string RequestType { get; set; }
-        public string Priority { get; set; }
-        public string Description { get; set; }
+        public required string RequestNumber { get; set; }
+        public required string RequestType { get; set; }
+        public required string Priority { get; set; }
+        public required string Description { get; set; }
         public Guid RequestedBy { get; set; }
-        public string RequesterName { get; set; }
-        public string Status { get; set; }
+        public required string RequesterName { get; set; }
+        public required string Status { get; set; }
         public DateTime RequestDate { get; set; }
         public DateTime? ScheduledDate { get; set; }
         public decimal EstimatedCost { get; set; }
-        public string AssignedTechnician { get; set; }
+        public required string AssignedTechnician { get; set; }
     }
 
     public class FacilityUtilizationDto
     {
         public Guid FacilityId { get; set; }
-        public string Period { get; set; }
+        public required string Period { get; set; }
         public int TotalAvailableHours { get; set; }
         public int TotalBookedHours { get; set; }
         public double UtilizationRate { get; set; }
@@ -687,7 +712,7 @@ namespace AttendancePlatform.Api.Services
     public class FacilityReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public int TotalFacilities { get; set; }
         public int ActiveFacilities { get; set; }
         public int InactiveFacilities { get; set; }
@@ -711,6 +736,8 @@ namespace AttendancePlatform.Api.Services
         public int Bookings { get; set; }
         public decimal Revenue { get; set; }
         public double UtilizationRate { get; set; }
+        public required string Status { get; set; }
+        public required string Description { get; set; }
     }
 
     public class FacilityAnalyticsDto
@@ -732,13 +759,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid FacilityId { get; set; }
-        public string ResourceType { get; set; }
-        public string ResourceName { get; set; }
-        public string Description { get; set; }
+        public required string ResourceType { get; set; }
+        public required string ResourceName { get; set; }
+        public required string Description { get; set; }
         public int Quantity { get; set; }
-        public string Status { get; set; }
-        public string Location { get; set; }
-        public string SerialNumber { get; set; }
+        public required string Status { get; set; }
+        public required string Location { get; set; }
+        public required string SerialNumber { get; set; }
         public DateTime PurchaseDate { get; set; }
         public DateTime WarrantyExpiry { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -748,28 +775,28 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid FacilityId { get; set; }
-        public string RequestNumber { get; set; }
+        public required string RequestNumber { get; set; }
         public Guid RequestedBy { get; set; }
-        public string RequesterName { get; set; }
-        public string RequesterEmail { get; set; }
-        public string AccessType { get; set; }
-        public string Purpose { get; set; }
+        public required string RequesterName { get; set; }
+        public required string RequesterEmail { get; set; }
+        public required string AccessType { get; set; }
+        public required string Purpose { get; set; }
         public DateTime RequestedStartDate { get; set; }
         public DateTime RequestedEndDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime RequestDate { get; set; }
         public Guid? ApprovedBy { get; set; }
         public DateTime? ApprovalDate { get; set; }
-        public string Justification { get; set; }
+        public required string Justification { get; set; }
     }
 
     public class FacilitySecurityDto
     {
         public Guid FacilityId { get; set; }
-        public string SecurityLevel { get; set; }
-        public string AccessControlStatus { get; set; }
-        public string CameraSystemStatus { get; set; }
-        public string AlarmSystemStatus { get; set; }
+        public required string SecurityLevel { get; set; }
+        public required string AccessControlStatus { get; set; }
+        public required string CameraSystemStatus { get; set; }
+        public required string AlarmSystemStatus { get; set; }
         public DateTime LastSecurityCheck { get; set; }
         public int ActiveAccessCards { get; set; }
         public List<SecurityManagementIncidentDto> SecurityIncidents { get; set; }
@@ -780,10 +807,10 @@ namespace AttendancePlatform.Api.Services
     public class FacilitySecurityIncidentDto
     {
         public Guid IncidentId { get; set; }
-        public string IncidentType { get; set; }
-        public string Severity { get; set; }
-        public string Description { get; set; }
+        public required string IncidentType { get; set; }
+        public required string Severity { get; set; }
+        public required string Description { get; set; }
         public DateTime Timestamp { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
     }
 }

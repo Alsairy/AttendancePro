@@ -331,16 +331,16 @@ namespace AttendancePlatform.Api.Services
             await Task.CompletedTask;
             return new List<AccountDto>
             {
-                new AccountDto { Id = Guid.NewGuid(), AccountCode = "1000", Name = "Cash", Type = "Asset", Balance = 125000.00m, IsActive = true },
-                new AccountDto { Id = Guid.NewGuid(), AccountCode = "1100", Name = "Accounts Receivable", Type = "Asset", Balance = 85000.00m, IsActive = true },
-                new AccountDto { Id = Guid.NewGuid(), AccountCode = "1200", Name = "Inventory", Type = "Asset", Balance = 65000.00m, IsActive = true },
-                new AccountDto { Id = Guid.NewGuid(), AccountCode = "1500", Name = "Equipment", Type = "Asset", Balance = 185000.00m, IsActive = true },
-                new AccountDto { Id = Guid.NewGuid(), AccountCode = "2000", Name = "Accounts Payable", Type = "Liability", Balance = 45000.00m, IsActive = true },
-                new AccountDto { Id = Guid.NewGuid(), AccountCode = "2100", Name = "Accrued Expenses", Type = "Liability", Balance = 25000.00m, IsActive = true },
-                new AccountDto { Id = Guid.NewGuid(), AccountCode = "3000", Name = "Owner's Equity", Type = "Equity", Balance = 400000.00m, IsActive = true },
-                new AccountDto { Id = Guid.NewGuid(), AccountCode = "4000", Name = "Revenue", Type = "Revenue", Balance = 485000.00m, IsActive = true },
-                new AccountDto { Id = Guid.NewGuid(), AccountCode = "5000", Name = "Cost of Goods Sold", Type = "Expense", Balance = 154000.00m, IsActive = true },
-                new AccountDto { Id = Guid.NewGuid(), AccountCode = "6000", Name = "Operating Expenses", Type = "Expense", Balance = 166000.00m, IsActive = true }
+                new AccountDto { Id = Guid.NewGuid(), AccountCode = "1000", Name = "Cash", Type = "Asset", Balance = 125000.00m, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new AccountDto { Id = Guid.NewGuid(), AccountCode = "1100", Name = "Accounts Receivable", Type = "Asset", Balance = 85000.00m, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new AccountDto { Id = Guid.NewGuid(), AccountCode = "1200", Name = "Inventory", Type = "Asset", Balance = 65000.00m, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new AccountDto { Id = Guid.NewGuid(), AccountCode = "1500", Name = "Equipment", Type = "Asset", Balance = 185000.00m, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new AccountDto { Id = Guid.NewGuid(), AccountCode = "2000", Name = "Accounts Payable", Type = "Liability", Balance = 45000.00m, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new AccountDto { Id = Guid.NewGuid(), AccountCode = "2100", Name = "Accrued Expenses", Type = "Liability", Balance = 25000.00m, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new AccountDto { Id = Guid.NewGuid(), AccountCode = "3000", Name = "Owner's Equity", Type = "Equity", Balance = 400000.00m, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new AccountDto { Id = Guid.NewGuid(), AccountCode = "4000", Name = "Revenue", Type = "Revenue", Balance = 485000.00m, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new AccountDto { Id = Guid.NewGuid(), AccountCode = "5000", Name = "Cost of Goods Sold", Type = "Expense", Balance = 154000.00m, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new AccountDto { Id = Guid.NewGuid(), AccountCode = "6000", Name = "Operating Expenses", Type = "Expense", Balance = 166000.00m, IsActive = true, CreatedAt = DateTime.UtcNow }
             };
         }
 
@@ -415,14 +415,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int FiscalYear { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal AllocatedAmount { get; set; }
         public decimal SpentAmount { get; set; }
         public decimal RemainingAmount { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -432,16 +432,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ExpenseNumber { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
+        public required string ExpenseNumber { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
         public decimal Amount { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime ExpenseDate { get; set; }
-        public string Status { get; set; }
-        public string SubmittedBy { get; set; }
-        public string ApprovedBy { get; set; }
+        public required string Status { get; set; }
+        public required string SubmittedBy { get; set; }
+        public string? ApprovedBy { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -449,22 +449,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string InvoiceNumber { get; set; }
-        public string CustomerName { get; set; }
-        public string Description { get; set; }
+        public required string InvoiceNumber { get; set; }
+        public required string CustomerName { get; set; }
+        public required string Description { get; set; }
         public decimal Amount { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime InvoiceDate { get; set; }
         public DateTime DueDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
     public class FinancialManagementReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public decimal TotalRevenue { get; set; }
         public decimal TotalExpenses { get; set; }
         public decimal NetIncome { get; set; }
@@ -478,7 +478,7 @@ namespace AttendancePlatform.Api.Services
     public class CashFlowDto
     {
         public Guid TenantId { get; set; }
-        public string AnalysisPeriod { get; set; }
+        public required string AnalysisPeriod { get; set; }
         public decimal OpeningBalance { get; set; }
         public decimal TotalInflows { get; set; }
         public decimal TotalOutflows { get; set; }
@@ -494,7 +494,7 @@ namespace AttendancePlatform.Api.Services
     public class ProfitLossDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public decimal Revenue { get; set; }
         public decimal CostOfGoodsSold { get; set; }
         public decimal GrossProfit { get; set; }
@@ -532,9 +532,9 @@ namespace AttendancePlatform.Api.Services
     public class AccountDto
     {
         public Guid Id { get; set; }
-        public string AccountCode { get; set; }
-        public string Name { get; set; }
-        public string Type { get; set; }
+        public required string AccountCode { get; set; }
+        public required string Name { get; set; }
+        public required string Type { get; set; }
         public decimal Balance { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }

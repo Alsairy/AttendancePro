@@ -363,23 +363,23 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ResourceNumber { get; set; }
-        public string ResourceName { get; set; }
-        public string Description { get; set; }
-        public string ResourceType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Provider { get; set; }
-        public string Region { get; set; }
-        public string AvailabilityZone { get; set; }
-        public string InstanceType { get; set; }
-        public string OperatingSystem { get; set; }
+        public required string ResourceNumber { get; set; }
+        public required string ResourceName { get; set; }
+        public required string Description { get; set; }
+        public required string ResourceType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Provider { get; set; }
+        public required string Region { get; set; }
+        public required string AvailabilityZone { get; set; }
+        public required string InstanceType { get; set; }
+        public required string OperatingSystem { get; set; }
         public int CPUCores { get; set; }
         public int MemoryGB { get; set; }
         public int StorageGB { get; set; }
-        public string NetworkBandwidth { get; set; }
-        public string PublicIP { get; set; }
-        public string PrivateIP { get; set; }
+        public required string NetworkBandwidth { get; set; }
+        public required string PublicIP { get; set; }
+        public required string PrivateIP { get; set; }
         public decimal MonthlyCost { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -389,18 +389,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ServiceNumber { get; set; }
-        public string ServiceName { get; set; }
-        public string Description { get; set; }
-        public string ServiceType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Provider { get; set; }
-        public string ServiceTier { get; set; }
-        public string Endpoint { get; set; }
-        public string Version { get; set; }
+        public required string ServiceNumber { get; set; }
+        public required string ServiceName { get; set; }
+        public required string Description { get; set; }
+        public required string ServiceType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Provider { get; set; }
+        public required string ServiceTier { get; set; }
+        public required string Endpoint { get; set; }
+        public required string Version { get; set; }
         public DateTime? LastDeployment { get; set; }
-        public string HealthStatus { get; set; }
+        public required string HealthStatus { get; set; }
         public double Uptime { get; set; }
         public int RequestsPerMinute { get; set; }
         public double ResponseTime { get; set; }
@@ -432,8 +432,8 @@ namespace AttendancePlatform.Api.Services
     public class CloudCostReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public decimal TotalCost { get; set; }
         public decimal ComputeCost { get; set; }
         public decimal StorageCost { get; set; }
@@ -445,9 +445,9 @@ namespace AttendancePlatform.Api.Services
         public decimal ReservedInstanceSavings { get; set; }
         public decimal SpotInstanceSavings { get; set; }
         public decimal ProjectedMonthlyCost { get; set; }
-        public string CostTrend { get; set; }
-        public string TopCostDrivers { get; set; }
-        public string RecommendedActions { get; set; }
+        public required string CostTrend { get; set; }
+        public required string TopCostDrivers { get; set; }
+        public required string RecommendedActions { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
@@ -455,22 +455,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string DeploymentNumber { get; set; }
-        public string DeploymentName { get; set; }
-        public string Description { get; set; }
-        public string DeploymentType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Environment { get; set; }
-        public string Version { get; set; }
-        public string DeploymentStrategy { get; set; }
+        public required string DeploymentNumber { get; set; }
+        public required string DeploymentName { get; set; }
+        public required string Description { get; set; }
+        public required string DeploymentType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Environment { get; set; }
+        public required string Version { get; set; }
+        public required string DeploymentStrategy { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public double Duration { get; set; }
         public double SuccessRate { get; set; }
         public bool RollbackRequired { get; set; }
-        public string DeployedBy { get; set; }
-        public string ApprovedBy { get; set; }
+        public required string DeployedBy { get; set; }
+        public required string ApprovedBy { get; set; }
         public int ServicesDeployed { get; set; }
         public int ResourcesUpdated { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -481,13 +481,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string SecurityNumber { get; set; }
-        public string SecurityName { get; set; }
-        public string Description { get; set; }
-        public string SecurityType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string ComplianceFramework { get; set; }
+        public required string SecurityNumber { get; set; }
+        public required string SecurityName { get; set; }
+        public required string Description { get; set; }
+        public required string SecurityType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string ComplianceFramework { get; set; }
         public double SecurityScore { get; set; }
         public int VulnerabilitiesFound { get; set; }
         public int VulnerabilitiesResolved { get; set; }

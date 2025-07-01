@@ -552,11 +552,11 @@ namespace AttendancePlatform.Api.Services
                 BudgetUtilization = 50.0,
                 CategoryBudgets = new Dictionary<string, MaintenanceBudgetCategoryDto>
                 {
-                    { "HVAC", new MaintenanceBudgetCategoryDto { Allocated = 75000.00m, Spent = 45000.00m, Remaining = 30000.00m } },
-                    { "Electrical", new MaintenanceBudgetCategoryDto { Allocated = 50000.00m, Spent = 28000.00m, Remaining = 22000.00m } },
-                    { "Plumbing", new MaintenanceBudgetCategoryDto { Allocated = 40000.00m, Spent = 18000.00m, Remaining = 22000.00m } },
-                    { "General", new MaintenanceBudgetCategoryDto { Allocated = 60000.00m, Spent = 22000.00m, Remaining = 38000.00m } },
-                    { "Emergency", new MaintenanceBudgetCategoryDto { Allocated = 25000.00m, Spent = 12000.00m, Remaining = 13000.00m } }
+                    { "HVAC", new MaintenanceBudgetCategoryDto { Category = "HVAC", Status = "Active", Allocated = 75000.00m, Spent = 45000.00m, Remaining = 30000.00m } },
+                    { "Electrical", new MaintenanceBudgetCategoryDto { Category = "Electrical", Status = "Active", Allocated = 50000.00m, Spent = 28000.00m, Remaining = 22000.00m } },
+                    { "Plumbing", new MaintenanceBudgetCategoryDto { Category = "Plumbing", Status = "Active", Allocated = 40000.00m, Spent = 18000.00m, Remaining = 22000.00m } },
+                    { "General", new MaintenanceBudgetCategoryDto { Category = "General", Status = "Active", Allocated = 60000.00m, Spent = 22000.00m, Remaining = 38000.00m } },
+                    { "Emergency", new MaintenanceBudgetCategoryDto { Category = "Emergency", Status = "Active", Allocated = 25000.00m, Spent = 12000.00m, Remaining = 13000.00m } }
                 },
                 MonthlySpending = new Dictionary<string, decimal>
                 {
@@ -602,19 +602,19 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RequestNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string RequestType { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
+        public required string RequestNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string RequestType { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
         public Guid AssetId { get; set; }
-        public string AssetName { get; set; }
-        public string Location { get; set; }
+        public required string AssetName { get; set; }
+        public required string Location { get; set; }
         public Guid RequestedBy { get; set; }
-        public string RequesterName { get; set; }
+        public required string RequesterName { get; set; }
         public Guid AssignedTo { get; set; }
-        public string AssigneeName { get; set; }
+        public required string AssigneeName { get; set; }
         public decimal EstimatedCost { get; set; }
         public decimal ActualCost { get; set; }
         public int EstimatedDuration { get; set; }
@@ -629,20 +629,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ScheduleNumber { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string ScheduleNumber { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public Guid AssetId { get; set; }
-        public string AssetName { get; set; }
-        public string MaintenanceType { get; set; }
-        public string Frequency { get; set; }
+        public required string AssetName { get; set; }
+        public required string MaintenanceType { get; set; }
+        public required string Frequency { get; set; }
         public int FrequencyDays { get; set; }
         public DateTime NextDueDate { get; set; }
         public DateTime? LastCompletedDate { get; set; }
         public int EstimatedDuration { get; set; }
         public decimal EstimatedCost { get; set; }
-        public string AssignedTechnician { get; set; }
-        public string Status { get; set; }
+        public required string AssignedTechnician { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -651,17 +651,17 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string WorkOrderNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string WorkOrderType { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
+        public required string WorkOrderNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string WorkOrderType { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
         public Guid AssetId { get; set; }
-        public string AssetName { get; set; }
-        public string Location { get; set; }
+        public required string AssetName { get; set; }
+        public required string Location { get; set; }
         public Guid AssignedTo { get; set; }
-        public string AssigneeName { get; set; }
+        public required string AssigneeName { get; set; }
         public decimal EstimatedCost { get; set; }
         public decimal ActualCost { get; set; }
         public double EstimatedDuration { get; set; }
@@ -678,7 +678,7 @@ namespace AttendancePlatform.Api.Services
 
     public class WorkOrderCompletionDto
     {
-        public string CompletionNotes { get; set; }
+        public required string CompletionNotes { get; set; }
         public List<string> PartsUsed { get; set; }
         public double LaborHours { get; set; }
         public decimal ActualCost { get; set; }
@@ -830,6 +830,8 @@ namespace AttendancePlatform.Api.Services
 
     public class MaintenanceBudgetCategoryDto
     {
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public decimal Allocated { get; set; }
         public decimal Spent { get; set; }
         public decimal Remaining { get; set; }

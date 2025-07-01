@@ -603,13 +603,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Type { get; set; }
-        public string ChartType { get; set; }
-        public string DataSource { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Type { get; set; }
+        public required string ChartType { get; set; }
+        public required string DataSource { get; set; }
         public int RefreshInterval { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -617,9 +617,9 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ExportType { get; set; }
-        public string Format { get; set; }
-        public string Status { get; set; }
+        public required string ExportType { get; set; }
+        public required string Format { get; set; }
+        public required string Status { get; set; }
         public DateTime RequestedAt { get; set; }
         public long EstimatedSize { get; set; }
         public int RecordCount { get; set; }
@@ -628,8 +628,8 @@ namespace AttendancePlatform.Api.Services
     public class DataExportRequestDto
     {
         public Guid TenantId { get; set; }
-        public string ExportType { get; set; }
-        public string Format { get; set; }
+        public required string ExportType { get; set; }
+        public required string Format { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
     }
@@ -638,9 +638,9 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ImportType { get; set; }
-        public string SourceFormat { get; set; }
-        public string Status { get; set; }
+        public required string ImportType { get; set; }
+        public required string SourceFormat { get; set; }
+        public required string Status { get; set; }
         public DateTime RequestedAt { get; set; }
         public long FileSize { get; set; }
         public int EstimatedRecords { get; set; }
@@ -649,8 +649,8 @@ namespace AttendancePlatform.Api.Services
     public class DataImportRequestDto
     {
         public Guid TenantId { get; set; }
-        public string ImportType { get; set; }
-        public string SourceFormat { get; set; }
+        public required string ImportType { get; set; }
+        public required string SourceFormat { get; set; }
         public long FileSize { get; set; }
     }
 
@@ -669,11 +669,11 @@ namespace AttendancePlatform.Api.Services
 
     public class DataQualityIssueDto
     {
-        public string Category { get; set; }
-        public string Description { get; set; }
-        public string Severity { get; set; }
+        public required string Category { get; set; }
+        public required string Description { get; set; }
+        public required string Severity { get; set; }
         public int AffectedRecords { get; set; }
-        public string RecommendedAction { get; set; }
+        public required string RecommendedAction { get; set; }
     }
 
     public class DataGovernanceDto
@@ -690,8 +690,8 @@ namespace AttendancePlatform.Api.Services
 
     public class DataLineageDto
     {
-        public string DatasetId { get; set; }
-        public string DatasetName { get; set; }
+        public required string DatasetId { get; set; }
+        public required string DatasetName { get; set; }
         public List<string> SourceSystems { get; set; }
         public List<DataTransformationDto> TransformationSteps { get; set; }
         public List<string> DestinationSystems { get; set; }
@@ -701,8 +701,8 @@ namespace AttendancePlatform.Api.Services
     public class DataTransformationDto
     {
         public int Step { get; set; }
-        public string Operation { get; set; }
-        public string Description { get; set; }
+        public required string Operation { get; set; }
+        public required string Description { get; set; }
         public DateTime Timestamp { get; set; }
     }
 
@@ -717,14 +717,14 @@ namespace AttendancePlatform.Api.Services
 
     public class DatasetInfoDto
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Owner { get; set; }
+        public required string Id { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Owner { get; set; }
         public DateTime LastUpdated { get; set; }
         public long RecordCount { get; set; }
-        public string DataSize { get; set; }
+        public required string DataSize { get; set; }
     }
 
     public class DataPrivacyReportDto
@@ -754,12 +754,12 @@ namespace AttendancePlatform.Api.Services
 
     public class DataRetentionRuleDto
     {
-        public string DataType { get; set; }
+        public required string DataType { get; set; }
         public int RetentionPeriod { get; set; }
-        public string RetentionUnit { get; set; }
+        public required string RetentionUnit { get; set; }
         public int ArchiveAfter { get; set; }
         public int DeleteAfter { get; set; }
-        public string LegalBasis { get; set; }
+        public required string LegalBasis { get; set; }
     }
 
     public class DataBackupReportDto

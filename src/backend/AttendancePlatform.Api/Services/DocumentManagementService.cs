@@ -279,11 +279,11 @@ namespace AttendancePlatform.Api.Services
             await Task.CompletedTask;
             return new List<DocumentCategoryDto>
             {
-                new DocumentCategoryDto { Id = Guid.NewGuid(), Name = "HR Policies", Description = "Human resources policies and procedures", DocumentCount = 320, IsActive = true },
-                new DocumentCategoryDto { Id = Guid.NewGuid(), Name = "Safety", Description = "Workplace safety and emergency procedures", DocumentCount = 280, IsActive = true },
-                new DocumentCategoryDto { Id = Guid.NewGuid(), Name = "Procedures", Description = "Standard operating procedures", DocumentCount = 250, IsActive = true },
-                new DocumentCategoryDto { Id = Guid.NewGuid(), Name = "Training", Description = "Training materials and guides", DocumentCount = 200, IsActive = true },
-                new DocumentCategoryDto { Id = Guid.NewGuid(), Name = "Legal", Description = "Legal documents and contracts", DocumentCount = 150, IsActive = true }
+                new DocumentCategoryDto { Id = Guid.NewGuid(), Name = "HR Policies", Description = "Human resources policies and procedures", DocumentCount = 320, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new DocumentCategoryDto { Id = Guid.NewGuid(), Name = "Safety", Description = "Workplace safety and emergency procedures", DocumentCount = 280, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new DocumentCategoryDto { Id = Guid.NewGuid(), Name = "Procedures", Description = "Standard operating procedures", DocumentCount = 250, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new DocumentCategoryDto { Id = Guid.NewGuid(), Name = "Training", Description = "Training materials and guides", DocumentCount = 200, IsActive = true, CreatedAt = DateTime.UtcNow },
+                new DocumentCategoryDto { Id = Guid.NewGuid(), Name = "Legal", Description = "Legal documents and contracts", DocumentCount = 150, IsActive = true, CreatedAt = DateTime.UtcNow }
             };
         }
 
@@ -328,7 +328,11 @@ namespace AttendancePlatform.Api.Services
                         Type = "Policy Document",
                         Status = "Published",
                         Version = "2.1",
-                        CreatedAt = DateTime.UtcNow.AddDays(-90)
+                        FileSize = 2048576,
+                        MimeType = "application/pdf",
+                        CreatedBy = "HR Manager",
+                        CreatedAt = DateTime.UtcNow.AddDays(-90),
+                        LastModified = DateTime.UtcNow.AddDays(-30)
                     }
                 },
                 Facets = new Dictionary<string, Dictionary<string, int>>
@@ -391,16 +395,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string DocumentNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Type { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
+        public required string DocumentNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Type { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
         public long FileSize { get; set; }
-        public string MimeType { get; set; }
-        public string CreatedBy { get; set; }
+        public required string MimeType { get; set; }
+        public required string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime LastModified { get; set; }
         public DateTime? ExpiryDate { get; set; }
@@ -410,13 +414,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid DocumentId { get; set; }
-        public string VersionNumber { get; set; }
-        public string Description { get; set; }
-        public string CreatedBy { get; set; }
+        public required string VersionNumber { get; set; }
+        public required string Description { get; set; }
+        public required string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public long FileSize { get; set; }
-        public string ChangeLog { get; set; }
+        public required string ChangeLog { get; set; }
     }
 
     public class DocumentApprovalDto
@@ -424,10 +428,10 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid DocumentId { get; set; }
         public Guid ApproverId { get; set; }
-        public string ApproverName { get; set; }
+        public required string ApproverName { get; set; }
         public int ApprovalLevel { get; set; }
-        public string Status { get; set; }
-        public string Comments { get; set; }
+        public required string Status { get; set; }
+        public string? Comments { get; set; }
         public DateTime? ApprovedAt { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -450,8 +454,8 @@ namespace AttendancePlatform.Api.Services
     public class DocumentCategoryDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int DocumentCount { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -459,7 +463,7 @@ namespace AttendancePlatform.Api.Services
 
     public class DocumentSearchResultDto
     {
-        public string Query { get; set; }
+        public required string Query { get; set; }
         public int TotalResults { get; set; }
         public double SearchTime { get; set; }
         public List<DocumentDto> Results { get; set; }
@@ -475,23 +479,23 @@ namespace AttendancePlatform.Api.Services
     public class DocumentAuditEntryDto
     {
         public Guid Id { get; set; }
-        public string Action { get; set; }
-        public string PerformedBy { get; set; }
+        public required string Action { get; set; }
+        public required string PerformedBy { get; set; }
         public DateTime Timestamp { get; set; }
-        public string Details { get; set; }
-        public string IpAddress { get; set; }
+        public required string Details { get; set; }
+        public required string IpAddress { get; set; }
     }
 
     public class DocumentRetentionDto
     {
         public Guid DocumentId { get; set; }
         public int RetentionPeriod { get; set; }
-        public string RetentionUnit { get; set; }
-        public string RetentionReason { get; set; }
+        public required string RetentionUnit { get; set; }
+        public required string RetentionReason { get; set; }
         public bool AutoDelete { get; set; }
         public DateTime ArchiveDate { get; set; }
         public DateTime DeleteDate { get; set; }
-        public string ComplianceFramework { get; set; }
+        public required string ComplianceFramework { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

@@ -380,12 +380,16 @@ namespace AttendancePlatform.Api.Services
                     TenantId = tenantId,
                     ArticleNumber = "KB-20241227-1004",
                     Title = "Most Popular: Password Security Guidelines",
+                    Content = "Essential password security best practices including complexity requirements, multi-factor authentication, and regular password updates.",
                     Summary = "Essential password security best practices",
+                    Status = "Published",
+                    Priority = "High",
                     ViewCount = 485,
                     LikeCount = 45,
                     AverageRating = 4.8,
                     CategoryName = "IT Security",
                     AuthorName = "Security Team",
+                    Tags = new List<string> { "Security", "Password", "Best Practices" },
                     CreatedAt = DateTime.UtcNow.AddDays(-45)
                 },
                 new KnowledgeArticleDto
@@ -394,12 +398,16 @@ namespace AttendancePlatform.Api.Services
                     TenantId = tenantId,
                     ArticleNumber = "KB-20241227-1005",
                     Title = "Popular: Employee Benefits Overview",
+                    Content = "Comprehensive guide to employee benefits including health insurance, retirement plans, and vacation policies.",
                     Summary = "Comprehensive guide to employee benefits",
+                    Status = "Published",
+                    Priority = "Medium",
                     ViewCount = 420,
                     LikeCount = 38,
                     AverageRating = 4.6,
                     CategoryName = "HR Procedures",
                     AuthorName = "HR Team",
+                    Tags = new List<string> { "HR", "Benefits", "Employee" },
                     CreatedAt = DateTime.UtcNow.AddDays(-60)
                 }
             };
@@ -416,12 +424,16 @@ namespace AttendancePlatform.Api.Services
                     TenantId = tenantId,
                     ArticleNumber = "KB-20241227-1006",
                     Title = "Recent: Updated Remote Work Policy",
+                    Content = "Latest updates to remote work guidelines including new equipment policies and communication standards.",
                     Summary = "Latest updates to remote work guidelines",
+                    Status = "Published",
+                    Priority = "Medium",
                     ViewCount = 85,
                     LikeCount = 8,
                     AverageRating = 4.2,
                     CategoryName = "HR Procedures",
                     AuthorName = "Policy Team",
+                    Tags = new List<string> { "Remote Work", "Policy", "Guidelines" },
                     CreatedAt = DateTime.UtcNow.AddDays(-2)
                 },
                 new KnowledgeArticleDto
@@ -430,12 +442,16 @@ namespace AttendancePlatform.Api.Services
                     TenantId = tenantId,
                     ArticleNumber = "KB-20241227-1007",
                     Title = "Recent: New Expense Reporting Process",
+                    Content = "Updated expense reporting procedures with new digital submission requirements and approval workflows.",
                     Summary = "Updated expense reporting procedures",
+                    Status = "Published",
+                    Priority = "Medium",
                     ViewCount = 65,
                     LikeCount = 5,
                     AverageRating = 4.0,
                     CategoryName = "Finance",
                     AuthorName = "Finance Team",
+                    Tags = new List<string> { "Finance", "Expenses", "Process" },
                     CreatedAt = DateTime.UtcNow.AddDays(-1)
                 }
             };
@@ -525,10 +541,13 @@ namespace AttendancePlatform.Api.Services
                     TenantId = tenantId,
                     ArticleNumber = "KB-20241227-1008",
                     Title = "Pending: New Safety Procedures",
+                    Content = "Updated workplace safety procedures including emergency protocols and equipment usage guidelines.",
                     Summary = "Updated workplace safety procedures",
                     Status = "Pending Approval",
+                    Priority = "High",
                     CategoryName = "Operations",
                     AuthorName = "Safety Team",
+                    Tags = new List<string> { "Safety", "Procedures", "Operations" },
                     CreatedAt = DateTime.UtcNow.AddDays(-3)
                 },
                 new KnowledgeArticleDto
@@ -537,10 +556,13 @@ namespace AttendancePlatform.Api.Services
                     TenantId = tenantId,
                     ArticleNumber = "KB-20241227-1009",
                     Title = "Pending: Data Privacy Guidelines",
+                    Content = "Updated data privacy and protection guidelines in compliance with GDPR and local regulations.",
                     Summary = "Updated data privacy and protection guidelines",
                     Status = "Pending Approval",
+                    Priority = "High",
                     CategoryName = "Compliance",
                     AuthorName = "Legal Team",
+                    Tags = new List<string> { "Privacy", "GDPR", "Compliance" },
                     CreatedAt = DateTime.UtcNow.AddDays(-1)
                 }
             };
@@ -551,20 +573,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ArticleNumber { get; set; }
-        public string Title { get; set; }
-        public string Content { get; set; }
-        public string Summary { get; set; }
+        public required string ArticleNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Content { get; set; }
+        public required string Summary { get; set; }
         public Guid CategoryId { get; set; }
-        public string CategoryName { get; set; }
+        public required string CategoryName { get; set; }
         public Guid AuthorId { get; set; }
-        public string AuthorName { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string AuthorName { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public int ViewCount { get; set; }
         public int LikeCount { get; set; }
         public double AverageRating { get; set; }
-        public List<string> Tags { get; set; }
+        public required List<string> Tags { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? PublishedAt { get; set; }
@@ -573,8 +595,8 @@ namespace AttendancePlatform.Api.Services
     public class KnowledgeCategoryDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int ArticleCount { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -583,8 +605,8 @@ namespace AttendancePlatform.Api.Services
     public class KnowledgeTagDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int UsageCount { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -595,9 +617,9 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid ArticleId { get; set; }
         public Guid UserId { get; set; }
-        public string UserName { get; set; }
+        public required string UserName { get; set; }
         public int Rating { get; set; }
-        public string Comment { get; set; }
+        public required string Comment { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -606,9 +628,9 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid ArticleId { get; set; }
         public Guid UserId { get; set; }
-        public string UserName { get; set; }
-        public string Content { get; set; }
-        public string Status { get; set; }
+        public required string UserName { get; set; }
+        public required string Content { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -623,16 +645,16 @@ namespace AttendancePlatform.Api.Services
         public int TotalLikes { get; set; }
         public int TotalComments { get; set; }
         public double AverageRating { get; set; }
-        public Dictionary<string, int> TopCategories { get; set; }
-        public Dictionary<string, int> PopularTags { get; set; }
-        public Dictionary<string, int> MonthlyViews { get; set; }
+        public required Dictionary<string, int> TopCategories { get; set; }
+        public required Dictionary<string, int> PopularTags { get; set; }
+        public required Dictionary<string, int> MonthlyViews { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
     public class KnowledgeReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public int TotalArticles { get; set; }
         public int NewArticles { get; set; }
         public int UpdatedArticles { get; set; }
@@ -640,9 +662,9 @@ namespace AttendancePlatform.Api.Services
         public int TotalLikes { get; set; }
         public int TotalComments { get; set; }
         public double AverageRating { get; set; }
-        public List<string> TopViewedArticles { get; set; }
-        public Dictionary<string, KnowledgeCategoryPerformanceDto> CategoryPerformance { get; set; }
-        public Dictionary<string, int> UserEngagement { get; set; }
+        public required List<string> TopViewedArticles { get; set; }
+        public required Dictionary<string, KnowledgeCategoryPerformanceDto> CategoryPerformance { get; set; }
+        public required Dictionary<string, int> UserEngagement { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
@@ -656,9 +678,9 @@ namespace AttendancePlatform.Api.Services
     public class KnowledgeWorkflowDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

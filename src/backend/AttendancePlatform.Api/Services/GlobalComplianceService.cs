@@ -583,7 +583,7 @@ namespace AttendancePlatform.Api.Services
         public double DataProtectionOfficer { get; set; }
         public double InternationalTransfers { get; set; }
         public double RecordsOfProcessing { get; set; }
-        public string ComplianceStatus { get; set; }
+        public required string ComplianceStatus { get; set; }
         public DateTime LastAssessment { get; set; }
         public DateTime NextAssessment { get; set; }
         public List<string> Recommendations { get; set; }
@@ -600,7 +600,7 @@ namespace AttendancePlatform.Api.Services
         public double CrossBorderTransfers { get; set; }
         public double DataBreachNotification { get; set; }
         public double LocalizationRequirements { get; set; }
-        public string ComplianceStatus { get; set; }
+        public required string ComplianceStatus { get; set; }
         public DateTime LastAssessment { get; set; }
         public DateTime NextAssessment { get; set; }
         public List<string> Recommendations { get; set; }
@@ -624,8 +624,8 @@ namespace AttendancePlatform.Api.Services
         public double IncidentManagement { get; set; }
         public double BusinessContinuity { get; set; }
         public double Compliance { get; set; }
-        public string ComplianceStatus { get; set; }
-        public string CertificationStatus { get; set; }
+        public required string ComplianceStatus { get; set; }
+        public required string CertificationStatus { get; set; }
         public DateTime LastAudit { get; set; }
         public DateTime NextAudit { get; set; }
         public List<string> Recommendations { get; set; }
@@ -640,8 +640,8 @@ namespace AttendancePlatform.Api.Services
         public double ProcessingIntegrityCriteria { get; set; }
         public double ConfidentialityCriteria { get; set; }
         public double PrivacyCriteria { get; set; }
-        public string ComplianceStatus { get; set; }
-        public string ReportType { get; set; }
+        public required string ComplianceStatus { get; set; }
+        public required string ReportType { get; set; }
         public DateTime LastExamination { get; set; }
         public DateTime NextExamination { get; set; }
         public List<string> Recommendations { get; set; }
@@ -661,7 +661,7 @@ namespace AttendancePlatform.Api.Services
         public double InsecureDeserialization { get; set; }
         public double VulnerableComponents { get; set; }
         public double InsufficientLogging { get; set; }
-        public string ComplianceStatus { get; set; }
+        public required string ComplianceStatus { get; set; }
         public DateTime LastAssessment { get; set; }
         public DateTime NextAssessment { get; set; }
         public List<string> Recommendations { get; set; }
@@ -675,7 +675,7 @@ namespace AttendancePlatform.Api.Services
         public double PhysicalSafeguards { get; set; }
         public double TechnicalSafeguards { get; set; }
         public double OrganizationalRequirements { get; set; }
-        public string ComplianceStatus { get; set; }
+        public required string ComplianceStatus { get; set; }
         public DateTime LastAssessment { get; set; }
         public DateTime NextAssessment { get; set; }
         public List<string> Recommendations { get; set; }
@@ -691,8 +691,8 @@ namespace AttendancePlatform.Api.Services
         public double ImplementStrongAccessControl { get; set; }
         public double RegularlyMonitorTest { get; set; }
         public double MaintainInformationSecurityPolicy { get; set; }
-        public string ComplianceStatus { get; set; }
-        public string ComplianceLevel { get; set; }
+        public required string ComplianceStatus { get; set; }
+        public required string ComplianceLevel { get; set; }
         public DateTime LastAssessment { get; set; }
         public DateTime NextAssessment { get; set; }
         public List<string> Recommendations { get; set; }
@@ -719,8 +719,8 @@ namespace AttendancePlatform.Api.Services
         public double SystemServicesAcquisition { get; set; }
         public double SystemCommunicationsProtection { get; set; }
         public double SystemInformationIntegrity { get; set; }
-        public string ComplianceStatus { get; set; }
-        public string AuthorizationLevel { get; set; }
+        public required string ComplianceStatus { get; set; }
+        public required string AuthorizationLevel { get; set; }
         public DateTime LastAssessment { get; set; }
         public DateTime NextAssessment { get; set; }
         public List<string> Recommendations { get; set; }
@@ -735,8 +735,8 @@ namespace AttendancePlatform.Api.Services
         public double DetectFunction { get; set; }
         public double RespondFunction { get; set; }
         public double RecoverFunction { get; set; }
-        public string ComplianceStatus { get; set; }
-        public string FrameworkVersion { get; set; }
+        public required string ComplianceStatus { get; set; }
+        public required string FrameworkVersion { get; set; }
         public DateTime LastAssessment { get; set; }
         public DateTime NextAssessment { get; set; }
         public List<string> Recommendations { get; set; }
@@ -766,8 +766,8 @@ namespace AttendancePlatform.Api.Services
         public double IncidentResponseManagement { get; set; }
         public double SecureNetworkEngineering { get; set; }
         public double PenetrationTestsRedTeam { get; set; }
-        public string ComplianceStatus { get; set; }
-        public string ControlsVersion { get; set; }
+        public required string ComplianceStatus { get; set; }
+        public required string ControlsVersion { get; set; }
         public DateTime LastAssessment { get; set; }
         public DateTime NextAssessment { get; set; }
         public List<string> Recommendations { get; set; }
@@ -777,7 +777,7 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid TenantId { get; set; }
         public Guid AuditId { get; set; }
-        public string AuditType { get; set; }
+        public required string AuditType { get; set; }
         public double OverallScore { get; set; }
         public List<string> ComplianceFrameworks { get; set; }
         public int PassedControls { get; set; }
@@ -790,26 +790,26 @@ namespace AttendancePlatform.Api.Services
         public DateTime AuditStartDate { get; set; }
         public DateTime AuditEndDate { get; set; }
         public DateTime NextAuditDate { get; set; }
-        public string Auditor { get; set; }
+        public required string Auditor { get; set; }
         public List<string> Recommendations { get; set; }
     }
 
     public class ComplianceScheduleDto
     {
-        public string Schedule { get; set; }
+        public required string Schedule { get; set; }
         public List<string> Recipients { get; set; }
-        public string ReportType { get; set; }
+        public required string ReportType { get; set; }
     }
 
     public class GlobalComplianceViolationDto
     {
         public Guid Id { get; set; }
-        public string Framework { get; set; }
-        public string Control { get; set; }
-        public string Severity { get; set; }
-        public string Description { get; set; }
+        public required string Framework { get; set; }
+        public required string Control { get; set; }
+        public required string Severity { get; set; }
+        public required string Description { get; set; }
         public DateTime DetectedAt { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public List<string> RemediationSteps { get; set; }
     }
 
@@ -821,13 +821,13 @@ namespace AttendancePlatform.Api.Services
         public int CertifiedEmployees { get; set; }
         public int TotalEmployees { get; set; }
         public DateTime NextTrainingDate { get; set; }
-        public string TrainingProvider { get; set; }
+        public required string TrainingProvider { get; set; }
     }
 
     public class TrainingCourseDto
     {
         public Guid Id { get; set; }
-        public string Title { get; set; }
+        public required string Title { get; set; }
         public int Duration { get; set; }
         public double CompletionRate { get; set; }
     }

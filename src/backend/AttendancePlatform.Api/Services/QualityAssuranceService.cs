@@ -274,6 +274,7 @@ namespace AttendancePlatform.Api.Services
                     Status = "Open",
                     ReportedBy = "Quality Inspector",
                     AssignedTo = "Process Manager",
+                    Resolution = "Pending documentation creation",
                     ReportedDate = DateTime.UtcNow.AddDays(-5),
                     DueDate = DateTime.UtcNow.AddDays(10)
                 },
@@ -288,6 +289,7 @@ namespace AttendancePlatform.Api.Services
                     Status = "In Progress",
                     ReportedBy = "Technician",
                     AssignedTo = "Maintenance Team",
+                    Resolution = "Calibration scheduled",
                     ReportedDate = DateTime.UtcNow.AddDays(-3),
                     DueDate = DateTime.UtcNow.AddDays(2)
                 }
@@ -320,7 +322,16 @@ namespace AttendancePlatform.Api.Services
                 var issue = new QualityIssueDto
                 {
                     Id = issueId,
+                    TenantId = Guid.NewGuid(),
+                    Title = "Quality Issue",
+                    Description = "Quality issue description",
+                    Category = "General",
+                    Severity = "Medium",
                     Status = "Resolved",
+                    ReportedBy = "System",
+                    AssignedTo = "Quality Team",
+                    ReportedDate = DateTime.UtcNow.AddDays(-7),
+                    DueDate = DateTime.UtcNow.AddDays(7),
                     Resolution = resolution,
                     ResolvedDate = DateTime.UtcNow
                 };
@@ -394,15 +405,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string CheckType { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string CheckType { get; set; }
         public DateTime ScheduledDate { get; set; }
         public DateTime? CompletedDate { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public Guid AssignedAuditorId { get; set; }
-        public string AssignedAuditorName { get; set; }
+        public required string AssignedAuditorName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -411,13 +422,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string AuditType { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string AuditType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; }
-        public string AuditorName { get; set; }
+        public required string Status { get; set; }
+        public required string AuditorName { get; set; }
         public double? Score { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -425,7 +436,7 @@ namespace AttendancePlatform.Api.Services
     public class QualityMetricsDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public double OverallQualityScore { get; set; }
         public double DefectRate { get; set; }
         public double CustomerSatisfactionScore { get; set; }
@@ -441,8 +452,8 @@ namespace AttendancePlatform.Api.Services
     public class QualityStandardDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public bool IsActive { get; set; }
         public double ComplianceLevel { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -463,17 +474,17 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Severity { get; set; }
-        public string Status { get; set; }
-        public string ReportedBy { get; set; }
-        public string AssignedTo { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Severity { get; set; }
+        public required string Status { get; set; }
+        public required string ReportedBy { get; set; }
+        public required string AssignedTo { get; set; }
         public DateTime ReportedDate { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime? ResolvedDate { get; set; }
-        public string Resolution { get; set; }
+        public required string Resolution { get; set; }
     }
 
     public class QualityDashboardDto
@@ -495,8 +506,8 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int Duration { get; set; }
         public double CompletionRate { get; set; }
         public List<string> RequiredForRoles { get; set; }

@@ -415,36 +415,36 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string StreamNumber { get; set; }
-        public string StreamName { get; set; }
-        public string Description { get; set; }
-        public string StreamType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string DataSource { get; set; }
-        public string StreamingPlatform { get; set; }
-        public string ProcessingEngine { get; set; }
+        public required string StreamNumber { get; set; }
+        public required string StreamName { get; set; }
+        public required string Description { get; set; }
+        public required string StreamType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string DataSource { get; set; }
+        public required string StreamingPlatform { get; set; }
+        public required string ProcessingEngine { get; set; }
         public int EventsPerSecond { get; set; }
         public double LatencyMs { get; set; }
         public double ThroughputMBps { get; set; }
-        public string RetentionPeriod { get; set; }
+        public required string RetentionPeriod { get; set; }
         public int PartitionCount { get; set; }
         public int ReplicationFactor { get; set; }
-        public string CompressionType { get; set; }
-        public string SerializationFormat { get; set; }
-        public string WindowingStrategy { get; set; }
-        public string AggregationFunctions { get; set; }
-        public string FilteringRules { get; set; }
-        public string EnrichmentSources { get; set; }
-        public string OutputDestinations { get; set; }
-        public string MonitoringMetrics { get; set; }
-        public string AlertingThresholds { get; set; }
-        public string SecurityConfiguration { get; set; }
-        public string BackpressureHandling { get; set; }
-        public string ErrorHandling { get; set; }
-        public string BusinessImpact { get; set; }
-        public string CostOptimization { get; set; }
-        public string CreatedBy { get; set; }
+        public required string CompressionType { get; set; }
+        public required string SerializationFormat { get; set; }
+        public required string WindowingStrategy { get; set; }
+        public required string AggregationFunctions { get; set; }
+        public required string FilteringRules { get; set; }
+        public required string EnrichmentSources { get; set; }
+        public required string OutputDestinations { get; set; }
+        public required string MonitoringMetrics { get; set; }
+        public required string AlertingThresholds { get; set; }
+        public required string SecurityConfiguration { get; set; }
+        public required string BackpressureHandling { get; set; }
+        public required string ErrorHandling { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string CostOptimization { get; set; }
+        public required string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -453,36 +453,36 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string EventNumber { get; set; }
-        public string EventName { get; set; }
-        public string Description { get; set; }
-        public string EventType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string EventNumber { get; set; }
+        public required string EventName { get; set; }
+        public required string Description { get; set; }
+        public required string EventType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid StreamId { get; set; }
         public Guid EmployeeId { get; set; }
         public Guid LocationId { get; set; }
-        public string DeviceId { get; set; }
+        public required string DeviceId { get; set; }
         public DateTime EventTimestamp { get; set; }
         public double ProcessingLatency { get; set; }
-        public string EventPayload { get; set; }
-        public string EventSource { get; set; }
-        public string EventVersion { get; set; }
-        public string CorrelationId { get; set; }
-        public string SessionId { get; set; }
-        public string UserAgent { get; set; }
-        public string IpAddress { get; set; }
-        public string GeolocationData { get; set; }
-        public string BiometricData { get; set; }
-        public string ValidationResult { get; set; }
-        public string BusinessRules { get; set; }
-        public string EnrichmentData { get; set; }
-        public string DownstreamSystems { get; set; }
-        public string ProcessingSteps { get; set; }
+        public required string EventPayload { get; set; }
+        public required string EventSource { get; set; }
+        public required string EventVersion { get; set; }
+        public required string CorrelationId { get; set; }
+        public required string SessionId { get; set; }
+        public required string UserAgent { get; set; }
+        public required string IpAddress { get; set; }
+        public required string GeolocationData { get; set; }
+        public required string BiometricData { get; set; }
+        public required string ValidationResult { get; set; }
+        public required string BusinessRules { get; set; }
+        public required string EnrichmentData { get; set; }
+        public required string DownstreamSystems { get; set; }
+        public required string ProcessingSteps { get; set; }
         public double QualityScore { get; set; }
         public double AnomalyScore { get; set; }
-        public string BusinessImpact { get; set; }
-        public string ProcessedBy { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string ProcessedBy { get; set; }
         public DateTime? ProcessedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -513,8 +513,8 @@ namespace AttendancePlatform.Api.Services
     public class RealtimeReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int StreamsDeployed { get; set; }
         public long EventsProcessed { get; set; }
         public int MetricsGenerated { get; set; }
@@ -535,36 +535,36 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string MetricNumber { get; set; }
-        public string MetricName { get; set; }
-        public string Description { get; set; }
-        public string MetricType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string MetricNumber { get; set; }
+        public required string MetricName { get; set; }
+        public required string Description { get; set; }
+        public required string MetricType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid StreamId { get; set; }
-        public string CalculationFormula { get; set; }
-        public string AggregationWindow { get; set; }
-        public string UpdateFrequency { get; set; }
+        public required string CalculationFormula { get; set; }
+        public required string AggregationWindow { get; set; }
+        public required string UpdateFrequency { get; set; }
         public double CurrentValue { get; set; }
         public double PreviousValue { get; set; }
         public double ChangePercent { get; set; }
-        public string Trend { get; set; }
+        public required string Trend { get; set; }
         public double MinValue { get; set; }
         public double MaxValue { get; set; }
         public double AverageValue { get; set; }
         public double StandardDeviation { get; set; }
         public double Threshold { get; set; }
-        public string AlertCondition { get; set; }
-        public string BusinessContext { get; set; }
-        public string DataSources { get; set; }
-        public string QualityIndicators { get; set; }
-        public string VisualizationType { get; set; }
-        public string RefreshRate { get; set; }
-        public string HistoricalComparison { get; set; }
-        public string SeasonalAdjustment { get; set; }
-        public string BusinessImpact { get; set; }
-        public string ActionableInsights { get; set; }
-        public string CalculatedBy { get; set; }
+        public required string AlertCondition { get; set; }
+        public required string BusinessContext { get; set; }
+        public required string DataSources { get; set; }
+        public required string QualityIndicators { get; set; }
+        public required string VisualizationType { get; set; }
+        public required string RefreshRate { get; set; }
+        public required string HistoricalComparison { get; set; }
+        public required string SeasonalAdjustment { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string ActionableInsights { get; set; }
+        public required string CalculatedBy { get; set; }
         public DateTime? CalculatedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -574,27 +574,27 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AlertNumber { get; set; }
-        public string AlertName { get; set; }
-        public string Description { get; set; }
-        public string AlertType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Severity { get; set; }
-        public string Priority { get; set; }
+        public required string AlertNumber { get; set; }
+        public required string AlertName { get; set; }
+        public required string Description { get; set; }
+        public required string AlertType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Severity { get; set; }
+        public required string Priority { get; set; }
         public Guid MetricId { get; set; }
         public Guid StreamId { get; set; }
-        public string TriggerCondition { get; set; }
+        public required string TriggerCondition { get; set; }
         public double CurrentValue { get; set; }
         public double ThresholdValue { get; set; }
-        public string AlertMessage { get; set; }
-        public string Recipients { get; set; }
-        public string NotificationChannels { get; set; }
-        public string EscalationRules { get; set; }
-        public string ActionRequired { get; set; }
+        public required string AlertMessage { get; set; }
+        public required string Recipients { get; set; }
+        public required string NotificationChannels { get; set; }
+        public required string EscalationRules { get; set; }
+        public required string ActionRequired { get; set; }
         public string BusinessImpact { get; set; }
-        public string ResolutionSteps { get; set; }
-        public string AcknowledgedBy { get; set; }
+        public required string ResolutionSteps { get; set; }
+        public string? AcknowledgedBy { get; set; }
         public DateTime? AcknowledgedAt { get; set; }
         public string ResolvedBy { get; set; }
         public DateTime? ResolvedAt { get; set; }

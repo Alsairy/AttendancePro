@@ -362,23 +362,23 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ReportNumber { get; set; }
-        public string ReportName { get; set; }
-        public string Description { get; set; }
-        public string ReportType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string DataSources { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportNumber { get; set; }
+        public required string ReportName { get; set; }
+        public required string Description { get; set; }
+        public required string ReportType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string DataSources { get; set; }
+        public required string ReportPeriod { get; set; }
         public DateTime GeneratedDate { get; set; }
         public DateTime? LastRefreshed { get; set; }
-        public string RefreshFrequency { get; set; }
-        public string Owner { get; set; }
-        public string Stakeholders { get; set; }
-        public string AccessLevel { get; set; }
-        public string ReportFormat { get; set; }
-        public string KeyMetrics { get; set; }
-        public string Insights { get; set; }
+        public required string RefreshFrequency { get; set; }
+        public required string Owner { get; set; }
+        public required string Stakeholders { get; set; }
+        public required string AccessLevel { get; set; }
+        public required string ReportFormat { get; set; }
+        public required string KeyMetrics { get; set; }
+        public required string Insights { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -387,21 +387,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string DashboardNumber { get; set; }
-        public string DashboardName { get; set; }
-        public string Description { get; set; }
-        public string DashboardType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string DashboardNumber { get; set; }
+        public required string DashboardName { get; set; }
+        public required string Description { get; set; }
+        public required string DashboardType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public int WidgetCount { get; set; }
-        public string DataSources { get; set; }
-        public string RefreshRate { get; set; }
+        public required string DataSources { get; set; }
+        public required string RefreshRate { get; set; }
         public DateTime? LastUpdated { get; set; }
-        public string Owner { get; set; }
-        public string SharedWith { get; set; }
-        public string AccessLevel { get; set; }
-        public string Layout { get; set; }
-        public string Theme { get; set; }
+        public required string Owner { get; set; }
+        public required string SharedWith { get; set; }
+        public required string AccessLevel { get; set; }
+        public required string Layout { get; set; }
+        public required string Theme { get; set; }
         public bool IsPublic { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -417,7 +417,7 @@ namespace AttendancePlatform.Api.Services
         public int TotalDashboards { get; set; }
         public int ActiveUsers { get; set; }
         public int DataSourcesConnected { get; set; }
-        public string DataVolumeProcessed { get; set; }
+        public required string DataVolumeProcessed { get; set; }
         public double QueryPerformance { get; set; }
         public double SystemUptime { get; set; }
         public double UserSatisfaction { get; set; }
@@ -430,11 +430,11 @@ namespace AttendancePlatform.Api.Services
     public class BusinessIntelligenceInsightsDto
     {
         public Guid TenantId { get; set; }
-        public string InsightsPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string InsightsPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public List<string> KeyInsights { get; set; }
-        public string TrendAnalysis { get; set; }
-        public string PredictiveInsights { get; set; }
+        public required string TrendAnalysis { get; set; }
+        public required string PredictiveInsights { get; set; }
         public List<string> RecommendedActions { get; set; }
         public double DataQualityScore { get; set; }
         public double ConfidenceLevel { get; set; }
@@ -445,19 +445,19 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string DataSourceNumber { get; set; }
-        public string DataSourceName { get; set; }
-        public string Description { get; set; }
-        public string DataSourceType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string ConnectionString { get; set; }
-        public string DataFormat { get; set; }
-        public string RefreshFrequency { get; set; }
+        public required string DataSourceNumber { get; set; }
+        public required string DataSourceName { get; set; }
+        public required string Description { get; set; }
+        public required string DataSourceType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string ConnectionString { get; set; }
+        public required string DataFormat { get; set; }
+        public required string RefreshFrequency { get; set; }
         public DateTime? LastSync { get; set; }
-        public string DataVolume { get; set; }
+        public required string DataVolume { get; set; }
         public int RecordCount { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public double DataQuality { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -468,18 +468,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string VisualizationNumber { get; set; }
-        public string VisualizationName { get; set; }
-        public string Description { get; set; }
-        public string VisualizationType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string DataSource { get; set; }
-        public string ChartConfig { get; set; }
-        public string InteractivityLevel { get; set; }
-        public string RefreshRate { get; set; }
+        public required string VisualizationNumber { get; set; }
+        public required string VisualizationName { get; set; }
+        public required string Description { get; set; }
+        public required string VisualizationType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string DataSource { get; set; }
+        public required string ChartConfig { get; set; }
+        public required string InteractivityLevel { get; set; }
+        public required string RefreshRate { get; set; }
         public DateTime? LastUpdated { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public int UsageCount { get; set; }
         public double UserRating { get; set; }
         public bool IsPublic { get; set; }

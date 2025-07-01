@@ -78,7 +78,7 @@ namespace AttendancePlatform.Api.Services
                     ProjectManagerName = "Sarah Johnson",
                     CreatedAt = DateTime.UtcNow.AddDays(-35)
                 },
-                new ProjectDto
+                new ProjectManagementProjectDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -170,7 +170,7 @@ namespace AttendancePlatform.Api.Services
                     CompletedDate = DateTime.UtcNow.AddDays(-21),
                     CreatedAt = DateTime.UtcNow.AddDays(-30)
                 },
-                new TaskDto
+                new ProjectManagementTaskDto
                 {
                     Id = Guid.NewGuid(),
                     ProjectId = projectId,
@@ -504,16 +504,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public decimal Budget { get; set; }
         public double Progress { get; set; }
         public Guid ProjectManagerId { get; set; }
-        public string ProjectManagerName { get; set; }
+        public required string ProjectManagerName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -522,12 +522,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public Guid AssigneeId { get; set; }
-        public string AssigneeName { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string AssigneeName { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public int EstimatedHours { get; set; }
         public int ActualHours { get; set; }
         public DateTime StartDate { get; set; }
@@ -549,10 +549,10 @@ namespace AttendancePlatform.Api.Services
 
     public class ProjectPhaseDto
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
     }
 
     public class ProjectResourceDto
@@ -560,9 +560,9 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
         public Guid ResourceId { get; set; }
-        public string ResourceName { get; set; }
-        public string ResourceType { get; set; }
-        public string Role { get; set; }
+        public required string ResourceName { get; set; }
+        public required string ResourceType { get; set; }
+        public required string Role { get; set; }
         public double AllocationPercentage { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
@@ -587,11 +587,11 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime? CompletedDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public bool CriticalPath { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -599,12 +599,12 @@ namespace AttendancePlatform.Api.Services
     public class ProjectReportDto
     {
         public Guid ProjectId { get; set; }
-        public string ProjectName { get; set; }
+        public required string ProjectName { get; set; }
         public double OverallProgress { get; set; }
         public double ScheduleVariance { get; set; }
         public double BudgetVariance { get; set; }
         public double QualityScore { get; set; }
-        public string RiskLevel { get; set; }
+        public required string RiskLevel { get; set; }
         public double TeamProductivity { get; set; }
         public double StakeholderSatisfaction { get; set; }
         public List<string> KeyAccomplishments { get; set; }
@@ -616,15 +616,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Probability { get; set; }
-        public string Impact { get; set; }
-        public string RiskLevel { get; set; }
-        public string MitigationPlan { get; set; }
-        public string Owner { get; set; }
-        public string Status { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Probability { get; set; }
+        public required string Impact { get; set; }
+        public required string RiskLevel { get; set; }
+        public required string MitigationPlan { get; set; }
+        public required string Owner { get; set; }
+        public required string Status { get; set; }
         public DateTime IdentifiedDate { get; set; }
     }
 
@@ -650,15 +650,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Status { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal Budget { get; set; }
         public double Progress { get; set; }
-        public string Priority { get; set; }
+        public required string Priority { get; set; }
         public Guid ProjectManagerId { get; set; }
+        public required string ProjectManagerName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -667,13 +668,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public Guid AssignedToId { get; set; }
+        public Guid AssigneeId { get; set; }
+        public required string AssigneeName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime DueDate { get; set; }
+        public DateTime? CompletedDate { get; set; }
         public double Progress { get; set; }
         public int EstimatedHours { get; set; }
         public int ActualHours { get; set; }

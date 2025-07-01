@@ -396,10 +396,10 @@ namespace AttendancePlatform.Api.Services
                 },
                 MonthlyTrends = new Dictionary<string, EnvironmentalTrendDto>
                 {
-                    { "Jan", new EnvironmentalTrendDto { Emissions = 105.2, Energy = 42500.0, Water = 2850.0 } },
-                    { "Feb", new EnvironmentalTrendDto { Emissions = 98.5, Energy = 39800.0, Water = 2650.0 } },
-                    { "Mar", new EnvironmentalTrendDto { Emissions = 102.8, Energy = 41200.0, Water = 2750.0 } },
-                    { "Apr", new EnvironmentalTrendDto { Emissions = 95.2, Energy = 38500.0, Water = 2580.0 } }
+                    { "Jan", new EnvironmentalTrendDto { Period = "Jan", Emissions = 105.2, Energy = 42500.0, Water = 2850.0, Trend = "Stable" } },
+                    { "Feb", new EnvironmentalTrendDto { Period = "Feb", Emissions = 98.5, Energy = 39800.0, Water = 2650.0, Trend = "Improving" } },
+                    { "Mar", new EnvironmentalTrendDto { Period = "Mar", Emissions = 102.8, Energy = 41200.0, Water = 2750.0, Trend = "Stable" } },
+                    { "Apr", new EnvironmentalTrendDto { Period = "Apr", Emissions = 95.2, Energy = 38500.0, Water = 2580.0, Trend = "Improving" } }
                 },
                 GoalProgress = new Dictionary<string, double>
                 {
@@ -456,9 +456,9 @@ namespace AttendancePlatform.Api.Services
                     ResponsiblePerson = "Chief Sustainability Officer",
                     Milestones = new List<EnvironmentalMilestoneDto>
                     {
-                        new EnvironmentalMilestoneDto { Description = "25% reduction by 2025", TargetDate = DateTime.UtcNow.AddDays(365), Completed = false },
-                        new EnvironmentalMilestoneDto { Description = "50% reduction by 2027", TargetDate = DateTime.UtcNow.AddDays(1095), Completed = false },
-                        new EnvironmentalMilestoneDto { Description = "75% reduction by 2029", TargetDate = DateTime.UtcNow.AddDays(1825), Completed = false }
+                        new EnvironmentalMilestoneDto { Title = "25% Reduction Milestone", Description = "25% reduction by 2025", TargetDate = DateTime.UtcNow.AddDays(365), Status = "In Progress", Completed = false },
+                        new EnvironmentalMilestoneDto { Title = "50% Reduction Milestone", Description = "50% reduction by 2027", TargetDate = DateTime.UtcNow.AddDays(1095), Status = "Planned", Completed = false },
+                        new EnvironmentalMilestoneDto { Title = "75% Reduction Milestone", Description = "75% reduction by 2029", TargetDate = DateTime.UtcNow.AddDays(1825), Status = "Planned", Completed = false }
                     },
                     Actions = new List<string>
                     {
@@ -573,19 +573,19 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string MetricNumber { get; set; }
-        public string MetricName { get; set; }
-        public string MetricType { get; set; }
-        public string Unit { get; set; }
+        public required string MetricNumber { get; set; }
+        public required string MetricName { get; set; }
+        public required string MetricType { get; set; }
+        public required string Unit { get; set; }
         public double CurrentValue { get; set; }
         public double TargetValue { get; set; }
         public double Baseline { get; set; }
-        public string MeasurementPeriod { get; set; }
-        public string DataSource { get; set; }
+        public required string MeasurementPeriod { get; set; }
+        public required string DataSource { get; set; }
         public DateTime LastMeasured { get; set; }
-        public string Trend { get; set; }
+        public required string Trend { get; set; }
         public double PercentageChange { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -594,10 +594,10 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ReportNumber { get; set; }
-        public string ReportTitle { get; set; }
-        public string ReportType { get; set; }
-        public string ReportingPeriod { get; set; }
+        public required string ReportNumber { get; set; }
+        public required string ReportTitle { get; set; }
+        public required string ReportType { get; set; }
+        public required string ReportingPeriod { get; set; }
         public double CarbonFootprint { get; set; }
         public double EnergyConsumption { get; set; }
         public double WaterUsage { get; set; }
@@ -607,9 +607,9 @@ namespace AttendancePlatform.Api.Services
         public double SustainabilityScore { get; set; }
         public List<string> KeyAchievements { get; set; }
         public List<string> ImprovementAreas { get; set; }
-        public string ComplianceStatus { get; set; }
+        public required string ComplianceStatus { get; set; }
         public List<string> CertificationsHeld { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -617,7 +617,7 @@ namespace AttendancePlatform.Api.Services
     public class CarbonFootprintDto
     {
         public Guid TenantId { get; set; }
-        public string CalculationPeriod { get; set; }
+        public required string CalculationPeriod { get; set; }
         public double TotalEmissions { get; set; }
         public double Scope1Emissions { get; set; }
         public double Scope2Emissions { get; set; }
@@ -637,22 +637,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RecordNumber { get; set; }
-        public string EnergyType { get; set; }
+        public required string RecordNumber { get; set; }
+        public required string EnergyType { get; set; }
         public double ConsumptionAmount { get; set; }
-        public string Unit { get; set; }
+        public required string Unit { get; set; }
         public decimal Cost { get; set; }
-        public string Currency { get; set; }
+        public required string Currency { get; set; }
         public double MeterReading { get; set; }
         public double PreviousReading { get; set; }
         public DateTime ReadingDate { get; set; }
-        public string BillingPeriod { get; set; }
-        public string Supplier { get; set; }
+        public required string BillingPeriod { get; set; }
+        public required string Supplier { get; set; }
         public double RenewablePercentage { get; set; }
         public double CarbonEmissionFactor { get; set; }
         public double CalculatedEmissions { get; set; }
-        public string Department { get; set; }
-        public string Location { get; set; }
+        public required string Department { get; set; }
+        public required string Location { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -660,23 +660,23 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RecordNumber { get; set; }
-        public string WasteType { get; set; }
-        public string WasteCategory { get; set; }
+        public required string RecordNumber { get; set; }
+        public required string WasteType { get; set; }
+        public required string WasteCategory { get; set; }
         public double Quantity { get; set; }
-        public string Unit { get; set; }
-        public string DisposalMethod { get; set; }
+        public required string Unit { get; set; }
+        public required string DisposalMethod { get; set; }
         public DateTime DisposalDate { get; set; }
         public decimal DisposalCost { get; set; }
-        public string Currency { get; set; }
-        public string WasteContractor { get; set; }
-        public string GeneratingDepartment { get; set; }
-        public string Location { get; set; }
+        public required string Currency { get; set; }
+        public required string WasteContractor { get; set; }
+        public required string GeneratingDepartment { get; set; }
+        public required string Location { get; set; }
         public double RecycledQuantity { get; set; }
         public double RecyclingRate { get; set; }
         public double CarbonEmissions { get; set; }
-        public string ComplianceStatus { get; set; }
-        public string CertificateNumber { get; set; }
+        public required string ComplianceStatus { get; set; }
+        public required string CertificateNumber { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -684,22 +684,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ComplianceNumber { get; set; }
-        public string RegulationName { get; set; }
-        public string RegulatoryBody { get; set; }
-        public string ComplianceType { get; set; }
-        public string RequirementDescription { get; set; }
-        public string ComplianceStatus { get; set; }
+        public required string ComplianceNumber { get; set; }
+        public required string RegulationName { get; set; }
+        public required string RegulatoryBody { get; set; }
+        public required string ComplianceType { get; set; }
+        public required string RequirementDescription { get; set; }
+        public required string ComplianceStatus { get; set; }
         public DateTime LastAssessmentDate { get; set; }
         public DateTime NextAssessmentDate { get; set; }
-        public string AssessmentFrequency { get; set; }
+        public required string AssessmentFrequency { get; set; }
         public double ComplianceScore { get; set; }
         public List<string> NonComplianceIssues { get; set; }
         public List<string> CorrectiveActions { get; set; }
-        public string ResponsiblePerson { get; set; }
+        public required string ResponsiblePerson { get; set; }
         public List<string> DocumentationRequired { get; set; }
         public decimal Penalties { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -729,75 +729,79 @@ namespace AttendancePlatform.Api.Services
 
     public class EnvironmentalTrendDto
     {
+        public required string Period { get; set; }
         public double Emissions { get; set; }
         public double Energy { get; set; }
         public double Water { get; set; }
+        public required string Trend { get; set; }
     }
 
     public class EnvironmentalGoalDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string GoalNumber { get; set; }
-        public string GoalName { get; set; }
-        public string GoalType { get; set; }
-        public string Description { get; set; }
+        public required string GoalNumber { get; set; }
+        public required string GoalName { get; set; }
+        public required string GoalType { get; set; }
+        public required string Description { get; set; }
         public double TargetValue { get; set; }
         public double CurrentValue { get; set; }
         public double BaselineValue { get; set; }
-        public string Unit { get; set; }
+        public required string Unit { get; set; }
         public DateTime TargetDate { get; set; }
         public double Progress { get; set; }
-        public string Priority { get; set; }
-        public string ResponsibleDepartment { get; set; }
-        public string ResponsiblePerson { get; set; }
+        public required string Priority { get; set; }
+        public required string ResponsibleDepartment { get; set; }
+        public required string ResponsiblePerson { get; set; }
         public List<EnvironmentalMilestoneDto> Milestones { get; set; }
         public List<string> Actions { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
 
     public class EnvironmentalMilestoneDto
     {
-        public string Description { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
         public DateTime TargetDate { get; set; }
         public bool Completed { get; set; }
+        public required string Status { get; set; }
     }
 
     public class EnvironmentalImpactDto
     {
-        public string ImpactCategory { get; set; }
+        public required string ImpactCategory { get; set; }
         public double ImpactScore { get; set; }
-        public string ImpactLevel { get; set; }
-        public string Description { get; set; }
+        public required string ImpactLevel { get; set; }
+        public required string Description { get; set; }
         public List<string> MitigationMeasures { get; set; }
-        public string MonitoringFrequency { get; set; }
-        public string ResponsibleDepartment { get; set; }
+        public required string MonitoringFrequency { get; set; }
+        public required string ResponsibleDepartment { get; set; }
     }
 
     public class EnvironmentalCertificationDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string CertificationNumber { get; set; }
-        public string CertificationName { get; set; }
-        public string CertificationBody { get; set; }
-        public string CertificationType { get; set; }
-        public string Description { get; set; }
+        public required string CertificationNumber { get; set; }
+        public required string CertificationName { get; set; }
+        public required string CertificationBody { get; set; }
+        public required string CertificationType { get; set; }
+        public required string Description { get; set; }
         public DateTime IssueDate { get; set; }
         public DateTime ExpiryDate { get; set; }
         public DateTime RenewalDate { get; set; }
-        public string CertificateNumber { get; set; }
-        public string Scope { get; set; }
-        public string AuditFrequency { get; set; }
+        public required string CertificateNumber { get; set; }
+        public required string Scope { get; set; }
+        public required string AuditFrequency { get; set; }
         public DateTime LastAuditDate { get; set; }
         public DateTime NextAuditDate { get; set; }
         public double ComplianceScore { get; set; }
         public List<string> NonConformities { get; set; }
         public List<string> ImprovementActions { get; set; }
-        public string ResponsiblePerson { get; set; }
-        public string Status { get; set; }
+        public required string ResponsiblePerson { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

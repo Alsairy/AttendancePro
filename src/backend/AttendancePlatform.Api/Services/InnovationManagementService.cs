@@ -93,9 +93,9 @@ namespace AttendancePlatform.Api.Services
                     },
                     KeyMilestones = new List<InnovationMilestoneDto>
                     {
-                        new InnovationMilestoneDto { Description = "Algorithm Development", TargetDate = DateTime.UtcNow.AddDays(-30), Completed = true },
-                        new InnovationMilestoneDto { Description = "Prototype Testing", TargetDate = DateTime.UtcNow.AddDays(30), Completed = false },
-                        new InnovationMilestoneDto { Description = "Beta Release", TargetDate = DateTime.UtcNow.AddDays(120), Completed = false }
+                        new InnovationMilestoneDto { Description = "Algorithm Development", Status = "Completed", TargetDate = DateTime.UtcNow.AddDays(-30), Completed = true },
+                        new InnovationMilestoneDto { Description = "Prototype Testing", Status = "In Progress", TargetDate = DateTime.UtcNow.AddDays(30), Completed = false },
+                        new InnovationMilestoneDto { Description = "Beta Release", Status = "Planned", TargetDate = DateTime.UtcNow.AddDays(120), Completed = false }
                     },
                     TeamMembers = new List<string> { "Dr. Sarah Innovation", "John ML Engineer", "Lisa Data Scientist", "Mike UX Designer" },
                     Technologies = new List<string> { "Machine Learning", "Python", "TensorFlow", "React", "Azure ML" },
@@ -470,16 +470,16 @@ namespace AttendancePlatform.Api.Services
                 },
                 MonthlyTrends = new Dictionary<string, InnovationTrendDataDto>
                 {
-                    { "Jan", new InnovationTrendDataDto { NewProjects = 2, CompletedProjects = 1, Investment = 185000.00m } },
-                    { "Feb", new InnovationTrendDataDto { NewProjects = 3, CompletedProjects = 0, Investment = 220000.00m } },
-                    { "Mar", new InnovationTrendDataDto { NewProjects = 1, CompletedProjects = 2, Investment = 165000.00m } },
-                    { "Apr", new InnovationTrendDataDto { NewProjects = 4, CompletedProjects = 1, Investment = 285000.00m } }
+                    { "Jan", new InnovationTrendDataDto { Period = "January", NewProjects = 2, CompletedProjects = 1, Investment = 185000.00m } },
+                    { "Feb", new InnovationTrendDataDto { Period = "February", NewProjects = 3, CompletedProjects = 0, Investment = 220000.00m } },
+                    { "Mar", new InnovationTrendDataDto { Period = "March", NewProjects = 1, CompletedProjects = 2, Investment = 165000.00m } },
+                    { "Apr", new InnovationTrendDataDto { Period = "April", NewProjects = 4, CompletedProjects = 1, Investment = 285000.00m } }
                 },
                 TopInnovators = new List<InnovatorStatsDto>
                 {
-                    new InnovatorStatsDto { Name = "Dr. Sarah Innovation", ProjectsLed = 5, IdeasSubmitted = 12, SuccessRate = 83.3 },
-                    new InnovatorStatsDto { Name = "Alex Blockchain", ProjectsLed = 3, IdeasSubmitted = 8, SuccessRate = 75.0 },
-                    new InnovatorStatsDto { Name = "Jennifer Voice", ProjectsLed = 2, IdeasSubmitted = 15, SuccessRate = 66.7 }
+                    new InnovatorStatsDto { Name = "Dr. Sarah Innovation", Department = "R&D", ProjectsLed = 5, IdeasSubmitted = 12, SuccessRate = 83.3 },
+                    new InnovatorStatsDto { Name = "Alex Blockchain", Department = "Engineering", ProjectsLed = 3, IdeasSubmitted = 8, SuccessRate = 75.0 },
+                    new InnovatorStatsDto { Name = "Jennifer Voice", Department = "Engineering", ProjectsLed = 2, IdeasSubmitted = 15, SuccessRate = 66.7 }
                 },
                 GeneratedAt = DateTime.UtcNow
             };
@@ -722,23 +722,23 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ProjectNumber { get; set; }
-        public string ProjectName { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string InnovationType { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string ProjectLead { get; set; }
-        public string Department { get; set; }
+        public required string ProjectNumber { get; set; }
+        public required string ProjectName { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string InnovationType { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string ProjectLead { get; set; }
+        public required string Department { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ExpectedEndDate { get; set; }
         public decimal Budget { get; set; }
         public decimal SpentToDate { get; set; }
         public double InnovationScore { get; set; }
         public int TechnologyReadinessLevel { get; set; }
-        public string MarketPotential { get; set; }
-        public string RiskLevel { get; set; }
+        public required string MarketPotential { get; set; }
+        public required string RiskLevel { get; set; }
         public List<string> Objectives { get; set; }
         public List<InnovationMilestoneDto> KeyMilestones { get; set; }
         public List<string> TeamMembers { get; set; }
@@ -749,7 +749,8 @@ namespace AttendancePlatform.Api.Services
 
     public class InnovationMilestoneDto
     {
-        public string Description { get; set; }
+        public required string Description { get; set; }
+        public required string Status { get; set; }
         public DateTime TargetDate { get; set; }
         public bool Completed { get; set; }
     }
@@ -758,20 +759,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string IdeaNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
+        public required string IdeaNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
         public Guid SubmittedBy { get; set; }
-        public string SubmitterName { get; set; }
-        public string SubmitterDepartment { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string SubmitterName { get; set; }
+        public required string SubmitterDepartment { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public double ImpactScore { get; set; }
         public double FeasibilityScore { get; set; }
         public double NoveltyScore { get; set; }
-        public string BusinessValue { get; set; }
-        public string TechnicalComplexity { get; set; }
+        public required string BusinessValue { get; set; }
+        public required string TechnicalComplexity { get; set; }
         public decimal EstimatedCost { get; set; }
         public int EstimatedTimeframe { get; set; }
         public List<string> PotentialBenefits { get; set; }
@@ -789,27 +790,27 @@ namespace AttendancePlatform.Api.Services
         public double ResourceRequirement { get; set; }
         public double RiskAssessment { get; set; }
         public double OverallScore { get; set; }
-        public string Recommendation { get; set; }
-        public string Comments { get; set; }
+        public required string Recommendation { get; set; }
+        public required string Comments { get; set; }
     }
 
     public class ResearchProjectDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ProjectNumber { get; set; }
-        public string ProjectTitle { get; set; }
-        public string Description { get; set; }
-        public string ResearchType { get; set; }
-        public string ResearchArea { get; set; }
-        public string PrincipalInvestigator { get; set; }
-        public string Institution { get; set; }
+        public required string ProjectNumber { get; set; }
+        public required string ProjectTitle { get; set; }
+        public required string Description { get; set; }
+        public required string ResearchType { get; set; }
+        public required string ResearchArea { get; set; }
+        public required string PrincipalInvestigator { get; set; }
+        public required string Institution { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal Budget { get; set; }
-        public string FundingSource { get; set; }
-        public string Status { get; set; }
-        public string Phase { get; set; }
+        public required string FundingSource { get; set; }
+        public required string Status { get; set; }
+        public required string Phase { get; set; }
         public List<string> Objectives { get; set; }
         public List<string> Methodology { get; set; }
         public List<string> ExpectedOutcomes { get; set; }
@@ -822,21 +823,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string IPNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string IPType { get; set; }
-        public string ApplicationNumber { get; set; }
+        public required string IPNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string IPType { get; set; }
+        public required string ApplicationNumber { get; set; }
         public DateTime FilingDate { get; set; }
         public DateTime? PublicationDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public List<string> Inventors { get; set; }
-        public string Assignee { get; set; }
-        public string TechnologyArea { get; set; }
+        public required string Assignee { get; set; }
+        public required string TechnologyArea { get; set; }
         public List<string> Classifications { get; set; }
         public int Claims { get; set; }
-        public string Priority { get; set; }
-        public string CommercialValue { get; set; }
+        public required string Priority { get; set; }
+        public required string CommercialValue { get; set; }
         public List<string> LicensingOpportunities { get; set; }
         public List<string> ProtectionMeasures { get; set; }
         public decimal MaintenanceFees { get; set; }
@@ -849,22 +850,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string LabNumber { get; set; }
-        public string LabName { get; set; }
-        public string Description { get; set; }
-        public string Location { get; set; }
-        public string LabType { get; set; }
+        public required string LabNumber { get; set; }
+        public required string LabName { get; set; }
+        public required string Description { get; set; }
+        public required string Location { get; set; }
+        public required string LabType { get; set; }
         public int Capacity { get; set; }
         public int CurrentOccupancy { get; set; }
-        public string LabManager { get; set; }
+        public required string LabManager { get; set; }
         public List<string> Equipment { get; set; }
         public List<string> Technologies { get; set; }
         public int ActiveProjects { get; set; }
         public decimal Budget { get; set; }
         public double UtilizationRate { get; set; }
-        public string SafetyRating { get; set; }
+        public required string SafetyRating { get; set; }
         public List<string> Certifications { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -895,6 +896,7 @@ namespace AttendancePlatform.Api.Services
 
     public class InnovationTrendDataDto
     {
+        public required string Period { get; set; }
         public int NewProjects { get; set; }
         public int CompletedProjects { get; set; }
         public decimal Investment { get; set; }
@@ -902,7 +904,8 @@ namespace AttendancePlatform.Api.Services
 
     public class InnovatorStatsDto
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
+        public required string Department { get; set; }
         public int ProjectsLed { get; set; }
         public int IdeasSubmitted { get; set; }
         public double SuccessRate { get; set; }

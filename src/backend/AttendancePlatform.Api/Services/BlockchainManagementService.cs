@@ -370,17 +370,17 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string TransactionNumber { get; set; }
-        public string TransactionName { get; set; }
-        public string Description { get; set; }
-        public string TransactionType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string BlockchainNetwork { get; set; }
-        public string TransactionHash { get; set; }
+        public required string TransactionNumber { get; set; }
+        public required string TransactionName { get; set; }
+        public required string Description { get; set; }
+        public required string TransactionType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string BlockchainNetwork { get; set; }
+        public required string TransactionHash { get; set; }
         public long BlockNumber { get; set; }
-        public string FromAddress { get; set; }
-        public string ToAddress { get; set; }
+        public required string FromAddress { get; set; }
+        public required string ToAddress { get; set; }
         public decimal Value { get; set; }
         public long GasUsed { get; set; }
         public decimal GasPrice { get; set; }
@@ -388,7 +388,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime? ConfirmationTime { get; set; }
         public int Confirmations { get; set; }
         public bool IsSuccessful { get; set; }
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -397,22 +397,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ContractNumber { get; set; }
-        public string ContractName { get; set; }
-        public string Description { get; set; }
-        public string ContractType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string BlockchainNetwork { get; set; }
-        public string ContractAddress { get; set; }
-        public string DeploymentHash { get; set; }
-        public string AbiDefinition { get; set; }
-        public string SourceCode { get; set; }
-        public string CompilerVersion { get; set; }
+        public required string ContractNumber { get; set; }
+        public required string ContractName { get; set; }
+        public required string Description { get; set; }
+        public required string ContractType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string BlockchainNetwork { get; set; }
+        public required string ContractAddress { get; set; }
+        public required string DeploymentHash { get; set; }
+        public required string AbiDefinition { get; set; }
+        public required string SourceCode { get; set; }
+        public required string CompilerVersion { get; set; }
         public long GasLimit { get; set; }
         public decimal DeploymentCost { get; set; }
-        public string Owner { get; set; }
-        public string Version { get; set; }
+        public required string Owner { get; set; }
+        public required string Version { get; set; }
         public bool IsVerified { get; set; }
         public int ExecutionCount { get; set; }
         public DateTime? LastExecution { get; set; }
@@ -444,8 +444,8 @@ namespace AttendancePlatform.Api.Services
     public class BlockchainReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalTransactions { get; set; }
         public int ConfirmedTransactions { get; set; }
         public int FailedTransactions { get; set; }
@@ -467,23 +467,23 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string WalletNumber { get; set; }
-        public string WalletName { get; set; }
-        public string Description { get; set; }
-        public string WalletType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string BlockchainNetwork { get; set; }
-        public string WalletAddress { get; set; }
+        public required string WalletNumber { get; set; }
+        public required string WalletName { get; set; }
+        public required string Description { get; set; }
+        public required string WalletType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string BlockchainNetwork { get; set; }
+        public required string WalletAddress { get; set; }
         public decimal Balance { get; set; }
-        public string Currency { get; set; }
+        public required string Currency { get; set; }
         public int TransactionCount { get; set; }
         public DateTime? LastTransaction { get; set; }
-        public string SecurityLevel { get; set; }
+        public required string SecurityLevel { get; set; }
         public bool MultiSignature { get; set; }
         public int RequiredSignatures { get; set; }
-        public string Owner { get; set; }
-        public string BackupStatus { get; set; }
+        public required string Owner { get; set; }
+        public required string BackupStatus { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -493,23 +493,23 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AuditNumber { get; set; }
-        public string AuditName { get; set; }
-        public string Description { get; set; }
-        public string AuditType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string AuditorName { get; set; }
+        public required string AuditNumber { get; set; }
+        public required string AuditName { get; set; }
+        public required string Description { get; set; }
+        public required string AuditType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string AuditorName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public double Duration { get; set; }
-        public string Scope { get; set; }
-        public string Findings { get; set; }
-        public string Recommendations { get; set; }
+        public required string Scope { get; set; }
+        public required string Findings { get; set; }
+        public required string Recommendations { get; set; }
         public double ComplianceScore { get; set; }
         public double SecurityScore { get; set; }
-        public string RiskLevel { get; set; }
-        public string CertificationStatus { get; set; }
+        public required string RiskLevel { get; set; }
+        public required string CertificationStatus { get; set; }
         public DateTime NextAuditDate { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

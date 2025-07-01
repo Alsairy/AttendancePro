@@ -374,23 +374,23 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ApplicationNumber { get; set; }
-        public string ApplicationName { get; set; }
-        public string Description { get; set; }
-        public string ApplicationType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Platform { get; set; }
-        public string VrFramework { get; set; }
-        public string Version { get; set; }
-        public string MinimumSpecs { get; set; }
-        public string SupportedHeadsets { get; set; }
+        public required string ApplicationNumber { get; set; }
+        public required string ApplicationName { get; set; }
+        public required string Description { get; set; }
+        public required string ApplicationType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Platform { get; set; }
+        public required string VrFramework { get; set; }
+        public required string Version { get; set; }
+        public required string MinimumSpecs { get; set; }
+        public required string SupportedHeadsets { get; set; }
         public int DownloadCount { get; set; }
         public int ActiveUsers { get; set; }
         public double AverageSessionDuration { get; set; }
         public double UserRating { get; set; }
         public DateTime? LastUpdate { get; set; }
-        public string Developer { get; set; }
+        public required string Developer { get; set; }
         public DateTime? PublishDate { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -400,12 +400,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ExperienceNumber { get; set; }
-        public string ExperienceName { get; set; }
-        public string Description { get; set; }
-        public string ExperienceType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string ExperienceNumber { get; set; }
+        public required string ExperienceName { get; set; }
+        public required string Description { get; set; }
+        public required string ExperienceType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public double Duration { get; set; }
         public int InteractionPoints { get; set; }
         public double CompletionRate { get; set; }
@@ -416,7 +416,7 @@ namespace AttendancePlatform.Api.Services
         public int ShareCount { get; set; }
         public int FeedbackCount { get; set; }
         public DateTime? LastAccessed { get; set; }
-        public string Creator { get; set; }
+        public required string Creator { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -447,8 +447,8 @@ namespace AttendancePlatform.Api.Services
     public class VrReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int ApplicationsLaunched { get; set; }
         public int ExperiencesCreated { get; set; }
         public int NewUsers { get; set; }
@@ -470,25 +470,25 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string EnvironmentNumber { get; set; }
-        public string EnvironmentName { get; set; }
-        public string Description { get; set; }
-        public string EnvironmentType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string FileFormat { get; set; }
-        public string FileSize { get; set; }
-        public string Resolution { get; set; }
+        public required string EnvironmentNumber { get; set; }
+        public required string EnvironmentName { get; set; }
+        public required string Description { get; set; }
+        public required string EnvironmentType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string FileFormat { get; set; }
+        public required string FileSize { get; set; }
+        public required string Resolution { get; set; }
         public int PolygonCount { get; set; }
         public int TextureCount { get; set; }
-        public string LightingType { get; set; }
+        public required string LightingType { get; set; }
         public bool PhysicsEnabled { get; set; }
         public int InteractiveObjects { get; set; }
         public int ViewCount { get; set; }
         public int DownloadCount { get; set; }
         public double AverageRating { get; set; }
-        public string Creator { get; set; }
-        public string Version { get; set; }
+        public required string Creator { get; set; }
+        public required string Version { get; set; }
         public DateTime? LastModified { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -498,12 +498,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string SessionNumber { get; set; }
-        public string SessionName { get; set; }
-        public string Description { get; set; }
-        public string SessionType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string SessionNumber { get; set; }
+        public required string SessionName { get; set; }
+        public required string Description { get; set; }
+        public required string SessionType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid UserId { get; set; }
         public Guid ApplicationId { get; set; }
         public Guid ExperienceId { get; set; }
@@ -513,8 +513,8 @@ namespace AttendancePlatform.Api.Services
         public int InteractionCount { get; set; }
         public double CompletionPercentage { get; set; }
         public int UserRating { get; set; }
-        public string HeadsetType { get; set; }
-        public string ControllerType { get; set; }
+        public required string HeadsetType { get; set; }
+        public required string ControllerType { get; set; }
         public double TrackingQuality { get; set; }
         public double MotionSickness { get; set; }
         public double PerformanceScore { get; set; }

@@ -369,28 +369,28 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RobotNumber { get; set; }
-        public string RobotName { get; set; }
-        public string Description { get; set; }
-        public string RobotType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Manufacturer { get; set; }
-        public string Model { get; set; }
-        public string SerialNumber { get; set; }
-        public string FirmwareVersion { get; set; }
-        public string HardwareVersion { get; set; }
-        public string Location { get; set; }
-        public string IPAddress { get; set; }
+        public required string RobotNumber { get; set; }
+        public required string RobotName { get; set; }
+        public required string Description { get; set; }
+        public required string RobotType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Manufacturer { get; set; }
+        public required string Model { get; set; }
+        public required string SerialNumber { get; set; }
+        public required string FirmwareVersion { get; set; }
+        public required string HardwareVersion { get; set; }
+        public required string Location { get; set; }
+        public required string IPAddress { get; set; }
         public double BatteryLevel { get; set; }
-        public string ChargingStatus { get; set; }
+        public required string ChargingStatus { get; set; }
         public DateTime? LastMaintenance { get; set; }
         public DateTime? NextMaintenance { get; set; }
         public double OperatingHours { get; set; }
         public int TasksCompleted { get; set; }
         public int ErrorCount { get; set; }
         public double Uptime { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -399,13 +399,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string TaskNumber { get; set; }
-        public string TaskName { get; set; }
-        public string Description { get; set; }
-        public string TaskType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string TaskNumber { get; set; }
+        public required string TaskName { get; set; }
+        public required string Description { get; set; }
+        public required string TaskType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public Guid RobotId { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
@@ -414,8 +414,8 @@ namespace AttendancePlatform.Api.Services
         public double SuccessRate { get; set; }
         public int ErrorsEncountered { get; set; }
         public int ItemsProcessed { get; set; }
-        public string AssignedBy { get; set; }
-        public string CompletedBy { get; set; }
+        public required string AssignedBy { get; set; }
+        public required string CompletedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -445,8 +445,8 @@ namespace AttendancePlatform.Api.Services
     public class RoboticsReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalRobots { get; set; }
         public int RobotsDeployed { get; set; }
         public int RobotsRetired { get; set; }
@@ -467,13 +467,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string WorkflowNumber { get; set; }
-        public string WorkflowName { get; set; }
-        public string Description { get; set; }
-        public string WorkflowType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Steps { get; set; }
+        public required string WorkflowNumber { get; set; }
+        public required string WorkflowName { get; set; }
+        public required string Description { get; set; }
+        public required string WorkflowType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Steps { get; set; }
         public int StepCount { get; set; }
         public double EstimatedDuration { get; set; }
         public DateTime? LastExecution { get; set; }
@@ -481,7 +481,7 @@ namespace AttendancePlatform.Api.Services
         public int ExecutionCount { get; set; }
         public double SuccessRate { get; set; }
         public double AverageExecutionTime { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public bool IsAutomated { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -491,24 +491,24 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string MaintenanceNumber { get; set; }
-        public string MaintenanceName { get; set; }
-        public string Description { get; set; }
-        public string MaintenanceType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string MaintenanceNumber { get; set; }
+        public required string MaintenanceName { get; set; }
+        public required string Description { get; set; }
+        public required string MaintenanceType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid RobotId { get; set; }
         public DateTime ScheduledDate { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public double Duration { get; set; }
-        public string MaintenanceItems { get; set; }
-        public string PartsReplaced { get; set; }
+        public required string MaintenanceItems { get; set; }
+        public required string PartsReplaced { get; set; }
         public decimal CostIncurred { get; set; }
-        public string TechnicianName { get; set; }
-        public string CompletionNotes { get; set; }
+        public required string TechnicianName { get; set; }
+        public required string CompletionNotes { get; set; }
         public DateTime NextMaintenanceDate { get; set; }
-        public string WarrantyStatus { get; set; }
+        public required string WarrantyStatus { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

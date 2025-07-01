@@ -335,18 +335,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string CampaignNumber { get; set; }
-        public string CampaignName { get; set; }
-        public string Description { get; set; }
-        public string CampaignType { get; set; }
-        public string Channel { get; set; }
-        public string Status { get; set; }
+        public required string CampaignNumber { get; set; }
+        public required string CampaignName { get; set; }
+        public required string Description { get; set; }
+        public required string CampaignType { get; set; }
+        public required string Channel { get; set; }
+        public required string Status { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal Budget { get; set; }
         public decimal SpentToDate { get; set; }
-        public string TargetAudience { get; set; }
-        public string CampaignManager { get; set; }
+        public required string TargetAudience { get; set; }
+        public required string CampaignManager { get; set; }
         public int ExpectedLeads { get; set; }
         public int ActualLeads { get; set; }
         public double ConversionRate { get; set; }
@@ -359,18 +359,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string LeadNumber { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Company { get; set; }
-        public string JobTitle { get; set; }
-        public string Industry { get; set; }
-        public string LeadSource { get; set; }
-        public string Status { get; set; }
+        public required string LeadNumber { get; set; }
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
+        public required string Email { get; set; }
+        public required string Phone { get; set; }
+        public required string Company { get; set; }
+        public required string JobTitle { get; set; }
+        public required string Industry { get; set; }
+        public required string LeadSource { get; set; }
+        public required string Status { get; set; }
         public int Score { get; set; }
-        public string AssignedTo { get; set; }
+        public required string AssignedTo { get; set; }
         public decimal EstimatedValue { get; set; }
         public DateTime ExpectedCloseDate { get; set; }
         public DateTime LastContactDate { get; set; }
@@ -399,8 +399,8 @@ namespace AttendancePlatform.Api.Services
     public class MarketingReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalCampaigns { get; set; }
         public int ActiveCampaigns { get; set; }
         public int CompletedCampaigns { get; set; }
@@ -417,14 +417,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string SegmentNumber { get; set; }
-        public string SegmentName { get; set; }
-        public string Description { get; set; }
-        public string SegmentType { get; set; }
+        public required string SegmentNumber { get; set; }
+        public required string SegmentName { get; set; }
+        public required string Description { get; set; }
+        public required string SegmentType { get; set; }
         public int Size { get; set; }
         public double GrowthRate { get; set; }
-        public string Profitability { get; set; }
-        public string CompetitiveIntensity { get; set; }
+        public required string Profitability { get; set; }
+        public required string CompetitiveIntensity { get; set; }
         public decimal MarketPotential { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -434,16 +434,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string BrandNumber { get; set; }
-        public string BrandName { get; set; }
-        public string Description { get; set; }
-        public string BrandPosition { get; set; }
+        public required string BrandNumber { get; set; }
+        public required string BrandName { get; set; }
+        public required string Description { get; set; }
+        public required string BrandPosition { get; set; }
         public decimal BrandValue { get; set; }
         public double BrandAwareness { get; set; }
         public double BrandLoyalty { get; set; }
         public double BrandEquity { get; set; }
         public double MarketShare { get; set; }
-        public string CompetitiveAdvantage { get; set; }
+        public required string CompetitiveAdvantage { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

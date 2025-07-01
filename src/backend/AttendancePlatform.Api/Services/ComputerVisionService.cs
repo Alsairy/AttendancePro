@@ -371,30 +371,30 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ModelNumber { get; set; }
-        public string ModelName { get; set; }
-        public string Description { get; set; }
-        public string ModelType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Architecture { get; set; }
-        public string Framework { get; set; }
-        public string Version { get; set; }
-        public string InputResolution { get; set; }
+        public required string ModelNumber { get; set; }
+        public required string ModelName { get; set; }
+        public required string Description { get; set; }
+        public required string ModelType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Architecture { get; set; }
+        public required string Framework { get; set; }
+        public required string Version { get; set; }
+        public required string InputResolution { get; set; }
         public int OutputClasses { get; set; }
         public double Accuracy { get; set; }
         public double Precision { get; set; }
         public double Recall { get; set; }
         public double F1Score { get; set; }
         public double InferenceTime { get; set; }
-        public string ModelSize { get; set; }
-        public string TrainingDataset { get; set; }
+        public required string ModelSize { get; set; }
+        public required string TrainingDataset { get; set; }
         public int TrainingImages { get; set; }
         public int ValidationImages { get; set; }
         public int TestImages { get; set; }
         public DateTime? LastTraining { get; set; }
         public DateTime? NextTraining { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -483,7 +483,7 @@ namespace AttendancePlatform.Api.Services
         public int DetectedObjects { get; set; }
         public double ConfidenceScore { get; set; }
         public double ProcessingTime { get; set; }
-        public string ObjectClasses { get; set; }
+        public required string ObjectClasses { get; set; }
         public double DetectionAccuracy { get; set; }
         public double QualityScore { get; set; }
         public string DetectedBy { get; set; }

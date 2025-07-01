@@ -367,24 +367,24 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ProjectNumber { get; set; }
-        public string ProjectName { get; set; }
-        public string Description { get; set; }
-        public string ProjectType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Objective { get; set; }
-        public string Methodology { get; set; }
-        public string DataSources { get; set; }
+        public required string ProjectNumber { get; set; }
+        public required string ProjectName { get; set; }
+        public required string Description { get; set; }
+        public required string ProjectType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Objective { get; set; }
+        public required string Methodology { get; set; }
+        public required string DataSources { get; set; }
         public int TeamSize { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public double Progress { get; set; }
         public decimal Budget { get; set; }
         public decimal SpentBudget { get; set; }
-        public string ProjectLead { get; set; }
-        public string Stakeholders { get; set; }
-        public string ExpectedOutcomes { get; set; }
+        public required string ProjectLead { get; set; }
+        public required string Stakeholders { get; set; }
+        public required string ExpectedOutcomes { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -393,22 +393,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string NotebookNumber { get; set; }
-        public string NotebookName { get; set; }
-        public string Description { get; set; }
-        public string NotebookType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Language { get; set; }
-        public string Framework { get; set; }
+        public required string NotebookNumber { get; set; }
+        public required string NotebookName { get; set; }
+        public required string Description { get; set; }
+        public required string NotebookType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Language { get; set; }
+        public required string Framework { get; set; }
         public int CellCount { get; set; }
         public DateTime? LastExecution { get; set; }
         public double ExecutionTime { get; set; }
-        public string FileSize { get; set; }
-        public string Version { get; set; }
-        public string Author { get; set; }
-        public string Collaborators { get; set; }
-        public string Tags { get; set; }
+        public required string FileSize { get; set; }
+        public required string Version { get; set; }
+        public required string Author { get; set; }
+        public required string Collaborators { get; set; }
+        public required string Tags { get; set; }
         public bool IsShared { get; set; }
         public int ViewCount { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -430,7 +430,7 @@ namespace AttendancePlatform.Api.Services
         public int InteractiveVisualizations { get; set; }
         public int VisualizationViews { get; set; }
         public int TeamCollaborations { get; set; }
-        public string DataProcessed { get; set; }
+        public required string DataProcessed { get; set; }
         public double ComputeHoursUsed { get; set; }
         public decimal CostSavings { get; set; }
         public double BusinessValue { get; set; }
@@ -441,8 +441,8 @@ namespace AttendancePlatform.Api.Services
     public class DataScienceReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalProjects { get; set; }
         public int ProjectsCompleted { get; set; }
         public int ProjectsInProgress { get; set; }
@@ -450,7 +450,7 @@ namespace AttendancePlatform.Api.Services
         public int NotebooksCreated { get; set; }
         public int NotebooksPublished { get; set; }
         public int VisualizationsCreated { get; set; }
-        public string DataProcessed { get; set; }
+        public required string DataProcessed { get; set; }
         public double ComputeHoursUsed { get; set; }
         public decimal CostSavings { get; set; }
         public double ROI { get; set; }
@@ -464,22 +464,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string VisualizationNumber { get; set; }
-        public string VisualizationName { get; set; }
-        public string Description { get; set; }
-        public string VisualizationType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Tool { get; set; }
-        public string DataSource { get; set; }
-        public string InteractivityLevel { get; set; }
+        public required string VisualizationNumber { get; set; }
+        public required string VisualizationName { get; set; }
+        public required string Description { get; set; }
+        public required string VisualizationType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Tool { get; set; }
+        public required string DataSource { get; set; }
+        public required string InteractivityLevel { get; set; }
         public DateTime? LastUpdated { get; set; }
         public int ViewCount { get; set; }
         public int ShareCount { get; set; }
-        public string Author { get; set; }
-        public string Tags { get; set; }
+        public required string Author { get; set; }
+        public required string Tags { get; set; }
         public bool IsPublic { get; set; }
-        public string FileSize { get; set; }
+        public required string FileSize { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -488,23 +488,23 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string CollaborationNumber { get; set; }
-        public string CollaborationName { get; set; }
-        public string Description { get; set; }
-        public string CollaborationType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Participants { get; set; }
+        public required string CollaborationNumber { get; set; }
+        public required string CollaborationName { get; set; }
+        public required string Description { get; set; }
+        public required string CollaborationType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Participants { get; set; }
         public int ParticipantCount { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public double Progress { get; set; }
-        public string SharedResources { get; set; }
-        public string CommunicationChannel { get; set; }
-        public string MeetingFrequency { get; set; }
+        public required string SharedResources { get; set; }
+        public required string CommunicationChannel { get; set; }
+        public required string MeetingFrequency { get; set; }
         public DateTime? LastMeeting { get; set; }
         public DateTime? NextMeeting { get; set; }
-        public string Deliverables { get; set; }
+        public required string Deliverables { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

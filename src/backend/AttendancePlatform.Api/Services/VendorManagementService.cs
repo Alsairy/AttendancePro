@@ -418,14 +418,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string VendorCode { get; set; }
-        public string Name { get; set; }
-        public string Category { get; set; }
-        public string ContactPerson { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Address { get; set; }
-        public string Status { get; set; }
+        public required string VendorCode { get; set; }
+        public required string Name { get; set; }
+        public required string Category { get; set; }
+        public required string ContactPerson { get; set; }
+        public required string Email { get; set; }
+        public required string Phone { get; set; }
+        public required string Address { get; set; }
+        public required string Status { get; set; }
         public double Rating { get; set; }
         public int TotalContracts { get; set; }
         public int ActiveContracts { get; set; }
@@ -438,14 +438,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid VendorId { get; set; }
-        public string ContractNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public required string ContractNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
         public decimal ContractValue { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; }
-        public string PaymentTerms { get; set; }
+        public required string Status { get; set; }
+        public required string PaymentTerms { get; set; }
         public DateTime RenewalDate { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -466,7 +466,7 @@ namespace AttendancePlatform.Api.Services
         public int TotalOrders { get; set; }
         public int CompletedOrders { get; set; }
         public int PendingOrders { get; set; }
-        public string EvaluationPeriod { get; set; }
+        public required string EvaluationPeriod { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
@@ -474,16 +474,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid VendorId { get; set; }
-        public string InvoiceNumber { get; set; }
+        public required string InvoiceNumber { get; set; }
         public Guid ContractId { get; set; }
-        public string ContractNumber { get; set; }
+        public required string ContractNumber { get; set; }
         public decimal Amount { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime InvoiceDate { get; set; }
         public DateTime DueDate { get; set; }
-        public string Status { get; set; }
-        public string Description { get; set; }
+        public required string Status { get; set; }
+        public required string Description { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -507,8 +507,8 @@ namespace AttendancePlatform.Api.Services
     public class VendorCategoryDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public int VendorCount { get; set; }
         public bool IsActive { get; set; }
     }
@@ -517,7 +517,7 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid VendorId { get; set; }
         public double OverallRiskScore { get; set; }
-        public string RiskLevel { get; set; }
+        public required string RiskLevel { get; set; }
         public double FinancialRisk { get; set; }
         public double OperationalRisk { get; set; }
         public double ComplianceRisk { get; set; }

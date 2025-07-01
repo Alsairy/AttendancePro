@@ -388,22 +388,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string NodeNumber { get; set; }
-        public string NodeName { get; set; }
-        public string Description { get; set; }
-        public string NodeType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Location { get; set; }
-        public string IPAddress { get; set; }
-        public string MACAddress { get; set; }
+        public required string NodeNumber { get; set; }
+        public required string NodeName { get; set; }
+        public required string Description { get; set; }
+        public required string NodeType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Location { get; set; }
+        public required string IPAddress { get; set; }
+        public required string MACAddress { get; set; }
         public int CPUCores { get; set; }
         public int MemoryGB { get; set; }
         public int StorageGB { get; set; }
-        public string GPUModel { get; set; }
-        public string OperatingSystem { get; set; }
-        public string ContainerRuntime { get; set; }
-        public string KubernetesVersion { get; set; }
+        public required string GPUModel { get; set; }
+        public required string OperatingSystem { get; set; }
+        public required string ContainerRuntime { get; set; }
+        public required string KubernetesVersion { get; set; }
         public DateTime? LastHeartbeat { get; set; }
         public double Uptime { get; set; }
         public double CPUUsage { get; set; }
@@ -419,14 +419,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ApplicationNumber { get; set; }
-        public string ApplicationName { get; set; }
-        public string Description { get; set; }
-        public string ApplicationType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
-        public string ContainerImage { get; set; }
+        public required string ApplicationNumber { get; set; }
+        public required string ApplicationName { get; set; }
+        public required string Description { get; set; }
+        public required string ApplicationType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
+        public required string ContainerImage { get; set; }
         public double CPURequest { get; set; }
         public double MemoryRequest { get; set; }
         public double StorageRequest { get; set; }
@@ -439,7 +439,7 @@ namespace AttendancePlatform.Api.Services
         public double ErrorRate { get; set; }
         public double Uptime { get; set; }
         public DateTime? LastDeployment { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -471,8 +471,8 @@ namespace AttendancePlatform.Api.Services
     public class EdgeReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalNodes { get; set; }
         public int NodesDeployed { get; set; }
         public int NodesRetired { get; set; }
@@ -496,13 +496,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string WorkloadNumber { get; set; }
-        public string WorkloadName { get; set; }
-        public string Description { get; set; }
-        public string WorkloadType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
+        public required string WorkloadNumber { get; set; }
+        public required string WorkloadName { get; set; }
+        public required string Description { get; set; }
+        public required string WorkloadType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
         public Guid NodeId { get; set; }
         public Guid ApplicationId { get; set; }
         public double CPUAllocation { get; set; }
@@ -517,7 +517,7 @@ namespace AttendancePlatform.Api.Services
         public int FailedTasks { get; set; }
         public double SuccessRate { get; set; }
         public double AverageProcessingTime { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -526,15 +526,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string SecurityNumber { get; set; }
-        public string SecurityName { get; set; }
-        public string Description { get; set; }
-        public string SecurityType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string SecurityLevel { get; set; }
+        public required string SecurityNumber { get; set; }
+        public required string SecurityName { get; set; }
+        public required string Description { get; set; }
+        public required string SecurityType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string SecurityLevel { get; set; }
         public bool EncryptionEnabled { get; set; }
-        public string AuthenticationMethod { get; set; }
+        public required string AuthenticationMethod { get; set; }
         public bool AccessControlEnabled { get; set; }
         public bool FirewallEnabled { get; set; }
         public bool IntrusionDetectionEnabled { get; set; }
@@ -546,7 +546,7 @@ namespace AttendancePlatform.Api.Services
         public int ThreatsDetected { get; set; }
         public int ThreatsBlocked { get; set; }
         public int SecurityIncidents { get; set; }
-        public string ComplianceStatus { get; set; }
+        public required string ComplianceStatus { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

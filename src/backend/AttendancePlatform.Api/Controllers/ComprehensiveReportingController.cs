@@ -125,7 +125,7 @@ namespace AttendancePlatform.Api.Controllers
         [HttpPost("custom")]
         public async Task<ActionResult<CustomReportDto>> GenerateCustomReport(
             [FromQuery] Guid tenantId,
-            [FromBody] CustomReportRequestDto request)
+            [FromBody] ComprehensiveCustomReportRequestDto request)
         {
             try
             {

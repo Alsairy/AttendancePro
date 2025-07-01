@@ -427,19 +427,19 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PlanNumber { get; set; }
-        public string PlanName { get; set; }
-        public string Description { get; set; }
-        public string PlanType { get; set; }
-        public string TimeHorizon { get; set; }
+        public required string PlanNumber { get; set; }
+        public required string PlanName { get; set; }
+        public required string Description { get; set; }
+        public required string PlanType { get; set; }
+        public required string TimeHorizon { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
-        public string Owner { get; set; }
-        public string Approver { get; set; }
-        public string VisionStatement { get; set; }
-        public string MissionStatement { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
+        public required string Owner { get; set; }
+        public required string Approver { get; set; }
+        public required string VisionStatement { get; set; }
+        public required string MissionStatement { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -448,16 +448,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ObjectiveNumber { get; set; }
-        public string ObjectiveName { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string Owner { get; set; }
+        public required string ObjectiveNumber { get; set; }
+        public required string ObjectiveName { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string Owner { get; set; }
         public DateTime TargetDate { get; set; }
         public double ProgressPercentage { get; set; }
-        public string StrategicPerspective { get; set; }
+        public required string StrategicPerspective { get; set; }
         public double Weight { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -467,13 +467,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string InitiativeNumber { get; set; }
-        public string InitiativeName { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string Owner { get; set; }
+        public required string InitiativeNumber { get; set; }
+        public required string InitiativeName { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string Owner { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal Budget { get; set; }
@@ -488,18 +488,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string IndicatorNumber { get; set; }
-        public string IndicatorName { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string MeasurementUnit { get; set; }
-        public string Frequency { get; set; }
-        public string Status { get; set; }
-        public string Owner { get; set; }
+        public required string IndicatorNumber { get; set; }
+        public required string IndicatorName { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string MeasurementUnit { get; set; }
+        public required string Frequency { get; set; }
+        public required string Status { get; set; }
+        public required string Owner { get; set; }
         public double CurrentValue { get; set; }
         public double TargetValue { get; set; }
         public double ThresholdValue { get; set; }
-        public string Trend { get; set; }
+        public required string Trend { get; set; }
         public DateTime LastMeasured { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -528,8 +528,8 @@ namespace AttendancePlatform.Api.Services
     public class StrategicReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalObjectives { get; set; }
         public int AchievedObjectives { get; set; }
         public double ObjectiveAchievementRate { get; set; }
@@ -545,11 +545,11 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ScorecardNumber { get; set; }
-        public string ScorecardName { get; set; }
-        public string Description { get; set; }
-        public string Period { get; set; }
-        public string Status { get; set; }
+        public required string ScorecardNumber { get; set; }
+        public required string ScorecardName { get; set; }
+        public required string Description { get; set; }
+        public required string Period { get; set; }
+        public required string Status { get; set; }
         public double FinancialPerspectiveScore { get; set; }
         public double CustomerPerspectiveScore { get; set; }
         public double InternalProcessScore { get; set; }
@@ -563,14 +563,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ReviewNumber { get; set; }
-        public string ReviewName { get; set; }
-        public string Description { get; set; }
-        public string ReviewType { get; set; }
+        public required string ReviewNumber { get; set; }
+        public required string ReviewName { get; set; }
+        public required string Description { get; set; }
+        public required string ReviewType { get; set; }
         public DateTime ReviewDate { get; set; }
-        public string Status { get; set; }
-        public string Reviewer { get; set; }
-        public string OverallRating { get; set; }
+        public required string Status { get; set; }
+        public required string Reviewer { get; set; }
+        public required string OverallRating { get; set; }
         public double StrategicScore { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -580,10 +580,10 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid TenantId { get; set; }
         public double AlignmentScore { get; set; }
-        public string AlignmentLevel { get; set; }
+        public required string AlignmentLevel { get; set; }
         public DateTime LastAssessmentDate { get; set; }
         public DateTime NextAssessmentDate { get; set; }
-        public string StrategicFocus { get; set; }
+        public required string StrategicFocus { get; set; }
         public double OrganizationalAlignment { get; set; }
         public double ResourceAlignment { get; set; }
         public double CulturalAlignment { get; set; }

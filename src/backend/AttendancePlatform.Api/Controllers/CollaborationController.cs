@@ -105,7 +105,7 @@ namespace AttendancePlatform.Api.Controllers
         }
 
         [HttpPost("projects")]
-        public async Task<ActionResult<ProjectDto>> CreateProject([FromBody] ProjectDto project)
+        public async Task<ActionResult<CollaborationProjectDto>> CreateProject([FromBody] CollaborationProjectDto project)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace AttendancePlatform.Api.Controllers
         }
 
         [HttpGet("projects")]
-        public async Task<ActionResult<List<ProjectDto>>> GetProjects([FromQuery] Guid tenantId)
+        public async Task<ActionResult<List<CollaborationProjectDto>>> GetProjects([FromQuery] Guid tenantId)
         {
             try
             {
@@ -135,7 +135,7 @@ namespace AttendancePlatform.Api.Controllers
         }
 
         [HttpPost("tasks")]
-        public async Task<ActionResult<TaskDto>> CreateTask([FromBody] TaskDto task)
+        public async Task<ActionResult<CollaborationTaskDto>> CreateTask([FromBody] CollaborationTaskDto task)
         {
             try
             {
@@ -150,7 +150,7 @@ namespace AttendancePlatform.Api.Controllers
         }
 
         [HttpGet("projects/{projectId}/tasks")]
-        public async Task<ActionResult<List<TaskDto>>> GetTasks(Guid projectId)
+        public async Task<ActionResult<List<CollaborationTaskDto>>> GetTasks(Guid projectId)
         {
             try
             {
@@ -183,7 +183,7 @@ namespace AttendancePlatform.Api.Controllers
         }
 
         [HttpPost("documents")]
-        public async Task<ActionResult<DocumentDto>> CreateDocument([FromBody] DocumentDto document)
+        public async Task<ActionResult<CollaborationDocumentDto>> CreateDocument([FromBody] CollaborationDocumentDto document)
         {
             try
             {
@@ -198,7 +198,7 @@ namespace AttendancePlatform.Api.Controllers
         }
 
         [HttpGet("projects/{projectId}/documents")]
-        public async Task<ActionResult<List<DocumentDto>>> GetDocuments(Guid projectId)
+        public async Task<ActionResult<List<CollaborationDocumentDto>>> GetDocuments(Guid projectId)
         {
             try
             {

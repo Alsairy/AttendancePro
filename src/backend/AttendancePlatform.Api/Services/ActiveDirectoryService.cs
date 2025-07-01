@@ -28,6 +28,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Returning empty list for users");
+                    return new List<AdUserDto>();
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var searcher = new UserPrincipal(context);
                 
@@ -72,6 +78,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot get user {UserPrincipalName}", userPrincipalName);
+                    throw new PlatformNotSupportedException("Active Directory operations are only supported on Windows");
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var user = UserPrincipal.FindByIdentity(context, userPrincipalName);
 
@@ -105,6 +117,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot create user {UserPrincipalName}", userDto.UserPrincipalName);
+                    throw new PlatformNotSupportedException("Active Directory operations are only supported on Windows");
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var user = new UserPrincipal(context)
                 {
@@ -117,7 +135,10 @@ namespace AttendancePlatform.Api.Services
                     Enabled = userDto.Enabled
                 };
 
-                user.Save();
+                if (OperatingSystem.IsWindows())
+                {
+                    user.Save();
+                }
                 return userDto;
             }
             catch (Exception ex)
@@ -131,6 +152,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot update user {UserPrincipalName}", userPrincipalName);
+                    throw new PlatformNotSupportedException("Active Directory operations are only supported on Windows");
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var user = UserPrincipal.FindByIdentity(context, userPrincipalName);
 
@@ -145,7 +172,10 @@ namespace AttendancePlatform.Api.Services
                 user.EmailAddress = userDto.Email;
                 user.Enabled = userDto.Enabled;
 
-                user.Save();
+                if (OperatingSystem.IsWindows())
+                {
+                    user.Save();
+                }
                 return userDto;
             }
             catch (Exception ex)
@@ -159,6 +189,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot delete user {UserPrincipalName}", userPrincipalName);
+                    return false;
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var user = UserPrincipal.FindByIdentity(context, userPrincipalName);
 
@@ -167,7 +203,10 @@ namespace AttendancePlatform.Api.Services
                     return false;
                 }
 
-                user.Delete();
+                if (OperatingSystem.IsWindows())
+                {
+                    user.Delete();
+                }
                 return true;
             }
             catch (Exception ex)
@@ -181,6 +220,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot enable user {UserPrincipalName}", userPrincipalName);
+                    return false;
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var user = UserPrincipal.FindByIdentity(context, userPrincipalName);
 
@@ -190,7 +235,10 @@ namespace AttendancePlatform.Api.Services
                 }
 
                 user.Enabled = true;
-                user.Save();
+                if (OperatingSystem.IsWindows())
+                {
+                    user.Save();
+                }
                 return true;
             }
             catch (Exception ex)
@@ -204,6 +252,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot disable user {UserPrincipalName}", userPrincipalName);
+                    return false;
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var user = UserPrincipal.FindByIdentity(context, userPrincipalName);
 
@@ -213,7 +267,10 @@ namespace AttendancePlatform.Api.Services
                 }
 
                 user.Enabled = false;
-                user.Save();
+                if (OperatingSystem.IsWindows())
+                {
+                    user.Save();
+                }
                 return true;
             }
             catch (Exception ex)
@@ -227,6 +284,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot reset password for user {UserPrincipalName}", userPrincipalName);
+                    return false;
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var user = UserPrincipal.FindByIdentity(context, userPrincipalName);
 
@@ -249,6 +312,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Returning empty list for groups");
+                    return new List<AdGroupDto>();
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var searcher = new GroupPrincipal(context);
                 
@@ -286,6 +355,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot get group {GroupName}", groupName);
+                    throw new PlatformNotSupportedException("Active Directory operations are only supported on Windows");
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var group = GroupPrincipal.FindByIdentity(context, groupName);
 
@@ -312,6 +387,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot create group {GroupName}", groupDto.Name);
+                    throw new PlatformNotSupportedException("Active Directory operations are only supported on Windows");
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var group = new GroupPrincipal(context)
                 {
@@ -334,6 +415,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot update group {GroupName}", groupName);
+                    throw new PlatformNotSupportedException("Active Directory operations are only supported on Windows");
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var group = GroupPrincipal.FindByIdentity(context, groupName);
 
@@ -359,6 +446,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot delete group {GroupName}", groupName);
+                    return false;
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var group = GroupPrincipal.FindByIdentity(context, groupName);
 
@@ -381,6 +474,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot add user {UserPrincipalName} to group {GroupName}", userPrincipalName, groupName);
+                    return false;
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var group = GroupPrincipal.FindByIdentity(context, groupName);
                 using var user = UserPrincipal.FindByIdentity(context, userPrincipalName);
@@ -405,6 +504,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot remove user {UserPrincipalName} from group {GroupName}", userPrincipalName, groupName);
+                    return false;
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var group = GroupPrincipal.FindByIdentity(context, groupName);
                 using var user = UserPrincipal.FindByIdentity(context, userPrincipalName);
@@ -429,6 +534,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Returning empty list for group {GroupName}", groupName);
+                    return new List<AdUserDto>();
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var group = GroupPrincipal.FindByIdentity(context, groupName);
 
@@ -468,6 +579,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Returning empty list for user {UserPrincipalName}", userPrincipalName);
+                    return new List<AdGroupDto>();
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var user = UserPrincipal.FindByIdentity(context, userPrincipalName);
 
@@ -503,6 +620,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Returning empty list for organizational units");
+                    return new List<AdOrganizationalUnitDto>();
+                }
+
                 var ous = new List<AdOrganizationalUnitDto>();
                 using var entry = new DirectoryEntry(_ldapPath, _username, _password);
                 using var searcher = new DirectorySearcher(entry)
@@ -537,6 +660,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot move user {UserPrincipalName} to OU {OUPath}", userPrincipalName, ouPath);
+                    return false;
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var user = UserPrincipal.FindByIdentity(context, userPrincipalName);
 
@@ -560,6 +689,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Cannot authenticate user {UserPrincipalName}", userPrincipalName);
+                    return false;
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain);
                 return context.ValidateCredentials(userPrincipalName, password);
             }
@@ -574,6 +709,12 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Connection test failed");
+                    return false;
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 using var searcher = new UserPrincipal(context);
                 using var searchResults = new PrincipalSearcher(searcher);
@@ -592,6 +733,20 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _logger.LogWarning("Active Directory operations are only supported on Windows. Returning disconnected domain info");
+                    return new AdDomainInfoDto
+                    {
+                        DomainName = _domain,
+                        NetBiosName = _domain.Split('.')[0],
+                        DomainController = _domain,
+                        ForestName = _domain,
+                        IsConnected = false,
+                        LastConnectionTest = DateTime.UtcNow
+                    };
+                }
+
                 using var context = new PrincipalContext(ContextType.Domain, _domain, _username, _password);
                 
                 return new AdDomainInfoDto

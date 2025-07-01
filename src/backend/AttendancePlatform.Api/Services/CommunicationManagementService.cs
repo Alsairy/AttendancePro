@@ -484,9 +484,9 @@ namespace AttendancePlatform.Api.Services
                 },
                 ChannelPerformance = new Dictionary<string, CommunicationChannelPerformanceDto>
                 {
-                    { "Email", new CommunicationChannelPerformanceDto { Sent = 385, Delivered = 375, Opened = 258, Clicked = 58 } },
-                    { "SMS", new CommunicationChannelPerformanceDto { Sent = 125, Delivered = 123, Opened = 123, Clicked = 0 } },
-                    { "Push", new CommunicationChannelPerformanceDto { Sent = 285, Delivered = 271, Opened = 195, Clicked = 45 } }
+                    { "Email", new CommunicationChannelPerformanceDto { Channel = "Email", Sent = 385, Delivered = 375, Opened = 258, Clicked = 58 } },
+                    { "SMS", new CommunicationChannelPerformanceDto { Channel = "SMS", Sent = 125, Delivered = 123, Opened = 123, Clicked = 0 } },
+                    { "Push", new CommunicationChannelPerformanceDto { Channel = "Push", Sent = 285, Delivered = 271, Opened = 195, Clicked = 45 } }
                 },
                 UserEngagement = new Dictionary<string, int>
                 {
@@ -604,14 +604,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid SenderId { get; set; }
-        public string SenderName { get; set; }
+        public required string SenderName { get; set; }
         public Guid RecipientId { get; set; }
-        public string RecipientName { get; set; }
-        public string Subject { get; set; }
-        public string Content { get; set; }
-        public string MessageType { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
+        public required string RecipientName { get; set; }
+        public required string Subject { get; set; }
+        public required string Content { get; set; }
+        public required string MessageType { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
         public bool IsRead { get; set; }
         public DateTime SentAt { get; set; }
         public DateTime? ReadAt { get; set; }
@@ -621,13 +621,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Title { get; set; }
-        public string Content { get; set; }
+        public required string Title { get; set; }
+        public required string Content { get; set; }
         public Guid AuthorId { get; set; }
-        public string AuthorName { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string TargetAudience { get; set; }
+        public required string AuthorName { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string TargetAudience { get; set; }
         public int ViewCount { get; set; }
         public DateTime? ExpiresAt { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -637,11 +637,11 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Subject { get; set; }
-        public string Content { get; set; }
-        public string TargetAudience { get; set; }
-        public string Status { get; set; }
+        public required string Name { get; set; }
+        public required string Subject { get; set; }
+        public required string Content { get; set; }
+        public required string TargetAudience { get; set; }
+        public required string Status { get; set; }
         public int SentCount { get; set; }
         public int OpenCount { get; set; }
         public int ClickCount { get; set; }
@@ -656,9 +656,9 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Message { get; set; }
-        public string Status { get; set; }
+        public required string PhoneNumber { get; set; }
+        public required string Message { get; set; }
+        public required string Status { get; set; }
         public DateTime SentAt { get; set; }
         public DateTime? DeliveredAt { get; set; }
     }
@@ -668,9 +668,9 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
         public Guid UserId { get; set; }
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public string Status { get; set; }
+        public required string Title { get; set; }
+        public required string Message { get; set; }
+        public required string Status { get; set; }
         public DateTime SentAt { get; set; }
         public DateTime? DeliveredAt { get; set; }
     }
@@ -679,10 +679,10 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Type { get; set; }
-        public string Subject { get; set; }
-        public string Content { get; set; }
+        public required string Name { get; set; }
+        public required string Type { get; set; }
+        public required string Subject { get; set; }
+        public required string Content { get; set; }
         public List<string> Variables { get; set; }
         public bool IsActive { get; set; }
         public int UsageCount { get; set; }
@@ -710,7 +710,7 @@ namespace AttendancePlatform.Api.Services
     public class CommunicationReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public int TotalCommunications { get; set; }
         public int EmailCommunications { get; set; }
         public int SmsCommunications { get; set; }
@@ -729,6 +729,7 @@ namespace AttendancePlatform.Api.Services
 
     public class CommunicationChannelPerformanceDto
     {
+        public required string Channel { get; set; }
         public int Sent { get; set; }
         public int Delivered { get; set; }
         public int Opened { get; set; }
@@ -747,10 +748,10 @@ namespace AttendancePlatform.Api.Services
         public bool SystemUpdates { get; set; }
         public bool TeamMessages { get; set; }
         public bool AnnouncementNotifications { get; set; }
-        public string PreferredLanguage { get; set; }
-        public string TimeZone { get; set; }
-        public string QuietHoursStart { get; set; }
-        public string QuietHoursEnd { get; set; }
+        public required string PreferredLanguage { get; set; }
+        public required string TimeZone { get; set; }
+        public required string QuietHoursStart { get; set; }
+        public required string QuietHoursEnd { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
 }

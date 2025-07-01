@@ -458,21 +458,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PlanNumber { get; set; }
-        public string PlanName { get; set; }
-        public string Description { get; set; }
-        public string PlanType { get; set; }
-        public string Scope { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
+        public required string PlanNumber { get; set; }
+        public required string PlanName { get; set; }
+        public required string Description { get; set; }
+        public required string PlanType { get; set; }
+        public required string Scope { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
         public DateTime EffectiveDate { get; set; }
         public DateTime ReviewDate { get; set; }
-        public string Owner { get; set; }
-        public string Approver { get; set; }
+        public required string Owner { get; set; }
+        public required string Approver { get; set; }
         public double MaxTolerableDowntime { get; set; }
         public double RecoveryTimeObjective { get; set; }
         public double RecoveryPointObjective { get; set; }
-        public string BusinessImpactLevel { get; set; }
+        public required string BusinessImpactLevel { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -481,21 +481,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PlanNumber { get; set; }
-        public string PlanName { get; set; }
-        public string Description { get; set; }
-        public string DisasterType { get; set; }
-        public string Scope { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
+        public required string PlanNumber { get; set; }
+        public required string PlanName { get; set; }
+        public required string Description { get; set; }
+        public required string DisasterType { get; set; }
+        public required string Scope { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
         public DateTime EffectiveDate { get; set; }
         public DateTime ReviewDate { get; set; }
-        public string Owner { get; set; }
-        public string Approver { get; set; }
+        public required string Owner { get; set; }
+        public required string Approver { get; set; }
         public double RecoveryTimeObjective { get; set; }
         public double RecoveryPointObjective { get; set; }
         public double MaximumTolerableOutage { get; set; }
-        public string PriorityLevel { get; set; }
+        public required string PriorityLevel { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -504,19 +504,19 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AnalysisNumber { get; set; }
-        public string AnalysisName { get; set; }
-        public string Description { get; set; }
-        public string BusinessFunction { get; set; }
-        public string CriticalityLevel { get; set; }
-        public string Status { get; set; }
+        public required string AnalysisNumber { get; set; }
+        public required string AnalysisName { get; set; }
+        public required string Description { get; set; }
+        public required string BusinessFunction { get; set; }
+        public required string CriticalityLevel { get; set; }
+        public required string Status { get; set; }
         public DateTime AnalysisDate { get; set; }
-        public string Analyst { get; set; }
+        public required string Analyst { get; set; }
         public double MaxTolerableDowntime { get; set; }
         public decimal FinancialImpactPerHour { get; set; }
-        public string OperationalImpact { get; set; }
-        public string ReputationalImpact { get; set; }
-        public string RegulatoryImpact { get; set; }
+        public required string OperationalImpact { get; set; }
+        public required string ReputationalImpact { get; set; }
+        public required string RegulatoryImpact { get; set; }
         public int RecoveryPriority { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -526,16 +526,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string CrisisNumber { get; set; }
-        public string CrisisTitle { get; set; }
-        public string Description { get; set; }
-        public string CrisisType { get; set; }
-        public string Severity { get; set; }
-        public string Status { get; set; }
+        public required string CrisisNumber { get; set; }
+        public required string CrisisTitle { get; set; }
+        public required string Description { get; set; }
+        public required string CrisisType { get; set; }
+        public required string Severity { get; set; }
+        public required string Status { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public string CrisisManager { get; set; }
-        public string ImpactedSystems { get; set; }
+        public required string CrisisManager { get; set; }
+        public required string ImpactedSystems { get; set; }
         public decimal EstimatedImpact { get; set; }
         public decimal? ActualImpact { get; set; }
         public double ResponseTime { get; set; }
@@ -568,8 +568,8 @@ namespace AttendancePlatform.Api.Services
     public class BusinessContinuityReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalPlans { get; set; }
         public int ActivePlans { get; set; }
         public int PlansActivated { get; set; }
@@ -586,15 +586,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ResponseNumber { get; set; }
-        public string EmergencyType { get; set; }
-        public string Description { get; set; }
-        public string Severity { get; set; }
-        public string Status { get; set; }
+        public required string ResponseNumber { get; set; }
+        public required string EmergencyType { get; set; }
+        public required string Description { get; set; }
+        public required string Severity { get; set; }
+        public required string Status { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public string ResponseTeam { get; set; }
-        public string ImpactedAreas { get; set; }
+        public required string ResponseTeam { get; set; }
+        public required string ImpactedAreas { get; set; }
         public bool EvacuationRequired { get; set; }
         public double ResponseTime { get; set; }
         public double? ResolutionTime { get; set; }

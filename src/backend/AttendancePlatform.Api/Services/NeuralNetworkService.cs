@@ -378,17 +378,17 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string NetworkNumber { get; set; }
-        public string NetworkName { get; set; }
-        public string Description { get; set; }
-        public string NetworkType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Architecture { get; set; }
-        public string Framework { get; set; }
-        public string Version { get; set; }
-        public string InputDimensions { get; set; }
-        public string OutputDimensions { get; set; }
+        public required string NetworkNumber { get; set; }
+        public required string NetworkName { get; set; }
+        public required string Description { get; set; }
+        public required string NetworkType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Architecture { get; set; }
+        public required string Framework { get; set; }
+        public required string Version { get; set; }
+        public required string InputDimensions { get; set; }
+        public required string OutputDimensions { get; set; }
         public int LayerCount { get; set; }
         public long ParameterCount { get; set; }
         public long TrainingDataSize { get; set; }
@@ -398,10 +398,10 @@ namespace AttendancePlatform.Api.Services
         public double ValidationLoss { get; set; }
         public double TrainingTime { get; set; }
         public double InferenceTime { get; set; }
-        public string ModelSize { get; set; }
+        public required string ModelSize { get; set; }
         public DateTime? LastTraining { get; set; }
         public DateTime? NextTraining { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -410,12 +410,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string TrainingNumber { get; set; }
-        public string TrainingName { get; set; }
-        public string Description { get; set; }
-        public string TrainingType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string TrainingNumber { get; set; }
+        public required string TrainingName { get; set; }
+        public required string Description { get; set; }
+        public required string TrainingType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid NetworkId { get; set; }
         public long DatasetSize { get; set; }
         public int BatchSize { get; set; }
@@ -431,7 +431,7 @@ namespace AttendancePlatform.Api.Services
         public double Duration { get; set; }
         public double GPUHours { get; set; }
         public decimal ComputeCost { get; set; }
-        public string Trainer { get; set; }
+        public required string Trainer { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -461,8 +461,8 @@ namespace AttendancePlatform.Api.Services
     public class NeuralNetworkReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int NetworksDeployed { get; set; }
         public int TrainingSessions { get; set; }
         public long InferencesProcessed { get; set; }
@@ -482,23 +482,23 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string InferenceNumber { get; set; }
-        public string InferenceName { get; set; }
-        public string Description { get; set; }
-        public string InferenceType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string InferenceNumber { get; set; }
+        public required string InferenceName { get; set; }
+        public required string Description { get; set; }
+        public required string InferenceType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid NetworkId { get; set; }
-        public string InputData { get; set; }
-        public string OutputData { get; set; }
+        public required string InputData { get; set; }
+        public required string OutputData { get; set; }
         public double ConfidenceScore { get; set; }
         public double ProcessingTime { get; set; }
-        public string InputSize { get; set; }
-        public string OutputSize { get; set; }
+        public required string InputSize { get; set; }
+        public required string OutputSize { get; set; }
         public int BatchSize { get; set; }
         public double GPUUtilization { get; set; }
         public double MemoryUsage { get; set; }
-        public string RequestedBy { get; set; }
+        public required string RequestedBy { get; set; }
         public DateTime? ProcessedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -508,16 +508,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string OptimizationNumber { get; set; }
-        public string OptimizationName { get; set; }
-        public string Description { get; set; }
-        public string OptimizationType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string OptimizationNumber { get; set; }
+        public required string OptimizationName { get; set; }
+        public required string Description { get; set; }
+        public required string OptimizationType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid NetworkId { get; set; }
-        public string OptimizationTechnique { get; set; }
-        public string OriginalSize { get; set; }
-        public string OptimizedSize { get; set; }
+        public required string OptimizationTechnique { get; set; }
+        public required string OriginalSize { get; set; }
+        public required string OptimizedSize { get; set; }
         public double CompressionRatio { get; set; }
         public double OriginalAccuracy { get; set; }
         public double OptimizedAccuracy { get; set; }
@@ -526,7 +526,7 @@ namespace AttendancePlatform.Api.Services
         public double OptimizedInferenceTime { get; set; }
         public double SpeedupFactor { get; set; }
         public double MemoryReduction { get; set; }
-        public string OptimizedBy { get; set; }
+        public required string OptimizedBy { get; set; }
         public DateTime? OptimizedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

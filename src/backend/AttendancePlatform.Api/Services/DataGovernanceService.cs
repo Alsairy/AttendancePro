@@ -354,22 +354,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AssetNumber { get; set; }
-        public string AssetName { get; set; }
-        public string Description { get; set; }
-        public string AssetType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string DataClassification { get; set; }
-        public string DataOwner { get; set; }
-        public string DataSteward { get; set; }
-        public string BusinessPurpose { get; set; }
-        public string RetentionPeriod { get; set; }
-        public string DataLocation { get; set; }
-        public string AccessLevel { get; set; }
-        public string EncryptionStatus { get; set; }
-        public string BackupStatus { get; set; }
-        public string ComplianceFramework { get; set; }
+        public required string AssetNumber { get; set; }
+        public required string AssetName { get; set; }
+        public required string Description { get; set; }
+        public required string AssetType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string DataClassification { get; set; }
+        public required string DataOwner { get; set; }
+        public required string DataSteward { get; set; }
+        public required string BusinessPurpose { get; set; }
+        public required string RetentionPeriod { get; set; }
+        public required string DataLocation { get; set; }
+        public required string AccessLevel { get; set; }
+        public required string EncryptionStatus { get; set; }
+        public required string BackupStatus { get; set; }
+        public required string ComplianceFramework { get; set; }
         public DateTime? LastAuditDate { get; set; }
         public DateTime? NextAuditDate { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -380,20 +380,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string QualityNumber { get; set; }
-        public string DataAssetName { get; set; }
-        public string QualityDimension { get; set; }
+        public required string QualityNumber { get; set; }
+        public required string DataAssetName { get; set; }
+        public required string QualityDimension { get; set; }
         public double QualityScore { get; set; }
         public double QualityThreshold { get; set; }
-        public string QualityStatus { get; set; }
+        public required string QualityStatus { get; set; }
         public DateTime MeasurementDate { get; set; }
-        public string QualityRules { get; set; }
+        public required string QualityRules { get; set; }
         public int IssuesIdentified { get; set; }
         public int IssuesResolved { get; set; }
-        public string QualityTrend { get; set; }
-        public string ResponsibleTeam { get; set; }
+        public required string QualityTrend { get; set; }
+        public required string ResponsibleTeam { get; set; }
         public DateTime NextAssessment { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -421,8 +421,8 @@ namespace AttendancePlatform.Api.Services
     public class DataGovernanceReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalDataAssets { get; set; }
         public int NewAssets { get; set; }
         public int ClassifiedAssets { get; set; }
@@ -444,20 +444,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string LineageNumber { get; set; }
-        public string DataAssetName { get; set; }
-        public string SourceSystem { get; set; }
-        public string TargetSystem { get; set; }
-        public string TransformationRules { get; set; }
-        public string DataFlow { get; set; }
-        public string ProcessingFrequency { get; set; }
+        public required string LineageNumber { get; set; }
+        public required string DataAssetName { get; set; }
+        public required string SourceSystem { get; set; }
+        public required string TargetSystem { get; set; }
+        public required string TransformationRules { get; set; }
+        public required string DataFlow { get; set; }
+        public required string ProcessingFrequency { get; set; }
         public DateTime? LastProcessed { get; set; }
-        public string ProcessingStatus { get; set; }
-        public string DataVolume { get; set; }
-        public string QualityChecks { get; set; }
-        public string BusinessImpact { get; set; }
-        public string TechnicalOwner { get; set; }
-        public string BusinessOwner { get; set; }
+        public required string ProcessingStatus { get; set; }
+        public required string DataVolume { get; set; }
+        public required string QualityChecks { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string TechnicalOwner { get; set; }
+        public required string BusinessOwner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -466,21 +466,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string RequestNumber { get; set; }
-        public string RequestType { get; set; }
-        public string DataSubject { get; set; }
+        public required string RequestNumber { get; set; }
+        public required string RequestType { get; set; }
+        public required string DataSubject { get; set; }
         public DateTime RequestDate { get; set; }
-        public string RequestDescription { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
-        public string AssignedTo { get; set; }
+        public required string RequestDescription { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
+        public required string AssignedTo { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime? CompletedDate { get; set; }
         public int? ProcessingTime { get; set; }
-        public string DataCategoriesInvolved { get; set; }
-        public string SystemsInvolved { get; set; }
-        public string LegalBasis { get; set; }
-        public string ComplianceFramework { get; set; }
+        public required string DataCategoriesInvolved { get; set; }
+        public required string SystemsInvolved { get; set; }
+        public required string LegalBasis { get; set; }
+        public required string ComplianceFramework { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

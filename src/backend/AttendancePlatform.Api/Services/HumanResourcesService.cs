@@ -475,17 +475,17 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string EmployeeNumber { get; set; }
-        public string FullName { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Department { get; set; }
-        public string Position { get; set; }
+        public required string EmployeeNumber { get; set; }
+        public required string FullName { get; set; }
+        public required string Email { get; set; }
+        public required string Phone { get; set; }
+        public required string Department { get; set; }
+        public required string Position { get; set; }
         public DateTime HireDate { get; set; }
         public decimal Salary { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public Guid ManagerId { get; set; }
-        public string ManagerName { get; set; }
+        public required string ManagerName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -494,15 +494,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string JobTitle { get; set; }
-        public string Department { get; set; }
-        public string Description { get; set; }
-        public string Requirements { get; set; }
-        public string Status { get; set; }
+        public required string JobTitle { get; set; }
+        public required string Department { get; set; }
+        public required string Description { get; set; }
+        public required string Requirements { get; set; }
+        public required string Status { get; set; }
         public DateTime PostedDate { get; set; }
         public DateTime ClosingDate { get; set; }
         public Guid HiringManagerId { get; set; }
-        public string HiringManagerName { get; set; }
+        public required string HiringManagerName { get; set; }
         public int ApplicationsCount { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -512,14 +512,14 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
+        public required string EmployeeName { get; set; }
         public DateTime StartDate { get; set; }
-        public string Status { get; set; }
-        public List<string> OnboardingTasks { get; set; }
+        public required string Status { get; set; }
+        public required List<string> OnboardingTasks { get; set; }
         public int CompletedTasks { get; set; }
         public int TotalTasks { get; set; }
         public Guid AssignedToId { get; set; }
-        public string AssignedToName { get; set; }
+        public required string AssignedToName { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -528,15 +528,15 @@ namespace AttendancePlatform.Api.Services
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
+        public required string EmployeeName { get; set; }
         public DateTime LastWorkingDay { get; set; }
-        public string Reason { get; set; }
-        public string Status { get; set; }
-        public List<string> OffboardingTasks { get; set; }
+        public required string Reason { get; set; }
+        public required string Status { get; set; }
+        public required List<string> OffboardingTasks { get; set; }
         public int CompletedTasks { get; set; }
         public int TotalTasks { get; set; }
         public Guid AssignedToId { get; set; }
-        public string AssignedToName { get; set; }
+        public required string AssignedToName { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -561,13 +561,13 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Type { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Type { get; set; }
         public decimal Cost { get; set; }
         public decimal EmployeeContribution { get; set; }
         public bool IsActive { get; set; }
-        public string EligibilityRequirements { get; set; }
+        public required string EligibilityRequirements { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -575,15 +575,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public string Content { get; set; }
-        public string Version { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
+        public required string Content { get; set; }
+        public required string Version { get; set; }
         public DateTime EffectiveDate { get; set; }
         public DateTime ReviewDate { get; set; }
         public bool IsActive { get; set; }
-        public string CreatedBy { get; set; }
+        public required string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 

@@ -360,22 +360,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ModuleNumber { get; set; }
-        public string ModuleName { get; set; }
-        public string Description { get; set; }
-        public string ModuleType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
-        public string Vendor { get; set; }
-        public string LicenseType { get; set; }
+        public required string ModuleNumber { get; set; }
+        public required string ModuleName { get; set; }
+        public required string Description { get; set; }
+        public required string ModuleType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
+        public required string Vendor { get; set; }
+        public required string LicenseType { get; set; }
         public DateTime InstallationDate { get; set; }
         public DateTime? LastUpdate { get; set; }
         public DateTime? NextUpdate { get; set; }
-        public string ModuleOwner { get; set; }
-        public string TechnicalContact { get; set; }
+        public required string ModuleOwner { get; set; }
+        public required string TechnicalContact { get; set; }
         public int UserCount { get; set; }
-        public string DataVolume { get; set; }
+        public required string DataVolume { get; set; }
         public int IntegrationPoints { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -385,18 +385,18 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string IntegrationNumber { get; set; }
-        public string IntegrationName { get; set; }
-        public string Description { get; set; }
-        public string IntegrationType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string SourceSystem { get; set; }
-        public string TargetSystem { get; set; }
-        public string Protocol { get; set; }
-        public string AuthenticationMethod { get; set; }
-        public string DataFormat { get; set; }
-        public string SyncFrequency { get; set; }
+        public required string IntegrationNumber { get; set; }
+        public required string IntegrationName { get; set; }
+        public required string Description { get; set; }
+        public required string IntegrationType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string SourceSystem { get; set; }
+        public required string TargetSystem { get; set; }
+        public required string Protocol { get; set; }
+        public required string AuthenticationMethod { get; set; }
+        public required string DataFormat { get; set; }
+        public required string SyncFrequency { get; set; }
         public DateTime? LastSync { get; set; }
         public DateTime? NextSync { get; set; }
         public int RecordsProcessed { get; set; }
@@ -416,7 +416,7 @@ namespace AttendancePlatform.Api.Services
         public int TotalIntegrations { get; set; }
         public int ActiveIntegrations { get; set; }
         public double IntegrationSuccessRate { get; set; }
-        public string DataSyncVolume { get; set; }
+        public required string DataSyncVolume { get; set; }
         public double SystemUptime { get; set; }
         public double UserAdoption { get; set; }
         public double PerformanceScore { get; set; }
@@ -429,8 +429,8 @@ namespace AttendancePlatform.Api.Services
     public class ErpReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int TotalModules { get; set; }
         public int ModulesDeployed { get; set; }
         public int ModulesUpdated { get; set; }
@@ -438,7 +438,7 @@ namespace AttendancePlatform.Api.Services
         public int IntegrationsCompleted { get; set; }
         public int IntegrationFailures { get; set; }
         public double IntegrationSuccessRate { get; set; }
-        public string DataProcessed { get; set; }
+        public required string DataProcessed { get; set; }
         public double SystemUptime { get; set; }
         public double UserSatisfaction { get; set; }
         public decimal CostSavings { get; set; }
@@ -451,22 +451,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string WorkflowNumber { get; set; }
-        public string WorkflowName { get; set; }
-        public string Description { get; set; }
-        public string WorkflowType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string TriggerEvent { get; set; }
+        public required string WorkflowNumber { get; set; }
+        public required string WorkflowName { get; set; }
+        public required string Description { get; set; }
+        public required string WorkflowType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string TriggerEvent { get; set; }
         public int StepCount { get; set; }
         public double AverageExecutionTime { get; set; }
         public double SuccessRate { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public DateTime? LastExecution { get; set; }
         public int ExecutionCount { get; set; }
         public int ErrorCount { get; set; }
         public bool IsAutomated { get; set; }
-        public string Priority { get; set; }
+        public required string Priority { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -475,15 +475,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string SyncNumber { get; set; }
-        public string SyncName { get; set; }
-        public string Description { get; set; }
-        public string SyncType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string SourceSystem { get; set; }
-        public string TargetSystem { get; set; }
-        public string SyncDirection { get; set; }
+        public required string SyncNumber { get; set; }
+        public required string SyncName { get; set; }
+        public required string Description { get; set; }
+        public required string SyncType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string SourceSystem { get; set; }
+        public required string TargetSystem { get; set; }
+        public required string SyncDirection { get; set; }
         public DateTime? LastSyncTime { get; set; }
         public DateTime? NextSyncTime { get; set; }
         public int RecordsProcessed { get; set; }
@@ -491,7 +491,7 @@ namespace AttendancePlatform.Api.Services
         public int RecordsFailed { get; set; }
         public double SuccessRate { get; set; }
         public double AverageProcessingTime { get; set; }
-        public string DataVolume { get; set; }
+        public required string DataVolume { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

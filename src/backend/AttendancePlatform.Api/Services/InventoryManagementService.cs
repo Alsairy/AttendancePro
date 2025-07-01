@@ -247,10 +247,10 @@ namespace AttendancePlatform.Api.Services
             await Task.CompletedTask;
             return new List<InventoryCategoryDto>
             {
-                new InventoryCategoryDto { Id = Guid.NewGuid(), Name = "Office Supplies", Description = "General office supplies and stationery", IsActive = true },
-                new InventoryCategoryDto { Id = Guid.NewGuid(), Name = "IT Equipment", Description = "Computer hardware and accessories", IsActive = true },
-                new InventoryCategoryDto { Id = Guid.NewGuid(), Name = "Cleaning Supplies", Description = "Cleaning and sanitization products", IsActive = true },
-                new InventoryCategoryDto { Id = Guid.NewGuid(), Name = "Safety Equipment", Description = "Personal protective equipment", IsActive = true }
+                new InventoryCategoryDto { Id = Guid.NewGuid(), Name = "Office Supplies", Description = "General office supplies and stationery", IsActive = true, CreatedAt = DateTime.UtcNow },
+                new InventoryCategoryDto { Id = Guid.NewGuid(), Name = "IT Equipment", Description = "Computer hardware and accessories", IsActive = true, CreatedAt = DateTime.UtcNow },
+                new InventoryCategoryDto { Id = Guid.NewGuid(), Name = "Cleaning Supplies", Description = "Cleaning and sanitization products", IsActive = true, CreatedAt = DateTime.UtcNow },
+                new InventoryCategoryDto { Id = Guid.NewGuid(), Name = "Safety Equipment", Description = "Personal protective equipment", IsActive = true, CreatedAt = DateTime.UtcNow }
             };
         }
 
@@ -359,15 +359,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string SKU { get; set; }
-        public string Category { get; set; }
+        public required string Name { get; set; }
+        public required string SKU { get; set; }
+        public required string Category { get; set; }
         public int CurrentStock { get; set; }
         public int MinimumStock { get; set; }
         public int MaximumStock { get; set; }
         public decimal UnitPrice { get; set; }
-        public string Status { get; set; }
-        public string Location { get; set; }
+        public required string Status { get; set; }
+        public required string Location { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -376,12 +376,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid ItemId { get; set; }
-        public string MovementType { get; set; }
+        public required string MovementType { get; set; }
         public int Quantity { get; set; }
-        public string Reason { get; set; }
-        public string Reference { get; set; }
+        public required string Reason { get; set; }
+        public required string Reference { get; set; }
         public DateTime Timestamp { get; set; }
-        public string PerformedBy { get; set; }
+        public required string PerformedBy { get; set; }
     }
 
     public class InventoryReportDto
@@ -401,12 +401,12 @@ namespace AttendancePlatform.Api.Services
     public class LowStockAlertDto
     {
         public Guid ItemId { get; set; }
-        public string ItemName { get; set; }
-        public string SKU { get; set; }
+        public required string ItemName { get; set; }
+        public required string SKU { get; set; }
         public int CurrentStock { get; set; }
         public int MinimumStock { get; set; }
         public int ReorderQuantity { get; set; }
-        public string Severity { get; set; }
+        public required string Severity { get; set; }
         public int DaysUntilStockout { get; set; }
         public DateTime AlertDate { get; set; }
     }
@@ -414,8 +414,8 @@ namespace AttendancePlatform.Api.Services
     public class InventoryCategoryDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -424,7 +424,7 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid TenantId { get; set; }
         public decimal TotalInventoryValue { get; set; }
-        public string ValuationMethod { get; set; }
+        public required string ValuationMethod { get; set; }
         public DateTime ValuationDate { get; set; }
         public Dictionary<string, decimal> CategoryBreakdown { get; set; }
         public decimal DepreciationAmount { get; set; }
@@ -435,19 +435,19 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid ItemId { get; set; }
-        public string Action { get; set; }
-        public string PerformedBy { get; set; }
+        public required string Action { get; set; }
+        public required string PerformedBy { get; set; }
         public DateTime Timestamp { get; set; }
-        public string Details { get; set; }
-        public string OldValue { get; set; }
-        public string NewValue { get; set; }
+        public required string Details { get; set; }
+        public required string OldValue { get; set; }
+        public required string NewValue { get; set; }
     }
 
     public class BulkInventoryUpdateDto
     {
         public Guid ItemId { get; set; }
         public int NewStock { get; set; }
-        public string Reason { get; set; }
+        public required string Reason { get; set; }
     }
 
     public class InventoryForecastDto
@@ -457,7 +457,7 @@ namespace AttendancePlatform.Api.Services
         public List<string> PredictedStockouts { get; set; }
         public List<string> RecommendedOrders { get; set; }
         public double ForecastAccuracy { get; set; }
-        public string TrendAnalysis { get; set; }
+        public required string TrendAnalysis { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 }

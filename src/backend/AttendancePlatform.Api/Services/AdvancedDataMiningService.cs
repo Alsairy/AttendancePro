@@ -424,15 +424,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ModelNumber { get; set; }
-        public string ModelName { get; set; }
-        public string Description { get; set; }
-        public string ModelType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Algorithm { get; set; }
-        public string Framework { get; set; }
-        public string ModelSize { get; set; }
+        public required string ModelNumber { get; set; }
+        public required string ModelName { get; set; }
+        public required string Description { get; set; }
+        public required string ModelType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Algorithm { get; set; }
+        public required string Framework { get; set; }
+        public required string ModelSize { get; set; }
         public long DatasetSize { get; set; }
         public long TrainingDataSize { get; set; }
         public long ValidationDataSize { get; set; }
@@ -448,18 +448,18 @@ namespace AttendancePlatform.Api.Services
         public double Lift { get; set; }
         public double Conviction { get; set; }
         public double TrainingDuration { get; set; }
-        public string ComputeResources { get; set; }
-        public string DataSources { get; set; }
-        public string PreprocessingSteps { get; set; }
-        public string ValidationMethod { get; set; }
-        public string BusinessRules { get; set; }
-        public string PatternTypes { get; set; }
-        public string DiscoveredInsights { get; set; }
-        public string BusinessImpact { get; set; }
-        public string DeploymentEnvironment { get; set; }
-        public string MonitoringMetrics { get; set; }
-        public string UpdateFrequency { get; set; }
-        public string TrainedBy { get; set; }
+        public required string ComputeResources { get; set; }
+        public required string DataSources { get; set; }
+        public required string PreprocessingSteps { get; set; }
+        public required string ValidationMethod { get; set; }
+        public required string BusinessRules { get; set; }
+        public required string PatternTypes { get; set; }
+        public required string DiscoveredInsights { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string DeploymentEnvironment { get; set; }
+        public required string MonitoringMetrics { get; set; }
+        public required string UpdateFrequency { get; set; }
+        public required string TrainedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -468,14 +468,14 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string JobNumber { get; set; }
-        public string JobName { get; set; }
-        public string Description { get; set; }
-        public string JobType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string JobNumber { get; set; }
+        public required string JobName { get; set; }
+        public required string Description { get; set; }
+        public required string JobType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid ModelId { get; set; }
-        public string DataSource { get; set; }
+        public required string DataSource { get; set; }
         public long DataSize { get; set; }
         public double ProcessingTime { get; set; }
         public int PatternsDiscovered { get; set; }
@@ -483,20 +483,20 @@ namespace AttendancePlatform.Api.Services
         public int AnomaliesDetected { get; set; }
         public double QualityScore { get; set; }
         public double BusinessValue { get; set; }
-        public string ResourceUtilization { get; set; }
-        public string ExecutionPlan { get; set; }
-        public string Parameters { get; set; }
-        public string OutputFormat { get; set; }
-        public string ScheduleType { get; set; }
+        public required string ResourceUtilization { get; set; }
+        public required string ExecutionPlan { get; set; }
+        public required string Parameters { get; set; }
+        public required string OutputFormat { get; set; }
+        public required string ScheduleType { get; set; }
         public DateTime NextExecution { get; set; }
-        public string RetryPolicy { get; set; }
-        public string NotificationSettings { get; set; }
-        public string DataRetention { get; set; }
-        public string SecurityLevel { get; set; }
-        public string ComplianceChecks { get; set; }
-        public string BusinessContext { get; set; }
-        public string ActionableInsights { get; set; }
-        public string ExecutedBy { get; set; }
+        public required string RetryPolicy { get; set; }
+        public required string NotificationSettings { get; set; }
+        public required string DataRetention { get; set; }
+        public required string SecurityLevel { get; set; }
+        public required string ComplianceChecks { get; set; }
+        public required string BusinessContext { get; set; }
+        public required string ActionableInsights { get; set; }
+        public required string ExecutedBy { get; set; }
         public DateTime? StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -528,8 +528,8 @@ namespace AttendancePlatform.Api.Services
     public class DataMiningReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int ModelsDeployed { get; set; }
         public long JobsExecuted { get; set; }
         public int PatternsDiscovered { get; set; }
@@ -539,7 +539,7 @@ namespace AttendancePlatform.Api.Services
         public long DataProcessed { get; set; }
         public double ComputeHoursUsed { get; set; }
         public double BusinessValue { get; set; }
-        public string BusinessImpact { get; set; }
+        public required string BusinessImpact { get; set; }
         public decimal CostSavings { get; set; }
         public double ROI { get; set; }
         public DateTime GeneratedAt { get; set; }
@@ -549,15 +549,15 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string DiscoveryNumber { get; set; }
-        public string DiscoveryName { get; set; }
-        public string Description { get; set; }
-        public string PatternType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string DiscoveryNumber { get; set; }
+        public required string DiscoveryName { get; set; }
+        public required string Description { get; set; }
+        public required string PatternType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid ModelId { get; set; }
         public Guid JobId { get; set; }
-        public string PatternRule { get; set; }
+        public required string PatternRule { get; set; }
         public double Support { get; set; }
         public double Confidence { get; set; }
         public double Lift { get; set; }
@@ -566,21 +566,21 @@ namespace AttendancePlatform.Api.Services
         public int Frequency { get; set; }
         public int DataPoints { get; set; }
         public double ValidationScore { get; set; }
-        public string BusinessRelevance { get; set; }
-        public string ActionableInsight { get; set; }
-        public string ImpactEstimate { get; set; }
-        public string ImplementationEffort { get; set; }
-        public string RiskFactors { get; set; }
-        public string RecommendedActions { get; set; }
-        public string BusinessContext { get; set; }
-        public string StatisticalTests { get; set; }
+        public required string BusinessRelevance { get; set; }
+        public required string ActionableInsight { get; set; }
+        public required string ImpactEstimate { get; set; }
+        public required string ImplementationEffort { get; set; }
+        public required string RiskFactors { get; set; }
+        public required string RecommendedActions { get; set; }
+        public required string BusinessContext { get; set; }
+        public required string StatisticalTests { get; set; }
         public double CorrelationStrength { get; set; }
-        public string CausalityAnalysis { get; set; }
-        public string SeasonalVariation { get; set; }
-        public string DemographicFactors { get; set; }
-        public string ExternalValidation { get; set; }
-        public string MonitoringMetrics { get; set; }
-        public string DiscoveredBy { get; set; }
+        public required string CausalityAnalysis { get; set; }
+        public required string SeasonalVariation { get; set; }
+        public required string DemographicFactors { get; set; }
+        public required string ExternalValidation { get; set; }
+        public required string MonitoringMetrics { get; set; }
+        public required string DiscoveredBy { get; set; }
         public DateTime? DiscoveredAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -590,12 +590,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AnalysisNumber { get; set; }
-        public string AnalysisName { get; set; }
-        public string Description { get; set; }
-        public string ClusteringAlgorithm { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string AnalysisNumber { get; set; }
+        public required string AnalysisName { get; set; }
+        public required string Description { get; set; }
+        public required string ClusteringAlgorithm { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid ModelId { get; set; }
         public int DataPoints { get; set; }
         public int Features { get; set; }
@@ -608,17 +608,17 @@ namespace AttendancePlatform.Api.Services
         public double ClusterSeparation { get; set; }
         public double ClusterCohesion { get; set; }
         public double ExplainedVariance { get; set; }
-        public string FeatureImportance { get; set; }
-        public string ClusterProfiles { get; set; }
-        public string ClusterSizes { get; set; }
-        public string BusinessInsights { get; set; }
-        public string ActionableRecommendations { get; set; }
-        public string ValidationMethod { get; set; }
+        public required string FeatureImportance { get; set; }
+        public required string ClusterProfiles { get; set; }
+        public required string ClusterSizes { get; set; }
+        public required string BusinessInsights { get; set; }
+        public required string ActionableRecommendations { get; set; }
+        public required string ValidationMethod { get; set; }
         public double StatisticalSignificance { get; set; }
-        public string BusinessImpact { get; set; }
-        public string ImplementationPlan { get; set; }
-        public string MonitoringStrategy { get; set; }
-        public string AnalyzedBy { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string ImplementationPlan { get; set; }
+        public required string MonitoringStrategy { get; set; }
+        public required string AnalyzedBy { get; set; }
         public DateTime? AnalyzedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

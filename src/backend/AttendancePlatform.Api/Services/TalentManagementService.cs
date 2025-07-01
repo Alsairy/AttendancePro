@@ -485,6 +485,10 @@ namespace AttendancePlatform.Api.Services
                     Position = "Full Stack Developer",
                     Department = "Engineering",
                     TalentScore = 8.0,
+                    PotentialRating = "High",
+                    PerformanceRating = "Exceeds Expectations",
+                    CareerAspiration = "Senior Technical Lead",
+                    ReadinessForPromotion = "Ready",
                     Skills = skills.Concat(new List<string> { "JavaScript", "Python", "AWS" }).ToList(),
                     MatchingSkills = skills,
                     SkillMatchPercentage = 85.0,
@@ -597,26 +601,26 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ProfileNumber { get; set; }
+        public required string ProfileNumber { get; set; }
         public Guid EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
-        public string Position { get; set; }
-        public string Department { get; set; }
+        public required string EmployeeName { get; set; }
+        public required string Position { get; set; }
+        public required string Department { get; set; }
         public DateTime HireDate { get; set; }
         public double TalentScore { get; set; }
-        public string PotentialRating { get; set; }
-        public string PerformanceRating { get; set; }
+        public required string PotentialRating { get; set; }
+        public required string PerformanceRating { get; set; }
         public List<string> Skills { get; set; }
         public List<string> Certifications { get; set; }
-        public string CareerAspiration { get; set; }
+        public required string CareerAspiration { get; set; }
         public List<string> StrengthAreas { get; set; }
         public List<string> DevelopmentAreas { get; set; }
-        public string ReadinessForPromotion { get; set; }
+        public required string ReadinessForPromotion { get; set; }
         public DateTime? LastAssessmentDate { get; set; }
         public DateTime? NextAssessmentDate { get; set; }
         public List<string> MatchingSkills { get; set; }
         public double SkillMatchPercentage { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -625,17 +629,17 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }
-        public string AssessmentNumber { get; set; }
-        public string AssessmentType { get; set; }
+        public required string AssessmentNumber { get; set; }
+        public required string AssessmentType { get; set; }
         public DateTime AssessmentDate { get; set; }
         public Guid AssessorId { get; set; }
-        public string AssessorName { get; set; }
+        public required string AssessorName { get; set; }
         public Dictionary<string, double> SkillScores { get; set; }
         public double OverallScore { get; set; }
         public List<string> Strengths { get; set; }
         public List<string> AreasForImprovement { get; set; }
         public List<string> DevelopmentRecommendations { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
@@ -643,24 +647,24 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PathNumber { get; set; }
-        public string PathName { get; set; }
-        public string Department { get; set; }
-        public string StartingPosition { get; set; }
-        public string TargetPosition { get; set; }
+        public required string PathNumber { get; set; }
+        public required string PathName { get; set; }
+        public required string Department { get; set; }
+        public required string StartingPosition { get; set; }
+        public required string TargetPosition { get; set; }
         public int EstimatedDuration { get; set; }
         public List<string> RequiredSkills { get; set; }
         public List<CareerMilestoneDto> Milestones { get; set; }
         public List<string> Prerequisites { get; set; }
         public List<string> DevelopmentPrograms { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
 
     public class CareerMilestoneDto
     {
-        public string Position { get; set; }
+        public required string Position { get; set; }
         public int Duration { get; set; }
         public List<string> RequiredSkills { get; set; }
     }
@@ -669,25 +673,25 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PlanNumber { get; set; }
-        public string KeyPosition { get; set; }
-        public string Department { get; set; }
-        public string CurrentIncumbent { get; set; }
-        public string CriticalityLevel { get; set; }
-        public string RiskLevel { get; set; }
+        public required string PlanNumber { get; set; }
+        public required string KeyPosition { get; set; }
+        public required string Department { get; set; }
+        public required string CurrentIncumbent { get; set; }
+        public required string CriticalityLevel { get; set; }
+        public required string RiskLevel { get; set; }
         public List<SuccessorCandidateDto> Successors { get; set; }
         public List<string> DevelopmentActions { get; set; }
         public int TimelineMonths { get; set; }
         public DateTime NextReviewDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
 
     public class SuccessorCandidateDto
     {
-        public string Name { get; set; }
-        public string Readiness { get; set; }
+        public required string Name { get; set; }
+        public required string Readiness { get; set; }
         public double ReadinessScore { get; set; }
     }
 
@@ -695,25 +699,25 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string PoolNumber { get; set; }
-        public string PoolName { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
+        public required string PoolNumber { get; set; }
+        public required string PoolName { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
         public List<string> Criteria { get; set; }
         public int MemberCount { get; set; }
         public List<TalentPoolMemberDto> Members { get; set; }
         public List<string> DevelopmentPrograms { get; set; }
         public DateTime? LastReviewDate { get; set; }
         public DateTime? NextReviewDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
 
     public class TalentPoolMemberDto
     {
-        public string EmployeeName { get; set; }
-        public string Position { get; set; }
+        public required string EmployeeName { get; set; }
+        public required string Position { get; set; }
         public double TalentScore { get; set; }
     }
 
@@ -721,10 +725,10 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ProgramNumber { get; set; }
-        public string ProgramName { get; set; }
-        public string Description { get; set; }
-        public string ProgramType { get; set; }
+        public required string ProgramNumber { get; set; }
+        public required string ProgramName { get; set; }
+        public required string Description { get; set; }
+        public required string ProgramType { get; set; }
         public int Duration { get; set; }
         public int MaxParticipants { get; set; }
         public int CurrentParticipants { get; set; }
@@ -734,7 +738,7 @@ namespace AttendancePlatform.Api.Services
         public List<string> MatchingCriteria { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -767,7 +771,7 @@ namespace AttendancePlatform.Api.Services
     public class TalentReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public int TotalAssessments { get; set; }
         public int NewTalentIdentified { get; set; }
         public int PromotionsExecuted { get; set; }
@@ -805,20 +809,20 @@ namespace AttendancePlatform.Api.Services
 
     public class AtRiskEmployeeDto
     {
-        public string Name { get; set; }
-        public string Department { get; set; }
+        public required string Name { get; set; }
+        public required string Department { get; set; }
         public double RiskScore { get; set; }
         public List<string> RiskFactors { get; set; }
     }
 
     public class TalentGapDto
     {
-        public string Department { get; set; }
-        public string Position { get; set; }
+        public required string Department { get; set; }
+        public required string Position { get; set; }
         public int CurrentCount { get; set; }
         public int RequiredCount { get; set; }
         public int GapCount { get; set; }
-        public string CriticalityLevel { get; set; }
+        public required string CriticalityLevel { get; set; }
         public List<string> RequiredSkills { get; set; }
         public int TimeToFill { get; set; }
         public List<string> RecommendedActions { get; set; }

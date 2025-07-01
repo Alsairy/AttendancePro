@@ -256,9 +256,14 @@ namespace AttendancePlatform.Api.Services
                 return new ComprehensiveCustomReportDto
                 {
                     TenantId = tenantId,
-                    ReportName = request.ReportName,
-                    ReportPeriod = $"{request.FromDate:yyyy-MM-dd} to {request.ToDate:yyyy-MM-dd}",
+                    Name = request.Name,
+                    Description = request.Description,
+                    ReportType = request.ReportType,
+                    FromDate = request.FromDate,
+                    ToDate = request.ToDate,
+                    Metrics = request.Metrics,
                     Data = data,
+                    Status = "Completed",
                     GeneratedAt = DateTime.UtcNow
                 };
             }
@@ -372,7 +377,7 @@ namespace AttendancePlatform.Api.Services
     public class ExecutiveReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public int TotalEmployees { get; set; }
         public double AttendanceRate { get; set; }
         public double ProductivityScore { get; set; }
@@ -388,15 +393,15 @@ namespace AttendancePlatform.Api.Services
         public Guid TenantId { get; set; }
         public double OverallComplianceScore { get; set; }
         public List<ComplianceCheckDto> ComplianceChecks { get; set; }
-        public string RiskLevel { get; set; }
+        public required string RiskLevel { get; set; }
         public List<string> RecommendedActions { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
     public class ComplianceCheckDto
     {
-        public string Standard { get; set; }
-        public string Status { get; set; }
+        public required string Standard { get; set; }
+        public required string Status { get; set; }
         public double Score { get; set; }
         public DateTime LastAudit { get; set; }
     }
@@ -404,27 +409,27 @@ namespace AttendancePlatform.Api.Services
     public class PerformanceReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public List<DepartmentPerformanceDto> DepartmentPerformance { get; set; }
         public double OverallPerformanceScore { get; set; }
-        public string TopPerformingDepartment { get; set; }
+        public required string TopPerformingDepartment { get; set; }
         public List<string> ImprovementAreas { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
     public class DepartmentPerformanceDto
     {
-        public string Department { get; set; }
+        public required string Department { get; set; }
         public int EmployeeCount { get; set; }
         public double AttendanceRate { get; set; }
         public double ProductivityScore { get; set; }
-        public string PerformanceRating { get; set; }
+        public required string PerformanceRating { get; set; }
     }
 
     public class ComprehensiveFinancialReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public decimal LaborCosts { get; set; }
         public decimal OperationalCosts { get; set; }
         public decimal TotalCosts { get; set; }
@@ -441,7 +446,7 @@ namespace AttendancePlatform.Api.Services
         public Guid TenantId { get; set; }
         public List<SecurityMetricDto> SecurityMetrics { get; set; }
         public double OverallSecurityScore { get; set; }
-        public string ThreatLevel { get; set; }
+        public required string ThreatLevel { get; set; }
         public List<string> RecommendedActions { get; set; }
         public DateTime LastSecurityAudit { get; set; }
         public DateTime GeneratedAt { get; set; }
@@ -449,16 +454,16 @@ namespace AttendancePlatform.Api.Services
 
     public class SecurityMetricDto
     {
-        public string Metric { get; set; }
+        public required string Metric { get; set; }
         public double Value { get; set; }
         public double Threshold { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
     }
 
     public class AuditReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportPeriod { get; set; }
         public List<AuditLogDto> AuditLogs { get; set; }
         public int TotalActions { get; set; }
         public int SuccessfulActions { get; set; }
@@ -469,24 +474,24 @@ namespace AttendancePlatform.Api.Services
 
     public class AuditLogDto
     {
-        public string Action { get; set; }
-        public string User { get; set; }
+        public required string Action { get; set; }
+        public required string User { get; set; }
         public DateTime Timestamp { get; set; }
-        public string Result { get; set; }
+        public required string Result { get; set; }
     }
 
     public class CustomReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportName { get; set; }
-        public string ReportPeriod { get; set; }
+        public required string ReportName { get; set; }
+        public required string ReportPeriod { get; set; }
         public Dictionary<string, object> Data { get; set; }
         public DateTime GeneratedAt { get; set; }
     }
 
     public class CustomReportRequestDto
     {
-        public string ReportName { get; set; }
+        public required string ReportName { get; set; }
         public List<string> Metrics { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
@@ -495,43 +500,43 @@ namespace AttendancePlatform.Api.Services
     public class ReportTemplateDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string Category { get; set; }
     }
 
     public class ScheduledReportDto
     {
-        public string ReportName { get; set; }
-        public string Schedule { get; set; }
+        public required string ReportName { get; set; }
+        public required string Schedule { get; set; }
         public List<string> Recipients { get; set; }
-        public string Format { get; set; }
+        public required string Format { get; set; }
     }
 
     public class ComprehensiveCustomReportDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string ReportType { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string ReportType { get; set; }
         public Dictionary<string, object> Data { get; set; }
         public List<string> Metrics { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
         public DateTime GeneratedAt { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
     }
 
     public class ComprehensiveCustomReportRequestDto
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string ReportType { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public required string ReportType { get; set; }
         public List<string> Metrics { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
         public Dictionary<string, object> Parameters { get; set; }
-        public string Format { get; set; }
+        public required string Format { get; set; }
     }
 }

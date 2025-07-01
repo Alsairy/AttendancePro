@@ -529,98 +529,98 @@ namespace AttendancePlatform.Api.Services
 
     public class SapConnectionDto
     {
-        public string ConnectionString { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string SystemId { get; set; }
+        public required string ConnectionString { get; set; }
+        public required string Username { get; set; }
+        public required string Password { get; set; }
+        public required string SystemId { get; set; }
     }
 
     public class SapIntegrationDto
     {
         public Guid IntegrationId { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime? LastSync { get; set; }
         public int EmployeeCount { get; set; }
         public int DepartmentCount { get; set; }
-        public string Message { get; set; }
+        public required string Message { get; set; }
     }
 
     public class OracleConnectionDto
     {
-        public string ConnectionString { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string ServiceName { get; set; }
+        public required string ConnectionString { get; set; }
+        public required string Username { get; set; }
+        public required string Password { get; set; }
+        public required string ServiceName { get; set; }
     }
 
     public class OracleIntegrationDto
     {
         public Guid IntegrationId { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime? LastSync { get; set; }
-        public string DatabaseVersion { get; set; }
+        public required string DatabaseVersion { get; set; }
         public int TableCount { get; set; }
-        public string Message { get; set; }
+        public required string Message { get; set; }
     }
 
     public class SalesforceConnectionDto
     {
-        public string InstanceUrl { get; set; }
-        public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
-        public string OrgId { get; set; }
+        public required string InstanceUrl { get; set; }
+        public required string AccessToken { get; set; }
+        public required string RefreshToken { get; set; }
+        public required string OrgId { get; set; }
     }
 
     public class SalesforceIntegrationDto
     {
         public Guid IntegrationId { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime? LastSync { get; set; }
-        public string OrgId { get; set; }
+        public required string OrgId { get; set; }
         public int UserCount { get; set; }
-        public string Message { get; set; }
+        public required string Message { get; set; }
     }
 
     public class WorkdayConnectionDto
     {
-        public string TenantUrl { get; set; }
-        public string TenantName { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public required string TenantUrl { get; set; }
+        public required string TenantName { get; set; }
+        public required string Username { get; set; }
+        public required string Password { get; set; }
     }
 
     public class WorkdayIntegrationDto
     {
         public Guid IntegrationId { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime? LastSync { get; set; }
-        public string TenantName { get; set; }
+        public required string TenantName { get; set; }
         public int WorkerCount { get; set; }
-        public string Message { get; set; }
+        public required string Message { get; set; }
     }
 
     public class SuccessFactorsConnectionDto
     {
-        public string ApiUrl { get; set; }
-        public string CompanyId { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public required string ApiUrl { get; set; }
+        public required string CompanyId { get; set; }
+        public required string Username { get; set; }
+        public required string Password { get; set; }
     }
 
     public class SuccessFactorsIntegrationDto
     {
         public Guid IntegrationId { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public DateTime? LastSync { get; set; }
-        public string CompanyId { get; set; }
+        public required string CompanyId { get; set; }
         public int EmployeeCount { get; set; }
-        public string Message { get; set; }
+        public required string Message { get; set; }
     }
 
     public class BambooHrConnectionDto
     {
-        public string Subdomain { get; set; }
-        public string ApiKey { get; set; }
+        public required string Subdomain { get; set; }
+        public required string ApiKey { get; set; }
     }
 
     public class BambooHrIntegrationDto

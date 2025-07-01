@@ -378,19 +378,19 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ModelNumber { get; set; }
-        public string ModelName { get; set; }
-        public string Description { get; set; }
-        public string ModelType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Algorithm { get; set; }
-        public string Framework { get; set; }
-        public string Version { get; set; }
-        public string Features { get; set; }
-        public string TargetVariable { get; set; }
-        public string TrainingPeriod { get; set; }
-        public string ForecastHorizon { get; set; }
+        public required string ModelNumber { get; set; }
+        public required string ModelName { get; set; }
+        public required string Description { get; set; }
+        public required string ModelType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Algorithm { get; set; }
+        public required string Framework { get; set; }
+        public required string Version { get; set; }
+        public required string Features { get; set; }
+        public required string TargetVariable { get; set; }
+        public required string TrainingPeriod { get; set; }
+        public required string ForecastHorizon { get; set; }
         public double Accuracy { get; set; }
         public double MAE { get; set; }
         public double RMSE { get; set; }
@@ -401,7 +401,7 @@ namespace AttendancePlatform.Api.Services
         public int TestDataPoints { get; set; }
         public DateTime? LastTraining { get; set; }
         public DateTime? NextTraining { get; set; }
-        public string Owner { get; set; }
+        public required string Owner { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -410,24 +410,24 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ForecastNumber { get; set; }
-        public string ForecastName { get; set; }
-        public string Description { get; set; }
-        public string ForecastType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string ForecastNumber { get; set; }
+        public required string ForecastName { get; set; }
+        public required string Description { get; set; }
+        public required string ForecastType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid ModelId { get; set; }
-        public string ForecastPeriod { get; set; }
+        public required string ForecastPeriod { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string PredictedValues { get; set; }
-        public string ConfidenceIntervals { get; set; }
+        public required string PredictedValues { get; set; }
+        public required string ConfidenceIntervals { get; set; }
         public double Accuracy { get; set; }
         public double ConfidenceLevel { get; set; }
-        public string Seasonality { get; set; }
-        public string TrendDirection { get; set; }
-        public string Factors { get; set; }
-        public string GeneratedBy { get; set; }
+        public required string Seasonality { get; set; }
+        public required string TrendDirection { get; set; }
+        public required string Factors { get; set; }
+        public required string GeneratedBy { get; set; }
         public DateTime? GeneratedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -459,8 +459,8 @@ namespace AttendancePlatform.Api.Services
     public class PredictiveReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int ModelsDeployed { get; set; }
         public long ForecastsGenerated { get; set; }
         public long PredictionsGenerated { get; set; }
@@ -481,21 +481,21 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AnalysisNumber { get; set; }
-        public string AnalysisName { get; set; }
-        public string Description { get; set; }
-        public string AnalysisType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string AnalysisNumber { get; set; }
+        public required string AnalysisName { get; set; }
+        public required string Description { get; set; }
+        public required string AnalysisType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid ModelId { get; set; }
-        public string DataPeriod { get; set; }
+        public required string DataPeriod { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string TrendDirection { get; set; }
+        public required string TrendDirection { get; set; }
         public double TrendStrength { get; set; }
-        public string Seasonality { get; set; }
+        public required string Seasonality { get; set; }
         public double SeasonalityStrength { get; set; }
-        public string ChangePoints { get; set; }
+        public required string ChangePoints { get; set; }
         public double TrendSlope { get; set; }
         public double ConfidenceLevel { get; set; }
         public double StatisticalSignificance { get; set; }

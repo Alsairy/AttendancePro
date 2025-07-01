@@ -270,32 +270,32 @@ namespace AttendancePlatform.Api.Services
 
     public class KpiMetricDto
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public double Value { get; set; }
         public double Target { get; set; }
-        public string Unit { get; set; }
+        public required string Unit { get; set; }
     }
 
     public class TrendAnalysisDto
     {
         public DateTime Date { get; set; }
-        public string Metric { get; set; }
+        public required string Metric { get; set; }
         public double Value { get; set; }
-        public string TrendDirection { get; set; }
+        public required string TrendDirection { get; set; }
     }
 
     public class PredictiveInsightDto
     {
-        public string Category { get; set; }
-        public string Prediction { get; set; }
+        public required string Category { get; set; }
+        public required string Prediction { get; set; }
         public double Confidence { get; set; }
-        public string Impact { get; set; }
-        public string RecommendedAction { get; set; }
+        public required string Impact { get; set; }
+        public required string RecommendedAction { get; set; }
     }
 
     public class BenchmarkComparisonDto
     {
-        public string Metric { get; set; }
+        public required string Metric { get; set; }
         public double YourValue { get; set; }
         public double IndustryAverage { get; set; }
         public double TopPerformer { get; set; }
@@ -303,36 +303,36 @@ namespace AttendancePlatform.Api.Services
 
     public class RiskAssessmentDto
     {
-        public string RiskCategory { get; set; }
-        public string RiskLevel { get; set; }
+        public required string RiskCategory { get; set; }
+        public required string RiskLevel { get; set; }
         public double Probability { get; set; }
-        public string Impact { get; set; }
+        public required string Impact { get; set; }
     }
 
     public class OpportunityAnalysisDto
     {
-        public string Opportunity { get; set; }
-        public string PotentialImpact { get; set; }
-        public string Investment { get; set; }
+        public required string Opportunity { get; set; }
+        public required string PotentialImpact { get; set; }
+        public required string Investment { get; set; }
     }
 
     public class PerformanceMetricDto
     {
-        public string Department { get; set; }
+        public required string Department { get; set; }
         public double PerformanceScore { get; set; }
-        public string Trend { get; set; }
+        public required string Trend { get; set; }
     }
 
     public class ResourceOptimizationDto
     {
-        public string Resource { get; set; }
+        public required string Resource { get; set; }
         public double Utilization { get; set; }
-        public string Recommendation { get; set; }
+        public required string Recommendation { get; set; }
     }
 
     public class CompetitiveAnalysisDto
     {
-        public string Competitor { get; set; }
+        public required string Competitor { get; set; }
         public double YourScore { get; set; }
         public double CompetitorScore { get; set; }
         public double Gap { get; set; }

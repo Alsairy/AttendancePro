@@ -178,10 +178,14 @@ namespace AttendancePlatform.Api.Services
                     Description = "Enterprise software licensing agreement for attendance management system",
                     ContractType = "Software License",
                     PartyName = "TechSoft Solutions Inc.",
+                    PartyA = "Hudur Enterprise Platform",
+                    PartyB = "TechSoft Solutions Inc.",
                     PartyContact = "contracts@techsoft.com",
                     ContractValue = 125000.00m,
                     Currency = "USD",
                     StartDate = DateTime.UtcNow.AddDays(-180),
+                    Terms = new List<string> { "Software usage rights", "Support and maintenance", "Data protection compliance" },
+                    Obligations = new List<string> { "Payment terms", "License compliance", "Security requirements" },
                     EndDate = DateTime.UtcNow.AddDays(185),
                     RenewalDate = DateTime.UtcNow.AddDays(155),
                     Status = "Active",
@@ -190,7 +194,7 @@ namespace AttendancePlatform.Api.Services
                     CreatedAt = DateTime.UtcNow.AddDays(-180),
                     LastReviewed = DateTime.UtcNow.AddDays(-30)
                 },
-                new ContractDto
+                new LegalContractDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -200,10 +204,14 @@ namespace AttendancePlatform.Api.Services
                     ContractType = "Service Agreement",
                     PartyName = "CleanPro Services Ltd.",
                     PartyContact = "admin@cleanpro.com",
+                    PartyA = "Hudur Enterprise Platform",
+                    PartyB = "CleanPro Services Ltd.",
                     ContractValue = 48000.00m,
                     Currency = "USD",
                     StartDate = DateTime.UtcNow.AddDays(-90),
                     EndDate = DateTime.UtcNow.AddDays(275),
+                    Terms = new List<string> { "Monthly cleaning services", "Equipment maintenance", "Emergency response" },
+                    Obligations = new List<string> { "Service level agreements", "Quality standards", "Insurance requirements" },
                     RenewalDate = DateTime.UtcNow.AddDays(245),
                     Status = "Active",
                     AutoRenewal = false,
@@ -324,7 +332,21 @@ namespace AttendancePlatform.Api.Services
                 var updatedCase = new LegalCaseDto
                 {
                     Id = caseId,
+                    TenantId = Guid.NewGuid(),
+                    CaseNumber = "CASE-20241227-001",
+                    Title = "Legal Case Update",
+                    Description = "Legal case status update",
+                    CaseType = "General",
+                    Priority = "Medium",
                     Status = status,
+                    PlaintiffName = "Hudur Enterprise Platform",
+                    DefendantName = "Third Party",
+                    AssignedLawyer = "Legal Team",
+                    CourtName = "District Court",
+                    FilingDate = DateTime.UtcNow.AddDays(-30),
+                    EstimatedCost = 5000.00m,
+                    ActualCost = 0.00m,
+                    CreatedAt = DateTime.UtcNow.AddDays(-30),
                     LastUpdated = DateTime.UtcNow
                 };
 
@@ -708,20 +730,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string DocumentNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string DocumentType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Version { get; set; }
+        public required string DocumentNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string DocumentType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Version { get; set; }
         public DateTime EffectiveDate { get; set; }
         public DateTime? ExpiryDate { get; set; }
         public DateTime? ReviewDate { get; set; }
         public Guid ApprovedBy { get; set; }
-        public string ApproverName { get; set; }
+        public required string ApproverName { get; set; }
         public Guid CreatedBy { get; set; }
-        public string CreatorName { get; set; }
+        public required string CreatorName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? LastModified { get; set; }
     }
@@ -730,20 +752,20 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ContractNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string ContractType { get; set; }
-        public string PartyName { get; set; }
-        public string PartyContact { get; set; }
+        public required string ContractNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string ContractType { get; set; }
+        public required string PartyName { get; set; }
+        public required string PartyContact { get; set; }
         public decimal ContractValue { get; set; }
-        public string Currency { get; set; }
+        public required string Currency { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime RenewalDate { get; set; }
-        public string Status { get; set; }
+        public required string Status { get; set; }
         public bool AutoRenewal { get; set; }
-        public string RenewalTerms { get; set; }
+        public required string RenewalTerms { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? LastReviewed { get; set; }
     }
@@ -752,16 +774,16 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string CaseNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string CaseType { get; set; }
-        public string Priority { get; set; }
-        public string Status { get; set; }
-        public string PlaintiffName { get; set; }
-        public string DefendantName { get; set; }
-        public string AssignedLawyer { get; set; }
-        public string CourtName { get; set; }
+        public required string CaseNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string CaseType { get; set; }
+        public required string Priority { get; set; }
+        public required string Status { get; set; }
+        public required string PlaintiffName { get; set; }
+        public required string DefendantName { get; set; }
+        public required string AssignedLawyer { get; set; }
+        public required string CourtName { get; set; }
         public DateTime FilingDate { get; set; }
         public DateTime? HearingDate { get; set; }
         public decimal EstimatedCost { get; set; }
@@ -774,12 +796,12 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AuditNumber { get; set; }
-        public string AuditName { get; set; }
-        public string Description { get; set; }
-        public string AuditType { get; set; }
-        public string Scope { get; set; }
-        public string AuditorName { get; set; }
+        public required string AuditNumber { get; set; }
+        public required string AuditName { get; set; }
+        public required string Description { get; set; }
+        public required string AuditType { get; set; }
+        public required string Scope { get; set; }
+        public required string AuditorName { get; set; }
         public DateTime ScheduledDate { get; set; }
         public DateTime? CompletionDate { get; set; }
         public string Status { get; set; }
@@ -890,18 +912,25 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string ContractNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string ContractType { get; set; }
-        public string Status { get; set; }
+        public required string ContractNumber { get; set; }
+        public required string Title { get; set; }
+        public required string Description { get; set; }
+        public required string ContractType { get; set; }
+        public required string Status { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal ContractValue { get; set; }
-        public string PartyA { get; set; }
-        public string PartyB { get; set; }
-        public List<string> Terms { get; set; }
-        public List<string> Obligations { get; set; }
+        public required string Currency { get; set; }
+        public required string PartyName { get; set; }
+        public required string PartyContact { get; set; }
+        public required string PartyA { get; set; }
+        public required string PartyB { get; set; }
+        public DateTime? RenewalDate { get; set; }
+        public bool AutoRenewal { get; set; }
+        public required string RenewalTerms { get; set; }
+        public DateTime? LastReviewed { get; set; }
+        public required List<string> Terms { get; set; }
+        public required List<string> Obligations { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

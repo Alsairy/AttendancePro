@@ -413,36 +413,36 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string JobNumber { get; set; }
-        public string JobName { get; set; }
-        public string Description { get; set; }
-        public string JobType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
-        public string StreamingPlatform { get; set; }
-        public string ProcessingEngine { get; set; }
-        public string DataSource { get; set; }
-        public string DataSink { get; set; }
-        public string ProcessingLogic { get; set; }
-        public string WindowType { get; set; }
-        public string WindowSize { get; set; }
-        public string WatermarkStrategy { get; set; }
-        public string CheckpointInterval { get; set; }
+        public required string JobNumber { get; set; }
+        public required string JobName { get; set; }
+        public required string Description { get; set; }
+        public required string JobType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Priority { get; set; }
+        public required string StreamingPlatform { get; set; }
+        public required string ProcessingEngine { get; set; }
+        public required string DataSource { get; set; }
+        public required string DataSink { get; set; }
+        public required string ProcessingLogic { get; set; }
+        public required string WindowType { get; set; }
+        public required string WindowSize { get; set; }
+        public required string WatermarkStrategy { get; set; }
+        public required string CheckpointInterval { get; set; }
         public int Parallelism { get; set; }
-        public string ResourceAllocation { get; set; }
-        public string BackpressureHandling { get; set; }
-        public string ErrorHandling { get; set; }
-        public string MonitoringMetrics { get; set; }
-        public string AlertingRules { get; set; }
-        public string BusinessRules { get; set; }
-        public string DataQuality { get; set; }
-        public string SecurityConfiguration { get; set; }
-        public string ComplianceRequirements { get; set; }
-        public string PerformanceOptimization { get; set; }
-        public string CostOptimization { get; set; }
-        public string BusinessImpact { get; set; }
-        public string StartedBy { get; set; }
+        public required string ResourceAllocation { get; set; }
+        public required string BackpressureHandling { get; set; }
+        public required string ErrorHandling { get; set; }
+        public required string MonitoringMetrics { get; set; }
+        public required string AlertingRules { get; set; }
+        public required string BusinessRules { get; set; }
+        public required string DataQuality { get; set; }
+        public required string SecurityConfiguration { get; set; }
+        public required string ComplianceRequirements { get; set; }
+        public required string PerformanceOptimization { get; set; }
+        public required string CostOptimization { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string StartedBy { get; set; }
         public DateTime? StartedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -452,22 +452,22 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string WindowNumber { get; set; }
-        public string WindowName { get; set; }
-        public string Description { get; set; }
-        public string WindowType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string WindowNumber { get; set; }
+        public required string WindowName { get; set; }
+        public required string Description { get; set; }
+        public required string WindowType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid JobId { get; set; }
         public DateTime WindowStart { get; set; }
         public DateTime WindowEnd { get; set; }
-        public string WindowSize { get; set; }
-        public string AllowedLateness { get; set; }
-        public string TriggerType { get; set; }
-        public string AggregationFunction { get; set; }
-        public string GroupingKeys { get; set; }
-        public string FilterConditions { get; set; }
-        public string OutputMode { get; set; }
+        public required string WindowSize { get; set; }
+        public required string AllowedLateness { get; set; }
+        public required string TriggerType { get; set; }
+        public required string AggregationFunction { get; set; }
+        public required string GroupingKeys { get; set; }
+        public required string FilterConditions { get; set; }
+        public required string OutputMode { get; set; }
         public long EventsProcessed { get; set; }
         public int WindowsGenerated { get; set; }
         public int AverageWindowSize { get; set; }
@@ -476,9 +476,9 @@ namespace AttendancePlatform.Api.Services
         public int LateEvents { get; set; }
         public int DroppedEvents { get; set; }
         public double DataCompleteness { get; set; }
-        public string BusinessContext { get; set; }
-        public string QualityMetrics { get; set; }
-        public string CreatedBy { get; set; }
+        public required string BusinessContext { get; set; }
+        public required string QualityMetrics { get; set; }
+        public required string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? ProcessedAt { get; set; }
@@ -509,8 +509,8 @@ namespace AttendancePlatform.Api.Services
     public class StreamReportDto
     {
         public Guid TenantId { get; set; }
-        public string ReportPeriod { get; set; }
-        public string ExecutiveSummary { get; set; }
+        public required string ReportPeriod { get; set; }
+        public required string ExecutiveSummary { get; set; }
         public int JobsDeployed { get; set; }
         public long WindowsProcessed { get; set; }
         public int MetricsGenerated { get; set; }
@@ -520,7 +520,7 @@ namespace AttendancePlatform.Api.Services
         public int ThroughputEPS { get; set; }
         public double DataVolume { get; set; }
         public double ResourceUtilization { get; set; }
-        public string BusinessImpact { get; set; }
+        public required string BusinessImpact { get; set; }
         public decimal CostSavings { get; set; }
         public double BusinessValue { get; set; }
         public double ROI { get; set; }
@@ -531,36 +531,36 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string MetricNumber { get; set; }
-        public string MetricName { get; set; }
-        public string Description { get; set; }
-        public string MetricType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
+        public required string MetricNumber { get; set; }
+        public required string MetricName { get; set; }
+        public required string Description { get; set; }
+        public required string MetricType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
         public Guid JobId { get; set; }
-        public string CalculationFormula { get; set; }
-        public string AggregationWindow { get; set; }
-        public string UpdateFrequency { get; set; }
+        public required string CalculationFormula { get; set; }
+        public required string AggregationWindow { get; set; }
+        public required string UpdateFrequency { get; set; }
         public double CurrentValue { get; set; }
         public double PreviousValue { get; set; }
         public double ChangePercent { get; set; }
-        public string Trend { get; set; }
+        public required string Trend { get; set; }
         public double MinValue { get; set; }
         public double MaxValue { get; set; }
         public double AverageValue { get; set; }
         public double StandardDeviation { get; set; }
         public double Threshold { get; set; }
-        public string AlertCondition { get; set; }
-        public string BusinessContext { get; set; }
-        public string DataSources { get; set; }
-        public string QualityIndicators { get; set; }
-        public string VisualizationType { get; set; }
-        public string RefreshRate { get; set; }
-        public string HistoricalComparison { get; set; }
-        public string SeasonalAdjustment { get; set; }
-        public string BusinessImpact { get; set; }
-        public string ActionableInsights { get; set; }
-        public string CalculatedBy { get; set; }
+        public required string AlertCondition { get; set; }
+        public required string BusinessContext { get; set; }
+        public required string DataSources { get; set; }
+        public required string QualityIndicators { get; set; }
+        public required string VisualizationType { get; set; }
+        public required string RefreshRate { get; set; }
+        public required string HistoricalComparison { get; set; }
+        public required string SeasonalAdjustment { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string ActionableInsights { get; set; }
+        public required string CalculatedBy { get; set; }
         public DateTime? CalculatedAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -570,29 +570,29 @@ namespace AttendancePlatform.Api.Services
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
-        public string AlertNumber { get; set; }
-        public string AlertName { get; set; }
-        public string Description { get; set; }
-        public string AlertType { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-        public string Severity { get; set; }
-        public string Priority { get; set; }
+        public required string AlertNumber { get; set; }
+        public required string AlertName { get; set; }
+        public required string Description { get; set; }
+        public required string AlertType { get; set; }
+        public required string Category { get; set; }
+        public required string Status { get; set; }
+        public required string Severity { get; set; }
+        public required string Priority { get; set; }
         public Guid JobId { get; set; }
         public Guid MetricId { get; set; }
-        public string TriggerCondition { get; set; }
+        public required string TriggerCondition { get; set; }
         public double CurrentValue { get; set; }
         public double ThresholdValue { get; set; }
-        public string AlertMessage { get; set; }
-        public string Recipients { get; set; }
-        public string NotificationChannels { get; set; }
-        public string EscalationRules { get; set; }
-        public string ActionRequired { get; set; }
-        public string BusinessImpact { get; set; }
-        public string ResolutionSteps { get; set; }
-        public string AcknowledgedBy { get; set; }
+        public required string AlertMessage { get; set; }
+        public required string Recipients { get; set; }
+        public required string NotificationChannels { get; set; }
+        public required string EscalationRules { get; set; }
+        public required string ActionRequired { get; set; }
+        public required string BusinessImpact { get; set; }
+        public required string ResolutionSteps { get; set; }
+        public string? AcknowledgedBy { get; set; }
         public DateTime? AcknowledgedAt { get; set; }
-        public string ResolvedBy { get; set; }
+        public string? ResolvedBy { get; set; }
         public DateTime? ResolvedAt { get; set; }
         public bool AutoResolution { get; set; }
         public string SuppressionRules { get; set; }
