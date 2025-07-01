@@ -280,11 +280,19 @@ app.Use(async (context, next) =>
 {
     var origin = context.Request.Headers["Origin"].ToString();
     
-    // Always allow any origin for deployment
-    context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
-    context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
-    context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token, Access-Control-Allow-Headers, Access-Control-Allow-Origin, X-SignalR-User-Agent, Connection, Upgrade");
-    context.Response.Headers.Append("Access-Control-Expose-Headers", "*");
+    if (!string.IsNullOrEmpty(origin))
+    {
+        context.Response.Headers.Append("Access-Control-Allow-Origin", origin);
+        context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
+    }
+    else
+    {
+        context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+    }
+    
+    context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD");
+    context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token, Access-Control-Allow-Headers, Access-Control-Allow-Origin, X-SignalR-User-Agent, Connection, Upgrade, Cache-Control, Pragma, Expires");
+    context.Response.Headers.Append("Access-Control-Expose-Headers", "Content-Length, Content-Type, Authorization");
     context.Response.Headers.Append("Access-Control-Max-Age", "86400");
     
     if (context.Request.Method == "OPTIONS")
@@ -330,7 +338,7 @@ app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.RateLimiti
 // Disable CSRF validation for deployment
 // app.UseMiddleware<CsrfValidationMiddleware>();
 
-app.UseCors("AllowAll");
+app.UseCors("AllowCredentials");
 
 if (!app.Environment.IsDevelopment())
 {
@@ -342,7 +350,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<NotificationHub>("/hubs/realtime").RequireCors("AllowAll");
+app.MapHub<NotificationHub>("/hubs/realtime").RequireCors("AllowCredentials");
 
 // Health check endpoint
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.UtcNow });
