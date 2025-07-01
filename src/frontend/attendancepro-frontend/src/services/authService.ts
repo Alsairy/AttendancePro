@@ -1,6 +1,8 @@
 import axios, { AxiosResponse } from 'axios'
 
 const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:5000/api'
+const TUNNEL_AUTH_USER = (import.meta as any).env?.VITE_TUNNEL_AUTH_USER
+const TUNNEL_AUTH_PASSWORD = (import.meta as any).env?.VITE_TUNNEL_AUTH_PASSWORD
 
 interface LoginResponse {
   access_token: string
@@ -41,6 +43,10 @@ class AuthService {
     headers: {
       'Content-Type': 'application/json',
     },
+    auth: TUNNEL_AUTH_USER && TUNNEL_AUTH_PASSWORD ? {
+      username: TUNNEL_AUTH_USER,
+      password: TUNNEL_AUTH_PASSWORD
+    } : undefined,
   })
 
   constructor() {

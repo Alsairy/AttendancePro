@@ -208,12 +208,7 @@ builder.Services.AddCors(options =>
     
     options.AddPolicy("AllowCredentials", policy =>
     {
-        policy.WithOrigins(
-                "https://attendancepro-fixapp-jur4spo0.devinapps.com",
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "https://localhost:7001"
-              )
+        policy.SetIsOriginAllowed(origin => true)
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
