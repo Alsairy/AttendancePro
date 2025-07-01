@@ -62,14 +62,14 @@ namespace AttendancePlatform.Api.Services
             return new ContentMarketingDto
             {
                 TenantId = tenantId,
-                TotalContent = 185,
+                ContentPieces = 185,
                 PublishedContent = 165,
-                DraftContent = 20,
                 ContentViews = 45000,
-                ContentShares = 2850,
                 EngagementRate = 8.5,
+                ContentShares = 2850,
                 ContentROI = 245.8,
-                ContentScore = 87.3
+                ContentChannels = 8,
+                ContentEffectiveness = 87.3
             };
         }
 
@@ -78,14 +78,14 @@ namespace AttendancePlatform.Api.Services
             return new SocialMediaDto
             {
                 TenantId = tenantId,
-                TotalFollowers = 25000,
+                SocialPlatforms = 6,
+                Followers = 25000,
+                Posts = 185,
                 EngagementRate = 6.8,
-                PostsPublished = 185,
-                SocialReach = 85000,
-                SocialImpressions = 450000,
-                SocialClicks = 12500,
-                SocialConversions = 850,
-                SentimentScore = 78.5
+                Shares = 2850,
+                Comments = 1250,
+                ReachRate = 78.5,
+                SocialROI = 245.8
             };
         }
 
@@ -94,13 +94,13 @@ namespace AttendancePlatform.Api.Services
             return new EmailMarketingDto
             {
                 TenantId = tenantId,
-                TotalSubscribers = 15000,
+                EmailCampaigns = 45,
                 EmailsSent = 45000,
                 OpenRate = 24.5,
                 ClickRate = 8.2,
                 ConversionRate = 3.8,
+                Subscribers = 15000,
                 UnsubscribeRate = 1.2,
-                BounceRate = 2.1,
                 EmailROI = 385.7
             };
         }
@@ -110,14 +110,14 @@ namespace AttendancePlatform.Api.Services
             return new MarketingAnalyticsDto
             {
                 TenantId = tenantId,
-                WebsiteTraffic = 125000,
-                OrganicTraffic = 75000,
-                PaidTraffic = 35000,
-                DirectTraffic = 15000,
-                ConversionRate = 4.8,
-                BounceRate = 35.2,
-                AverageSessionDuration = 3.5,
-                PageViews = 285000
+                AnalyticsReports = 25,
+                AttributionAccuracy = 87.5,
+                TouchpointAnalysis = 15,
+                CustomerJourney = 78.5,
+                ConversionPaths = 12,
+                MarketingROI = 245.8,
+                PerformanceMetrics = 35,
+                DataAccuracy = 89.3
             };
         }
 

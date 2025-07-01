@@ -29,15 +29,25 @@ namespace AttendancePlatform.Api.Services
         {
             return new TechnologyRoadmapDto
             {
+                Id = Guid.NewGuid(),
                 TenantId = tenantId,
-                TotalInitiatives = 85,
-                PlannedTechnologies = 45,
-                InDevelopment = 28,
-                CompletedProjects = 125,
-                RoadmapProgress = 78.5,
-                TimelineAccuracy = 89.2,
-                ResourceAllocation = 94.3,
-                StrategicAlignment = 87.6
+                RoadmapNumber = "TR-2024-001",
+                RoadmapName = "Enterprise Technology Roadmap 2024",
+                Description = "Comprehensive technology roadmap for digital transformation and innovation initiatives",
+                TimeHorizon = "2024-2027",
+                Status = "Active",
+                Version = "v2.1",
+                StartDate = DateTime.UtcNow.AddMonths(-6),
+                EndDate = DateTime.UtcNow.AddYears(3),
+                Owner = "Chief Technology Officer",
+                Budget = 2850000m,
+                Priority = "High",
+                StrategicAlignment = "Digital Transformation",
+                TechnologyFocus = "AI/ML, Cloud Computing, Cybersecurity",
+                ExpectedROI = 245.8,
+                RiskLevel = "Medium",
+                CreatedAt = DateTime.UtcNow.AddMonths(-6),
+                UpdatedAt = DateTime.UtcNow
             };
         }
 
@@ -46,14 +56,14 @@ namespace AttendancePlatform.Api.Services
             return new ResearchDevelopmentDto
             {
                 TenantId = tenantId,
-                RDInvestment = 2850000m,
                 ResearchProjects = 28,
-                DevelopmentProjects = 35,
+                ActiveResearchers = 65,
+                ResearchBudget = 2850000m,
                 PublishedPapers = 15,
-                Collaborations = 18,
-                RDPersonnel = 65,
-                EquipmentValue = 1250000m,
-                InnovationIndex = 89.3
+                Patents = 12,
+                ResearchEfficiency = 89.3,
+                CollaborativeProjects = 18,
+                InnovationRate = 24.8
             };
         }
 
@@ -64,12 +74,12 @@ namespace AttendancePlatform.Api.Services
                 TenantId = tenantId,
                 TotalLabs = 5,
                 ActiveProjects = 28,
-                LabPersonnel = 45,
+                Prototypes = 85,
+                SuccessfulLaunches = 15,
                 LabBudget = 1250000m,
-                PrototypesDeveloped = 85,
-                TechnologiesTransferred = 15,
-                SuccessRate = 78.5,
-                InnovationVelocity = 24.8
+                LabUtilization = 78.5,
+                Researchers = 45,
+                InnovationScore = 89.3
             };
         }
 
@@ -78,14 +88,14 @@ namespace AttendancePlatform.Api.Services
             return new TechnologyAssessmentDto
             {
                 TenantId = tenantId,
-                TechnologiesEvaluated = 185,
-                TechnologiesAdopted = 72,
-                AssessmentScore = 87.3,
+                AssessmentsCompleted = 185,
                 TechnologyMaturity = 78.5,
-                RiskAssessment = 15.7,
-                CompetitiveAdvantage = 89.2,
-                AdoptionRate = 84.6,
-                TechnologyValue = 2450000m
+                AdoptionReadiness = 87.3,
+                RiskFactors = 15,
+                CostBenefit = 2450000m,
+                StrategicAlignment = 89,
+                ImplementationComplexity = 84.6,
+                RecommendedAction = "Proceed with phased implementation"
             };
         }
 
@@ -97,11 +107,11 @@ namespace AttendancePlatform.Api.Services
                 TotalPatents = 45,
                 PendingApplications = 15,
                 GrantedPatents = 30,
+                PatentCitations = 85,
                 PatentValue = 2850000m,
+                LicensingDeals = 8,
                 LicensingRevenue = 185000m,
-                PatentPortfolioScore = 89.3,
-                InfringementCases = 2,
-                PatentStrategy = "Offensive"
+                PatentPortfolioStrength = 89.3
             };
         }
 
@@ -112,12 +122,12 @@ namespace AttendancePlatform.Api.Services
                 TenantId = tenantId,
                 TransferProjects = 15,
                 SuccessfulTransfers = 12,
+                TransferSuccessRate = 80.0,
                 TransferValue = 850000m,
-                CommercializationRate = 80.0,
-                TimeToMarket = 18.5,
-                PartnershipAgreements = 8,
-                LicensingDeals = 5,
-                TransferROI = 245.8
+                PartnerOrganizations = 8,
+                CommercializedTechnologies = 5,
+                RevenueGenerated = 245800m,
+                TechnologyImpact = 89.3
             };
         }
 
@@ -126,14 +136,14 @@ namespace AttendancePlatform.Api.Services
             return new InnovationMetricsDto
             {
                 TenantId = tenantId,
-                InnovationScore = 89.3,
-                TimeToMarket = 18.5,
+                InnovationIndex = 94.7,
+                IdeaSubmissions = 185,
+                ImplementedIdeas = 45,
+                IdeaImplementationRate = 24.3,
+                InnovationInvestment = 2450000m,
                 InnovationROI = 245.8,
-                IdeaConversionRate = 24.8,
-                InnovationVelocity = 28.5,
-                PatentDensity = 3.2,
-                RDIntensity = 12.5,
-                InnovationIndex = 94.7
+                InnovationAwards = 8,
+                CreativityScore = 89.3
             };
         }
 
@@ -142,14 +152,14 @@ namespace AttendancePlatform.Api.Services
             return new TechnologyReportsDto
             {
                 TenantId = tenantId,
-                TechnologyReports = 25,
-                TrendAnalysis = 15,
-                CompetitiveIntelligence = 12,
-                TechnologyForecasts = 8,
-                MarketAnalysis = 18,
-                TechnologyScanning = 35,
+                TotalReports = 25,
+                TechnicalReports = 15,
+                ProgressReports = 12,
+                AssessmentReports = 8,
                 ReportAccuracy = 94.7,
-                ReportUsage = 87.3
+                AutomatedReports = 18,
+                ReportTimeliness = 87.3,
+                CustomReports = 5
             };
         }
 
@@ -158,14 +168,14 @@ namespace AttendancePlatform.Api.Services
             return new EmergingTechnologiesDto
             {
                 TenantId = tenantId,
-                EmergingTechnologies = 45,
-                TechnologiesTracked = 125,
-                DisruptivePotential = 78.5,
-                AdoptionTimeline = 24.5,
-                InvestmentPotential = 1850000m,
-                RiskLevel = 25.8,
-                OpportunityScore = 89.3,
-                TechnologyReadiness = 65.2
+                TrackedTechnologies = 125,
+                EvaluatedTechnologies = 45,
+                AdoptedTechnologies = 15,
+                TechnologyAdoptionRate = 78.5,
+                TrendAnalyses = 24,
+                DisruptionPotential = 89.3,
+                TechnologyPartnerships = 8,
+                FutureTechReadiness = 65.2
             };
         }
 
@@ -178,9 +188,9 @@ namespace AttendancePlatform.Api.Services
                 CoreTechnologies = 45,
                 EmergingTechnologies = 25,
                 LegacyTechnologies = 15,
-                PortfolioValue = 5850000m,
                 PortfolioBalance = 87.3,
-                TechnologySynergy = 82.5,
+                PortfolioValue = 5850000m,
+                TechnologyDiversification = 82.5,
                 StrategicAlignment = 94.7
             };
         }

@@ -30,14 +30,14 @@ namespace AttendancePlatform.Api.Services
             return new DataExplorationDto
             {
                 TenantId = tenantId,
-                TotalDatasets = 450,
-                ExploredDatasets = 385,
                 DataSources = 25,
-                DataVolume = 25.8,
-                DataVariety = 15,
-                ExplorationJobs = 185,
+                DataSets = 450,
+                DataVolume = 25.8m,
+                DataQuality = 87.3,
+                ExplorationProjects = 185,
                 InsightsGenerated = 125,
-                ExplorationEfficiency = 87.3
+                ExplorationEfficiency = 87.3,
+                DataPatterns = 15
             };
         }
 
@@ -48,12 +48,12 @@ namespace AttendancePlatform.Api.Services
                 TenantId = tenantId,
                 TotalModels = 85,
                 ActiveModels = 72,
+                TrainingModels = 13,
                 ModelAccuracy = 94.7,
-                TrainingJobs = 245,
-                ModelVersions = 185,
-                DeployedModels = 65,
                 ModelPerformance = 89.3,
-                DevelopmentVelocity = 24.8
+                ModelVersions = 185,
+                DevelopmentTime = 24.8,
+                ModelDeployments = 65
             };
         }
 
@@ -62,14 +62,14 @@ namespace AttendancePlatform.Api.Services
             return new StatisticalAnalysisDto
             {
                 TenantId = tenantId,
-                AnalysisJobs = 185,
+                AnalysisProjects = 185,
+                CompletedAnalyses = 165,
                 StatisticalTests = 125,
+                AnalysisAccuracy = 96.3,
                 HypothesesTested = 85,
+                SignificantFindings = 72,
                 ConfidenceLevel = 95.0,
-                SignificanceLevel = 0.05,
-                CorrelationAnalysis = 45,
-                RegressionModels = 35,
-                AnalysisAccuracy = 96.3
+                DataPoints = 15420
             };
         }
 
@@ -78,14 +78,14 @@ namespace AttendancePlatform.Api.Services
             return new DataVisualizationDto
             {
                 TenantId = tenantId,
-                TotalVisualizations = 285,
-                InteractiveDashboards = 45,
-                StaticReports = 125,
-                RealTimeCharts = 85,
-                VisualizationTypes = 15,
+                Dashboards = 45,
+                Charts = 285,
+                Reports = 125,
+                InteractiveVisuals = 85,
                 UserEngagement = 78.5,
-                VisualizationQuality = 89.3,
-                DataAccuracy = 96.7
+                DataConnections = 15,
+                VisualizationEffectiveness = 89.3,
+                CustomVisuals = 65
             };
         }
 
@@ -95,13 +95,13 @@ namespace AttendancePlatform.Api.Services
             {
                 TenantId = tenantId,
                 PredictiveModels = 45,
-                ForecastAccuracy = 89.3,
-                PredictionJobs = 1250,
-                ModelTypes = 12,
-                TimeSeriesModels = 25,
-                ClassificationModels = 15,
-                RegressionModels = 18,
-                PredictiveInsights = 185
+                PredictionAccuracy = 89.3,
+                ForecastsGenerated = 1250,
+                ModelReliability = 92.5,
+                PredictionHorizon = 12,
+                ErrorRate = 7.5,
+                ModelUpdates = 25,
+                BusinessImpact = 85.3
             };
         }
 
@@ -110,14 +110,14 @@ namespace AttendancePlatform.Api.Services
             return new DataMiningDto
             {
                 TenantId = tenantId,
-                MiningJobs = 125,
+                MiningProjects = 125,
                 PatternsDiscovered = 85,
-                AssociationRules = 45,
-                ClusteringAnalysis = 35,
-                AnomalyDetection = 25,
-                DataPatterns = 185,
+                DataRules = 45,
                 MiningAccuracy = 87.3,
-                InsightQuality = 89.5
+                AssociationRules = 35,
+                ClusteringResults = 25,
+                KnowledgeExtraction = 89.5,
+                AnomaliesDetected = 15
             };
         }
 
@@ -130,10 +130,10 @@ namespace AttendancePlatform.Api.Services
                 TrainingDatasets = 125,
                 ModelAccuracy = 94.7,
                 FeatureEngineering = 185,
-                ModelValidation = 96.3,
-                HyperparameterTuning = 78.5,
-                ModelDeployment = 89.2,
-                MLPipelines = 45
+                AlgorithmsUsed = 12,
+                TrainingTime = 24.8,
+                ModelValidations = 96,
+                PerformanceMetrics = 89.2
             };
         }
 
@@ -143,13 +143,13 @@ namespace AttendancePlatform.Api.Services
             {
                 TenantId = tenantId,
                 TotalReports = 185,
-                AutomatedReports = 125,
-                CustomReports = 45,
                 ScheduledReports = 85,
                 AdHocReports = 35,
                 ReportAccuracy = 96.7,
-                ReportUsage = 87.3,
-                DataFreshness = 94.8
+                AutomatedReports = 125,
+                ReportGeneration = 94.8,
+                CustomReports = 45,
+                UserSatisfaction = 87.3
             };
         }
 
@@ -157,15 +157,27 @@ namespace AttendancePlatform.Api.Services
         {
             return new DataQualityDto
             {
+                QualityNumber = "DQ-2024-001",
+                DataAssetName = "Enterprise Data Warehouse",
+                QualityDimension = "Completeness",
+                QualityStatus = "Good",
+                QualityTrend = "Improving",
+                ResponsibleTeam = "Data Engineering",
+                Status = "Active",
+                QualityRules = "Comprehensive data quality rules implemented",
                 TenantId = tenantId,
-                DataQualityScore = 96.3,
+                QualityScore = 96.3,
                 DataCompleteness = 94.7,
                 DataAccuracy = 97.2,
                 DataConsistency = 95.8,
                 DataValidity = 96.5,
                 DataUniqueness = 98.1,
-                QualityRules = 125,
-                QualityChecks = 1850
+                QualityChecks = 1850,
+                QualityMetrics = new Dictionary<string, object>
+                {
+                    { "CompletionRate", 94.7 },
+                    { "AccuracyRate", 97.2 }
+                }
             };
         }
 
@@ -174,14 +186,24 @@ namespace AttendancePlatform.Api.Services
             return new DataGovernanceDto
             {
                 TenantId = tenantId,
+                TotalPolicies = 45,
                 GovernancePolicies = 45,
                 DataStewards = 25,
                 DataCatalogs = 8,
-                DataLineage = 185,
-                DataClassification = 125,
+                DataLineage = "Comprehensive lineage tracking implemented",
+                AccessControls = new Dictionary<string, int>
+                {
+                    { "ReadAccess", 125 },
+                    { "WriteAccess", 45 }
+                },
                 ComplianceScore = 96.7,
                 GovernanceMaturity = 87.3,
-                PolicyCompliance = 94.8
+                PolicyCompliance = 94.8,
+                GovernanceMetrics = new Dictionary<string, object>
+                {
+                    { "PolicyAdherence", 94.8 },
+                    { "DataStewardActivity", 87.3 }
+                }
             };
         }
     }

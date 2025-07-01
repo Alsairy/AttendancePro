@@ -33,10 +33,10 @@ namespace AttendancePlatform.Api.Services
                 TotalTickets = 1250,
                 OpenTickets = 185,
                 ResolvedTickets = 1065,
-                PendingTickets = 45,
-                EscalatedTickets = 25,
                 AverageResolutionTime = 24.5,
-                FirstResponseTime = 2.3,
+                CustomerSatisfaction = 4.2,
+                EscalatedTickets = 25,
+                FirstCallResolution = 78.5,
                 TicketBacklog = 15
             };
         }
@@ -46,14 +46,14 @@ namespace AttendancePlatform.Api.Services
             return new CustomerSatisfactionDto
             {
                 TenantId = tenantId,
-                OverallSatisfaction = 4.2,
+                SatisfactionScore = 4.2,
+                SurveysCompleted = 1250,
                 NetPromoterScore = 65,
-                CustomerEffortScore = 3.8,
-                SatisfactionTrend = 8.5,
-                ResponseRate = 78.5,
-                DetractorPercentage = 12.5,
-                PromoterPercentage = 68.2,
-                PassivePercentage = 19.3
+                CustomerRetention = 92.3,
+                ComplaintsReceived = 125,
+                ComplaintsResolved = 118,
+                ServiceQuality = 4.1,
+                ResponseTime = 2.3
             };
         }
 
@@ -63,13 +63,13 @@ namespace AttendancePlatform.Api.Services
             {
                 TenantId = tenantId,
                 TotalAgents = 45,
-                ActiveAgents = 38,
                 AverageHandleTime = 18.5,
                 FirstCallResolution = 78.5,
-                AgentUtilization = 85.3,
-                CustomerRating = 4.1,
-                TicketsResolved = 1065,
-                AverageResponseTime = 2.3
+                CustomerSatisfaction = 4.1,
+                CallsHandled = 1065,
+                ProductivityScore = 85.3,
+                QualityScore = 89.2,
+                TrainingHours = 120
             };
         }
 
@@ -86,10 +86,18 @@ namespace AttendancePlatform.Api.Services
                     { "Chat", 450 },
                     { "Social", 300 }
                 },
-                PeakHours = "10:00-14:00",
+                PeakHours = new List<string> { "10:00-12:00", "14:00-16:00" },
                 ResolutionRate = 85.2,
                 EscalationRate = 8.5,
-                CustomerRetentionRate = 92.3
+                CustomerRetentionRate = 92.3,
+                AverageResponseTime = 2.5,
+                CustomerSatisfactionScore = 4.2,
+                TotalTickets = 1250,
+                Metrics = new Dictionary<string, object>
+                {
+                    { "FirstCallResolution", 78.5 },
+                    { "AverageHandleTime", 18.5 }
+                }
             };
         }
 
@@ -100,12 +108,12 @@ namespace AttendancePlatform.Api.Services
                 TenantId = tenantId,
                 TotalArticles = 450,
                 PublishedArticles = 385,
-                DraftArticles = 65,
-                ViewCount = 15420,
-                SearchQueries = 2850,
+                ArticleViews = 15420,
                 ArticleRating = 4.3,
-                UpdateFrequency = 12.5,
-                UsageAnalytics = 78.5
+                SearchQueries = 2850,
+                SearchAccuracy = 87.5,
+                ArticleUpdates = 125,
+                KnowledgeUtilization = 78.5
             };
         }
 
@@ -115,13 +123,13 @@ namespace AttendancePlatform.Api.Services
             {
                 TenantId = tenantId,
                 TotalEscalations = 125,
-                PendingEscalations = 25,
                 ResolvedEscalations = 100,
                 EscalationRate = 8.5,
                 AverageEscalationTime = 4.5,
-                EscalationReasons = new List<string> { "Technical Issue", "Billing", "Product Defect" },
-                ResolutionTime = 18.5,
-                CustomerSatisfactionPostEscalation = 3.8
+                EscalationLevels = 3,
+                EscalationResolution = 80.0,
+                CriticalEscalations = 25,
+                EscalationSatisfaction = 3.8
             };
         }
 
@@ -130,14 +138,14 @@ namespace AttendancePlatform.Api.Services
             return new LiveChatSupportDto
             {
                 TenantId = tenantId,
-                ActiveChats = 15,
-                TotalChats = 450,
+                ChatSessions = 450,
                 AverageWaitTime = 1.5,
                 AverageChatDuration = 12.3,
-                ChatResolutionRate = 82.5,
-                AgentsOnline = 12,
-                CustomerSatisfaction = 4.1,
-                ChatVolume = 85
+                ChatSatisfaction = 4.1,
+                ConcurrentChats = 15,
+                ChatResolution = 82.5,
+                ChatTransfers = 25,
+                AgentUtilization = 85.0
             };
         }
 
@@ -147,12 +155,16 @@ namespace AttendancePlatform.Api.Services
             {
                 TenantId = tenantId,
                 TotalFeedback = 850,
+                FeedbackReceived = 850,
                 PositiveFeedback = 650,
                 NegativeFeedback = 125,
                 NeutralFeedback = 75,
                 FeedbackScore = 4.2,
+                FeedbackChannels = 5,
                 ResponseRate = 68.5,
-                ActionableInsights = 45,
+                ActionItems = 45,
+                ActionableInsights = 45.0,
+                ImprovementRate = 78.5,
                 ImprovementAreas = new List<string> { "Response Time", "Product Knowledge", "Follow-up" }
             };
         }
@@ -162,14 +174,14 @@ namespace AttendancePlatform.Api.Services
             return new ServiceReportsDto
             {
                 TenantId = tenantId,
-                DailyReports = 30,
-                WeeklyReports = 12,
-                MonthlyReports = 3,
-                CustomReports = 8,
-                AutomatedReports = 25,
+                TotalReports = 53,
+                PerformanceReports = 30,
+                QualityReports = 12,
+                CustomerReports = 3,
                 ReportAccuracy = 96.5,
-                ReportUsage = 78.5,
-                DataFreshness = 95.2
+                AutomatedReports = 25,
+                ReportTimeliness = 95.2,
+                CustomReports = 8
             };
         }
 

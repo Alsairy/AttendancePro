@@ -46,14 +46,14 @@ namespace AttendancePlatform.Api.Services
             return new ResearchDevelopmentDto
             {
                 TenantId = tenantId,
-                RDInvestment = 1250000m,
                 ResearchProjects = 15,
-                DevelopmentProjects = 22,
+                ActiveResearchers = 45,
+                ResearchBudget = 1250000m,
                 PublishedPapers = 8,
-                Collaborations = 12,
-                RDPersonnel = 45,
-                EquipmentValue = 850000m,
-                InnovationIndex = 89.3
+                Patents = 12,
+                ResearchEfficiency = 89.3,
+                CollaborativeProjects = 12,
+                InnovationRate = 24.8
             };
         }
 
@@ -65,11 +65,11 @@ namespace AttendancePlatform.Api.Services
                 TotalPatents = 35,
                 PendingApplications = 12,
                 GrantedPatents = 23,
+                PatentCitations = 85,
                 PatentValue = 1850000m,
+                LicensingDeals = 8,
                 LicensingRevenue = 125000m,
-                PatentPortfolioScore = 87.5,
-                InfringementCases = 2,
-                PatentStrategy = "Offensive"
+                PatentPortfolioStrength = 87.5
             };
         }
 
@@ -80,12 +80,12 @@ namespace AttendancePlatform.Api.Services
                 TenantId = tenantId,
                 TotalLabs = 3,
                 ActiveProjects = 18,
-                LabPersonnel = 25,
+                Prototypes = 45,
+                SuccessfulLaunches = 8,
                 LabBudget = 750000m,
-                PrototypesDeveloped = 45,
-                TechnologiesTransferred = 8,
-                SuccessRate = 72.5,
-                InnovationVelocity = 24.8
+                LabUtilization = 72.5,
+                Researchers = 25,
+                InnovationScore = 89.3
             };
         }
 

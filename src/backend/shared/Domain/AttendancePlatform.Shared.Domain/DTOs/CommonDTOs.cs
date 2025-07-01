@@ -397,22 +397,6 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public List<object> AllMatches { get; set; } = new();
     }
 
-    public class ComplianceReportDto
-    {
-        public Guid TenantId { get; set; }
-        public string Region { get; set; } = string.Empty;
-        public string Language { get; set; } = string.Empty;
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public DateTime GeneratedAt { get; set; }
-        public int TotalEmployees { get; set; }
-        public int TotalWorkingDays { get; set; }
-        public double ComplianceScore { get; set; }
-        public List<ComplianceViolationDto> Violations { get; set; } = new();
-        public List<RegionalRequirementDto> RegionalRequirements { get; set; } = new();
-        public string Summary { get; set; } = string.Empty;
-        public List<string> Recommendations { get; set; } = new();
-    }
 
     public class RegionalRequirementDto
     {

@@ -6,7 +6,7 @@ namespace AttendancePlatform.Api.Services
     {
         Task<ProductRoadmapDto> GetProductRoadmapAsync(Guid tenantId);
         Task<FeatureManagementDto> GetFeatureManagementAsync(Guid tenantId);
-        Task<ProductAnalyticsDto> GetProductAnalyticsAsync(Guid tenantId);
+        Task<ProductMetricsDto> GetProductAnalyticsAsync(Guid tenantId);
         Task<MarketResearchDto> GetMarketResearchAsync(Guid tenantId);
         Task<CompetitiveAnalysisDto> GetCompetitiveAnalysisAsync(Guid tenantId);
         Task<UserFeedbackDto> GetUserFeedbackAsync(Guid tenantId);
@@ -30,14 +30,14 @@ namespace AttendancePlatform.Api.Services
             return new ProductRoadmapDto
             {
                 TenantId = tenantId,
-                TotalInitiatives = 25,
+                TotalProducts = 25,
                 PlannedFeatures = 45,
-                InDevelopment = 18,
                 CompletedFeatures = 125,
-                RoadmapProgress = 68.5,
-                TimelineAccuracy = 85.2,
-                ResourceAllocation = 92.3,
-                StakeholderAlignment = 78.9
+                FeatureCompletionRate = 68.5,
+                ActiveRoadmaps = 8,
+                RoadmapAccuracy = 85.2,
+                StakeholderAlignment = 78,
+                TimeToMarket = 92.3
             };
         }
 
@@ -49,27 +49,36 @@ namespace AttendancePlatform.Api.Services
                 TotalFeatures = 185,
                 ActiveFeatures = 165,
                 DeprecatedFeatures = 20,
-                FeatureAdoption = 78.5,
-                FeatureUsage = 85.2,
-                FeatureRating = 4.2,
+                FeatureAdoptionRate = 78.5,
                 FeatureRequests = 45,
-                FeatureBacklog = 25
+                FeatureSatisfaction = 85.2,
+                FeatureFlags = 25,
+                FeaturePerformance = 92.3
             };
         }
 
-        public async Task<ProductAnalyticsDto> GetProductAnalyticsAsync(Guid tenantId)
+        public async Task<ProductMetricsDto> GetProductAnalyticsAsync(Guid tenantId)
         {
-            return new ProductAnalyticsDto
+            return new ProductMetricsDto
             {
                 TenantId = tenantId,
                 ActiveUsers = 15420,
-                DailyActiveUsers = 8500,
-                MonthlyActiveUsers = 12800,
-                UserRetention = 78.5,
-                SessionDuration = 24.5,
-                FeatureUsage = 85.2,
+                UserEngagement = 78.5,
+                RetentionRate = 85.2,
+                ChurnRate = 5.2,
+                Revenue = 1850000m,
                 ConversionRate = 12.8,
-                ChurnRate = 5.2
+                ProductViews = 8500,
+                ProductPerformance = 92.3,
+                ProductRevenue = 1850000m,
+                RevenueGrowth = 15.8,
+                CustomerSatisfaction = 4.3,
+                NetPromoterScore = 65,
+                ProductAdoption = 78.5,
+                TimeToValue = 12,
+                ProductFitScore = 85.2,
+                CustomerLifetimeValue = 2850m,
+                Metrics = new Dictionary<string, object>()
             };
         }
 
@@ -78,14 +87,14 @@ namespace AttendancePlatform.Api.Services
             return new MarketResearchDto
             {
                 TenantId = tenantId,
-                MarketSize = 15000000m,
-                MarketGrowth = 8.5,
-                MarketShare = 12.8,
-                CompetitorAnalysis = 15,
-                CustomerSegments = 8,
-                MarketTrends = 25,
                 ResearchProjects = 12,
-                InsightsGenerated = 45
+                MarketSegments = 8,
+                CompetitorAnalyses = 15,
+                MarketShare = 12.8,
+                MarketSize = 15000000m,
+                GrowthRate = 8.5,
+                CustomerInsights = 45,
+                ResearchAccuracy = 92.5
             };
         }
 
@@ -113,11 +122,11 @@ namespace AttendancePlatform.Api.Services
                 TotalFeedback = 850,
                 PositiveFeedback = 650,
                 NegativeFeedback = 125,
-                NeutralFeedback = 75,
-                FeedbackScore = 4.2,
+                SatisfactionScore = 4.2,
+                FeatureRequests = 185,
+                BugReports = 45,
                 ResponseRate = 68.5,
-                ActionableInsights = 45,
-                ImprovementAreas = new List<string> { "Performance", "User Interface", "Feature Requests" }
+                ActionableInsights = 45.0
             };
         }
 
@@ -142,13 +151,18 @@ namespace AttendancePlatform.Api.Services
             return new LaunchManagementDto
             {
                 TenantId = tenantId,
+                TotalLaunches = 8,
+                SuccessfulLaunches = 5,
+                LaunchSuccessRate = 85.2,
+                TimeToMarket = 185.5,
+                LaunchCosts = 450000m,
+                MarketPenetration = 12.8,
+                LaunchMetrics = 15,
+                LaunchROI = 245.8,
                 PlannedLaunches = 8,
                 CompletedLaunches = 5,
                 LaunchSuccess = 85.2,
-                TimeToMarket = 185.5,
                 LaunchBudget = 450000m,
-                MarketPenetration = 12.8,
-                LaunchROI = 245.8,
                 CustomerAcquisition = 1250
             };
         }
