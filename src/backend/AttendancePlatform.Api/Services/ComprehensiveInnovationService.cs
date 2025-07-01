@@ -159,13 +159,13 @@ namespace AttendancePlatform.Api.Services
             {
                 TenantId = tenantId,
                 CultureScore = 85.7,
-                EmployeeEngagement = 82.3,
-                RiskTolerance = 74.8,
-                CollaborationLevel = 89.2,
-                LearningOrientation = 87.5,
-                ExperimentationRate = 68.9,
-                FailureTolerance = 72.3,
-                InnovationMindset = 91.4
+                EmployeeParticipation = 82,
+                InnovationEvents = 15,
+                TrainingHours = 74.8,
+                CrossFunctionalProjects = 12,
+                FailureToleranceIndex = 72.3,
+                CultureInitiatives = new List<string> { "Innovation Labs", "Hackathons", "Idea Contests" },
+                CultureMetrics = new Dictionary<string, double> { { "Engagement", 89.2 }, { "Learning", 87.5 } }
             };
         }
 
@@ -174,14 +174,14 @@ namespace AttendancePlatform.Api.Services
             return new InnovationROIDto
             {
                 TenantId = tenantId,
-                TotalInvestment = 2850000m,
-                RevenueGenerated = 4250000m,
-                CostSavings = 850000m,
-                ROI = 245.8,
+                TotalInvestment = 2850000.0,
+                TotalReturns = 4250000.0,
+                ROIPercentage = 245.8,
                 PaybackPeriod = 24.5,
-                NPV = 1850000m,
-                IRR = 35.7,
-                InnovationValue = 5100000m
+                NetPresentValue = 1850000.0,
+                InternalRateOfReturn = 35.7,
+                RevenueStreams = new List<string> { "Product Sales", "Licensing", "Partnerships" },
+                CostBreakdown = new Dictionary<string, double> { { "R&D", 1500000.0 }, { "Marketing", 850000.0 }, { "Operations", 500000.0 } }
             };
         }
     }

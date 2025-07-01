@@ -203,16 +203,14 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
-              .AllowAnyHeader()
-              .WithExposedHeaders("*");
+              .AllowAnyHeader();
     });
     
     options.AddPolicy("AllowAllOrigins", policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
-              .AllowAnyHeader()
-              .WithExposedHeaders("*");
+              .AllowAnyHeader();
     });
 });
 
@@ -271,38 +269,11 @@ app.Use(async (context, next) =>
 
 app.Use(async (context, next) =>
 {
-    var origin = context.Request.Headers["Origin"].ToString();
-    
-    // Always allow the frontend origin and common development origins
-    var allowedOrigins = new[]
-    {
-        "https://attendancepro-fixapp-jur4spo0.devinapps.com",
-        "https://attendancepro-fixapp-tunnel-s3045g8h.devinapps.com",
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "https://localhost:5173"
-    };
-    
-    // Always set CORS headers for allowed origins
-    if (!string.IsNullOrEmpty(origin) && allowedOrigins.Contains(origin))
-    {
-        context.Response.Headers["Access-Control-Allow-Origin"] = origin;
-        context.Response.Headers["Access-Control-Allow-Credentials"] = "true";
-    }
-    else if (string.IsNullOrEmpty(origin))
-    {
-        context.Response.Headers["Access-Control-Allow-Origin"] = "*";
-    }
-    else
-    {
-        // Allow any origin for development
-        context.Response.Headers["Access-Control-Allow-Origin"] = origin;
-        context.Response.Headers["Access-Control-Allow-Credentials"] = "true";
-    }
-    
+    context.Response.Headers["Access-Control-Allow-Origin"] = "*";
     context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH";
     context.Response.Headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token, Access-Control-Allow-Headers, Access-Control-Allow-Origin, X-SignalR-User-Agent";
     context.Response.Headers["Access-Control-Expose-Headers"] = "*";
+    context.Response.Headers["Access-Control-Max-Age"] = "86400";
     
     if (context.Request.Method == "OPTIONS")
     {

@@ -164,7 +164,6 @@ namespace AttendancePlatform.Api.Services
                 QualityTrend = "Improving",
                 ResponsibleTeam = "Data Engineering",
                 Status = "Active",
-                QualityRules = "Comprehensive data quality rules implemented",
                 TenantId = tenantId,
                 QualityScore = 96.3,
                 DataCompleteness = 94.7,

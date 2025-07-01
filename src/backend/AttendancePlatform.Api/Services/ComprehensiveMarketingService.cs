@@ -12,7 +12,7 @@ namespace AttendancePlatform.Api.Services
         Task<MarketingAnalyticsDto> GetMarketingAnalyticsAsync(Guid tenantId);
         Task<BrandManagementDto> GetBrandManagementAsync(Guid tenantId);
         Task<MarketResearchDto> GetMarketResearchAsync(Guid tenantId);
-        Task<MarketingROIDto> GetMarketingROIAsync(Guid tenantId);
+        Task<MarketingAnalyticsDto> GetMarketingROIAsync(Guid tenantId);
         Task<bool> CreateCampaignAsync(CampaignDto campaign);
     }
 
@@ -35,8 +35,10 @@ namespace AttendancePlatform.Api.Services
                 CompletedCampaigns = 27,
                 CampaignBudget = 850000m,
                 CampaignROI = 285.7,
-                AverageEngagement = 12.8,
+                LeadsGenerated = 1250,
                 ConversionRate = 8.5,
+                CampaignEffectiveness = 88.7,
+                AverageEngagement = 12.8,
                 CampaignReach = 125000
             };
         }
@@ -49,11 +51,14 @@ namespace AttendancePlatform.Api.Services
                 TotalLeads = 1250,
                 QualifiedLeads = 450,
                 ConvertedLeads = 185,
+                LeadConversionRate = 14.8,
+                LeadSources = 8,
+                LeadQuality = 82.3,
+                NurturedLeads = 350,
+                LeadVelocity = 12.5,
                 LeadScore = 78.5,
                 ConversionRate = 14.8,
-                LeadVelocity = 12.5,
-                CostPerLead = 125.50m,
-                LeadQuality = 82.3
+                CostPerLead = 125.50m
             };
         }
 
@@ -127,13 +132,13 @@ namespace AttendancePlatform.Api.Services
             {
                 TenantId = tenantId,
                 BrandAwareness = 78.5,
-                BrandRecognition = 85.2,
-                BrandLoyalty = 72.8,
-                BrandEquity = 450000m,
                 BrandSentiment = 82.3,
                 BrandMentions = 1250,
-                BrandReach = 185000,
-                BrandEngagement = 12.8
+                BrandEquity = 450000.0,
+                BrandCampaigns = 15,
+                BrandConsistency = 85.2,
+                BrandAssets = 125,
+                BrandPerformance = 88.7
             };
         }
 
@@ -142,30 +147,30 @@ namespace AttendancePlatform.Api.Services
             return new MarketResearchDto
             {
                 TenantId = tenantId,
-                MarketSize = 15000000m,
-                MarketGrowth = 8.5,
-                MarketShare = 12.8,
-                CompetitorAnalysis = 15,
-                CustomerSegments = 8,
-                MarketTrends = 25,
                 ResearchProjects = 12,
-                InsightsGenerated = 45
+                MarketSegments = 8,
+                CompetitorAnalyses = 15,
+                MarketShare = 12.8,
+                MarketSize = 15000000m,
+                GrowthRate = 8.5,
+                CustomerInsights = 45,
+                ResearchAccuracy = 89.3
             };
         }
 
-        public async Task<MarketingROIDto> GetMarketingROIAsync(Guid tenantId)
+        public async Task<MarketingAnalyticsDto> GetMarketingROIAsync(Guid tenantId)
         {
-            return new MarketingROIDto
+            return new MarketingAnalyticsDto
             {
                 TenantId = tenantId,
-                TotalInvestment = 850000m,
-                RevenueGenerated = 2450000m,
-                ROI = 288.2,
-                CostPerAcquisition = 125.50m,
-                CustomerLifetimeValue = 2850m,
-                PaybackPeriod = 8.5,
-                MarketingEfficiency = 78.5,
-                AttributedRevenue = 1850000m
+                AnalyticsReports = 25,
+                AttributionAccuracy = 87.5,
+                TouchpointAnalysis = 15,
+                CustomerJourney = 78.5,
+                ConversionPaths = 12,
+                MarketingROI = 288.2,
+                PerformanceMetrics = 35,
+                DataAccuracy = 89.3
             };
         }
 
