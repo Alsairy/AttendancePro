@@ -596,21 +596,6 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class ComplianceReportDto
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public string ReportType { get; set; }
-        public DateTime FromDate { get; set; }
-        public DateTime ToDate { get; set; }
-        public double OverallComplianceScore { get; set; }
-        public List<string> ComplianceFrameworks { get; set; }
-        public int TotalAssessments { get; set; }
-        public int PassedAssessments { get; set; }
-        public int FailedAssessments { get; set; }
-        public List<string> Recommendations { get; set; }
-        public DateTime GeneratedAt { get; set; }
-    }
 
     public class ComplianceAuditDto
     {

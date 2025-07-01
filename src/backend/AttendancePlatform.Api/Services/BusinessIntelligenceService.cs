@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace AttendancePlatform.Api.Services
@@ -201,8 +202,30 @@ namespace AttendancePlatform.Api.Services
             await Task.CompletedTask;
             return new List<CompetitiveAnalysisDto>
             {
-                new CompetitiveAnalysisDto { Competitor = "Industry Leader", YourScore = 85.0, CompetitorScore = 88.0, Gap = -3.0 },
-                new CompetitiveAnalysisDto { Competitor = "Market Average", YourScore = 85.0, CompetitorScore = 82.0, Gap = 3.0 }
+                new CompetitiveAnalysisDto 
+                { 
+                    Competitor = "Industry Leader Analysis",
+                    CompetitorsTracked = 15,
+                    CompetitiveAdvantages = 8,
+                    MarketPosition = "Strong",
+                    CompetitiveThreats = 3,
+                    OpportunityGaps = 5,
+                    CompetitiveScore = 85.0,
+                    MarketLeadership = 88.0,
+                    InnovationIndex = 82.3
+                },
+                new CompetitiveAnalysisDto 
+                { 
+                    Competitor = "Market Average Comparison",
+                    CompetitorsTracked = 12,
+                    CompetitiveAdvantages = 6,
+                    MarketPosition = "Competitive",
+                    CompetitiveThreats = 4,
+                    OpportunityGaps = 8,
+                    CompetitiveScore = 82.0,
+                    MarketLeadership = 75.5,
+                    InnovationIndex = 78.9
+                }
             };
         }
 
@@ -330,11 +353,4 @@ namespace AttendancePlatform.Api.Services
         public required string Recommendation { get; set; }
     }
 
-    public class CompetitiveAnalysisDto
-    {
-        public required string Competitor { get; set; }
-        public double YourScore { get; set; }
-        public double CompetitorScore { get; set; }
-        public double Gap { get; set; }
-    }
 }

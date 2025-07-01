@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace AttendancePlatform.Api.Services
@@ -309,20 +310,14 @@ namespace AttendancePlatform.Api.Services
             return new BalanceSheetDto
             {
                 TenantId = tenantId,
-                AsOfDate = asOfDate,
                 CurrentAssets = 425000.00m,
                 FixedAssets = 285000.00m,
                 TotalAssets = 710000.00m,
                 CurrentLiabilities = 125000.00m,
                 LongTermLiabilities = 185000.00m,
                 TotalLiabilities = 310000.00m,
-                ShareholderEquity = 400000.00m,
-                TotalLiabilitiesAndEquity = 710000.00m,
-                WorkingCapital = 300000.00m,
-                DebtToEquityRatio = 0.775,
-                CurrentRatio = 3.4,
-                QuickRatio = 2.8,
-                GeneratedAt = DateTime.UtcNow
+                TotalEquity = 400000.00m,
+                AsOfDate = asOfDate
             };
         }
 
@@ -510,24 +505,6 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class BalanceSheetDto
-    {
-        public Guid TenantId { get; set; }
-        public DateTime AsOfDate { get; set; }
-        public decimal CurrentAssets { get; set; }
-        public decimal FixedAssets { get; set; }
-        public decimal TotalAssets { get; set; }
-        public decimal CurrentLiabilities { get; set; }
-        public decimal LongTermLiabilities { get; set; }
-        public decimal TotalLiabilities { get; set; }
-        public decimal ShareholderEquity { get; set; }
-        public decimal TotalLiabilitiesAndEquity { get; set; }
-        public decimal WorkingCapital { get; set; }
-        public double DebtToEquityRatio { get; set; }
-        public double CurrentRatio { get; set; }
-        public double QuickRatio { get; set; }
-        public DateTime GeneratedAt { get; set; }
-    }
 
     public class AccountDto
     {

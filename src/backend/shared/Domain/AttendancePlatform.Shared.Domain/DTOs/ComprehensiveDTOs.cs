@@ -6,10 +6,15 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public Guid TenantId { get; set; }
         public string ReportType { get; set; } = string.Empty;
         public string Period { get; set; } = string.Empty;
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
         public decimal TotalRevenue { get; set; }
         public decimal TotalExpenses { get; set; }
         public decimal NetProfit { get; set; }
+        public decimal GrossMargin { get; set; }
+        public List<string> KeyMetrics { get; set; } = new();
         public DateTime GeneratedDate { get; set; }
+        public DateTime GeneratedAt { get; set; }
     }
 
     public class BudgetAnalysisDto
@@ -267,6 +272,11 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public decimal BenefitsCost { get; set; }
         public double CompensationRatio { get; set; }
         public string MarketPositioning { get; set; } = string.Empty;
+        public required string SalaryRange { get; set; }
+        public required string DepartmentCompensation { get; set; }
+        public required string PayEquityAnalysis { get; set; }
+        public required string BenefitsUtilization { get; set; }
+        public required string CompensationTrend { get; set; }
     }
 
     public class EmployeeEngagementDto
@@ -1315,15 +1325,26 @@ namespace AttendancePlatform.Shared.Domain.DTOs
 
     public class BrandManagementDto
     {
+        public Guid Id { get; set; }
         public Guid TenantId { get; set; }
+        public required string BrandNumber { get; set; }
+        public required string BrandName { get; set; }
+        public required string Description { get; set; }
+        public required string BrandPosition { get; set; }
+        public decimal BrandValue { get; set; }
         public double BrandAwareness { get; set; }
+        public double BrandLoyalty { get; set; }
+        public double BrandEquity { get; set; }
+        public double MarketShare { get; set; }
+        public required string CompetitiveAdvantage { get; set; }
         public double BrandSentiment { get; set; }
         public int BrandMentions { get; set; }
-        public double BrandEquity { get; set; }
         public int BrandCampaigns { get; set; }
         public double BrandConsistency { get; set; }
         public int BrandAssets { get; set; }
         public double BrandPerformance { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 
     public class CampaignDto

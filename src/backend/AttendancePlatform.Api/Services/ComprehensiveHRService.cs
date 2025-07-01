@@ -103,7 +103,12 @@ namespace AttendancePlatform.Api.Services
                     BonusDistribution = 450000m,
                     BenefitsCost = 375000m,
                     CompensationRatio = 1.15,
-                    MarketPositioning = "75th Percentile"
+                    MarketPositioning = "75th Percentile",
+                    SalaryRange = "35,000 - 185,000",
+                    DepartmentCompensation = "Engineering: 95,000 | Sales: 72,000 | Marketing: 65,000",
+                    PayEquityAnalysis = "95% pay equity ratio across all demographics",
+                    BenefitsUtilization = "Healthcare: 98% | Retirement: 85% | PTO: 92%",
+                    CompensationTrend = "5.2% increase year-over-year"
                 };
             }
             catch (Exception ex)

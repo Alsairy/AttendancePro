@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace AttendancePlatform.Api.Services
@@ -297,35 +298,19 @@ namespace AttendancePlatform.Api.Services
             return new CompensationAnalysisDto
             {
                 TenantId = tenantId,
+                TotalPayroll = 18750000m,
                 AverageSalary = 75000.00m,
                 MedianSalary = 68000.00m,
-                SalaryRange = new SalaryRangeDto { Min = 35000.00m, Max = 185000.00m },
-                DepartmentCompensation = new Dictionary<string, decimal>
-                {
-                    { "Engineering", 95000.00m },
-                    { "Sales", 72000.00m },
-                    { "Marketing", 65000.00m },
-                    { "HR", 68000.00m },
-                    { "Finance", 78000.00m },
-                    { "Operations", 58000.00m }
-                },
-                PayEquityAnalysis = new PayEquityDto
-                {
-                    GenderPayGap = 2.3,
-                    EthnicityPayGap = 1.8,
-                    ComplianceScore = 94.5
-                },
-                BenefitsUtilization = new Dictionary<string, double>
-                {
-                    { "Health Insurance", 98.5 },
-                    { "Retirement Plan", 87.3 },
-                    { "Paid Time Off", 95.2 },
-                    { "Professional Development", 68.7 },
-                    { "Wellness Programs", 45.8 }
-                },
-                CompensationTrend = "Increasing",
-                MarketComparison = 102.5,
-                GeneratedAt = DateTime.UtcNow
+                PayEquityRatio = 0.95,
+                BonusDistribution = 450000m,
+                BenefitsCost = 375000m,
+                CompensationRatio = 1.15,
+                MarketPositioning = "75th Percentile",
+                SalaryRange = "35,000 - 185,000",
+                DepartmentCompensation = "Engineering: 95,000 | Sales: 72,000 | Marketing: 65,000 | HR: 68,000 | Finance: 78,000 | Operations: 58,000",
+                PayEquityAnalysis = "Gender Pay Gap: 2.3% | Ethnicity Pay Gap: 1.8% | Compliance Score: 94.5%",
+                BenefitsUtilization = "Health Insurance: 98.5% | Retirement: 85.2% | PTO: 92.1% | Dental: 89.7%",
+                CompensationTrend = "5.2% increase year-over-year with market-competitive positioning"
             };
         }
 
@@ -688,32 +673,6 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class CompensationAnalysisDto
-    {
-        public Guid TenantId { get; set; }
-        public decimal AverageSalary { get; set; }
-        public decimal MedianSalary { get; set; }
-        public required SalaryRangeDto SalaryRange { get; set; }
-        public required Dictionary<string, decimal> DepartmentCompensation { get; set; }
-        public required PayEquityDto PayEquityAnalysis { get; set; }
-        public required Dictionary<string, double> BenefitsUtilization { get; set; }
-        public required string CompensationTrend { get; set; }
-        public double MarketComparison { get; set; }
-        public DateTime GeneratedAt { get; set; }
-    }
-
-    public class SalaryRangeDto
-    {
-        public decimal Min { get; set; }
-        public decimal Max { get; set; }
-    }
-
-    public class PayEquityDto
-    {
-        public double GenderPayGap { get; set; }
-        public double EthnicityPayGap { get; set; }
-        public double ComplianceScore { get; set; }
-    }
 
     public class DiversityMetricsDto
     {

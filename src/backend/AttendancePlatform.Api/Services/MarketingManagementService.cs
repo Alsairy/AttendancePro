@@ -409,23 +409,6 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class BrandManagementDto
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public required string BrandNumber { get; set; }
-        public required string BrandName { get; set; }
-        public required string Description { get; set; }
-        public required string BrandPosition { get; set; }
-        public decimal BrandValue { get; set; }
-        public double BrandAwareness { get; set; }
-        public double BrandLoyalty { get; set; }
-        public double BrandEquity { get; set; }
-        public double MarketShare { get; set; }
-        public required string CompetitiveAdvantage { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-    }
 
     public class MarketingROIDto
     {

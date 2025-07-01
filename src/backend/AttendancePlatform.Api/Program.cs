@@ -201,9 +201,15 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+                "https://attendancepro-fixapp-jur4spo0.devinapps.com",
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "https://localhost:7001"
+              )
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
     
     options.AddPolicy("AllowAllOrigins", policy =>
@@ -272,11 +278,20 @@ app.Use(async (context, next) =>
 
 app.Use(async (context, next) =>
 {
-    context.Response.Headers["Access-Control-Allow-Origin"] = "*";
-    context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH";
-    context.Response.Headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token, Access-Control-Allow-Headers, Access-Control-Allow-Origin, X-SignalR-User-Agent";
-    context.Response.Headers["Access-Control-Expose-Headers"] = "*";
-    context.Response.Headers["Access-Control-Max-Age"] = "86400";
+    var origin = context.Request.Headers["Origin"].ToString();
+    if (!string.IsNullOrEmpty(origin))
+    {
+        context.Response.Headers.Append("Access-Control-Allow-Origin", origin);
+    }
+    else
+    {
+        context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+    }
+    context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
+    context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token, Access-Control-Allow-Headers, Access-Control-Allow-Origin, X-SignalR-User-Agent");
+    context.Response.Headers.Append("Access-Control-Expose-Headers", "*");
+    context.Response.Headers.Append("Access-Control-Max-Age", "86400");
+    context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
     
     if (context.Request.Method == "OPTIONS")
     {

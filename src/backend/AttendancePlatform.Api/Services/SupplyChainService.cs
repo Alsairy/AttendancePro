@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace AttendancePlatform.Api.Services
@@ -241,29 +242,25 @@ namespace AttendancePlatform.Api.Services
             {
                 new SupplierPerformanceDto
                 {
-                    SupplierId = Guid.NewGuid(),
                     SupplierName = "Global Tech Supplies",
+                    TenantId = tenantId,
                     OnTimeDeliveryRate = 95.2,
                     QualityScore = 4.5,
-                    CostCompetitiveness = 4.2,
-                    ResponsivenessScore = 4.3,
-                    OverallRating = 4.4,
-                    TotalOrders = 45,
-                    TotalSpend = 750000.00m,
-                    LastEvaluationDate = DateTime.UtcNow.AddDays(-30)
+                    CostEfficiencyScore = 4.2,
+                    OverallPerformanceScore = 4.4,
+                    TopPerformingSuppliers = 8,
+                    UnderperformingSuppliers = 2
                 },
                 new SupplierPerformanceDto
                 {
-                    SupplierId = Guid.NewGuid(),
                     SupplierName = "Office Solutions Inc",
+                    TenantId = tenantId,
                     OnTimeDeliveryRate = 88.7,
                     QualityScore = 4.1,
-                    CostCompetitiveness = 4.0,
-                    ResponsivenessScore = 4.2,
-                    OverallRating = 4.1,
-                    TotalOrders = 32,
-                    TotalSpend = 320000.00m,
-                    LastEvaluationDate = DateTime.UtcNow.AddDays(-15)
+                    CostEfficiencyScore = 4.0,
+                    OverallPerformanceScore = 4.1,
+                    TopPerformingSuppliers = 6,
+                    UnderperformingSuppliers = 3
                 }
             };
         }
@@ -456,19 +453,6 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class SupplierPerformanceDto
-    {
-        public Guid SupplierId { get; set; }
-        public required string SupplierName { get; set; }
-        public double OnTimeDeliveryRate { get; set; }
-        public double QualityScore { get; set; }
-        public double CostCompetitiveness { get; set; }
-        public double ResponsivenessScore { get; set; }
-        public double OverallRating { get; set; }
-        public int TotalOrders { get; set; }
-        public decimal TotalSpend { get; set; }
-        public DateTime LastEvaluationDate { get; set; }
-    }
 
     public class DeliveryTrackingDto
     {

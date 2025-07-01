@@ -545,18 +545,4 @@ namespace AttendancePlatform.Api.Services
         public Dictionary<string, object> Data { get; set; }
     }
 
-    public class FinancialReportDto
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public required string ReportType { get; set; }
-        public DateTime FromDate { get; set; }
-        public DateTime ToDate { get; set; }
-        public decimal TotalRevenue { get; set; }
-        public decimal TotalExpenses { get; set; }
-        public decimal NetProfit { get; set; }
-        public decimal GrossMargin { get; set; }
-        public List<string> KeyMetrics { get; set; }
-        public DateTime GeneratedAt { get; set; }
-    }
 }

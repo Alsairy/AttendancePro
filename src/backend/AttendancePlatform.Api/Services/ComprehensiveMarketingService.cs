@@ -130,7 +130,14 @@ namespace AttendancePlatform.Api.Services
         {
             return new BrandManagementDto
             {
+                Id = Guid.NewGuid(),
                 TenantId = tenantId,
+                BrandNumber = "BRD-001",
+                BrandName = "Hudur Enterprise Brand",
+                Description = "Premium enterprise attendance platform brand",
+                BrandPosition = "Market Leader",
+                CompetitiveAdvantage = "Advanced AI-powered workforce analytics",
+                BrandValue = 450000.0m,
                 BrandAwareness = 78.5,
                 BrandSentiment = 82.3,
                 BrandMentions = 1250,
@@ -138,7 +145,10 @@ namespace AttendancePlatform.Api.Services
                 BrandCampaigns = 15,
                 BrandConsistency = 85.2,
                 BrandAssets = 125,
-                BrandPerformance = 88.7
+                BrandPerformance = 88.7,
+                BrandLoyalty = 85.2,
+                MarketShare = 12.8,
+                CreatedAt = DateTime.UtcNow
             };
         }
 

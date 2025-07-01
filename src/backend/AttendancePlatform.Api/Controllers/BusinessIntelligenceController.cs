@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AttendancePlatform.Api.Services;
+using AttendancePlatform.Shared.Domain.DTOs;
 
 namespace AttendancePlatform.Api.Controllers
 {

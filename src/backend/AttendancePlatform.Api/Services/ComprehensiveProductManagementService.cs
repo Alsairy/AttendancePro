@@ -103,7 +103,6 @@ namespace AttendancePlatform.Api.Services
             return new CompetitiveAnalysisDto
             {
                 Competitor = "Main Competitor Analysis",
-                TenantId = tenantId,
                 CompetitorsTracked = 15,
                 CompetitiveAdvantages = 8,
                 MarketPosition = "Strong",
