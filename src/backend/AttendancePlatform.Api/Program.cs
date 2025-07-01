@@ -279,7 +279,17 @@ app.Use(async (context, next) =>
 app.Use(async (context, next) =>
 {
     var origin = context.Request.Headers["Origin"].ToString();
-    if (!string.IsNullOrEmpty(origin))
+    
+    // Always allow the frontend origin
+    if (!string.IsNullOrEmpty(origin) && (
+        origin.Contains("attendancepro-fixapp-jur4spo0.devinapps.com") ||
+        origin.Contains("localhost:3000") ||
+        origin.Contains("localhost:5173") ||
+        origin.Contains("localhost:7001")))
+    {
+        context.Response.Headers.Append("Access-Control-Allow-Origin", origin);
+    }
+    else if (!string.IsNullOrEmpty(origin))
     {
         context.Response.Headers.Append("Access-Control-Allow-Origin", origin);
     }
@@ -287,8 +297,9 @@ app.Use(async (context, next) =>
     {
         context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
     }
+    
     context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
-    context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token, Access-Control-Allow-Headers, Access-Control-Allow-Origin, X-SignalR-User-Agent");
+    context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token, Access-Control-Allow-Headers, Access-Control-Allow-Origin, X-SignalR-User-Agent, Connection, Upgrade");
     context.Response.Headers.Append("Access-Control-Expose-Headers", "*");
     context.Response.Headers.Append("Access-Control-Max-Age", "86400");
     context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
