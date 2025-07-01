@@ -140,7 +140,7 @@ namespace AttendancePlatform.Api.Services
                 CustomerSatisfaction = 4.3,
                 NetPromoterScore = 65,
                 ProductAdoption = 78.5,
-                TimeToValue = 12.5,
+                TimeToValue = 12,
                 ProductFitScore = 85.2,
                 CustomerLifetimeValue = 2850m
             };

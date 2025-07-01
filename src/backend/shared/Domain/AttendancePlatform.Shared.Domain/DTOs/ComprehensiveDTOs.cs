@@ -149,6 +149,7 @@ namespace AttendancePlatform.Shared.Domain.DTOs
 
     public class SupplierPerformanceDto
     {
+        public required string SupplierName { get; set; }
         public Guid TenantId { get; set; }
         public double OnTimeDeliveryRate { get; set; }
         public double QualityScore { get; set; }
@@ -1240,6 +1241,8 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public int LeadsGenerated { get; set; }
         public double ConversionRate { get; set; }
         public double CampaignEffectiveness { get; set; }
+        public double AverageEngagement { get; set; }
+        public int CampaignReach { get; set; }
     }
 
     public class LeadManagementDto
@@ -1253,6 +1256,9 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public double LeadQuality { get; set; }
         public int NurturedLeads { get; set; }
         public double LeadVelocity { get; set; }
+        public double LeadScore { get; set; }
+        public double ConversionRate { get; set; }
+        public decimal CostPerLead { get; set; }
     }
 
     public class ContentMarketingDto
@@ -1470,6 +1476,45 @@ namespace AttendancePlatform.Shared.Domain.DTOs
         public double GovernanceMaturity { get; set; }
         public double PolicyCompliance { get; set; }
         public Dictionary<string, object> GovernanceMetrics { get; set; } = new();
+    }
+
+    public class CompetitiveAnalysisDto
+    {
+        public required string Competitor { get; set; }
+        public Guid TenantId { get; set; }
+        public int CompetitorsTracked { get; set; }
+        public int CompetitiveAdvantages { get; set; }
+        public string MarketPosition { get; set; } = string.Empty;
+        public int CompetitiveThreats { get; set; }
+        public int OpportunityGaps { get; set; }
+        public double CompetitiveScore { get; set; }
+        public double MarketLeadership { get; set; }
+        public double InnovationIndex { get; set; }
+    }
+
+    public class OpportunityDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal Value { get; set; }
+        public string Stage { get; set; } = string.Empty;
+        public DateTime CreatedDate { get; set; }
+        public DateTime? CloseDate { get; set; }
+        public double Probability { get; set; }
+    }
+
+    public class ProductDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public string Category { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public DateTime LaunchDate { get; set; }
     }
 
 }
