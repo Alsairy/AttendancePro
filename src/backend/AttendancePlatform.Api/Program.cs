@@ -196,10 +196,17 @@ builder.Services.AddAuthorization();
 // Disable antiforgery for deployment
 // builder.Services.AddAntiforgery();
 
-// Add CORS with specific frontend origin
+// Add CORS with permissive configuration for deployment
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+    
+    options.AddPolicy("AllowCredentials", policy =>
     {
         policy.WithOrigins(
                 "https://attendancepro-fixapp-jur4spo0.devinapps.com",
@@ -210,13 +217,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
-    });
-    
-    options.AddPolicy("AllowAllOrigins", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
     });
 });
 
@@ -280,29 +280,12 @@ app.Use(async (context, next) =>
 {
     var origin = context.Request.Headers["Origin"].ToString();
     
-    // Always allow the frontend origin
-    if (!string.IsNullOrEmpty(origin) && (
-        origin.Contains("attendancepro-fixapp-jur4spo0.devinapps.com") ||
-        origin.Contains("localhost:3000") ||
-        origin.Contains("localhost:5173") ||
-        origin.Contains("localhost:7001")))
-    {
-        context.Response.Headers.Append("Access-Control-Allow-Origin", origin);
-    }
-    else if (!string.IsNullOrEmpty(origin))
-    {
-        context.Response.Headers.Append("Access-Control-Allow-Origin", origin);
-    }
-    else
-    {
-        context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
-    }
-    
+    // Always allow any origin for deployment
+    context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
     context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
     context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token, Access-Control-Allow-Headers, Access-Control-Allow-Origin, X-SignalR-User-Agent, Connection, Upgrade");
     context.Response.Headers.Append("Access-Control-Expose-Headers", "*");
     context.Response.Headers.Append("Access-Control-Max-Age", "86400");
-    context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
     
     if (context.Request.Method == "OPTIONS")
     {
