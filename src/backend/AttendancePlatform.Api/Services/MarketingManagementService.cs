@@ -10,8 +10,8 @@ namespace AttendancePlatform.Api.Services
         Task<MarketingCampaignDto> CreateMarketingCampaignAsync(MarketingCampaignDto campaign);
         Task<List<MarketingCampaignDto>> GetMarketingCampaignsAsync(Guid tenantId);
         Task<MarketingCampaignDto> UpdateMarketingCampaignAsync(Guid campaignId, MarketingCampaignDto campaign);
-        Task<LeadDto> CreateLeadAsync(LeadDto lead);
-        Task<List<LeadDto>> GetLeadsAsync(Guid tenantId);
+        Task<MarketingLeadDto> CreateLeadAsync(MarketingLeadDto lead);
+        Task<List<MarketingLeadDto>> GetLeadsAsync(Guid tenantId);
         Task<MarketingAnalyticsDto> GetMarketingAnalyticsAsync(Guid tenantId);
         Task<MarketingReportDto> GenerateMarketingReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
         Task<List<MarketSegmentDto>> GetMarketSegmentsAsync(Guid tenantId);
@@ -102,7 +102,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<LeadDto> CreateLeadAsync(LeadDto lead)
+        public async Task<MarketingLeadDto> CreateLeadAsync(MarketingLeadDto lead)
         {
             try
             {
@@ -121,12 +121,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<LeadDto>> GetLeadsAsync(Guid tenantId)
+        public async Task<List<MarketingLeadDto>> GetLeadsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<LeadDto>
+            return new List<MarketingLeadDto>
             {
-                new LeadDto
+                new MarketingLeadDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -355,7 +355,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class LeadDto
+    public class MarketingLeadDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }

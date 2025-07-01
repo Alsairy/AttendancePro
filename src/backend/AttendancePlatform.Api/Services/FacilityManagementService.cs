@@ -772,12 +772,12 @@ namespace AttendancePlatform.Api.Services
         public string AlarmSystemStatus { get; set; }
         public DateTime LastSecurityCheck { get; set; }
         public int ActiveAccessCards { get; set; }
-        public List<SecurityIncidentDto> SecurityIncidents { get; set; }
+        public List<SecurityManagementIncidentDto> SecurityIncidents { get; set; }
         public Dictionary<string, object> SecurityMetrics { get; set; }
         public DateTime LastUpdated { get; set; }
     }
 
-    public class SecurityIncidentDto
+    public class FacilitySecurityIncidentDto
     {
         public Guid IncidentId { get; set; }
         public string IncidentType { get; set; }

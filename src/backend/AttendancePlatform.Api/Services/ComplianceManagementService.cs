@@ -11,16 +11,16 @@ namespace AttendancePlatform.Api.Services
         Task<List<ComplianceFrameworkDto>> GetComplianceFrameworksAsync(Guid tenantId);
         Task<ComplianceAssessmentDto> CreateComplianceAssessmentAsync(ComplianceAssessmentDto assessment);
         Task<List<ComplianceAssessmentDto>> GetComplianceAssessmentsAsync(Guid tenantId);
-        Task<ComplianceReportDto> GenerateComplianceReportAsync(Guid tenantId, string frameworkType);
+        Task<ComplianceManagementReportDto> GenerateComplianceReportAsync(Guid tenantId, string frameworkType);
         Task<List<ComplianceRequirementDto>> GetComplianceRequirementsAsync(Guid frameworkId);
-        Task<ComplianceAuditDto> CreateComplianceAuditAsync(ComplianceAuditDto audit);
-        Task<List<ComplianceAuditDto>> GetComplianceAuditsAsync(Guid tenantId);
+        Task<ComplianceManagementAuditDto> CreateComplianceAuditAsync(ComplianceManagementAuditDto audit);
+        Task<List<ComplianceManagementAuditDto>> GetComplianceAuditsAsync(Guid tenantId);
         Task<ComplianceMetricsDto> GetComplianceMetricsAsync(Guid tenantId);
-        Task<List<ComplianceViolationDto>> GetComplianceViolationsAsync(Guid tenantId);
-        Task<ComplianceViolationDto> CreateComplianceViolationAsync(ComplianceViolationDto violation);
+        Task<List<ComplianceManagementViolationDto>> GetComplianceViolationsAsync(Guid tenantId);
+        Task<ComplianceManagementViolationDto> CreateComplianceViolationAsync(ComplianceManagementViolationDto violation);
         Task<bool> ResolveComplianceViolationAsync(Guid violationId, string resolution);
-        Task<ComplianceTrainingDto> CreateComplianceTrainingAsync(ComplianceTrainingDto training);
-        Task<List<ComplianceTrainingDto>> GetComplianceTrainingsAsync(Guid tenantId);
+        Task<ComplianceManagementTrainingDto> CreateComplianceTrainingAsync(ComplianceManagementTrainingDto training);
+        Task<List<ComplianceManagementTrainingDto>> GetComplianceTrainingsAsync(Guid tenantId);
         Task<ComplianceDashboardDto> GetComplianceDashboardAsync(Guid tenantId);
     }
 
@@ -147,10 +147,10 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<ComplianceReportDto> GenerateComplianceReportAsync(Guid tenantId, string frameworkType)
+        public async Task<ComplianceManagementReportDto> GenerateComplianceReportAsync(Guid tenantId, string frameworkType)
         {
             await Task.CompletedTask;
-            return new ComplianceReportDto
+            return new ComplianceManagementReportDto
             {
                 TenantId = tenantId,
                 FrameworkType = frameworkType,
@@ -213,7 +213,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<ComplianceAuditDto> CreateComplianceAuditAsync(ComplianceAuditDto audit)
+        public async Task<ComplianceManagementAuditDto> CreateComplianceAuditAsync(ComplianceManagementAuditDto audit)
         {
             try
             {
@@ -231,12 +231,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<ComplianceAuditDto>> GetComplianceAuditsAsync(Guid tenantId)
+        public async Task<List<ComplianceManagementAuditDto>> GetComplianceAuditsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<ComplianceAuditDto>
+            return new List<ComplianceManagementAuditDto>
             {
-                new ComplianceAuditDto
+                new ComplianceManagementAuditDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -252,7 +252,7 @@ namespace AttendancePlatform.Api.Services
                     CriticalFindings = 1,
                     CreatedAt = DateTime.UtcNow.AddDays(-75)
                 },
-                new ComplianceAuditDto
+                new ComplianceManagementAuditDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -293,12 +293,12 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<List<ComplianceViolationDto>> GetComplianceViolationsAsync(Guid tenantId)
+        public async Task<List<ComplianceManagementViolationDto>> GetComplianceViolationsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<ComplianceViolationDto>
+            return new List<ComplianceManagementViolationDto>
             {
-                new ComplianceViolationDto
+                new ComplianceManagementViolationDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -315,7 +315,7 @@ namespace AttendancePlatform.Api.Services
                     AssignedTo = "Compliance Officer",
                     CreatedAt = DateTime.UtcNow.AddDays(-15)
                 },
-                new ComplianceViolationDto
+                new ComplianceManagementViolationDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -335,7 +335,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<ComplianceViolationDto> CreateComplianceViolationAsync(ComplianceViolationDto violation)
+        public async Task<ComplianceManagementViolationDto> CreateComplianceViolationAsync(ComplianceManagementViolationDto violation)
         {
             try
             {
@@ -369,7 +369,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<ComplianceTrainingDto> CreateComplianceTrainingAsync(ComplianceTrainingDto training)
+        public async Task<ComplianceManagementTrainingDto> CreateComplianceTrainingAsync(ComplianceManagementTrainingDto training)
         {
             try
             {
@@ -387,12 +387,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<ComplianceTrainingDto>> GetComplianceTrainingsAsync(Guid tenantId)
+        public async Task<List<ComplianceManagementTrainingDto>> GetComplianceTrainingsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<ComplianceTrainingDto>
+            return new List<ComplianceManagementTrainingDto>
             {
-                new ComplianceTrainingDto
+                new ComplianceManagementTrainingDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -406,7 +406,7 @@ namespace AttendancePlatform.Api.Services
                     RequiredForRoles = new List<string> { "All Employees" },
                     CreatedAt = DateTime.UtcNow.AddDays(-180)
                 },
-                new ComplianceTrainingDto
+                new ComplianceManagementTrainingDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -477,7 +477,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime CreatedAt { get; set; }
     }
 
-    public class ComplianceReportDto
+    public class ComplianceManagementReportDto
     {
         public Guid TenantId { get; set; }
         public string FrameworkType { get; set; }
@@ -509,7 +509,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime NextReviewDate { get; set; }
     }
 
-    public class ComplianceAuditDto
+    public class ComplianceManagementAuditDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -544,7 +544,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class ComplianceViolationDto
+    public class ComplianceManagementViolationDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -564,7 +564,7 @@ namespace AttendancePlatform.Api.Services
         public string Resolution { get; set; }
     }
 
-    public class ComplianceTrainingDto
+    public class ComplianceManagementTrainingDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -594,5 +594,67 @@ namespace AttendancePlatform.Api.Services
         public DateTime NextAuditDate { get; set; }
         public DateTime LastAssessmentDate { get; set; }
         public DateTime GeneratedAt { get; set; }
+    }
+
+    public class ComplianceReportDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string ReportType { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public double OverallComplianceScore { get; set; }
+        public List<string> ComplianceFrameworks { get; set; }
+        public int TotalAssessments { get; set; }
+        public int PassedAssessments { get; set; }
+        public int FailedAssessments { get; set; }
+        public List<string> Recommendations { get; set; }
+        public DateTime GeneratedAt { get; set; }
+    }
+
+    public class ComplianceAuditDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string AuditNumber { get; set; }
+        public string AuditType { get; set; }
+        public string Status { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public string AuditorName { get; set; }
+        public List<string> Findings { get; set; }
+        public double ComplianceScore { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class ComplianceViolationDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string ViolationNumber { get; set; }
+        public string ViolationType { get; set; }
+        public string Severity { get; set; }
+        public string Description { get; set; }
+        public string Status { get; set; }
+        public DateTime OccurredAt { get; set; }
+        public DateTime? ResolvedAt { get; set; }
+        public string Resolution { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class ComplianceTrainingDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string TrainingName { get; set; }
+        public string Description { get; set; }
+        public string TrainingType { get; set; }
+        public string Status { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public int Duration { get; set; }
+        public List<string> Participants { get; set; }
+        public double CompletionRate { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

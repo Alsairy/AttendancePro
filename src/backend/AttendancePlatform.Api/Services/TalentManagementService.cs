@@ -10,8 +10,8 @@ namespace AttendancePlatform.Api.Services
         Task<TalentProfileDto> CreateTalentProfileAsync(TalentProfileDto profile);
         Task<List<TalentProfileDto>> GetTalentProfilesAsync(Guid tenantId);
         Task<TalentProfileDto> UpdateTalentProfileAsync(Guid profileId, TalentProfileDto profile);
-        Task<SkillAssessmentDto> CreateSkillAssessmentAsync(SkillAssessmentDto assessment);
-        Task<List<SkillAssessmentDto>> GetSkillAssessmentsAsync(Guid employeeId);
+        Task<TalentManagementSkillAssessmentDto> CreateSkillAssessmentAsync(TalentManagementSkillAssessmentDto assessment);
+        Task<List<TalentManagementSkillAssessmentDto>> GetSkillAssessmentsAsync(Guid employeeId);
         Task<CareerPathDto> CreateCareerPathAsync(CareerPathDto careerPath);
         Task<List<CareerPathDto>> GetCareerPathsAsync(Guid tenantId);
         Task<SuccessionPlanDto> CreateSuccessionPlanAsync(SuccessionPlanDto plan);
@@ -111,7 +111,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<SkillAssessmentDto> CreateSkillAssessmentAsync(SkillAssessmentDto assessment)
+        public async Task<TalentManagementSkillAssessmentDto> CreateSkillAssessmentAsync(TalentManagementSkillAssessmentDto assessment)
         {
             try
             {
@@ -131,12 +131,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<SkillAssessmentDto>> GetSkillAssessmentsAsync(Guid employeeId)
+        public async Task<List<TalentManagementSkillAssessmentDto>> GetSkillAssessmentsAsync(Guid employeeId)
         {
             await Task.CompletedTask;
-            return new List<SkillAssessmentDto>
+            return new List<TalentManagementSkillAssessmentDto>
             {
-                new SkillAssessmentDto
+                new TalentManagementSkillAssessmentDto
                 {
                     Id = Guid.NewGuid(),
                     EmployeeId = employeeId,
@@ -621,7 +621,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class SkillAssessmentDto
+    public class TalentManagementSkillAssessmentDto
     {
         public Guid Id { get; set; }
         public Guid EmployeeId { get; set; }

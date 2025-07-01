@@ -7,24 +7,24 @@ namespace AttendancePlatform.Api.Services
 {
     public interface ICyberSecurityService
     {
-        Task<SecurityIncidentDto> CreateSecurityIncidentAsync(SecurityIncidentDto incident);
-        Task<List<SecurityIncidentDto>> GetSecurityIncidentsAsync(Guid tenantId);
-        Task<SecurityIncidentDto> UpdateSecurityIncidentAsync(Guid incidentId, SecurityIncidentDto incident);
+        Task<CyberSecurityIncidentDto> CreateSecurityIncidentAsync(CyberSecurityIncidentDto incident);
+        Task<List<CyberSecurityIncidentDto>> GetSecurityIncidentsAsync(Guid tenantId);
+        Task<CyberSecurityIncidentDto> UpdateSecurityIncidentAsync(Guid incidentId, CyberSecurityIncidentDto incident);
         Task<SecurityAssessmentDto> CreateSecurityAssessmentAsync(SecurityAssessmentDto assessment);
         Task<List<SecurityAssessmentDto>> GetSecurityAssessmentsAsync(Guid tenantId);
         Task<ThreatIntelligenceDto> CreateThreatIntelligenceAsync(ThreatIntelligenceDto threat);
         Task<List<ThreatIntelligenceDto>> GetThreatIntelligenceAsync(Guid tenantId);
-        Task<VulnerabilityDto> CreateVulnerabilityAsync(VulnerabilityDto vulnerability);
-        Task<List<VulnerabilityDto>> GetVulnerabilitiesAsync(Guid tenantId);
+        Task<CyberSecurityVulnerabilityDto> CreateVulnerabilityAsync(CyberSecurityVulnerabilityDto vulnerability);
+        Task<List<CyberSecurityVulnerabilityDto>> GetVulnerabilitiesAsync(Guid tenantId);
         Task<SecurityAnalyticsDto> GetSecurityAnalyticsAsync(Guid tenantId);
-        Task<SecurityReportDto> GenerateSecurityReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
-        Task<List<SecurityPolicyDto>> GetSecurityPoliciesAsync(Guid tenantId);
-        Task<SecurityPolicyDto> CreateSecurityPolicyAsync(SecurityPolicyDto policy);
-        Task<bool> UpdateSecurityPolicyAsync(Guid policyId, SecurityPolicyDto policy);
-        Task<List<SecurityAuditDto>> GetSecurityAuditsAsync(Guid tenantId);
-        Task<SecurityAuditDto> CreateSecurityAuditAsync(SecurityAuditDto audit);
-        Task<SecurityComplianceDto> GetSecurityComplianceAsync(Guid tenantId);
-        Task<bool> UpdateSecurityComplianceAsync(Guid tenantId, SecurityComplianceDto compliance);
+        Task<CyberSecurityReportDto> GenerateSecurityReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
+        Task<List<CyberSecurityPolicyDto>> GetSecurityPoliciesAsync(Guid tenantId);
+        Task<CyberSecurityPolicyDto> CreateSecurityPolicyAsync(CyberSecurityPolicyDto policy);
+        Task<bool> UpdateSecurityPolicyAsync(Guid policyId, CyberSecurityPolicyDto policy);
+        Task<List<CyberSecurityAuditDto>> GetSecurityAuditsAsync(Guid tenantId);
+        Task<CyberSecurityAuditDto> CreateSecurityAuditAsync(CyberSecurityAuditDto audit);
+        Task<CyberSecurityComplianceDto> GetSecurityComplianceAsync(Guid tenantId);
+        Task<bool> UpdateSecurityComplianceAsync(Guid tenantId, CyberSecurityComplianceDto compliance);
     }
 
     public class CyberSecurityService : ICyberSecurityService
@@ -38,7 +38,7 @@ namespace AttendancePlatform.Api.Services
             _context = context;
         }
 
-        public async Task<SecurityIncidentDto> CreateSecurityIncidentAsync(SecurityIncidentDto incident)
+        public async Task<CyberSecurityIncidentDto> CreateSecurityIncidentAsync(CyberSecurityIncidentDto incident)
         {
             try
             {
@@ -57,12 +57,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<SecurityIncidentDto>> GetSecurityIncidentsAsync(Guid tenantId)
+        public async Task<List<CyberSecurityIncidentDto>> GetSecurityIncidentsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<SecurityIncidentDto>
+            return new List<CyberSecurityIncidentDto>
             {
-                new SecurityIncidentDto
+                new CyberSecurityIncidentDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -83,7 +83,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<SecurityIncidentDto> UpdateSecurityIncidentAsync(Guid incidentId, SecurityIncidentDto incident)
+        public async Task<CyberSecurityIncidentDto> UpdateSecurityIncidentAsync(Guid incidentId, CyberSecurityIncidentDto incident)
         {
             try
             {
@@ -198,7 +198,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<VulnerabilityDto> CreateVulnerabilityAsync(VulnerabilityDto vulnerability)
+        public async Task<CyberSecurityVulnerabilityDto> CreateVulnerabilityAsync(CyberSecurityVulnerabilityDto vulnerability)
         {
             try
             {
@@ -217,12 +217,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<VulnerabilityDto>> GetVulnerabilitiesAsync(Guid tenantId)
+        public async Task<List<CyberSecurityVulnerabilityDto>> GetVulnerabilitiesAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<VulnerabilityDto>
+            return new List<CyberSecurityVulnerabilityDto>
             {
-                new VulnerabilityDto
+                new CyberSecurityVulnerabilityDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -284,10 +284,10 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<SecurityReportDto> GenerateSecurityReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate)
+        public async Task<CyberSecurityReportDto> GenerateSecurityReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate)
         {
             await Task.CompletedTask;
-            return new SecurityReportDto
+            return new CyberSecurityReportDto
             {
                 TenantId = tenantId,
                 ReportPeriod = $"{fromDate:yyyy-MM-dd} to {toDate:yyyy-MM-dd}",
@@ -303,12 +303,12 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<List<SecurityPolicyDto>> GetSecurityPoliciesAsync(Guid tenantId)
+        public async Task<List<CyberSecurityPolicyDto>> GetSecurityPoliciesAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<SecurityPolicyDto>
+            return new List<CyberSecurityPolicyDto>
             {
-                new SecurityPolicyDto
+                new CyberSecurityPolicyDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -331,7 +331,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<SecurityPolicyDto> CreateSecurityPolicyAsync(SecurityPolicyDto policy)
+        public async Task<CyberSecurityPolicyDto> CreateSecurityPolicyAsync(CyberSecurityPolicyDto policy)
         {
             try
             {
@@ -350,7 +350,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<bool> UpdateSecurityPolicyAsync(Guid policyId, SecurityPolicyDto policy)
+        public async Task<bool> UpdateSecurityPolicyAsync(Guid policyId, CyberSecurityPolicyDto policy)
         {
             try
             {
@@ -366,12 +366,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<SecurityAuditDto>> GetSecurityAuditsAsync(Guid tenantId)
+        public async Task<List<CyberSecurityAuditDto>> GetSecurityAuditsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<SecurityAuditDto>
+            return new List<CyberSecurityAuditDto>
             {
-                new SecurityAuditDto
+                new CyberSecurityAuditDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -391,7 +391,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<SecurityAuditDto> CreateSecurityAuditAsync(SecurityAuditDto audit)
+        public async Task<CyberSecurityAuditDto> CreateSecurityAuditAsync(CyberSecurityAuditDto audit)
         {
             try
             {
@@ -410,10 +410,10 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<SecurityComplianceDto> GetSecurityComplianceAsync(Guid tenantId)
+        public async Task<CyberSecurityComplianceDto> GetSecurityComplianceAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new SecurityComplianceDto
+            return new CyberSecurityComplianceDto
             {
                 TenantId = tenantId,
                 OverallComplianceScore = 94.5,
@@ -422,7 +422,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<bool> UpdateSecurityComplianceAsync(Guid tenantId, SecurityComplianceDto compliance)
+        public async Task<bool> UpdateSecurityComplianceAsync(Guid tenantId, CyberSecurityComplianceDto compliance)
         {
             try
             {
@@ -438,7 +438,7 @@ namespace AttendancePlatform.Api.Services
         }
     }
 
-    public class SecurityIncidentDto
+    public class CyberSecurityIncidentDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -502,7 +502,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class VulnerabilityDto
+    public class CyberSecurityVulnerabilityDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -573,7 +573,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class SecurityPolicyDto
+    public class CyberSecurityPolicyDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -594,7 +594,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class SecurityAuditDto
+    public class CyberSecurityAuditDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -612,11 +612,27 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class SecurityComplianceDto
+    public class CyberSecurityComplianceDto
     {
         public Guid TenantId { get; set; }
         public double OverallComplianceScore { get; set; }
         public DateTime LastUpdated { get; set; }
         public DateTime NextReviewDate { get; set; }
+    }
+
+    public class CyberSecurityReportDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string ReportType { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public int TotalIncidents { get; set; }
+        public int CriticalIncidents { get; set; }
+        public int ResolvedIncidents { get; set; }
+        public double SecurityScore { get; set; }
+        public List<string> TopThreats { get; set; }
+        public List<string> Recommendations { get; set; }
+        public DateTime GeneratedAt { get; set; }
     }
 }

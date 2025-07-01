@@ -14,9 +14,9 @@ namespace AttendancePlatform.Api.Services
         Task<List<DataQualityDto>> GetDataQualityAsync(Guid tenantId);
         Task<DataGovernanceAnalyticsDto> GetDataGovernanceAnalyticsAsync(Guid tenantId);
         Task<DataGovernanceReportDto> GenerateDataGovernanceReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
-        Task<List<DataLineageDto>> GetDataLineageAsync(Guid tenantId);
-        Task<DataLineageDto> CreateDataLineageAsync(DataLineageDto lineage);
-        Task<bool> UpdateDataLineageAsync(Guid lineageId, DataLineageDto lineage);
+        Task<List<DataGovernanceLineageDto>> GetDataLineageAsync(Guid tenantId);
+        Task<DataGovernanceLineageDto> CreateDataLineageAsync(DataGovernanceLineageDto lineage);
+        Task<bool> UpdateDataLineageAsync(Guid lineageId, DataGovernanceLineageDto lineage);
         Task<List<DataPrivacyDto>> GetDataPrivacyAsync(Guid tenantId);
         Task<DataPrivacyDto> CreateDataPrivacyAsync(DataPrivacyDto privacy);
         Task<DataGovernancePerformanceDto> GetDataGovernancePerformanceAsync(Guid tenantId);
@@ -202,12 +202,12 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<List<DataLineageDto>> GetDataLineageAsync(Guid tenantId)
+        public async Task<List<DataGovernanceLineageDto>> GetDataLineageAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<DataLineageDto>
+            return new List<DataGovernanceLineageDto>
             {
-                new DataLineageDto
+                new DataGovernanceLineageDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -231,7 +231,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<DataLineageDto> CreateDataLineageAsync(DataLineageDto lineage)
+        public async Task<DataGovernanceLineageDto> CreateDataLineageAsync(DataGovernanceLineageDto lineage)
         {
             try
             {
@@ -249,7 +249,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<bool> UpdateDataLineageAsync(Guid lineageId, DataLineageDto lineage)
+        public async Task<bool> UpdateDataLineageAsync(Guid lineageId, DataGovernanceLineageDto lineage)
         {
             try
             {
@@ -440,7 +440,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class DataLineageDto
+    public class DataGovernanceLineageDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }

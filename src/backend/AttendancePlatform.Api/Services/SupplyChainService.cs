@@ -7,20 +7,20 @@ namespace AttendancePlatform.Api.Services
 {
     public interface ISupplyChainService
     {
-        Task<SupplierDto> CreateSupplierAsync(SupplierDto supplier);
-        Task<List<SupplierDto>> GetSuppliersAsync(Guid tenantId);
-        Task<SupplierDto> UpdateSupplierAsync(Guid supplierId, SupplierDto supplier);
+        Task<SupplyChainSupplierDto> CreateSupplierAsync(SupplyChainSupplierDto supplier);
+        Task<List<SupplyChainSupplierDto>> GetSuppliersAsync(Guid tenantId);
+        Task<SupplyChainSupplierDto> UpdateSupplierAsync(Guid supplierId, SupplyChainSupplierDto supplier);
         Task<bool> DeleteSupplierAsync(Guid supplierId);
-        Task<PurchaseOrderDto> CreatePurchaseOrderAsync(PurchaseOrderDto purchaseOrder);
-        Task<List<PurchaseOrderDto>> GetPurchaseOrdersAsync(Guid tenantId);
-        Task<PurchaseOrderDto> UpdatePurchaseOrderAsync(Guid orderId, PurchaseOrderDto purchaseOrder);
+        Task<SupplyChainPurchaseOrderDto> CreatePurchaseOrderAsync(SupplyChainPurchaseOrderDto purchaseOrder);
+        Task<List<SupplyChainPurchaseOrderDto>> GetPurchaseOrdersAsync(Guid tenantId);
+        Task<SupplyChainPurchaseOrderDto> UpdatePurchaseOrderAsync(Guid orderId, SupplyChainPurchaseOrderDto purchaseOrder);
         Task<bool> ApprovePurchaseOrderAsync(Guid orderId);
         Task<SupplyChainAnalyticsDto> GetSupplyChainAnalyticsAsync(Guid tenantId);
         Task<List<SupplierPerformanceDto>> GetSupplierPerformanceAsync(Guid tenantId);
         Task<List<DeliveryTrackingDto>> GetDeliveryTrackingAsync(Guid tenantId);
         Task<SupplyChainRiskDto> AssessSupplyChainRiskAsync(Guid tenantId);
-        Task<List<ContractDto>> GetContractsAsync(Guid tenantId);
-        Task<ContractDto> CreateContractAsync(ContractDto contract);
+        Task<List<SupplyChainContractDto>> GetContractsAsync(Guid tenantId);
+        Task<SupplyChainContractDto> CreateContractAsync(SupplyChainContractDto contract);
         Task<SupplyChainDashboardDto> GetSupplyChainDashboardAsync(Guid tenantId);
     }
 
@@ -35,7 +35,7 @@ namespace AttendancePlatform.Api.Services
             _context = context;
         }
 
-        public async Task<SupplierDto> CreateSupplierAsync(SupplierDto supplier)
+        public async Task<SupplyChainSupplierDto> CreateSupplierAsync(SupplyChainSupplierDto supplier)
         {
             try
             {
@@ -53,12 +53,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<SupplierDto>> GetSuppliersAsync(Guid tenantId)
+        public async Task<List<SupplyChainSupplierDto>> GetSuppliersAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<SupplierDto>
+            return new List<SupplyChainSupplierDto>
             {
-                new SupplierDto
+                new SupplyChainSupplierDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -73,7 +73,7 @@ namespace AttendancePlatform.Api.Services
                     PaymentTerms = "Net 30",
                     CreatedAt = DateTime.UtcNow.AddDays(-90)
                 },
-                new SupplierDto
+                new SupplyChainSupplierDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -91,7 +91,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<SupplierDto> UpdateSupplierAsync(Guid supplierId, SupplierDto supplier)
+        public async Task<SupplyChainSupplierDto> UpdateSupplierAsync(Guid supplierId, SupplyChainSupplierDto supplier)
         {
             try
             {
@@ -124,7 +124,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<PurchaseOrderDto> CreatePurchaseOrderAsync(PurchaseOrderDto purchaseOrder)
+        public async Task<SupplyChainPurchaseOrderDto> CreatePurchaseOrderAsync(SupplyChainPurchaseOrderDto purchaseOrder)
         {
             try
             {
@@ -143,12 +143,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<PurchaseOrderDto>> GetPurchaseOrdersAsync(Guid tenantId)
+        public async Task<List<SupplyChainPurchaseOrderDto>> GetPurchaseOrdersAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<PurchaseOrderDto>
+            return new List<SupplyChainPurchaseOrderDto>
             {
-                new PurchaseOrderDto
+                new SupplyChainPurchaseOrderDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -179,7 +179,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<PurchaseOrderDto> UpdatePurchaseOrderAsync(Guid orderId, PurchaseOrderDto purchaseOrder)
+        public async Task<SupplyChainPurchaseOrderDto> UpdatePurchaseOrderAsync(Guid orderId, SupplyChainPurchaseOrderDto purchaseOrder)
         {
             try
             {
@@ -326,12 +326,12 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<List<ContractDto>> GetContractsAsync(Guid tenantId)
+        public async Task<List<SupplyChainContractDto>> GetContractsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<ContractDto>
+            return new List<SupplyChainContractDto>
             {
-                new ContractDto
+                new SupplyChainContractDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -364,7 +364,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<ContractDto> CreateContractAsync(ContractDto contract)
+        public async Task<SupplyChainContractDto> CreateContractAsync(SupplyChainContractDto contract)
         {
             try
             {
@@ -405,7 +405,7 @@ namespace AttendancePlatform.Api.Services
         }
     }
 
-    public class SupplierDto
+    public class SupplyChainSupplierDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -422,7 +422,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class PurchaseOrderDto
+    public class SupplyChainPurchaseOrderDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -496,7 +496,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime AssessedAt { get; set; }
     }
 
-    public class ContractDto
+    public class SupplyChainContractDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }

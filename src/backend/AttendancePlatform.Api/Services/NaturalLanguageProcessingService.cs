@@ -14,9 +14,9 @@ namespace AttendancePlatform.Api.Services
         Task<List<TextAnalysisDto>> GetTextAnalysesAsync(Guid tenantId);
         Task<NlpAnalyticsDto> GetNlpAnalyticsAsync(Guid tenantId);
         Task<NlpReportDto> GenerateNlpReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
-        Task<List<SentimentAnalysisDto>> GetSentimentAnalysesAsync(Guid tenantId);
-        Task<SentimentAnalysisDto> CreateSentimentAnalysisAsync(SentimentAnalysisDto sentiment);
-        Task<bool> UpdateSentimentAnalysisAsync(Guid sentimentId, SentimentAnalysisDto sentiment);
+        Task<List<NlpSentimentAnalysisDto>> GetSentimentAnalysesAsync(Guid tenantId);
+        Task<NlpSentimentAnalysisDto> CreateSentimentAnalysisAsync(NlpSentimentAnalysisDto sentiment);
+        Task<bool> UpdateSentimentAnalysisAsync(Guid sentimentId, NlpSentimentAnalysisDto sentiment);
         Task<List<LanguageDetectionDto>> GetLanguageDetectionsAsync(Guid tenantId);
         Task<LanguageDetectionDto> CreateLanguageDetectionAsync(LanguageDetectionDto detection);
         Task<NlpPerformanceDto> GetNlpPerformanceAsync(Guid tenantId);
@@ -216,12 +216,12 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<List<SentimentAnalysisDto>> GetSentimentAnalysesAsync(Guid tenantId)
+        public async Task<List<NlpSentimentAnalysisDto>> GetSentimentAnalysesAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<SentimentAnalysisDto>
+            return new List<NlpSentimentAnalysisDto>
             {
-                new SentimentAnalysisDto
+                new NlpSentimentAnalysisDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -248,7 +248,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<SentimentAnalysisDto> CreateSentimentAnalysisAsync(SentimentAnalysisDto sentiment)
+        public async Task<NlpSentimentAnalysisDto> CreateSentimentAnalysisAsync(NlpSentimentAnalysisDto sentiment)
         {
             try
             {
@@ -267,7 +267,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<bool> UpdateSentimentAnalysisAsync(Guid sentimentId, SentimentAnalysisDto sentiment)
+        public async Task<bool> UpdateSentimentAnalysisAsync(Guid sentimentId, NlpSentimentAnalysisDto sentiment)
         {
             try
             {
@@ -473,7 +473,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class SentimentAnalysisDto
+    public class NlpSentimentAnalysisDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }

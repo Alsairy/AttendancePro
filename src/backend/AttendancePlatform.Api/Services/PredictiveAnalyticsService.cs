@@ -12,13 +12,13 @@ namespace AttendancePlatform.Api.Services
         Task<PredictiveModelDto> UpdatePredictiveModelAsync(Guid modelId, PredictiveModelDto model);
         Task<ForecastDto> CreateForecastAsync(ForecastDto forecast);
         Task<List<ForecastDto>> GetForecastsAsync(Guid tenantId);
-        Task<PredictiveAnalyticsDto> GetPredictiveAnalyticsAsync(Guid tenantId);
+        Task<PredictiveAnalyticsSummaryDto> GetPredictiveAnalyticsAsync(Guid tenantId);
         Task<PredictiveReportDto> GeneratePredictiveReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
-        Task<List<TrendAnalysisDto>> GetTrendAnalysesAsync(Guid tenantId);
-        Task<TrendAnalysisDto> CreateTrendAnalysisAsync(TrendAnalysisDto analysis);
-        Task<bool> UpdateTrendAnalysisAsync(Guid analysisId, TrendAnalysisDto analysis);
-        Task<List<AnomalyDetectionDto>> GetAnomalyDetectionsAsync(Guid tenantId);
-        Task<AnomalyDetectionDto> CreateAnomalyDetectionAsync(AnomalyDetectionDto detection);
+        Task<List<PredictiveTrendAnalysisDto>> GetTrendAnalysesAsync(Guid tenantId);
+        Task<PredictiveTrendAnalysisDto> CreateTrendAnalysisAsync(PredictiveTrendAnalysisDto analysis);
+        Task<bool> UpdateTrendAnalysisAsync(Guid analysisId, PredictiveTrendAnalysisDto analysis);
+        Task<List<PredictiveAnomalyDetectionDto>> GetAnomalyDetectionsAsync(Guid tenantId);
+        Task<PredictiveAnomalyDetectionDto> CreateAnomalyDetectionAsync(PredictiveAnomalyDetectionDto detection);
         Task<PredictivePerformanceDto> GetPredictivePerformanceAsync(Guid tenantId);
         Task<bool> UpdatePredictivePerformanceAsync(Guid tenantId, PredictivePerformanceDto performance);
     }
@@ -163,10 +163,10 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<PredictiveAnalyticsDto> GetPredictiveAnalyticsAsync(Guid tenantId)
+        public async Task<PredictiveAnalyticsSummaryDto> GetPredictiveAnalyticsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new PredictiveAnalyticsDto
+            return new PredictiveAnalyticsSummaryDto
             {
                 TenantId = tenantId,
                 TotalModels = 8,
@@ -215,12 +215,12 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<List<TrendAnalysisDto>> GetTrendAnalysesAsync(Guid tenantId)
+        public async Task<List<PredictiveTrendAnalysisDto>> GetTrendAnalysesAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<TrendAnalysisDto>
+            return new List<PredictiveTrendAnalysisDto>
             {
-                new TrendAnalysisDto
+                new PredictiveTrendAnalysisDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -250,7 +250,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<TrendAnalysisDto> CreateTrendAnalysisAsync(TrendAnalysisDto analysis)
+        public async Task<PredictiveTrendAnalysisDto> CreateTrendAnalysisAsync(PredictiveTrendAnalysisDto analysis)
         {
             try
             {
@@ -269,7 +269,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<bool> UpdateTrendAnalysisAsync(Guid analysisId, TrendAnalysisDto analysis)
+        public async Task<bool> UpdateTrendAnalysisAsync(Guid analysisId, PredictiveTrendAnalysisDto analysis)
         {
             try
             {
@@ -285,12 +285,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<AnomalyDetectionDto>> GetAnomalyDetectionsAsync(Guid tenantId)
+        public async Task<List<PredictiveAnomalyDetectionDto>> GetAnomalyDetectionsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<AnomalyDetectionDto>
+            return new List<PredictiveAnomalyDetectionDto>
             {
-                new AnomalyDetectionDto
+                new PredictiveAnomalyDetectionDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -319,7 +319,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<AnomalyDetectionDto> CreateAnomalyDetectionAsync(AnomalyDetectionDto detection)
+        public async Task<PredictiveAnomalyDetectionDto> CreateAnomalyDetectionAsync(PredictiveAnomalyDetectionDto detection)
         {
             try
             {
@@ -433,7 +433,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class PredictiveAnalyticsDto
+    public class PredictiveAnalyticsSummaryDto
     {
         public Guid TenantId { get; set; }
         public int TotalModels { get; set; }
@@ -477,7 +477,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class TrendAnalysisDto
+    public class PredictiveTrendAnalysisDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -505,7 +505,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class AnomalyDetectionDto
+    public class PredictiveAnomalyDetectionDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }

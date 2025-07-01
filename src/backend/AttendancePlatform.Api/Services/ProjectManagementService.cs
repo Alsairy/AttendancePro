@@ -7,13 +7,13 @@ namespace AttendancePlatform.Api.Services
 {
     public interface IProjectManagementService
     {
-        Task<ProjectDto> CreateProjectAsync(ProjectDto project);
-        Task<List<ProjectDto>> GetProjectsAsync(Guid tenantId);
-        Task<ProjectDto> UpdateProjectAsync(Guid projectId, ProjectDto project);
+        Task<ProjectManagementProjectDto> CreateProjectAsync(ProjectManagementProjectDto project);
+        Task<List<ProjectManagementProjectDto>> GetProjectsAsync(Guid tenantId);
+        Task<ProjectManagementProjectDto> UpdateProjectAsync(Guid projectId, ProjectManagementProjectDto project);
         Task<bool> DeleteProjectAsync(Guid projectId);
-        Task<TaskDto> CreateTaskAsync(TaskDto task);
-        Task<List<TaskDto>> GetTasksAsync(Guid projectId);
-        Task<TaskDto> UpdateTaskAsync(Guid taskId, TaskDto task);
+        Task<ProjectManagementTaskDto> CreateTaskAsync(ProjectManagementTaskDto task);
+        Task<List<ProjectManagementTaskDto>> GetTasksAsync(Guid projectId);
+        Task<ProjectManagementTaskDto> UpdateTaskAsync(Guid taskId, ProjectManagementTaskDto task);
         Task<bool> DeleteTaskAsync(Guid taskId);
         Task<ProjectTimelineDto> GetProjectTimelineAsync(Guid projectId);
         Task<List<ProjectResourceDto>> GetProjectResourcesAsync(Guid projectId);
@@ -39,7 +39,7 @@ namespace AttendancePlatform.Api.Services
             _context = context;
         }
 
-        public async Task<ProjectDto> CreateProjectAsync(ProjectDto project)
+        public async Task<ProjectManagementProjectDto> CreateProjectAsync(ProjectManagementProjectDto project)
         {
             try
             {
@@ -57,12 +57,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<ProjectDto>> GetProjectsAsync(Guid tenantId)
+        public async Task<List<ProjectManagementProjectDto>> GetProjectsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<ProjectDto>
+            return new List<ProjectManagementProjectDto>
             {
-                new ProjectDto
+                new ProjectManagementProjectDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -97,7 +97,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<ProjectDto> UpdateProjectAsync(Guid projectId, ProjectDto project)
+        public async Task<ProjectManagementProjectDto> UpdateProjectAsync(Guid projectId, ProjectManagementProjectDto project)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<TaskDto> CreateTaskAsync(TaskDto task)
+        public async Task<ProjectManagementTaskDto> CreateTaskAsync(ProjectManagementTaskDto task)
         {
             try
             {
@@ -148,12 +148,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<TaskDto>> GetTasksAsync(Guid projectId)
+        public async Task<List<ProjectManagementTaskDto>> GetTasksAsync(Guid projectId)
         {
             await Task.CompletedTask;
-            return new List<TaskDto>
+            return new List<ProjectManagementTaskDto>
             {
-                new TaskDto
+                new ProjectManagementTaskDto
                 {
                     Id = Guid.NewGuid(),
                     ProjectId = projectId,
@@ -190,7 +190,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<TaskDto> UpdateTaskAsync(Guid taskId, TaskDto task)
+        public async Task<ProjectManagementTaskDto> UpdateTaskAsync(Guid taskId, ProjectManagementTaskDto task)
         {
             try
             {
@@ -644,5 +644,40 @@ namespace AttendancePlatform.Api.Services
         public int ProjectsBehindSchedule { get; set; }
         public double TeamUtilization { get; set; }
         public DateTime GeneratedAt { get; set; }
+    }
+
+    public class ProjectManagementProjectDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Status { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public decimal Budget { get; set; }
+        public double Progress { get; set; }
+        public string Priority { get; set; }
+        public Guid ProjectManagerId { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+    }
+
+    public class ProjectManagementTaskDto
+    {
+        public Guid Id { get; set; }
+        public Guid ProjectId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Status { get; set; }
+        public string Priority { get; set; }
+        public Guid AssignedToId { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime DueDate { get; set; }
+        public double Progress { get; set; }
+        public int EstimatedHours { get; set; }
+        public int ActualHours { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

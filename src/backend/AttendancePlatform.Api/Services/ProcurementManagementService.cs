@@ -11,18 +11,18 @@ namespace AttendancePlatform.Api.Services
         Task<List<PurchaseRequestDto>> GetPurchaseRequestsAsync(Guid tenantId);
         Task<PurchaseRequestDto> UpdatePurchaseRequestAsync(Guid requestId, PurchaseRequestDto request);
         Task<bool> ApprovePurchaseRequestAsync(Guid requestId, Guid approverId);
-        Task<PurchaseOrderDto> CreatePurchaseOrderAsync(PurchaseOrderDto order);
-        Task<List<PurchaseOrderDto>> GetPurchaseOrdersAsync(Guid tenantId);
-        Task<PurchaseOrderDto> UpdatePurchaseOrderAsync(Guid orderId, PurchaseOrderDto order);
+        Task<ProcurementPurchaseOrderDto> CreatePurchaseOrderAsync(ProcurementPurchaseOrderDto order);
+        Task<List<ProcurementPurchaseOrderDto>> GetPurchaseOrdersAsync(Guid tenantId);
+        Task<ProcurementPurchaseOrderDto> UpdatePurchaseOrderAsync(Guid orderId, ProcurementPurchaseOrderDto order);
         Task<bool> ReceivePurchaseOrderAsync(Guid orderId, ReceiptDto receipt);
-        Task<SupplierDto> CreateSupplierAsync(SupplierDto supplier);
-        Task<List<SupplierDto>> GetSuppliersAsync(Guid tenantId);
-        Task<SupplierDto> UpdateSupplierAsync(Guid supplierId, SupplierDto supplier);
+        Task<ProcurementSupplierDto> CreateSupplierAsync(ProcurementSupplierDto supplier);
+        Task<List<ProcurementSupplierDto>> GetSuppliersAsync(Guid tenantId);
+        Task<ProcurementSupplierDto> UpdateSupplierAsync(Guid supplierId, ProcurementSupplierDto supplier);
         Task<SupplierEvaluationDto> CreateSupplierEvaluationAsync(SupplierEvaluationDto evaluation);
         Task<List<SupplierEvaluationDto>> GetSupplierEvaluationsAsync(Guid supplierId);
-        Task<ContractDto> CreateContractAsync(ContractDto contract);
-        Task<List<ContractDto>> GetContractsAsync(Guid tenantId);
-        Task<ContractDto> UpdateContractAsync(Guid contractId, ContractDto contract);
+        Task<ProcurementContractDto> CreateContractAsync(ProcurementContractDto contract);
+        Task<List<ProcurementContractDto>> GetContractsAsync(Guid tenantId);
+        Task<ProcurementContractDto> UpdateContractAsync(Guid contractId, ProcurementContractDto contract);
         Task<bool> RenewContractAsync(Guid contractId, DateTime newEndDate);
         Task<ProcurementAnalyticsDto> GetProcurementAnalyticsAsync(Guid tenantId);
         Task<ProcurementReportDto> GenerateProcurementReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
@@ -149,7 +149,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<PurchaseOrderDto> CreatePurchaseOrderAsync(PurchaseOrderDto order)
+        public async Task<ProcurementPurchaseOrderDto> CreatePurchaseOrderAsync(ProcurementPurchaseOrderDto order)
         {
             try
             {
@@ -169,12 +169,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<PurchaseOrderDto>> GetPurchaseOrdersAsync(Guid tenantId)
+        public async Task<List<ProcurementPurchaseOrderDto>> GetPurchaseOrdersAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<PurchaseOrderDto>
+            return new List<ProcurementPurchaseOrderDto>
             {
-                new PurchaseOrderDto
+                new ProcurementPurchaseOrderDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -196,7 +196,7 @@ namespace AttendancePlatform.Api.Services
                     CreatedAt = DateTime.UtcNow.AddDays(-1),
                     UpdatedAt = DateTime.UtcNow.AddHours(-2)
                 },
-                new PurchaseOrderDto
+                new ProcurementPurchaseOrderDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -222,7 +222,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<PurchaseOrderDto> UpdatePurchaseOrderAsync(Guid orderId, PurchaseOrderDto order)
+        public async Task<ProcurementPurchaseOrderDto> UpdatePurchaseOrderAsync(Guid orderId, ProcurementPurchaseOrderDto order)
         {
             try
             {
@@ -255,7 +255,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<SupplierDto> CreateSupplierAsync(SupplierDto supplier)
+        public async Task<ProcurementSupplierDto> CreateSupplierAsync(ProcurementSupplierDto supplier)
         {
             try
             {
@@ -275,12 +275,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<SupplierDto>> GetSuppliersAsync(Guid tenantId)
+        public async Task<List<ProcurementSupplierDto>> GetSuppliersAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<SupplierDto>
+            return new List<ProcurementSupplierDto>
             {
-                new SupplierDto
+                new ProcurementSupplierDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -302,7 +302,7 @@ namespace AttendancePlatform.Api.Services
                     CreatedAt = DateTime.UtcNow.AddDays(-180),
                     UpdatedAt = DateTime.UtcNow.AddDays(-30)
                 },
-                new SupplierDto
+                new ProcurementSupplierDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -327,7 +327,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<SupplierDto> UpdateSupplierAsync(Guid supplierId, SupplierDto supplier)
+        public async Task<ProcurementSupplierDto> UpdateSupplierAsync(Guid supplierId, ProcurementSupplierDto supplier)
         {
             try
             {
@@ -410,7 +410,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<ContractDto> CreateContractAsync(ContractDto contract)
+        public async Task<ProcurementContractDto> CreateContractAsync(ProcurementContractDto contract)
         {
             try
             {
@@ -429,12 +429,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<ContractDto>> GetContractsAsync(Guid tenantId)
+        public async Task<List<ProcurementContractDto>> GetContractsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<ContractDto>
+            return new List<ProcurementContractDto>
             {
-                new ContractDto
+                new ProcurementContractDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -458,7 +458,7 @@ namespace AttendancePlatform.Api.Services
                     CreatedAt = DateTime.UtcNow.AddDays(-90),
                     UpdatedAt = DateTime.UtcNow.AddDays(-30)
                 },
-                new ContractDto
+                new ProcurementContractDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -485,7 +485,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<ContractDto> UpdateContractAsync(Guid contractId, ContractDto contract)
+        public async Task<ProcurementContractDto> UpdateContractAsync(Guid contractId, ProcurementContractDto contract)
         {
             try
             {
@@ -752,7 +752,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class PurchaseOrderDto
+    public class ProcurementPurchaseOrderDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -787,7 +787,7 @@ namespace AttendancePlatform.Api.Services
         public string QualityStatus { get; set; }
     }
 
-    public class SupplierDto
+    public class ProcurementSupplierDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -830,7 +830,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime CreatedAt { get; set; }
     }
 
-    public class ContractDto
+    public class ProcurementContractDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }

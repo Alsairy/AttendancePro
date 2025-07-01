@@ -8,12 +8,12 @@ namespace AttendancePlatform.Api.Services
     public interface IComprehensiveReportingService
     {
         Task<ExecutiveReportDto> GenerateExecutiveReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
-        Task<ComplianceReportDto> GenerateComplianceReportAsync(Guid tenantId);
+        Task<ComprehensiveComplianceReportDto> GenerateComplianceReportAsync(Guid tenantId);
         Task<PerformanceReportDto> GeneratePerformanceReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
-        Task<FinancialReportDto> GenerateFinancialReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
-        Task<SecurityReportDto> GenerateSecurityReportAsync(Guid tenantId);
+        Task<ComprehensiveFinancialReportDto> GenerateFinancialReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
+        Task<ComprehensiveSecurityReportDto> GenerateSecurityReportAsync(Guid tenantId);
         Task<AuditReportDto> GenerateAuditReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
-        Task<CustomReportDto> GenerateCustomReportAsync(Guid tenantId, CustomReportRequestDto request);
+        Task<ComprehensiveCustomReportDto> GenerateCustomReportAsync(Guid tenantId, ComprehensiveCustomReportRequestDto request);
         Task<List<ReportTemplateDto>> GetReportTemplatesAsync(Guid tenantId);
         Task<byte[]> ExportReportAsync(Guid reportId, string format);
         Task<bool> ScheduleReportAsync(Guid tenantId, ScheduledReportDto scheduledReport);
@@ -64,7 +64,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<ComplianceReportDto> GenerateComplianceReportAsync(Guid tenantId)
+        public async Task<ComprehensiveComplianceReportDto> GenerateComplianceReportAsync(Guid tenantId)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace AttendancePlatform.Api.Services
 
                 var overallScore = complianceChecks.Average(c => c.Score);
 
-                return new ComplianceReportDto
+                return new ComprehensiveComplianceReportDto
                 {
                     TenantId = tenantId,
                     OverallComplianceScore = overallScore,
@@ -131,7 +131,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<FinancialReportDto> GenerateFinancialReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate)
+        public async Task<ComprehensiveFinancialReportDto> GenerateFinancialReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate)
         {
             try
             {
@@ -144,7 +144,7 @@ namespace AttendancePlatform.Api.Services
                 var revenue = totalCosts * 1.25;
                 var profit = revenue - totalCosts;
 
-                return new FinancialReportDto
+                return new ComprehensiveFinancialReportDto
                 {
                     TenantId = tenantId,
                     ReportPeriod = $"{fromDate:yyyy-MM-dd} to {toDate:yyyy-MM-dd}",
@@ -166,7 +166,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<SecurityReportDto> GenerateSecurityReportAsync(Guid tenantId)
+        public async Task<ComprehensiveSecurityReportDto> GenerateSecurityReportAsync(Guid tenantId)
         {
             try
             {
@@ -179,7 +179,7 @@ namespace AttendancePlatform.Api.Services
                     new SecurityMetricDto { Metric = "Compliance Score", Value = 98, Threshold = 95, Status = "Compliant" }
                 };
 
-                return new SecurityReportDto
+                return new ComprehensiveSecurityReportDto
                 {
                     TenantId = tenantId,
                     SecurityMetrics = securityMetrics,
@@ -228,7 +228,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<CustomReportDto> GenerateCustomReportAsync(Guid tenantId, CustomReportRequestDto request)
+        public async Task<ComprehensiveCustomReportDto> GenerateCustomReportAsync(Guid tenantId, ComprehensiveCustomReportRequestDto request)
         {
             try
             {
@@ -253,7 +253,7 @@ namespace AttendancePlatform.Api.Services
                     }
                 }
 
-                return new CustomReportDto
+                return new ComprehensiveCustomReportDto
                 {
                     TenantId = tenantId,
                     ReportName = request.ReportName,
@@ -383,7 +383,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class ComplianceReportDto
+    public class ComprehensiveComplianceReportDto
     {
         public Guid TenantId { get; set; }
         public double OverallComplianceScore { get; set; }
@@ -421,7 +421,7 @@ namespace AttendancePlatform.Api.Services
         public string PerformanceRating { get; set; }
     }
 
-    public class FinancialReportDto
+    public class ComprehensiveFinancialReportDto
     {
         public Guid TenantId { get; set; }
         public string ReportPeriod { get; set; }
@@ -436,7 +436,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class SecurityReportDto
+    public class ComprehensiveSecurityReportDto
     {
         public Guid TenantId { get; set; }
         public List<SecurityMetricDto> SecurityMetrics { get; set; }
@@ -505,6 +505,33 @@ namespace AttendancePlatform.Api.Services
         public string ReportName { get; set; }
         public string Schedule { get; set; }
         public List<string> Recipients { get; set; }
+        public string Format { get; set; }
+    }
+
+    public class ComprehensiveCustomReportDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string ReportType { get; set; }
+        public Dictionary<string, object> Data { get; set; }
+        public List<string> Metrics { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public DateTime GeneratedAt { get; set; }
+        public string Status { get; set; }
+    }
+
+    public class ComprehensiveCustomReportRequestDto
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string ReportType { get; set; }
+        public List<string> Metrics { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public Dictionary<string, object> Parameters { get; set; }
         public string Format { get; set; }
     }
 }

@@ -17,11 +17,11 @@ namespace AttendancePlatform.Api.Services
         Task<FedRampComplianceDto> GetFedRampComplianceAsync(Guid tenantId);
         Task<NistComplianceDto> GetNistComplianceAsync(Guid tenantId);
         Task<CisControlsDto> GetCisControlsAsync(Guid tenantId);
-        Task<ComplianceAuditDto> GenerateComplianceAuditAsync(Guid tenantId);
+        Task<GlobalComplianceAuditDto> GenerateComplianceAuditAsync(Guid tenantId);
         Task<bool> ScheduleComplianceReportAsync(Guid tenantId, ComplianceScheduleDto schedule);
-        Task<List<ComplianceViolationDto>> GetComplianceViolationsAsync(Guid tenantId);
+        Task<List<GlobalComplianceViolationDto>> GetComplianceViolationsAsync(Guid tenantId);
         Task<bool> RemediateViolationAsync(Guid tenantId, Guid violationId);
-        Task<ComplianceTrainingDto> GetComplianceTrainingAsync(Guid tenantId);
+        Task<GlobalComplianceTrainingDto> GetComplianceTrainingAsync(Guid tenantId);
     }
 
     public class GlobalComplianceService : IGlobalComplianceService
@@ -417,13 +417,13 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<ComplianceAuditDto> GenerateComplianceAuditAsync(Guid tenantId)
+        public async Task<GlobalComplianceAuditDto> GenerateComplianceAuditAsync(Guid tenantId)
         {
             try
             {
                 await Task.CompletedTask;
                 
-                return new ComplianceAuditDto
+                return new GlobalComplianceAuditDto
                 {
                     TenantId = tenantId,
                     AuditId = Guid.NewGuid(),
@@ -476,15 +476,15 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<ComplianceViolationDto>> GetComplianceViolationsAsync(Guid tenantId)
+        public async Task<List<GlobalComplianceViolationDto>> GetComplianceViolationsAsync(Guid tenantId)
         {
             try
             {
                 await Task.CompletedTask;
                 
-                return new List<ComplianceViolationDto>
+                return new List<GlobalComplianceViolationDto>
                 {
-                    new ComplianceViolationDto
+                    new GlobalComplianceViolationDto
                     {
                         Id = Guid.NewGuid(),
                         Framework = "GDPR",
@@ -500,7 +500,7 @@ namespace AttendancePlatform.Api.Services
                             "Create response templates"
                         }
                     },
-                    new ComplianceViolationDto
+                    new GlobalComplianceViolationDto
                     {
                         Id = Guid.NewGuid(),
                         Framework = "ISO 27001",
@@ -540,13 +540,13 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<ComplianceTrainingDto> GetComplianceTrainingAsync(Guid tenantId)
+        public async Task<GlobalComplianceTrainingDto> GetComplianceTrainingAsync(Guid tenantId)
         {
             try
             {
                 await Task.CompletedTask;
                 
-                return new ComplianceTrainingDto
+                return new GlobalComplianceTrainingDto
                 {
                     TenantId = tenantId,
                     AvailableCourses = new List<TrainingCourseDto>
@@ -773,7 +773,7 @@ namespace AttendancePlatform.Api.Services
         public List<string> Recommendations { get; set; }
     }
 
-    public class ComplianceAuditDto
+    public class GlobalComplianceAuditDto
     {
         public Guid TenantId { get; set; }
         public Guid AuditId { get; set; }
@@ -801,7 +801,7 @@ namespace AttendancePlatform.Api.Services
         public string ReportType { get; set; }
     }
 
-    public class ComplianceViolationDto
+    public class GlobalComplianceViolationDto
     {
         public Guid Id { get; set; }
         public string Framework { get; set; }
@@ -813,7 +813,7 @@ namespace AttendancePlatform.Api.Services
         public List<string> RemediationSteps { get; set; }
     }
 
-    public class ComplianceTrainingDto
+    public class GlobalComplianceTrainingDto
     {
         public Guid TenantId { get; set; }
         public List<TrainingCourseDto> AvailableCourses { get; set; }

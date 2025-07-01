@@ -7,9 +7,9 @@ namespace AttendancePlatform.Api.Services
 {
     public interface IBusinessIntelligenceManagementService
     {
-        Task<BusinessIntelligenceReportDto> CreateBusinessIntelligenceReportAsync(BusinessIntelligenceReportDto report);
-        Task<List<BusinessIntelligenceReportDto>> GetBusinessIntelligenceReportsAsync(Guid tenantId);
-        Task<BusinessIntelligenceReportDto> UpdateBusinessIntelligenceReportAsync(Guid reportId, BusinessIntelligenceReportDto report);
+        Task<BiManagementReportDto> CreateBusinessIntelligenceReportAsync(BiManagementReportDto report);
+        Task<List<BiManagementReportDto>> GetBusinessIntelligenceReportsAsync(Guid tenantId);
+        Task<BiManagementReportDto> UpdateBusinessIntelligenceReportAsync(Guid reportId, BiManagementReportDto report);
         Task<BusinessIntelligenceDashboardDto> CreateBusinessIntelligenceDashboardAsync(BusinessIntelligenceDashboardDto dashboard);
         Task<List<BusinessIntelligenceDashboardDto>> GetBusinessIntelligenceDashboardsAsync(Guid tenantId);
         Task<BusinessIntelligenceAnalyticsDto> GetBusinessIntelligenceAnalyticsAsync(Guid tenantId);
@@ -34,7 +34,7 @@ namespace AttendancePlatform.Api.Services
             _context = context;
         }
 
-        public async Task<BusinessIntelligenceReportDto> CreateBusinessIntelligenceReportAsync(BusinessIntelligenceReportDto report)
+        public async Task<BiManagementReportDto> CreateBusinessIntelligenceReportAsync(BiManagementReportDto report)
         {
             try
             {
@@ -53,12 +53,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<BusinessIntelligenceReportDto>> GetBusinessIntelligenceReportsAsync(Guid tenantId)
+        public async Task<List<BiManagementReportDto>> GetBusinessIntelligenceReportsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<BusinessIntelligenceReportDto>
+            return new List<BiManagementReportDto>
             {
-                new BusinessIntelligenceReportDto
+                new BiManagementReportDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -85,7 +85,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<BusinessIntelligenceReportDto> UpdateBusinessIntelligenceReportAsync(Guid reportId, BusinessIntelligenceReportDto report)
+        public async Task<BiManagementReportDto> UpdateBusinessIntelligenceReportAsync(Guid reportId, BiManagementReportDto report)
         {
             try
             {
@@ -358,7 +358,7 @@ namespace AttendancePlatform.Api.Services
         }
     }
 
-    public class BusinessIntelligenceReportDto
+    public class BiManagementReportDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }

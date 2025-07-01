@@ -7,8 +7,8 @@ namespace AttendancePlatform.Api.Services
 {
     public interface IRiskManagementService
     {
-        Task<RiskAssessmentDto> CreateRiskAssessmentAsync(RiskAssessmentDto assessment);
-        Task<List<RiskAssessmentDto>> GetRiskAssessmentsAsync(Guid tenantId);
+        Task<RiskManagementAssessmentDto> CreateRiskAssessmentAsync(RiskManagementAssessmentDto assessment);
+        Task<List<RiskManagementAssessmentDto>> GetRiskAssessmentsAsync(Guid tenantId);
         Task<RiskRegisterDto> CreateRiskRegisterEntryAsync(RiskRegisterDto risk);
         Task<List<RiskRegisterDto>> GetRiskRegisterAsync(Guid tenantId);
         Task<RiskMitigationPlanDto> CreateMitigationPlanAsync(RiskMitigationPlanDto plan);
@@ -35,7 +35,7 @@ namespace AttendancePlatform.Api.Services
             _context = context;
         }
 
-        public async Task<RiskAssessmentDto> CreateRiskAssessmentAsync(RiskAssessmentDto assessment)
+        public async Task<RiskManagementAssessmentDto> CreateRiskAssessmentAsync(RiskManagementAssessmentDto assessment)
         {
             try
             {
@@ -54,12 +54,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<RiskAssessmentDto>> GetRiskAssessmentsAsync(Guid tenantId)
+        public async Task<List<RiskManagementAssessmentDto>> GetRiskAssessmentsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<RiskAssessmentDto>
+            return new List<RiskManagementAssessmentDto>
             {
-                new RiskAssessmentDto
+                new RiskManagementAssessmentDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -381,7 +381,7 @@ namespace AttendancePlatform.Api.Services
         }
     }
 
-    public class RiskAssessmentDto
+    public class RiskManagementAssessmentDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }

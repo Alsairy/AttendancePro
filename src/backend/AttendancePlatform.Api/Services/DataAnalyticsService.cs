@@ -21,7 +21,7 @@ namespace AttendancePlatform.Api.Services
         Task<DataRetentionPolicyDto> GetDataRetentionPolicyAsync(Guid tenantId);
         Task<DataBackupReportDto> GenerateDataBackupReportAsync(Guid tenantId);
         Task<DataSecurityAuditDto> PerformDataSecurityAuditAsync(Guid tenantId);
-        Task<CustomReportDto> CreateCustomReportAsync(CustomReportDto report);
+        Task<DataAnalyticsCustomReportDto> CreateCustomReportAsync(DataAnalyticsCustomReportDto report);
     }
 
     public class DataAnalyticsService : IDataAnalyticsService
@@ -535,7 +535,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<CustomReportDto> CreateCustomReportAsync(CustomReportDto report)
+        public async Task<DataAnalyticsCustomReportDto> CreateCustomReportAsync(DataAnalyticsCustomReportDto report)
         {
             try
             {
@@ -800,7 +800,7 @@ namespace AttendancePlatform.Api.Services
         public string RecommendedAction { get; set; }
     }
 
-    public class CustomReportDto
+    public class DataAnalyticsCustomReportDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

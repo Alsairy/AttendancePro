@@ -11,15 +11,15 @@ namespace AttendancePlatform.Api.Services
         Task<List<LegalDocumentDto>> GetLegalDocumentsAsync(Guid tenantId);
         Task<LegalDocumentDto> UpdateLegalDocumentAsync(Guid documentId, LegalDocumentDto document);
         Task<bool> DeleteLegalDocumentAsync(Guid documentId);
-        Task<ContractDto> CreateContractAsync(ContractDto contract);
-        Task<List<ContractDto>> GetContractsAsync(Guid tenantId);
-        Task<ContractDto> UpdateContractAsync(Guid contractId, ContractDto contract);
+        Task<LegalContractDto> CreateContractAsync(LegalContractDto contract);
+        Task<List<LegalContractDto>> GetContractsAsync(Guid tenantId);
+        Task<LegalContractDto> UpdateContractAsync(Guid contractId, LegalContractDto contract);
         Task<bool> RenewContractAsync(Guid contractId, DateTime newExpiryDate);
         Task<LegalCaseDto> CreateLegalCaseAsync(LegalCaseDto legalCase);
         Task<List<LegalCaseDto>> GetLegalCasesAsync(Guid tenantId);
         Task<LegalCaseDto> UpdateLegalCaseStatusAsync(Guid caseId, string status);
-        Task<ComplianceAuditDto> CreateComplianceAuditAsync(ComplianceAuditDto audit);
-        Task<List<ComplianceAuditDto>> GetComplianceAuditsAsync(Guid tenantId);
+        Task<LegalComplianceAuditDto> CreateComplianceAuditAsync(LegalComplianceAuditDto audit);
+        Task<List<LegalComplianceAuditDto>> GetComplianceAuditsAsync(Guid tenantId);
         Task<LegalRiskAssessmentDto> CreateRiskAssessmentAsync(LegalRiskAssessmentDto assessment);
         Task<List<LegalRiskAssessmentDto>> GetRiskAssessmentsAsync(Guid tenantId);
         Task<LegalAdviceDto> CreateLegalAdviceAsync(LegalAdviceDto advice);
@@ -145,7 +145,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<ContractDto> CreateContractAsync(ContractDto contract)
+        public async Task<LegalContractDto> CreateContractAsync(LegalContractDto contract)
         {
             try
             {
@@ -164,12 +164,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<ContractDto>> GetContractsAsync(Guid tenantId)
+        public async Task<List<LegalContractDto>> GetContractsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<ContractDto>
+            return new List<LegalContractDto>
             {
-                new ContractDto
+                new LegalContractDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -214,7 +214,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<ContractDto> UpdateContractAsync(Guid contractId, ContractDto contract)
+        public async Task<LegalContractDto> UpdateContractAsync(Guid contractId, LegalContractDto contract)
         {
             try
             {
@@ -338,7 +338,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<ComplianceAuditDto> CreateComplianceAuditAsync(ComplianceAuditDto audit)
+        public async Task<LegalComplianceAuditDto> CreateComplianceAuditAsync(LegalComplianceAuditDto audit)
         {
             try
             {
@@ -357,12 +357,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<ComplianceAuditDto>> GetComplianceAuditsAsync(Guid tenantId)
+        public async Task<List<LegalComplianceAuditDto>> GetComplianceAuditsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<ComplianceAuditDto>
+            return new List<LegalComplianceAuditDto>
             {
-                new ComplianceAuditDto
+                new LegalComplianceAuditDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -381,7 +381,7 @@ namespace AttendancePlatform.Api.Services
                     EstimatedDuration = 5,
                     CreatedAt = DateTime.UtcNow.AddDays(-30)
                 },
-                new ComplianceAuditDto
+                new LegalComplianceAuditDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -770,7 +770,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime LastUpdated { get; set; }
     }
 
-    public class ComplianceAuditDto
+    public class LegalComplianceAuditDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
@@ -884,5 +884,25 @@ namespace AttendancePlatform.Api.Services
         public Guid AssignedTo { get; set; }
         public string AssigneeName { get; set; }
         public DateTime CreatedAt { get; set; }
+    }
+
+    public class LegalContractDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string ContractNumber { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string ContractType { get; set; }
+        public string Status { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public decimal ContractValue { get; set; }
+        public string PartyA { get; set; }
+        public string PartyB { get; set; }
+        public List<string> Terms { get; set; }
+        public List<string> Obligations { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

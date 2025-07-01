@@ -14,7 +14,7 @@ namespace AttendancePlatform.Api.Services
         Task<bool> ApproveExpenseAsync(Guid expenseId);
         Task<InvoiceDto> CreateInvoiceAsync(InvoiceDto invoice);
         Task<List<InvoiceDto>> GetInvoicesAsync(Guid tenantId);
-        Task<FinancialReportDto> GenerateFinancialReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
+        Task<FinancialManagementReportDto> GenerateFinancialReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
         Task<CashFlowDto> GetCashFlowAnalysisAsync(Guid tenantId);
         Task<ProfitLossDto> GetProfitLossStatementAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
         Task<BalanceSheetDto> GetBalanceSheetAsync(Guid tenantId, DateTime asOfDate);
@@ -224,10 +224,10 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<FinancialReportDto> GenerateFinancialReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate)
+        public async Task<FinancialManagementReportDto> GenerateFinancialReportAsync(Guid tenantId, DateTime fromDate, DateTime toDate)
         {
             await Task.CompletedTask;
-            return new FinancialReportDto
+            return new FinancialManagementReportDto
             {
                 TenantId = tenantId,
                 ReportPeriod = $"{fromDate:yyyy-MM-dd} to {toDate:yyyy-MM-dd}",
@@ -461,7 +461,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime CreatedAt { get; set; }
     }
 
-    public class FinancialReportDto
+    public class FinancialManagementReportDto
     {
         public Guid TenantId { get; set; }
         public string ReportPeriod { get; set; }

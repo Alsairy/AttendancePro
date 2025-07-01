@@ -7,13 +7,13 @@ namespace AttendancePlatform.Api.Services
 {
     public interface IAdvancedAnalyticsService
     {
-        Task<PredictiveAnalyticsDto> GetPredictiveAnalyticsAsync(Guid tenantId);
+        Task<AdvancedAnalyticsPredictiveDto> GetPredictiveAnalyticsAsync(Guid tenantId);
         Task<BehavioralAnalyticsDto> GetBehavioralAnalyticsAsync(Guid tenantId);
-        Task<SentimentAnalysisDto> GetSentimentAnalysisAsync(Guid tenantId);
-        Task<AnomalyDetectionDto> GetAnomalyDetectionAsync(Guid tenantId);
+        Task<AdvancedSentimentAnalysisDto> GetSentimentAnalysisAsync(Guid tenantId);
+        Task<AdvancedAnomalyDetectionDto> GetAnomalyDetectionAsync(Guid tenantId);
         Task<ForecastingDto> GetForecastingAsync(Guid tenantId, int daysAhead);
         Task<CorrelationAnalysisDto> GetCorrelationAnalysisAsync(Guid tenantId);
-        Task<ClusterAnalysisDto> GetClusterAnalysisAsync(Guid tenantId);
+        Task<AdvancedClusterAnalysisDto> GetClusterAnalysisAsync(Guid tenantId);
         Task<TimeSeriesAnalysisDto> GetTimeSeriesAnalysisAsync(Guid tenantId, DateTime fromDate, DateTime toDate);
         Task<MachineLearningInsightsDto> GetMachineLearningInsightsAsync(Guid tenantId);
         Task<RealTimeAnalyticsDto> GetRealTimeAnalyticsAsync(Guid tenantId);
@@ -30,7 +30,7 @@ namespace AttendancePlatform.Api.Services
             _context = context;
         }
 
-        public async Task<PredictiveAnalyticsDto> GetPredictiveAnalyticsAsync(Guid tenantId)
+        public async Task<AdvancedAnalyticsPredictiveDto> GetPredictiveAnalyticsAsync(Guid tenantId)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace AttendancePlatform.Api.Services
                     new PredictionDto { Metric = "Leave Requests", PredictedValue = 156, Confidence = 78.9, TimeFrame = "Next Month" }
                 };
 
-                return new PredictiveAnalyticsDto
+                return new AdvancedAnalyticsPredictiveDto
                 {
                     TenantId = tenantId,
                     Predictions = predictions,
@@ -86,7 +86,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<SentimentAnalysisDto> GetSentimentAnalysisAsync(Guid tenantId)
+        public async Task<AdvancedSentimentAnalysisDto> GetSentimentAnalysisAsync(Guid tenantId)
         {
             try
             {
@@ -98,7 +98,7 @@ namespace AttendancePlatform.Api.Services
                     new SentimentMetricDto { Category = "Career Growth", Score = 6.9, Sentiment = "Neutral" }
                 };
 
-                return new SentimentAnalysisDto
+                return new AdvancedSentimentAnalysisDto
                 {
                     TenantId = tenantId,
                     SentimentMetrics = sentiments,
@@ -115,7 +115,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<AnomalyDetectionDto> GetAnomalyDetectionAsync(Guid tenantId)
+        public async Task<AdvancedAnomalyDetectionDto> GetAnomalyDetectionAsync(Guid tenantId)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace AttendancePlatform.Api.Services
                     new AnomalyDto { Type = "Late Check-ins", Description = "Multiple late arrivals in Engineering", Severity = "Medium", DetectedAt = DateTime.UtcNow.AddHours(-4) }
                 };
 
-                return new AnomalyDetectionDto
+                return new AdvancedAnomalyDetectionDto
                 {
                     TenantId = tenantId,
                     Anomalies = anomalies,
@@ -202,7 +202,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<ClusterAnalysisDto> GetClusterAnalysisAsync(Guid tenantId)
+        public async Task<AdvancedClusterAnalysisDto> GetClusterAnalysisAsync(Guid tenantId)
         {
             try
             {
@@ -213,7 +213,7 @@ namespace AttendancePlatform.Api.Services
                     new ClusterDto { Name = "Flexible Workers", Size = 32, Characteristics = "Variable attendance, high productivity" }
                 };
 
-                return new ClusterAnalysisDto
+                return new AdvancedClusterAnalysisDto
                 {
                     TenantId = tenantId,
                     Clusters = clusters,
@@ -320,7 +320,7 @@ namespace AttendancePlatform.Api.Services
         }
     }
 
-    public class PredictiveAnalyticsDto
+    public class AdvancedAnalyticsPredictiveDto
     {
         public Guid TenantId { get; set; }
         public List<PredictionDto> Predictions { get; set; }
@@ -370,7 +370,7 @@ namespace AttendancePlatform.Api.Services
         public string Sentiment { get; set; }
     }
 
-    public class AnomalyDetectionDto
+    public class AdvancedAnomalyDetectionDto
     {
         public Guid TenantId { get; set; }
         public List<AnomalyDto> Anomalies { get; set; }
@@ -379,13 +379,6 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class AnomalyDto
-    {
-        public string Type { get; set; }
-        public string Description { get; set; }
-        public string Severity { get; set; }
-        public DateTime DetectedAt { get; set; }
-    }
 
     public class ForecastingDto
     {
@@ -480,5 +473,71 @@ namespace AttendancePlatform.Api.Services
         public int TodayCheckIns { get; set; }
         public string AverageCheckInTime { get; set; }
         public DateTime LastUpdated { get; set; }
+    }
+
+    public class AdvancedSentimentAnalysisDto
+    {
+        public Guid TenantId { get; set; }
+        public double OverallSentiment { get; set; }
+        public Dictionary<string, double> DepartmentSentiments { get; set; }
+        public List<string> PositiveKeywords { get; set; }
+        public List<string> NegativeKeywords { get; set; }
+        public DateTime AnalysisDate { get; set; }
+        public int SampleSize { get; set; }
+    }
+
+    public class AdvancedClusterAnalysisDto
+    {
+        public Guid TenantId { get; set; }
+        public int NumberOfClusters { get; set; }
+        public List<ClusterGroupDto> Clusters { get; set; }
+        public double SilhouetteScore { get; set; }
+        public DateTime AnalysisDate { get; set; }
+        public string ClusteringMethod { get; set; }
+    }
+
+    public class ClusterGroupDto
+    {
+        public int ClusterId { get; set; }
+        public string ClusterName { get; set; }
+        public int MemberCount { get; set; }
+        public Dictionary<string, object> Characteristics { get; set; }
+        public double CohesionScore { get; set; }
+    }
+
+    public class AnomalyDetectionDto
+    {
+        public Guid TenantId { get; set; }
+        public List<AnomalyDto> Anomalies { get; set; }
+        public double AnomalyScore { get; set; }
+        public DateTime DetectionDate { get; set; }
+        public string DetectionMethod { get; set; }
+        public int TotalDataPoints { get; set; }
+        public int AnomalousDataPoints { get; set; }
+    }
+
+    public class AnomalyDto
+    {
+        public Guid Id { get; set; }
+        public string Type { get; set; }
+        public string Description { get; set; }
+        public double Severity { get; set; }
+        public DateTime Timestamp { get; set; }
+        public Dictionary<string, object> Data { get; set; }
+    }
+
+    public class FinancialReportDto
+    {
+        public Guid Id { get; set; }
+        public Guid TenantId { get; set; }
+        public string ReportType { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public decimal TotalExpenses { get; set; }
+        public decimal NetProfit { get; set; }
+        public decimal GrossMargin { get; set; }
+        public List<string> KeyMetrics { get; set; }
+        public DateTime GeneratedAt { get; set; }
     }
 }

@@ -14,13 +14,13 @@ namespace AttendancePlatform.Api.Services
         Task<List<GoalDto>> GetGoalsAsync(Guid employeeId);
         Task<GoalDto> CreateGoalAsync(GoalDto goal);
         Task<GoalDto> UpdateGoalAsync(Guid goalId, GoalDto goal);
-        Task<List<PerformanceMetricDto>> GetPerformanceMetricsAsync(Guid employeeId, DateTime fromDate, DateTime toDate);
+        Task<List<PerformanceManagementMetricDto>> GetPerformanceMetricsAsync(Guid employeeId, DateTime fromDate, DateTime toDate);
         Task<PerformanceAnalyticsDto> GetPerformanceAnalyticsAsync(Guid tenantId);
         Task<List<FeedbackDto>> GetFeedbackAsync(Guid employeeId);
         Task<FeedbackDto> CreateFeedbackAsync(FeedbackDto feedback);
         Task<PerformanceDashboardDto> GetPerformanceDashboardAsync(Guid employeeId);
-        Task<List<SkillAssessmentDto>> GetSkillAssessmentsAsync(Guid employeeId);
-        Task<SkillAssessmentDto> CreateSkillAssessmentAsync(SkillAssessmentDto assessment);
+        Task<List<PerformanceSkillAssessmentDto>> GetSkillAssessmentsAsync(Guid employeeId);
+        Task<PerformanceSkillAssessmentDto> CreateSkillAssessmentAsync(PerformanceSkillAssessmentDto assessment);
         Task<CareerDevelopmentPlanDto> GetCareerDevelopmentPlanAsync(Guid employeeId);
         Task<CareerDevelopmentPlanDto> CreateCareerDevelopmentPlanAsync(CareerDevelopmentPlanDto plan);
     }
@@ -191,15 +191,15 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<PerformanceMetricDto>> GetPerformanceMetricsAsync(Guid employeeId, DateTime fromDate, DateTime toDate)
+        public async Task<List<PerformanceManagementMetricDto>> GetPerformanceMetricsAsync(Guid employeeId, DateTime fromDate, DateTime toDate)
         {
             await Task.CompletedTask;
-            var metrics = new List<PerformanceMetricDto>();
+            var metrics = new List<PerformanceManagementMetricDto>();
             var random = new Random();
 
             for (int i = 0; i < 10; i++)
             {
-                metrics.Add(new PerformanceMetricDto
+                metrics.Add(new PerformanceManagementMetricDto
                 {
                     EmployeeId = employeeId,
                     MetricName = $"Performance Metric {i + 1}",
@@ -306,12 +306,12 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<List<SkillAssessmentDto>> GetSkillAssessmentsAsync(Guid employeeId)
+        public async Task<List<PerformanceSkillAssessmentDto>> GetSkillAssessmentsAsync(Guid employeeId)
         {
             await Task.CompletedTask;
-            return new List<SkillAssessmentDto>
+            return new List<PerformanceSkillAssessmentDto>
             {
-                new SkillAssessmentDto
+                new PerformanceSkillAssessmentDto
                 {
                     Id = Guid.NewGuid(),
                     EmployeeId = employeeId,
@@ -322,7 +322,7 @@ namespace AttendancePlatform.Api.Services
                     AssessorName = "Senior Manager",
                     Notes = "Strong leadership potential, needs more experience"
                 },
-                new SkillAssessmentDto
+                new PerformanceSkillAssessmentDto
                 {
                     Id = Guid.NewGuid(),
                     EmployeeId = employeeId,
@@ -336,7 +336,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<SkillAssessmentDto> CreateSkillAssessmentAsync(SkillAssessmentDto assessment)
+        public async Task<PerformanceSkillAssessmentDto> CreateSkillAssessmentAsync(PerformanceSkillAssessmentDto assessment)
         {
             try
             {
@@ -432,7 +432,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class PerformanceMetricDto
+    public class PerformanceManagementMetricDto
     {
         public Guid EmployeeId { get; set; }
         public string MetricName { get; set; }
@@ -506,5 +506,20 @@ namespace AttendancePlatform.Api.Services
         public string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+    }
+
+    public class PerformanceSkillAssessmentDto
+    {
+        public Guid Id { get; set; }
+        public Guid EmployeeId { get; set; }
+        public string SkillName { get; set; }
+        public string Category { get; set; }
+        public int CurrentLevel { get; set; }
+        public int TargetLevel { get; set; }
+        public DateTime AssessmentDate { get; set; }
+        public string AssessorName { get; set; }
+        public string Notes { get; set; }
+        public double Score { get; set; }
+        public string Status { get; set; }
     }
 }

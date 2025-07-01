@@ -12,13 +12,13 @@ namespace AttendancePlatform.Api.Services
         Task<TeamDto> GetTeamAsync(Guid teamId);
         Task<bool> AddTeamMemberAsync(Guid teamId, Guid userId);
         Task<bool> RemoveTeamMemberAsync(Guid teamId, Guid userId);
-        Task<ProjectDto> CreateProjectAsync(ProjectDto project);
-        Task<List<ProjectDto>> GetProjectsAsync(Guid tenantId);
-        Task<TaskDto> CreateTaskAsync(TaskDto task);
-        Task<List<TaskDto>> GetTasksAsync(Guid projectId);
+        Task<CollaborationProjectDto> CreateProjectAsync(CollaborationProjectDto project);
+        Task<List<CollaborationProjectDto>> GetProjectsAsync(Guid tenantId);
+        Task<CollaborationTaskDto> CreateTaskAsync(CollaborationTaskDto task);
+        Task<List<CollaborationTaskDto>> GetTasksAsync(Guid projectId);
         Task<bool> UpdateTaskStatusAsync(Guid taskId, string status);
-        Task<DocumentDto> CreateDocumentAsync(DocumentDto document);
-        Task<List<DocumentDto>> GetDocumentsAsync(Guid projectId);
+        Task<CollaborationDocumentDto> CreateDocumentAsync(CollaborationDocumentDto document);
+        Task<List<CollaborationDocumentDto>> GetDocumentsAsync(Guid projectId);
         Task<bool> ShareDocumentAsync(Guid documentId, List<Guid> userIds);
         Task<ChatMessageDto> SendMessageAsync(ChatMessageDto message);
         Task<List<ChatMessageDto>> GetMessagesAsync(Guid teamId);
@@ -180,7 +180,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<ProjectDto> CreateProjectAsync(ProjectDto project)
+        public async Task<CollaborationProjectDto> CreateProjectAsync(CollaborationProjectDto project)
         {
             try
             {
@@ -214,13 +214,13 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<ProjectDto>> GetProjectsAsync(Guid tenantId)
+        public async Task<List<CollaborationProjectDto>> GetProjectsAsync(Guid tenantId)
         {
             try
             {
                 var projects = await _context.TeamProjects
                     .Where(p => p.TeamId != null)
-                    .Select(p => new ProjectDto
+                    .Select(p => new CollaborationProjectDto
                     {
                         Id = p.Id,
                         Name = p.Name,
@@ -244,7 +244,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<TaskDto> CreateTaskAsync(TaskDto task)
+        public async Task<CollaborationTaskDto> CreateTaskAsync(CollaborationTaskDto task)
         {
             try
             {
@@ -278,13 +278,13 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<TaskDto>> GetTasksAsync(Guid projectId)
+        public async Task<List<CollaborationTaskDto>> GetTasksAsync(Guid projectId)
         {
             try
             {
                 var tasks = await _context.ProjectTasks
                     .Where(t => t.ProjectId == projectId)
-                    .Select(t => new TaskDto
+                    .Select(t => new CollaborationTaskDto
                     {
                         Id = t.Id,
                         Title = t.Title,
@@ -332,7 +332,7 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<DocumentDto> CreateDocumentAsync(DocumentDto document)
+        public async Task<CollaborationDocumentDto> CreateDocumentAsync(CollaborationDocumentDto document)
         {
             try
             {
@@ -366,13 +366,13 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<DocumentDto>> GetDocumentsAsync(Guid projectId)
+        public async Task<List<CollaborationDocumentDto>> GetDocumentsAsync(Guid projectId)
         {
             try
             {
                 var documents = await _context.Documents
                     .Where(d => d.ProjectId == projectId)
-                    .Select(d => new DocumentDto
+                    .Select(d => new CollaborationDocumentDto
                     {
                         Id = d.Id,
                         Name = d.Name,
@@ -509,7 +509,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime JoinedAt { get; set; }
     }
 
-    public class ProjectDto
+    public class CollaborationProjectDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -523,7 +523,7 @@ namespace AttendancePlatform.Api.Services
         public int TaskCount { get; set; }
     }
 
-    public class TaskDto
+    public class CollaborationTaskDto
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
@@ -536,7 +536,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime CreatedAt { get; set; }
     }
 
-    public class DocumentDto
+    public class CollaborationDocumentDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

@@ -18,9 +18,9 @@ namespace AttendancePlatform.Api.Services
         Task<OpportunityDto> CreateOpportunityAsync(OpportunityDto opportunity);
         Task<List<OpportunityDto>> GetOpportunitiesAsync(Guid tenantId);
         Task<CrmAnalyticsDto> GetCrmAnalyticsAsync(Guid tenantId);
-        Task<List<LeadDto>> GetLeadsAsync(Guid tenantId);
-        Task<LeadDto> CreateLeadAsync(LeadDto lead);
-        Task<LeadDto> ConvertLeadToCustomerAsync(Guid leadId);
+        Task<List<CrmLeadDto>> GetLeadsAsync(Guid tenantId);
+        Task<CrmLeadDto> CreateLeadAsync(CrmLeadDto lead);
+        Task<CrmLeadDto> ConvertLeadToCustomerAsync(Guid leadId);
         Task<CrmDashboardDto> GetCrmDashboardAsync(Guid tenantId);
     }
 
@@ -303,12 +303,12 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<List<LeadDto>> GetLeadsAsync(Guid tenantId)
+        public async Task<List<CrmLeadDto>> GetLeadsAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<LeadDto>
+            return new List<CrmLeadDto>
             {
-                new LeadDto
+                new CrmLeadDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -323,7 +323,7 @@ namespace AttendancePlatform.Api.Services
                     AssignedToName = "Lead Qualifier",
                     CreatedAt = DateTime.UtcNow.AddDays(-2)
                 },
-                new LeadDto
+                new CrmLeadDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -341,7 +341,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<LeadDto> CreateLeadAsync(LeadDto lead)
+        public async Task<CrmLeadDto> CreateLeadAsync(CrmLeadDto lead)
         {
             try
             {
@@ -359,12 +359,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<LeadDto> ConvertLeadToCustomerAsync(Guid leadId)
+        public async Task<CrmLeadDto> ConvertLeadToCustomerAsync(Guid leadId)
         {
             try
             {
                 await Task.CompletedTask;
-                var lead = new LeadDto
+                var lead = new CrmLeadDto
                 {
                     Id = leadId,
                     Status = "Converted",
@@ -482,7 +482,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime GeneratedAt { get; set; }
     }
 
-    public class LeadDto
+    public class CrmLeadDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }

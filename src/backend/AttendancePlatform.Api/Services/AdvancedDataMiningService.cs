@@ -17,8 +17,8 @@ namespace AttendancePlatform.Api.Services
         Task<List<PatternDiscoveryDto>> GetPatternDiscoveriesAsync(Guid tenantId);
         Task<PatternDiscoveryDto> CreatePatternDiscoveryAsync(PatternDiscoveryDto discovery);
         Task<bool> UpdatePatternDiscoveryAsync(Guid discoveryId, PatternDiscoveryDto discovery);
-        Task<List<ClusterAnalysisDto>> GetClusterAnalysesAsync(Guid tenantId);
-        Task<ClusterAnalysisDto> CreateClusterAnalysisAsync(ClusterAnalysisDto analysis);
+        Task<List<DataMiningClusterAnalysisDto>> GetClusterAnalysesAsync(Guid tenantId);
+        Task<DataMiningClusterAnalysisDto> CreateClusterAnalysisAsync(DataMiningClusterAnalysisDto analysis);
         Task<DataMiningPerformanceDto> GetDataMiningPerformanceAsync(Guid tenantId);
         Task<bool> UpdateDataMiningPerformanceAsync(Guid tenantId, DataMiningPerformanceDto performance);
     }
@@ -320,12 +320,12 @@ namespace AttendancePlatform.Api.Services
             }
         }
 
-        public async Task<List<ClusterAnalysisDto>> GetClusterAnalysesAsync(Guid tenantId)
+        public async Task<List<DataMiningClusterAnalysisDto>> GetClusterAnalysesAsync(Guid tenantId)
         {
             await Task.CompletedTask;
-            return new List<ClusterAnalysisDto>
+            return new List<DataMiningClusterAnalysisDto>
             {
-                new ClusterAnalysisDto
+                new DataMiningClusterAnalysisDto
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
@@ -365,7 +365,7 @@ namespace AttendancePlatform.Api.Services
             };
         }
 
-        public async Task<ClusterAnalysisDto> CreateClusterAnalysisAsync(ClusterAnalysisDto analysis)
+        public async Task<DataMiningClusterAnalysisDto> CreateClusterAnalysisAsync(DataMiningClusterAnalysisDto analysis)
         {
             try
             {
@@ -586,7 +586,7 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class ClusterAnalysisDto
+    public class DataMiningClusterAnalysisDto
     {
         public Guid Id { get; set; }
         public Guid TenantId { get; set; }
