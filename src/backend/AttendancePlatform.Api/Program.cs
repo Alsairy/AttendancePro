@@ -86,6 +86,21 @@ builder.Services.AddScoped<IMaintenanceManagementService, MaintenanceManagementS
 builder.Services.AddScoped<IProcurementManagementService, ProcurementManagementService>();
 builder.Services.AddScoped<IFacilityManagementService, FacilityManagementService>();
 builder.Services.AddScoped<ILegalManagementService, LegalManagementService>();
+builder.Services.AddScoped<IComprehensiveFinanceService, ComprehensiveFinanceService>();
+builder.Services.AddScoped<IComprehensiveProcurementService, ComprehensiveProcurementService>();
+builder.Services.AddScoped<IComprehensiveHRService, ComprehensiveHRService>();
+builder.Services.AddScoped<ComprehensiveFinanceService>();
+builder.Services.AddScoped<ComprehensiveProcurementService>();
+builder.Services.AddScoped<ComprehensiveHRService>();
+builder.Services.AddScoped<IComprehensiveDigitalTransformationService, ComprehensiveDigitalTransformationService>();
+builder.Services.AddScoped<IComprehensiveInnovationService, ComprehensiveInnovationService>();
+builder.Services.AddScoped<IComprehensiveCustomerServiceService, ComprehensiveCustomerServiceService>();
+builder.Services.AddScoped<IComprehensiveMarketingService, ComprehensiveMarketingService>();
+builder.Services.AddScoped<IComprehensiveSalesService, ComprehensiveSalesService>();
+builder.Services.AddScoped<IComprehensiveProductManagementService, ComprehensiveProductManagementService>();
+builder.Services.AddScoped<IComprehensiveAdvancedTechnologyService, ComprehensiveAdvancedTechnologyService>();
+builder.Services.AddScoped<IComprehensiveDataScienceService, ComprehensiveDataScienceService>();
+builder.Services.AddScoped<IComprehensiveCybersecurityService, ComprehensiveCybersecurityService>();
 builder.Services.AddScoped<ITrainingManagementService, TrainingManagementService>();
 builder.Services.AddScoped<IDocumentManagementService, DocumentManagementService>();
 builder.Services.AddScoped<IAssetManagementService, AssetManagementService>();
@@ -190,7 +205,8 @@ builder.Services.AddCors(options =>
                 "https://attendancepro-fixapp-jur4spo0.devinapps.com",
                 "http://localhost:3000",
                 "http://localhost:5173",
-                "https://localhost:5173"
+                "https://localhost:5173",
+                "https://attendancepro-fixapp-tunnel-s3045g8h.devinapps.com"
               )
               .AllowAnyMethod()
               .AllowAnyHeader()
