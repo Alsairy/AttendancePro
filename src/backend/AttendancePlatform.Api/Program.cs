@@ -24,6 +24,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
+// Configure Kestrel to accept any host header
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AllowSynchronousIO = true;
+    options.Limits.MaxRequestBodySize = null;
+    options.ListenAnyIP(5002);
+});
+
 // Add infrastructure services with in-memory database for deployment
 builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
     options.UseInMemoryDatabase("AttendancePlatform"));
@@ -57,6 +65,14 @@ builder.Services.AddScoped<ILeaveManagementService, AttendancePlatform.Api.Servi
 builder.Services.AddScoped<IFaceRecognitionService, AttendancePlatform.Api.Services.FaceRecognitionService>();
 builder.Services.AddScoped<IActiveDirectoryService, AttendancePlatform.Api.Services.ActiveDirectoryService>();
 builder.Services.AddScoped<IUserManagementService, AttendancePlatform.Api.Services.UserManagementService>();
+builder.Services.AddScoped<IBusinessIntelligenceService, AttendancePlatform.Api.Services.BusinessIntelligenceService>();
+builder.Services.AddScoped<IWorkflowEngineService, AttendancePlatform.Api.Services.WorkflowEngineService>();
+builder.Services.AddScoped<IVoiceRecognitionService, AttendancePlatform.Api.Services.VoiceRecognitionService>();
+builder.Services.AddScoped<ICollaborationService, AttendancePlatform.Api.Services.CollaborationService>();
+builder.Services.AddScoped<IComprehensiveReportingService, AttendancePlatform.Api.Services.ComprehensiveReportingService>();
+builder.Services.AddScoped<IAdvancedAnalyticsService, AttendancePlatform.Api.Services.AdvancedAnalyticsService>();
+builder.Services.AddScoped<IEnterpriseIntegrationService, AttendancePlatform.Api.Services.EnterpriseIntegrationService>();
+builder.Services.AddScoped<IGlobalComplianceService, AttendancePlatform.Api.Services.GlobalComplianceService>();
 
 builder.Services.AddScoped<IJwtTokenService, AttendancePlatform.Api.Services.JwtTokenService>();
 builder.Services.AddScoped<ITwoFactorService, AttendancePlatform.Api.Services.TwoFactorService>();
@@ -79,15 +95,16 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false; // Set to true in production
+    options.RequireHttpsMetadata = false; // Disabled for development and tunnel deployment
     options.SaveToken = true;
+    options.Authority = null; // Disable authority validation for tunnel deployment
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = true,
+        ValidateIssuer = false, // Disabled for development
         ValidIssuer = jwtSettings["Issuer"],
-        ValidateAudience = true,
+        ValidateAudience = false, // Disabled for development
         ValidAudience = jwtSettings["Audience"],
         ValidateLifetime = true,
         ClockSkew = TimeSpan.Zero
@@ -150,7 +167,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-
 // Configure forwarded headers for proxy support
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
@@ -160,10 +176,33 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     KnownProxies = { }
 });
 
-// Configure for tunnel deployment - accept any host
+// Accept tunnel hostnames and localhost for deployment
 app.Use(async (context, next) =>
 {
-    // Allow any host for tunnel deployment
+    var host = context.Request.Host.Host;
+    if (host.Contains("devinapps.com") || host.Contains("tunnel") || host == "localhost" || host == "127.0.0.1")
+    {
+        await next();
+    }
+    else
+    {
+        context.Request.Host = new HostString("localhost", 5002);
+        await next();
+    }
+});
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+    
+    if (context.Request.Method == "OPTIONS")
+    {
+        context.Response.StatusCode = 200;
+        return;
+    }
+    
     await next();
 });
 

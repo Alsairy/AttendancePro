@@ -1,10 +1,10 @@
 import SecureTokenStorage from '../utils/SecureTokenStorage'
 
-class ApiService {
+export class ApiService {
   private baseURL: string
 
   constructor() {
-    this.baseURL = 'http://localhost:5000/api'
+    this.baseURL = 'https://attendancepro-fixapp-tunnel-s3045g8h.devinapps.com'
   }
 
   private async getHeaders(): Promise<Record<string, string>> {
@@ -24,7 +24,7 @@ class ApiService {
     return headers
   }
 
-  async get<T>(endpoint: string): Promise<T> {
+  async get<T>(endpoint: string): Promise<{ data: T }> {
     const headers = await this.getHeaders()
     
     const response = await fetch(`${this.baseURL}${endpoint}`, {
@@ -36,10 +36,10 @@ class ApiService {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    return response.json()
+    return { data: await response.json() }
   }
 
-  async post<T>(endpoint: string, data?: any): Promise<T> {
+  async post<T>(endpoint: string, data?: any): Promise<{ data: T }> {
     const headers = await this.getHeaders()
     
     const response = await fetch(`${this.baseURL}${endpoint}`, {
@@ -52,10 +52,10 @@ class ApiService {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    return response.json()
+    return { data: await response.json() }
   }
 
-  async put<T>(endpoint: string, data?: any): Promise<T> {
+  async put<T>(endpoint: string, data?: any): Promise<{ data: T }> {
     const headers = await this.getHeaders()
     
     const response = await fetch(`${this.baseURL}${endpoint}`, {
@@ -68,10 +68,10 @@ class ApiService {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    return response.json()
+    return { data: await response.json() }
   }
 
-  async delete<T>(endpoint: string): Promise<T> {
+  async delete<T>(endpoint: string): Promise<{ data: T }> {
     const headers = await this.getHeaders()
     
     const response = await fetch(`${this.baseURL}${endpoint}`, {
@@ -83,7 +83,7 @@ class ApiService {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    return response.json()
+    return { data: await response.json() }
   }
 }
 

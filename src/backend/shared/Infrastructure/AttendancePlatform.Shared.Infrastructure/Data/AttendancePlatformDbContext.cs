@@ -38,6 +38,22 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
         public DbSet<Geofence> Geofences { get; set; }
         public DbSet<UserGeofence> UserGeofences { get; set; }
+        
+        // Comprehensive feature entities
+        public DbSet<WorkflowDefinition> WorkflowDefinitions { get; set; }
+        public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
+        public DbSet<WorkflowTask> WorkflowTasks { get; set; }
+        public DbSet<VoiceTemplate> VoiceTemplates { get; set; }
+        public DbSet<VoiceConfiguration> VoiceConfigurations { get; set; }
+        public DbSet<VoiceCommand> VoiceCommands { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<TeamMember> TeamMembers { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectTask> ProjectTasks { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<DocumentShare> DocumentShares { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<EnterpriseIntegration> EnterpriseIntegrations { get; set; }
         public DbSet<Beacon> Beacons { get; set; }
         public DbSet<Kiosk> Kiosks { get; set; }
         
