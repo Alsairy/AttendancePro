@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoginCredentials, AuthResponse, User } from '../types/User';
+import SecureTokenStorage from '../utils/SecureTokenStorage';
 
 export class AuthService {
   private static readonly TOKEN_KEY = 'auth_token';
