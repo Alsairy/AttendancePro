@@ -110,21 +110,16 @@ namespace AttendancePlatform.Api.Services
             return new SalesPerformanceDto
             {
                 TenantId = tenantId,
-                TotalRevenue = 2850000m,
+                OverallPerformance = 88.7,
                 RevenueGrowth = 15.8,
-                SalesTeamSize = 25,
-                TotalSalesReps = 25,
-                TopPerformers = 8,
-                QuotaAttainers = 18,
-                AverageQuotaAttainment = 105.8,
-                SalesProductivity = 92.5,
-                ActivityMetrics = 85.2,
-                PerformanceScore = 88.7,
-                AveragePerformance = 88.7,
-                QuotaAchievers = 18,
                 QuotaAttainment = 105.8,
-                SalesActivities = 1250,
-                SalesEfficiency = 92.5
+                CustomerAcquisition = 85,
+                CustomerRetention = 92.5,
+                AverageDealSize = 52000m,
+                SalesCycleEfficiency = 85.2,
+                ConversionRate = 12.5,
+                PipelineVelocity = 88.9,
+                GeneratedAt = DateTime.UtcNow
             };
         }
 
@@ -169,21 +164,16 @@ namespace AttendancePlatform.Api.Services
             return new SalesPerformanceDto
             {
                 TenantId = tenantId,
-                TotalRevenue = 2850000m,
-                RevenueGrowth = 15.8,
-                SalesTeamSize = 25,
-                TotalSalesReps = 25,
-                TopPerformers = 8,
-                QuotaAttainers = 18,
-                AverageQuotaAttainment = 105.8,
-                SalesProductivity = 92.5,
-                ActivityMetrics = 85.2,
-                PerformanceScore = 88.7,
-                AveragePerformance = 88.7,
-                QuotaAchievers = 18,
-                QuotaAttainment = 105.8,
-                SalesActivities = 1250,
-                SalesEfficiency = 92.5
+                OverallPerformance = 94.7,
+                RevenueGrowth = 24.8,
+                QuotaAttainment = 87.3,
+                CustomerAcquisition = 125,
+                CustomerRetention = 89.5,
+                AverageDealSize = 45000m,
+                SalesCycleEfficiency = 78.5,
+                ConversionRate = 12.8,
+                PipelineVelocity = 92.3,
+                GeneratedAt = DateTime.UtcNow
             };
         }
 

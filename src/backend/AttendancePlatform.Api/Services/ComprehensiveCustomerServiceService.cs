@@ -78,26 +78,22 @@ namespace AttendancePlatform.Api.Services
             return new ServiceAnalyticsDto
             {
                 TenantId = tenantId,
-                TotalInteractions = 2850,
-                ChannelDistribution = new Dictionary<string, int>
-                {
-                    { "Email", 1250 },
-                    { "Phone", 850 },
-                    { "Chat", 450 },
-                    { "Social", 300 }
-                },
-                PeakHours = new List<string> { "10:00-12:00", "14:00-16:00" },
-                ResolutionRate = 85.2,
-                EscalationRate = 8.5,
-                CustomerRetentionRate = 92.3,
+                TotalServices = 45,
+                ActiveServices = 38,
+                InactiveServices = 7,
+                ServiceUtilization = 84.4,
+                TotalRequests = 2850,
+                OpenRequests = 185,
+                ResolvedRequests = 2665,
+                RequestResolutionRate = 93.5,
                 AverageResponseTime = 2.5,
-                CustomerSatisfactionScore = 4.2,
-                TotalTickets = 1250,
-                Metrics = new Dictionary<string, object>
-                {
-                    { "FirstCallResolution", 78.5 },
-                    { "AverageHandleTime", 18.5 }
-                }
+                AverageResolutionTime = 24.5,
+                CustomerSatisfactionAverage = 4.2,
+                ServiceUptime = 99.8,
+                TotalRevenue = 1250000m,
+                ServiceCost = 850000m,
+                ServiceProfitability = 47.1,
+                GeneratedAt = DateTime.UtcNow
             };
         }
 

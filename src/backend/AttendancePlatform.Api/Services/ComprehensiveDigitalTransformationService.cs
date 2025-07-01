@@ -93,15 +93,33 @@ namespace AttendancePlatform.Api.Services
         {
             return new ProcessOptimizationDto
             {
-                TenantId = tenantId,
-                OptimizedProcesses = 165,
-                EfficiencyGains = 28.5,
-                CostReduction = 185000m,
-                TimeReduction = 35.2,
-                ProcessImprovements = 45,
-                QualityImprovement = 22.7,
-                AutomationLevel = 75,
-                ProcessMaturity = 74.8
+                ProcessId = Guid.NewGuid(),
+                CurrentEfficiency = 74.8,
+                PotentialEfficiency = 89.5,
+                OptimizationOpportunities = new List<OptimizationOpportunityDto>
+                {
+                    new OptimizationOpportunityDto
+                    {
+                        Category = "Automation",
+                        Description = "Implement RPA for data entry processes",
+                        Impact = "High",
+                        EstimatedTimeSaving = 120,
+                        ImplementationEffort = "Medium",
+                        Priority = 1
+                    },
+                    new OptimizationOpportunityDto
+                    {
+                        Category = "Workflow",
+                        Description = "Streamline approval processes",
+                        Impact = "Medium",
+                        EstimatedTimeSaving = 45,
+                        ImplementationEffort = "Low",
+                        Priority = 2
+                    }
+                },
+                Bottlenecks = new List<string> { "Manual data entry", "Multiple approval layers", "Legacy system integration" },
+                Recommendations = new List<string> { "Implement automation", "Reduce approval steps", "Modernize systems" },
+                GeneratedAt = DateTime.UtcNow
             };
         }
 
@@ -111,7 +129,7 @@ namespace AttendancePlatform.Api.Services
             {
                 TenantId = tenantId,
                 TotalInvestment = 2850000m,
-                ROI = 245.8,
+                ROI = 245.8m,
                 InvestmentProjects = 25,
                 PaybackPeriod = 18.5,
                 CostSavings = 450000m,

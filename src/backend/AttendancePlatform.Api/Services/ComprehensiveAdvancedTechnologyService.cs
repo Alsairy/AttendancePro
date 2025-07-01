@@ -92,7 +92,7 @@ namespace AttendancePlatform.Api.Services
                 TechnologyMaturity = 78.5,
                 AdoptionReadiness = 87.3,
                 RiskFactors = 15,
-                CostBenefit = 2450000m,
+                CostBenefit = 2450000.0,
                 StrategicAlignment = 89,
                 ImplementationComplexity = 84.6,
                 RecommendedAction = "Proceed with phased implementation"

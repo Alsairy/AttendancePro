@@ -77,15 +77,16 @@ namespace AttendancePlatform.Api.Services
         {
             return new DataVisualizationDto
             {
+                Id = Guid.NewGuid(),
                 TenantId = tenantId,
-                Dashboards = 45,
-                Charts = 285,
-                Reports = 125,
-                InteractiveVisuals = 85,
-                UserEngagement = 78.5,
-                DataConnections = 15,
-                VisualizationEffectiveness = 89.3,
-                CustomVisuals = 65
+                Name = "Enterprise Data Visualization Dashboard",
+                Description = "Comprehensive data visualization and analytics dashboard for enterprise insights",
+                Type = "Interactive Dashboard",
+                ChartType = "Multi-Chart Dashboard",
+                DataSource = "Enterprise Data Warehouse",
+                RefreshInterval = 300,
+                Status = "Active",
+                CreatedAt = DateTime.UtcNow
             };
         }
 
@@ -157,26 +158,24 @@ namespace AttendancePlatform.Api.Services
         {
             return new DataQualityDto
             {
+                Id = Guid.NewGuid(),
+                TenantId = tenantId,
                 QualityNumber = "DQ-2024-001",
                 DataAssetName = "Enterprise Data Warehouse",
                 QualityDimension = "Completeness",
+                QualityScore = 96.3,
+                QualityThreshold = 90.0,
                 QualityStatus = "Good",
+                MeasurementDate = DateTime.UtcNow,
+                QualityRules = "Completeness > 90%, Accuracy > 95%, Consistency > 90%",
+                IssuesIdentified = 15,
+                IssuesResolved = 12,
                 QualityTrend = "Improving",
                 ResponsibleTeam = "Data Engineering",
+                NextAssessment = DateTime.UtcNow.AddDays(30),
                 Status = "Active",
-                TenantId = tenantId,
-                QualityScore = 96.3,
-                DataCompleteness = 94.7,
-                DataAccuracy = 97.2,
-                DataConsistency = 95.8,
-                DataValidity = 96.5,
-                DataUniqueness = 98.1,
-                QualityChecks = 1850,
-                QualityMetrics = new Dictionary<string, object>
-                {
-                    { "CompletionRate", 94.7 },
-                    { "AccuracyRate", 97.2 }
-                }
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
         }
 
@@ -185,24 +184,37 @@ namespace AttendancePlatform.Api.Services
             return new DataGovernanceDto
             {
                 TenantId = tenantId,
-                TotalPolicies = 45,
-                GovernancePolicies = 45,
-                DataStewards = 25,
-                DataCatalogs = 8,
-                DataLineage = "Comprehensive lineage tracking implemented",
-                AccessControls = new Dictionary<string, int>
+                DataClassification = new Dictionary<string, int>
                 {
-                    { "ReadAccess", 125 },
-                    { "WriteAccess", 45 }
+                    { "Public", 125 },
+                    { "Internal", 450 },
+                    { "Confidential", 85 },
+                    { "Restricted", 25 }
                 },
-                ComplianceScore = 96.7,
-                GovernanceMaturity = 87.3,
-                PolicyCompliance = 94.8,
-                GovernanceMetrics = new Dictionary<string, object>
+                DataOwnership = new Dictionary<string, string>
                 {
-                    { "PolicyAdherence", 94.8 },
-                    { "DataStewardActivity", 87.3 }
-                }
+                    { "CustomerData", "Customer Service Team" },
+                    { "EmployeeData", "HR Department" },
+                    { "FinancialData", "Finance Department" },
+                    { "OperationalData", "Operations Team" }
+                },
+                ComplianceStatus = new Dictionary<string, string>
+                {
+                    { "GDPR", "Compliant" },
+                    { "CCPA", "Compliant" },
+                    { "SOX", "Compliant" },
+                    { "HIPAA", "Not Applicable" }
+                },
+                DataPolicies = new List<string>
+                {
+                    "Data Retention Policy",
+                    "Data Classification Policy",
+                    "Data Access Policy",
+                    "Data Privacy Policy"
+                },
+                LastAuditDate = DateTime.UtcNow.AddDays(-30),
+                NextAuditDate = DateTime.UtcNow.AddDays(90),
+                GeneratedAt = DateTime.UtcNow
             };
         }
     }

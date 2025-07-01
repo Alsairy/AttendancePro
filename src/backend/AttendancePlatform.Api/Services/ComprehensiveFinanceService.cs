@@ -26,11 +26,14 @@ namespace AttendancePlatform.Api.Services
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
                     ReportType = "Dashboard",
-                    Period = DateTime.Now.ToString("yyyy-MM"),
+                    FromDate = DateTime.UtcNow.AddMonths(-1),
+                    ToDate = DateTime.UtcNow,
                     TotalRevenue = 500000m,
                     TotalExpenses = 350000m,
                     NetProfit = 150000m,
-                    GeneratedDate = DateTime.UtcNow
+                    GrossMargin = 180000m,
+                    KeyMetrics = new List<string> { "Revenue Growth: 15%", "Profit Margin: 30%", "ROI: 25%" },
+                    GeneratedAt = DateTime.UtcNow
                 };
             }
             catch (Exception ex)
@@ -51,11 +54,14 @@ namespace AttendancePlatform.Api.Services
                         Id = Guid.NewGuid(),
                         TenantId = tenantId,
                         ReportType = "Monthly P&L",
-                        Period = DateTime.UtcNow.ToString("yyyy-MM"),
+                        FromDate = DateTime.UtcNow.AddMonths(-1),
+                        ToDate = DateTime.UtcNow,
                         TotalRevenue = 150000m,
                         TotalExpenses = 120000m,
                         NetProfit = 30000m,
-                        GeneratedDate = DateTime.UtcNow
+                        GrossMargin = 45000m,
+                        KeyMetrics = new List<string> { "Monthly Growth: 8%", "Expense Ratio: 80%" },
+                        GeneratedAt = DateTime.UtcNow
                     }
                 };
             }
@@ -95,12 +101,22 @@ namespace AttendancePlatform.Api.Services
                 return new CashFlowDto
                 {
                     TenantId = tenantId,
+                    AnalysisPeriod = DateTime.UtcNow.ToString("yyyy-MM"),
                     OpeningBalance = 100000m,
-                    CashInflows = 250000m,
-                    CashOutflows = 180000m,
+                    TotalInflows = 250000m,
+                    TotalOutflows = 180000m,
                     NetCashFlow = 70000m,
                     ClosingBalance = 170000m,
-                    Period = DateTime.UtcNow.ToString("yyyy-MM")
+                    OperatingCashFlow = 85000m,
+                    InvestingCashFlow = -15000m,
+                    FinancingCashFlow = 0m,
+                    MonthlyTrends = new Dictionary<string, decimal>
+                    {
+                        { "January", 65000m },
+                        { "February", 72000m },
+                        { "March", 70000m }
+                    },
+                    GeneratedAt = DateTime.UtcNow
                 };
             }
             catch (Exception ex)
@@ -117,13 +133,20 @@ namespace AttendancePlatform.Api.Services
                 return new ProfitLossDto
                 {
                     TenantId = tenantId,
+                    ReportPeriod = DateTime.UtcNow.ToString("yyyy-MM"),
                     Revenue = 300000m,
                     CostOfGoodsSold = 120000m,
                     GrossProfit = 180000m,
                     OperatingExpenses = 100000m,
                     OperatingIncome = 80000m,
+                    InterestExpense = 2000m,
+                    TaxExpense = 3000m,
                     NetIncome = 75000m,
-                    Period = DateTime.UtcNow.ToString("yyyy-MM")
+                    EarningsPerShare = 1.25m,
+                    GrossMarginPercentage = 60.0,
+                    OperatingMarginPercentage = 26.7,
+                    NetMarginPercentage = 25.0,
+                    GeneratedAt = DateTime.UtcNow
                 };
             }
             catch (Exception ex)

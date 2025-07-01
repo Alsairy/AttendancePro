@@ -160,13 +160,17 @@ namespace AttendancePlatform.Api.Services
             {
                 TenantId = tenantId,
                 SecurityScore = 96.7,
-                RiskScore = 15.7,
                 ThreatLevel = "Medium",
-                SecurityPosture = "Strong",
-                SecurityROI = 285.7,
-                SecurityInvestment = 850000m,
-                SecurityEffectiveness = 94.2,
-                SecurityMaturity = 89.3
+                IncidentsThisMonth = 3,
+                ResolvedIncidents = 2,
+                PendingIncidents = 1,
+                VulnerabilitiesFound = 8,
+                VulnerabilitiesPatched = 7,
+                SecurityTrainingCompletion = 89.5,
+                ComplianceScore = 96.7,
+                LastSecurityScan = DateTime.UtcNow.AddDays(-1),
+                NextScheduledScan = DateTime.UtcNow.AddDays(7),
+                GeneratedAt = DateTime.UtcNow
             };
         }
 

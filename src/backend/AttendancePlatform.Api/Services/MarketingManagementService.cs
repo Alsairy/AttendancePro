@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using AttendancePlatform.Shared.Infrastructure.Data;
 using AttendancePlatform.Shared.Domain.Entities;
+using AttendancePlatform.Shared.Domain.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace AttendancePlatform.Api.Services
@@ -157,19 +158,14 @@ namespace AttendancePlatform.Api.Services
             return new MarketingAnalyticsDto
             {
                 TenantId = tenantId,
-                TotalCampaigns = 12,
-                ActiveCampaigns = 5,
-                CompletedCampaigns = 7,
-                TotalLeads = 1250,
-                QualifiedLeads = 485,
-                ConvertedLeads = 125,
-                LeadConversionRate = 25.8,
-                TotalMarketingSpend = 450000.00m,
+                AnalyticsReports = 25,
+                AttributionAccuracy = 87.5,
+                TouchpointAnalysis = 15,
+                CustomerJourney = 78.5,
+                ConversionPaths = 12,
                 MarketingROI = 285.5,
-                AverageLeadScore = 72.5,
-                CostPerLead = 360.00m,
-                CustomerAcquisitionCost = 1440.00m,
-                GeneratedAt = DateTime.UtcNow
+                PerformanceMetrics = 35,
+                DataAccuracy = 89.3
             };
         }
 
@@ -378,23 +374,6 @@ namespace AttendancePlatform.Api.Services
         public DateTime? UpdatedAt { get; set; }
     }
 
-    public class MarketingAnalyticsDto
-    {
-        public Guid TenantId { get; set; }
-        public int TotalCampaigns { get; set; }
-        public int ActiveCampaigns { get; set; }
-        public int CompletedCampaigns { get; set; }
-        public int TotalLeads { get; set; }
-        public int QualifiedLeads { get; set; }
-        public int ConvertedLeads { get; set; }
-        public double LeadConversionRate { get; set; }
-        public decimal TotalMarketingSpend { get; set; }
-        public double MarketingROI { get; set; }
-        public double AverageLeadScore { get; set; }
-        public decimal CostPerLead { get; set; }
-        public decimal CustomerAcquisitionCost { get; set; }
-        public DateTime GeneratedAt { get; set; }
-    }
 
     public class MarketingReportDto
     {

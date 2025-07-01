@@ -29,15 +29,28 @@ namespace AttendancePlatform.Api.Services
         {
             return new InnovationPipelineDto
             {
+                Id = Guid.NewGuid(),
                 TenantId = tenantId,
-                TotalProjects = 45,
-                ActiveProjects = 28,
-                CompletedProjects = 17,
-                IdeasGenerated = 185,
-                IdeasEvaluated = 125,
-                ProjectsApproved = 35,
-                PipelineValue = 2850000m,
-                AverageTimeToMarket = 18.5
+                Name = "Enterprise Innovation Pipeline",
+                Description = "Comprehensive innovation pipeline for enterprise transformation",
+                Stage = "Active Development",
+                Priority = "High",
+                StartDate = DateTime.UtcNow.AddMonths(-6),
+                EndDate = DateTime.UtcNow.AddMonths(12),
+                Budget = 2850000.0,
+                Progress = 65.8,
+                TeamMembers = new List<string> { "Innovation Team", "R&D Department", "Product Management" },
+                Metrics = new Dictionary<string, object>
+                {
+                    { "TotalProjects", 45 },
+                    { "ActiveProjects", 28 },
+                    { "CompletedProjects", 17 },
+                    { "IdeasGenerated", 185 },
+                    { "IdeasEvaluated", 125 },
+                    { "ProjectsApproved", 35 },
+                    { "PipelineValue", 2850000m },
+                    { "AverageTimeToMarket", 18.5 }
+                }
             };
         }
 
@@ -93,15 +106,27 @@ namespace AttendancePlatform.Api.Services
         {
             return new TechnologyScoutingDto
             {
+                Id = Guid.NewGuid(),
                 TenantId = tenantId,
-                TechnologiesEvaluated = 125,
-                TechnologiesAdopted = 15,
-                ScoutingBudget = 185000m,
-                TrendAnalysis = 45,
-                CompetitorAnalysis = 28,
-                TechnologyRoadmap = 12,
-                EmergingTechnologies = 35,
-                AdoptionRate = 12.0
+                TechnologyName = "Enterprise Technology Scouting",
+                Category = "Emerging Technologies",
+                MaturityLevel = "Advanced",
+                PotentialImpact = 8.5,
+                ImplementationCost = 185000.0,
+                DiscoveryDate = DateTime.UtcNow.AddDays(-30),
+                Source = "Technology Research",
+                Applications = new List<string> { "AI/ML", "Blockchain", "IoT", "Cloud Computing" },
+                TechnicalSpecs = new Dictionary<string, object>
+                {
+                    { "TechnologiesEvaluated", 125 },
+                    { "TechnologiesAdopted", 15 },
+                    { "ScoutingBudget", 185000m },
+                    { "TrendAnalysis", 45 },
+                    { "CompetitorAnalysis", 28 },
+                    { "TechnologyRoadmap", 12 },
+                    { "EmergingTechnologies", 35 },
+                    { "AdoptionRate", 12.0 }
+                }
             };
         }
 
@@ -109,15 +134,26 @@ namespace AttendancePlatform.Api.Services
         {
             return new StartupPartnershipsDto
             {
+                Id = Guid.NewGuid(),
                 TenantId = tenantId,
-                TotalPartnerships = 8,
-                ActivePartnerships = 6,
-                InvestmentAmount = 450000m,
-                SuccessfulExits = 2,
-                PartnershipROI = 185.7,
-                InnovationProjects = 12,
-                TechnologyTransfers = 5,
-                PartnershipValue = 1250000m
+                StartupName = "Enterprise Innovation Partners",
+                Industry = "Technology",
+                PartnershipType = "Strategic Investment",
+                StartDate = DateTime.UtcNow.AddMonths(-12),
+                Status = "Active",
+                InvestmentAmount = 450000.0,
+                EquityPercentage = 15.0,
+                CollaborationAreas = new List<string> { "AI/ML", "Data Analytics", "Cloud Solutions", "Innovation Labs" },
+                Milestones = new Dictionary<string, object>
+                {
+                    { "TotalPartnerships", 8 },
+                    { "ActivePartnerships", 6 },
+                    { "SuccessfulExits", 2 },
+                    { "PartnershipROI", 185.7 },
+                    { "InnovationProjects", 12 },
+                    { "TechnologyTransfers", 5 },
+                    { "PartnershipValue", 1250000m }
+                }
             };
         }
 
@@ -126,14 +162,14 @@ namespace AttendancePlatform.Api.Services
             return new InnovationMetricsDto
             {
                 TenantId = tenantId,
-                InnovationScore = 89.3,
-                TimeToMarket = 18.5,
+                InnovationIndex = 92.1,
+                IdeaSubmissions = 185,
+                ImplementedIdeas = 35,
+                IdeaImplementationRate = 18.9,
+                InnovationInvestment = 2850000m,
                 InnovationROI = 245.8,
-                IdeaConversionRate = 18.9,
-                InnovationVelocity = 24.8,
-                PatentDensity = 2.8,
-                RDIntensity = 8.5,
-                InnovationIndex = 92.1
+                InnovationAwards = 8,
+                CreativityScore = 89.3
             };
         }
 
@@ -141,15 +177,28 @@ namespace AttendancePlatform.Api.Services
         {
             return new IdeaManagementDto
             {
+                Id = Guid.NewGuid(),
                 TenantId = tenantId,
-                TotalIdeas = 185,
-                IdeasSubmitted = 45,
-                IdeasEvaluated = 125,
-                IdeasImplemented = 35,
-                EmployeeParticipation = 78.5,
-                IdeaQuality = 82.3,
-                ImplementationRate = 18.9,
-                IdeaValue = 850000m
+                Title = "Innovation Pipeline Management",
+                Description = "Comprehensive idea management system for innovation pipeline",
+                Category = "Innovation",
+                Status = "Active",
+                SubmittedBy = Guid.NewGuid(),
+                SubmissionDate = DateTime.UtcNow.AddDays(-30),
+                Rating = 4.5,
+                Votes = 185,
+                Tags = new List<string> { "Innovation", "Ideas", "Pipeline", "Management" },
+                Evaluation = new Dictionary<string, object> 
+                { 
+                    { "TotalIdeas", 185 },
+                    { "IdeasSubmitted", 45 },
+                    { "IdeasEvaluated", 125 },
+                    { "IdeasImplemented", 35 },
+                    { "EmployeeParticipation", 78.5 },
+                    { "IdeaQuality", 82.3 },
+                    { "ImplementationRate", 18.9 },
+                    { "IdeaValue", 850000m }
+                }
             };
         }
 
