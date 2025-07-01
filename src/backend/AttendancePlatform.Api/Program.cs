@@ -29,7 +29,6 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.AllowSynchronousIO = true;
     options.Limits.MaxRequestBodySize = null;
-    options.ListenAnyIP(5002);
 });
 
 // Add infrastructure services with in-memory database for deployment
@@ -265,7 +264,15 @@ app.Use(async (context, next) =>
 {
     var origin = context.Request.Headers["Origin"].ToString();
     
-    if (!string.IsNullOrEmpty(origin))
+    // Always allow the frontend origin
+    if (!string.IsNullOrEmpty(origin) && (
+        origin.Contains("attendancepro-fixapp-jur4spo0.devinapps.com") ||
+        origin.Contains("localhost") ||
+        origin.Contains("127.0.0.1")))
+    {
+        context.Response.Headers.Add("Access-Control-Allow-Origin", origin);
+    }
+    else if (!string.IsNullOrEmpty(origin))
     {
         context.Response.Headers.Add("Access-Control-Allow-Origin", origin);
     }
@@ -276,7 +283,7 @@ app.Use(async (context, next) =>
     
     context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
     context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
-    context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token");
+    context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token, Access-Control-Allow-Headers, Access-Control-Allow-Origin");
     context.Response.Headers.Add("Access-Control-Expose-Headers", "*");
     
     if (context.Request.Method == "OPTIONS")
