@@ -94,6 +94,7 @@ namespace AttendancePlatform.Api.Services
             {
                 return new SupplierPerformanceDto
                 {
+                    SupplierName = "Top Supplier Inc",
                     TenantId = tenantId,
                     OnTimeDeliveryRate = 92.5,
                     QualityScore = 88.7,

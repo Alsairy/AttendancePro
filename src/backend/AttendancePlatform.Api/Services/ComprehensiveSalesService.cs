@@ -67,7 +67,7 @@ namespace AttendancePlatform.Api.Services
                 ClosedWonOpportunities = 45,
                 ClosedLostOpportunities = 15,
                 OpportunityValue = 2850000m,
-                AverageOpportunitySize = 15405.0,
+                AverageOpportunitySize = 15405.0m,
                 SalesCycleLength = 45.5,
                 OpportunityVelocity = 12.8
             };

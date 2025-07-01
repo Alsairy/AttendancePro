@@ -102,6 +102,7 @@ namespace AttendancePlatform.Api.Services
         {
             return new CompetitiveAnalysisDto
             {
+                Competitor = "Main Competitor Analysis",
                 TenantId = tenantId,
                 CompetitorsTracked = 15,
                 CompetitiveAdvantages = 8,
@@ -174,11 +175,14 @@ namespace AttendancePlatform.Api.Services
                 TenantId = tenantId,
                 TotalProducts = 25,
                 ActiveProducts = 22,
-                ProductCategories = 8,
+                RetiredProducts = 3,
+                PortfolioRevenue = 15750000m,
                 PortfolioValue = 15750000m,
                 PortfolioGrowth = 18.5,
-                ProductSynergy = 78.5,
+                ProductCategories = 8,
                 PortfolioBalance = 85.2,
+                ProductSynergy = 78.5,
+                StrategicFit = 92.3,
                 StrategicAlignment = 92.3
             };
         }
