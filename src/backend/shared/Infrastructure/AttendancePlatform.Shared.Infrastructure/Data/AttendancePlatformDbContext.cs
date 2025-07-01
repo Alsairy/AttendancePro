@@ -39,21 +39,6 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<Geofence> Geofences { get; set; }
         public DbSet<UserGeofence> UserGeofences { get; set; }
         
-        // Comprehensive feature entities
-        public DbSet<WorkflowDefinition> WorkflowDefinitions { get; set; }
-        public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
-        public DbSet<WorkflowTask> WorkflowTasks { get; set; }
-        public DbSet<VoiceTemplate> VoiceTemplates { get; set; }
-        public DbSet<VoiceConfiguration> VoiceConfigurations { get; set; }
-        public DbSet<VoiceCommand> VoiceCommands { get; set; }
-        public DbSet<Team> Teams { get; set; }
-        public DbSet<TeamMember> TeamMembers { get; set; }
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<ProjectTask> ProjectTasks { get; set; }
-        public DbSet<Document> Documents { get; set; }
-        public DbSet<DocumentShare> DocumentShares { get; set; }
-        public DbSet<ChatMessage> ChatMessages { get; set; }
-        public DbSet<EnterpriseIntegration> EnterpriseIntegrations { get; set; }
         public DbSet<Beacon> Beacons { get; set; }
         public DbSet<Kiosk> Kiosks { get; set; }
         
@@ -93,9 +78,6 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<NotificationTemplate> NotificationTemplates { get; set; }
         public DbSet<DeviceToken> DeviceTokens { get; set; }
         public DbSet<NotificationPreference> NotificationPreferences { get; set; }
-        public DbSet<WorkflowDefinition> WorkflowDefinitions { get; set; }
-        public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
-        public DbSet<WorkflowTask> WorkflowTasks { get; set; }
         public DbSet<WorkflowExecutionLog> WorkflowExecutionLogs { get; set; }
         public DbSet<WorkflowTemplate> WorkflowTemplates { get; set; }
         public DbSet<WorkflowHistory> WorkflowHistory { get; set; }
@@ -103,10 +85,8 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<BiometricBackup> BiometricBackups { get; set; }
         public DbSet<BiometricSession> BiometricSessions { get; set; }
         public DbSet<BiometricDevice> BiometricDevices { get; set; }
-
-        public DbSet<Team> Teams { get; set; }
-        public DbSet<TeamMember> TeamMembers { get; set; }
         public DbSet<TeamProject> TeamProjects { get; set; }
+        public DbSet<TeamProject> Projects { get; set; }
         public DbSet<ProjectMember> ProjectMembers { get; set; }
         public DbSet<VideoConference> VideoConferences { get; set; }
         public DbSet<ConferenceParticipant> ConferenceParticipants { get; set; }
@@ -125,6 +105,21 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<IntegrationLog> IntegrationLogs { get; set; }
         public DbSet<TenantConfiguration> TenantConfigurations { get; set; }
         public DbSet<BusinessRule> BusinessRules { get; set; }
+        
+        // Voice and comprehensive feature entities
+        public DbSet<VoiceTemplate> VoiceTemplates { get; set; }
+        public DbSet<VoiceConfiguration> VoiceConfigurations { get; set; }
+        public DbSet<VoiceCommand> VoiceCommands { get; set; }
+        public DbSet<ProjectTask> ProjectTasks { get; set; }
+        public DbSet<DocumentShare> DocumentShares { get; set; }
+        public DbSet<EnterpriseIntegration> EnterpriseIntegrations { get; set; }
+        public DbSet<WorkflowDefinition> WorkflowDefinitions { get; set; }
+        public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
+        public DbSet<WorkflowTask> WorkflowTasks { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<TeamMember> TeamMembers { get; set; }
+        
+        public DbSet<TeamProject> Projects => TeamProjects;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -70,7 +70,7 @@ builder.Services.AddScoped<IWorkflowEngineService, AttendancePlatform.Api.Servic
 builder.Services.AddScoped<IVoiceRecognitionService, AttendancePlatform.Api.Services.VoiceRecognitionService>();
 builder.Services.AddScoped<ICollaborationService, AttendancePlatform.Api.Services.CollaborationService>();
 builder.Services.AddScoped<IComprehensiveReportingService, AttendancePlatform.Api.Services.ComprehensiveReportingService>();
-builder.Services.AddScoped<IAdvancedAnalyticsService, AttendancePlatform.Api.Services.AdvancedAnalyticsService>();
+builder.Services.AddScoped<AttendancePlatform.Api.Services.IAdvancedAnalyticsService, AttendancePlatform.Api.Services.AdvancedAnalyticsService>();
 builder.Services.AddScoped<IEnterpriseIntegrationService, AttendancePlatform.Api.Services.EnterpriseIntegrationService>();
 builder.Services.AddScoped<IGlobalComplianceService, AttendancePlatform.Api.Services.GlobalComplianceService>();
 

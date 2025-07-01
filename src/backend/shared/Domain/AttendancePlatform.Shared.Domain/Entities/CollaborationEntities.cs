@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AttendancePlatform.Shared.Domain.Entities
 {
-    public class Team : BaseEntity
+    public class Team : TenantEntity
     {
         [Required]
         [MaxLength(100)]
@@ -16,7 +16,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public bool IsActive { get; set; } = true;
 
         public new virtual User CreatedBy { get; set; } = null!;
-        public virtual ICollection<TeamMember> Members { get; set; } = new List<TeamMember>();
+        public virtual ICollection<TeamMember> TeamMembers { get; set; } = new List<TeamMember>();
         public virtual ICollection<TeamProject> Projects { get; set; } = new List<TeamProject>();
     }
 
@@ -135,6 +135,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public Guid SenderId { get; set; }
         public Guid? ChannelId { get; set; }
         public Guid? ConferenceId { get; set; }
+        public Guid? TeamId { get; set; }
 
         [Required]
         [MaxLength(2000)]
@@ -150,6 +151,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public virtual User Sender { get; set; } = null!;
         public virtual ChatChannel? Channel { get; set; }
         public virtual VideoConference? Conference { get; set; }
+        public virtual Team? Team { get; set; }
     }
 
     public class ChatChannel : BaseEntity
@@ -197,6 +199,10 @@ namespace AttendancePlatform.Shared.Domain.Entities
         [MaxLength(200)]
         public string FileName { get; set; } = string.Empty;
 
+        [Required]
+        [MaxLength(200)]
+        public string Name { get; set; } = string.Empty;
+
         [MaxLength(500)]
         public string FilePath { get; set; } = string.Empty;
 
@@ -221,6 +227,7 @@ namespace AttendancePlatform.Shared.Domain.Entities
         public virtual Team? Team { get; set; }
         public virtual TeamProject? Project { get; set; }
         public virtual ICollection<DocumentVersion> Versions { get; set; } = new List<DocumentVersion>();
+        public virtual ICollection<DocumentShare> DocumentShares { get; set; } = new List<DocumentShare>();
     }
 
     public class DocumentVersion : BaseEntity
