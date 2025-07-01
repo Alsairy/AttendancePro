@@ -86,7 +86,6 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<BiometricSession> BiometricSessions { get; set; }
         public DbSet<BiometricDevice> BiometricDevices { get; set; }
         public DbSet<TeamProject> TeamProjects { get; set; }
-        public DbSet<TeamProject> Projects { get; set; }
         public DbSet<ProjectMember> ProjectMembers { get; set; }
         public DbSet<VideoConference> VideoConferences { get; set; }
         public DbSet<ConferenceParticipant> ConferenceParticipants { get; set; }
@@ -119,7 +118,6 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<Team> Teams { get; set; }
         public DbSet<TeamMember> TeamMembers { get; set; }
         
-        public DbSet<TeamProject> Projects => TeamProjects;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

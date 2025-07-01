@@ -156,12 +156,14 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
 
         public async Task<IEnumerable<WorkflowTask>> GetPendingTasksAsync(string userId)
         {
-            return await _context.WorkflowTasks.Where(t => t.AssignedTo == userId && t.Status == "pending").ToListAsync();
+            var userGuid = Guid.Parse(userId);
+            return await _context.WorkflowTasks.Where(t => t.AssignedUserId == userGuid && t.Status == "pending").ToListAsync();
         }
 
         public async Task<IEnumerable<WorkflowTask>> GetWorkflowTasksAsync(string instanceId)
         {
-            return await _context.WorkflowTasks.Where(t => t.WorkflowInstanceId == instanceId).ToListAsync();
+            var instanceGuid = Guid.Parse(instanceId);
+            return await _context.WorkflowTasks.Where(t => t.WorkflowInstanceId == instanceGuid).ToListAsync();
         }
 
         public async Task AssignTaskAsync(string taskId, string userId, string? assignedBy = null)
@@ -169,7 +171,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
             var task = await _context.WorkflowTasks.FirstOrDefaultAsync(t => t.Id == Guid.Parse(taskId));
             if (task != null)
             {
-                task.AssignedTo = userId;
+                task.AssignedUserId = Guid.Parse(userId);
                 task.AssignedBy = assignedBy;
                 task.AssignedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
@@ -178,10 +180,11 @@ namespace AttendancePlatform.Shared.Infrastructure.Services
 
         public async Task ReassignTaskAsync(string taskId, string fromUserId, string toUserId, string? reassignedBy = null)
         {
-            var task = await _context.WorkflowTasks.FirstOrDefaultAsync(t => t.Id == Guid.Parse(taskId) && t.AssignedTo == fromUserId);
+            var fromUserGuid = Guid.Parse(fromUserId);
+            var task = await _context.WorkflowTasks.FirstOrDefaultAsync(t => t.Id == Guid.Parse(taskId) && t.AssignedUserId == fromUserGuid);
             if (task != null)
             {
-                task.AssignedTo = toUserId;
+                task.AssignedUserId = Guid.Parse(toUserId);
                 task.AssignedBy = reassignedBy;
                 task.AssignedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();

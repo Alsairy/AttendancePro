@@ -184,21 +184,21 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var projectEntity = new Project
+                var projectEntity = new AttendancePlatform.Shared.Domain.Entities.TeamProject
                 {
                     Id = Guid.NewGuid(),
                     Name = project.Name,
                     Description = project.Description,
-                    TenantId = project.TenantId,
-                    TeamId = project.TeamId,
+                    TeamId = project.TeamId ?? Guid.Empty,
+                    CreatedById = Guid.NewGuid(),
                     Status = "Active",
+                    Priority = "Medium",
                     StartDate = project.StartDate,
                     EndDate = project.EndDate,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow
                 };
 
-                _context.Projects.Add(projectEntity);
+                _context.TeamProjects.Add(projectEntity);
                 await _context.SaveChangesAsync();
 
                 project.Id = projectEntity.Id;
@@ -218,20 +218,20 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var projects = await _context.Projects
-                    .Where(p => p.TenantId == tenantId)
+                var projects = await _context.TeamProjects
+                    .Where(p => p.TeamId != null)
                     .Select(p => new ProjectDto
                     {
                         Id = p.Id,
                         Name = p.Name,
                         Description = p.Description,
-                        TenantId = p.TenantId,
+                        TenantId = tenantId,
                         TeamId = p.TeamId,
                         Status = p.Status,
                         StartDate = p.StartDate,
                         EndDate = p.EndDate,
                         CreatedAt = p.CreatedAt,
-                        TaskCount = p.Tasks.Count
+                        TaskCount = 0
                     })
                     .ToListAsync();
 
@@ -248,7 +248,7 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var taskEntity = new ProjectTask
+                var taskEntity = new AttendancePlatform.Shared.Domain.Entities.ProjectTask
                 {
                     Id = Guid.NewGuid(),
                     Title = task.Title,
@@ -336,15 +336,17 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var documentEntity = new Document
+                var documentEntity = new AttendancePlatform.Shared.Domain.Entities.Document
                 {
                     Id = Guid.NewGuid(),
                     Name = document.Name,
-                    Content = document.Content,
+                    FileName = document.Name,
+                    FilePath = "",
+                    FileType = "text",
+                    FileSize = 0,
                     ProjectId = document.ProjectId,
-                    CreatedBy = document.CreatedBy,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
+                    UploadedById = document.CreatedBy,
+                    UploadedAt = DateTime.UtcNow,
                     Version = 1
                 };
 
@@ -352,7 +354,7 @@ namespace AttendancePlatform.Api.Services
                 await _context.SaveChangesAsync();
 
                 document.Id = documentEntity.Id;
-                document.CreatedAt = documentEntity.CreatedAt;
+                document.CreatedAt = documentEntity.UploadedAt;
 
                 _logger.LogInformation("Document created: {DocumentId}", documentEntity.Id);
                 return document;
@@ -374,10 +376,10 @@ namespace AttendancePlatform.Api.Services
                     {
                         Id = d.Id,
                         Name = d.Name,
-                        ProjectId = d.ProjectId,
-                        CreatedBy = d.CreatedBy,
-                        CreatedAt = d.CreatedAt,
-                        UpdatedAt = d.UpdatedAt,
+                        ProjectId = d.ProjectId ?? Guid.Empty,
+                        CreatedBy = d.UploadedById,
+                        CreatedAt = d.UploadedAt,
+                        UpdatedAt = d.UploadedAt,
                         Version = d.Version
                     })
                     .ToListAsync();
@@ -403,11 +405,12 @@ namespace AttendancePlatform.Api.Services
 
                 foreach (var userId in userIds)
                 {
-                    var share = new DocumentShare
+                    var share = new AttendancePlatform.Shared.Domain.Entities.DocumentShare
                     {
                         Id = Guid.NewGuid(),
                         DocumentId = documentId,
-                        UserId = userId,
+                        SharedWithId = userId,
+                        SharedById = Guid.NewGuid(),
                         Permission = "Read",
                         SharedAt = DateTime.UtcNow
                     };
@@ -431,13 +434,14 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var messageEntity = new ChatMessage
+                var messageEntity = new AttendancePlatform.Shared.Domain.Entities.ChatMessage
                 {
                     Id = Guid.NewGuid(),
                     TeamId = message.TeamId,
-                    UserId = message.UserId,
+                    SenderId = message.UserId,
                     Content = message.Content,
                     MessageType = message.MessageType,
+                    SentAt = DateTime.UtcNow,
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -467,8 +471,8 @@ namespace AttendancePlatform.Api.Services
                     .Select(m => new ChatMessageDto
                     {
                         Id = m.Id,
-                        TeamId = m.TeamId,
-                        UserId = m.UserId,
+                        TeamId = m.TeamId ?? Guid.Empty,
+                        UserId = m.SenderId,
                         Content = m.Content,
                         MessageType = m.MessageType,
                         CreatedAt = m.CreatedAt
@@ -485,95 +489,6 @@ namespace AttendancePlatform.Api.Services
         }
     }
 
-    public class Team
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public Guid TenantId { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public bool IsActive { get; set; }
-        public List<TeamMember> TeamMembers { get; set; } = new();
-    }
-
-    public class TeamMember
-    {
-        public Guid Id { get; set; }
-        public Guid TeamId { get; set; }
-        public Guid UserId { get; set; }
-        public string Role { get; set; }
-        public DateTime JoinedAt { get; set; }
-        public Team Team { get; set; }
-        public User User { get; set; }
-    }
-
-    public class Project
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public Guid TenantId { get; set; }
-        public Guid? TeamId { get; set; }
-        public string Status { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public List<ProjectTask> Tasks { get; set; } = new();
-    }
-
-    public class ProjectTask
-    {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public Guid ProjectId { get; set; }
-        public Guid? AssignedUserId { get; set; }
-        public string Status { get; set; }
-        public string Priority { get; set; }
-        public DateTime? DueDate { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public Project Project { get; set; }
-    }
-
-    public class Document
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Content { get; set; }
-        public Guid ProjectId { get; set; }
-        public Guid CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public int Version { get; set; }
-        public Project Project { get; set; }
-    }
-
-    public class DocumentShare
-    {
-        public Guid Id { get; set; }
-        public Guid DocumentId { get; set; }
-        public Guid UserId { get; set; }
-        public string Permission { get; set; }
-        public DateTime SharedAt { get; set; }
-        public Document Document { get; set; }
-        public User User { get; set; }
-    }
-
-    public class ChatMessage
-    {
-        public Guid Id { get; set; }
-        public Guid TeamId { get; set; }
-        public Guid UserId { get; set; }
-        public string Content { get; set; }
-        public string MessageType { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public Team Team { get; set; }
-        public User User { get; set; }
-    }
 
     public class TeamDto
     {

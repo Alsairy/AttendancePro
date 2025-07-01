@@ -39,15 +39,15 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var integration = new EnterpriseIntegration
+                var integration = new AttendancePlatform.Shared.Domain.Entities.EnterpriseIntegration
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
                     IntegrationType = "SAP",
                     ConnectionString = connection.ConnectionString,
-                    IsActive = true,
+                    IsEnabled = true,
                     CreatedAt = DateTime.UtcNow,
-                    LastSyncAt = DateTime.UtcNow
+                    LastSync = DateTime.UtcNow
                 };
 
                 _context.EnterpriseIntegrations.Add(integration);
@@ -59,7 +59,7 @@ namespace AttendancePlatform.Api.Services
                 {
                     IntegrationId = integration.Id,
                     Status = "Connected",
-                    LastSync = integration.LastSyncAt,
+                    LastSync = integration.LastSync,
                     EmployeeCount = 1250,
                     DepartmentCount = 45,
                     Message = "Successfully connected to SAP HCM"
@@ -76,15 +76,15 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var integration = new EnterpriseIntegration
+                var integration = new AttendancePlatform.Shared.Domain.Entities.EnterpriseIntegration
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
                     IntegrationType = "Oracle",
                     ConnectionString = connection.ConnectionString,
-                    IsActive = true,
+                    IsEnabled = true,
                     CreatedAt = DateTime.UtcNow,
-                    LastSyncAt = DateTime.UtcNow
+                    LastSync = DateTime.UtcNow
                 };
 
                 _context.EnterpriseIntegrations.Add(integration);
@@ -96,7 +96,7 @@ namespace AttendancePlatform.Api.Services
                 {
                     IntegrationId = integration.Id,
                     Status = "Connected",
-                    LastSync = integration.LastSyncAt,
+                    LastSync = integration.LastSync,
                     DatabaseVersion = "19c",
                     TableCount = 156,
                     Message = "Successfully connected to Oracle HCM Cloud"
@@ -113,15 +113,15 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var integration = new EnterpriseIntegration
+                var integration = new AttendancePlatform.Shared.Domain.Entities.EnterpriseIntegration
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
                     IntegrationType = "Salesforce",
                     ConnectionString = connection.InstanceUrl,
-                    IsActive = true,
+                    IsEnabled = true,
                     CreatedAt = DateTime.UtcNow,
-                    LastSyncAt = DateTime.UtcNow
+                    LastSync = DateTime.UtcNow
                 };
 
                 _context.EnterpriseIntegrations.Add(integration);
@@ -133,7 +133,7 @@ namespace AttendancePlatform.Api.Services
                 {
                     IntegrationId = integration.Id,
                     Status = "Connected",
-                    LastSync = integration.LastSyncAt,
+                    LastSync = integration.LastSync,
                     OrgId = connection.OrgId,
                     UserCount = 890,
                     Message = "Successfully connected to Salesforce"
@@ -150,15 +150,15 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var integration = new EnterpriseIntegration
+                var integration = new AttendancePlatform.Shared.Domain.Entities.EnterpriseIntegration
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
                     IntegrationType = "Workday",
                     ConnectionString = connection.TenantUrl,
-                    IsActive = true,
+                    IsEnabled = true,
                     CreatedAt = DateTime.UtcNow,
-                    LastSyncAt = DateTime.UtcNow
+                    LastSync = DateTime.UtcNow
                 };
 
                 _context.EnterpriseIntegrations.Add(integration);
@@ -170,7 +170,7 @@ namespace AttendancePlatform.Api.Services
                 {
                     IntegrationId = integration.Id,
                     Status = "Connected",
-                    LastSync = integration.LastSyncAt,
+                    LastSync = integration.LastSync,
                     TenantName = connection.TenantName,
                     WorkerCount = 2100,
                     Message = "Successfully connected to Workday HCM"
@@ -187,15 +187,15 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var integration = new EnterpriseIntegration
+                var integration = new AttendancePlatform.Shared.Domain.Entities.EnterpriseIntegration
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
                     IntegrationType = "SuccessFactors",
                     ConnectionString = connection.ApiUrl,
-                    IsActive = true,
+                    IsEnabled = true,
                     CreatedAt = DateTime.UtcNow,
-                    LastSyncAt = DateTime.UtcNow
+                    LastSync = DateTime.UtcNow
                 };
 
                 _context.EnterpriseIntegrations.Add(integration);
@@ -207,7 +207,7 @@ namespace AttendancePlatform.Api.Services
                 {
                     IntegrationId = integration.Id,
                     Status = "Connected",
-                    LastSync = integration.LastSyncAt,
+                    LastSync = integration.LastSync,
                     CompanyId = connection.CompanyId,
                     EmployeeCount = 1750,
                     Message = "Successfully connected to SAP SuccessFactors"
@@ -224,15 +224,15 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var integration = new EnterpriseIntegration
+                var integration = new AttendancePlatform.Shared.Domain.Entities.EnterpriseIntegration
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
                     IntegrationType = "BambooHR",
                     ConnectionString = connection.Subdomain,
-                    IsActive = true,
+                    IsEnabled = true,
                     CreatedAt = DateTime.UtcNow,
-                    LastSyncAt = DateTime.UtcNow
+                    LastSync = DateTime.UtcNow
                 };
 
                 _context.EnterpriseIntegrations.Add(integration);
@@ -244,7 +244,7 @@ namespace AttendancePlatform.Api.Services
                 {
                     IntegrationId = integration.Id,
                     Status = "Connected",
-                    LastSync = integration.LastSyncAt,
+                    LastSync = integration.LastSync,
                     Subdomain = connection.Subdomain,
                     EmployeeCount = 450,
                     Message = "Successfully connected to BambooHR"
@@ -261,15 +261,15 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var integration = new EnterpriseIntegration
+                var integration = new AttendancePlatform.Shared.Domain.Entities.EnterpriseIntegration
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
                     IntegrationType = "ADP",
                     ConnectionString = connection.ClientId,
-                    IsActive = true,
+                    IsEnabled = true,
                     CreatedAt = DateTime.UtcNow,
-                    LastSyncAt = DateTime.UtcNow
+                    LastSync = DateTime.UtcNow
                 };
 
                 _context.EnterpriseIntegrations.Add(integration);
@@ -281,7 +281,7 @@ namespace AttendancePlatform.Api.Services
                 {
                     IntegrationId = integration.Id,
                     Status = "Connected",
-                    LastSync = integration.LastSyncAt,
+                    LastSync = integration.LastSync,
                     ClientId = connection.ClientId,
                     WorkerCount = 3200,
                     Message = "Successfully connected to ADP Workforce Now"
@@ -298,15 +298,15 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var integration = new EnterpriseIntegration
+                var integration = new AttendancePlatform.Shared.Domain.Entities.EnterpriseIntegration
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
                     IntegrationType = "Paychex",
                     ConnectionString = connection.ApiEndpoint,
-                    IsActive = true,
+                    IsEnabled = true,
                     CreatedAt = DateTime.UtcNow,
-                    LastSyncAt = DateTime.UtcNow
+                    LastSync = DateTime.UtcNow
                 };
 
                 _context.EnterpriseIntegrations.Add(integration);
@@ -318,7 +318,7 @@ namespace AttendancePlatform.Api.Services
                 {
                     IntegrationId = integration.Id,
                     Status = "Connected",
-                    LastSync = integration.LastSyncAt,
+                    LastSync = integration.LastSync,
                     CompanyId = connection.CompanyId,
                     EmployeeCount = 680,
                     Message = "Successfully connected to Paychex Flex"
@@ -335,15 +335,15 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var integration = new EnterpriseIntegration
+                var integration = new AttendancePlatform.Shared.Domain.Entities.EnterpriseIntegration
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
                     IntegrationType = "UltimateSoftware",
                     ConnectionString = connection.ServiceUrl,
-                    IsActive = true,
+                    IsEnabled = true,
                     CreatedAt = DateTime.UtcNow,
-                    LastSyncAt = DateTime.UtcNow
+                    LastSync = DateTime.UtcNow
                 };
 
                 _context.EnterpriseIntegrations.Add(integration);
@@ -355,7 +355,7 @@ namespace AttendancePlatform.Api.Services
                 {
                     IntegrationId = integration.Id,
                     Status = "Connected",
-                    LastSync = integration.LastSyncAt,
+                    LastSync = integration.LastSync,
                     CustomerId = connection.CustomerId,
                     PersonCount = 1950,
                     Message = "Successfully connected to UltiPro"
@@ -372,15 +372,15 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var integration = new EnterpriseIntegration
+                var integration = new AttendancePlatform.Shared.Domain.Entities.EnterpriseIntegration
                 {
                     Id = Guid.NewGuid(),
                     TenantId = tenantId,
                     IntegrationType = "Cornerstone",
                     ConnectionString = connection.PortalUrl,
-                    IsActive = true,
+                    IsEnabled = true,
                     CreatedAt = DateTime.UtcNow,
-                    LastSyncAt = DateTime.UtcNow
+                    LastSync = DateTime.UtcNow
                 };
 
                 _context.EnterpriseIntegrations.Add(integration);
@@ -392,7 +392,7 @@ namespace AttendancePlatform.Api.Services
                 {
                     IntegrationId = integration.Id,
                     Status = "Connected",
-                    LastSync = integration.LastSyncAt,
+                    LastSync = integration.LastSync,
                     PortalName = connection.PortalName,
                     UserCount = 1100,
                     Message = "Successfully connected to Cornerstone OnDemand"
@@ -415,8 +415,8 @@ namespace AttendancePlatform.Api.Services
                     {
                         IntegrationId = i.Id,
                         IntegrationType = i.IntegrationType,
-                        Status = i.IsActive ? "Active" : "Inactive",
-                        LastSync = i.LastSyncAt,
+                        Status = i.IsEnabled ? "Active" : "Inactive",
+                        LastSync = i.LastSync,
                         Health = "Healthy",
                         RecordCount = 1000 + (i.IntegrationType.GetHashCode() % 2000)
                     })
@@ -440,7 +440,7 @@ namespace AttendancePlatform.Api.Services
 
                 if (integration == null) return false;
 
-                integration.LastSyncAt = DateTime.UtcNow;
+                integration.LastSync = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
 
                 _logger.LogInformation("Data sync completed for {IntegrationType} integration, tenant {TenantId}", integrationName, tenantId);
@@ -461,7 +461,7 @@ namespace AttendancePlatform.Api.Services
                     .Where(i => i.TenantId == tenantId)
                     .ToListAsync();
 
-                var healthyCount = integrations.Count(i => i.IsActive);
+                var healthyCount = integrations.Count(i => i.IsEnabled);
                 var totalCount = integrations.Count;
 
                 return new IntegrationHealthDto
@@ -490,7 +490,7 @@ namespace AttendancePlatform.Api.Services
 
                 if (integration == null) return false;
 
-                integration.IsActive = false;
+                integration.IsEnabled = false;
                 integration.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
 
@@ -526,17 +526,6 @@ namespace AttendancePlatform.Api.Services
         }
     }
 
-    public class EnterpriseIntegration
-    {
-        public Guid Id { get; set; }
-        public Guid TenantId { get; set; }
-        public string IntegrationType { get; set; }
-        public string ConnectionString { get; set; }
-        public bool IsActive { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public DateTime? LastSyncAt { get; set; }
-    }
 
     public class SapConnectionDto
     {

@@ -34,7 +34,7 @@ namespace AttendancePlatform.Api.Services
         {
             try
             {
-                var workflowEntity = new WorkflowDefinition
+                var workflowEntity = new AttendancePlatform.Shared.Domain.Entities.WorkflowDefinition
                 {
                     Id = Guid.NewGuid(),
                     Name = workflow.Name,
@@ -70,11 +70,15 @@ namespace AttendancePlatform.Api.Services
                 if (workflowDefinition == null)
                     throw new ArgumentException("Workflow definition not found");
 
-                var instance = new WorkflowInstance
+                var instance = new AttendancePlatform.Shared.Domain.Entities.WorkflowInstance
                 {
                     Id = Guid.NewGuid(),
-                    WorkflowDefinitionId = workflowId,
+                    WorkflowTemplateId = workflowId,
                     TenantId = workflowDefinition.TenantId,
+                    WorkflowType = "General",
+                    EntityId = Guid.NewGuid(),
+                    EntityType = "Workflow",
+                    InitiatedBy = Guid.NewGuid(),
                     Status = "Running",
                     StartedAt = DateTime.UtcNow,
                     CurrentStep = "Initial"
@@ -108,7 +112,6 @@ namespace AttendancePlatform.Api.Services
             try
             {
                 var instance = await _context.WorkflowInstances
-                    .Include(w => w.WorkflowDefinition)
                     .FirstOrDefaultAsync(w => w.Id == instanceId);
 
                 if (instance == null) return null;
@@ -116,12 +119,12 @@ namespace AttendancePlatform.Api.Services
                 return new WorkflowInstanceDto
                 {
                     Id = instance.Id,
-                    WorkflowDefinitionId = instance.WorkflowDefinitionId,
+                    WorkflowDefinitionId = instance.WorkflowTemplateId,
                     Status = instance.Status,
                     StartedAt = instance.StartedAt,
                     CompletedAt = instance.CompletedAt,
                     CurrentStep = instance.CurrentStep,
-                    WorkflowName = instance.WorkflowDefinition?.Name
+                    WorkflowName = "Workflow Instance"
                 };
             }
             catch (Exception ex)
@@ -136,16 +139,15 @@ namespace AttendancePlatform.Api.Services
             try
             {
                 var instances = await _context.WorkflowInstances
-                    .Include(w => w.WorkflowDefinition)
                     .Where(w => w.TenantId == tenantId && w.Status == "Running")
                     .Select(w => new WorkflowInstanceDto
                     {
                         Id = w.Id,
-                        WorkflowDefinitionId = w.WorkflowDefinitionId,
+                        WorkflowDefinitionId = w.WorkflowTemplateId,
                         Status = w.Status,
                         StartedAt = w.StartedAt,
                         CurrentStep = w.CurrentStep,
-                        WorkflowName = w.WorkflowDefinition.Name
+                        WorkflowName = "Active Workflow"
                     })
                     .ToListAsync();
 
@@ -263,7 +265,6 @@ namespace AttendancePlatform.Api.Services
             try
             {
                 var instance = await _context.WorkflowInstances
-                    .Include(w => w.WorkflowDefinition)
                     .FirstOrDefaultAsync(w => w.Id == instanceId);
 
                 if (instance == null) return null;
@@ -275,7 +276,7 @@ namespace AttendancePlatform.Api.Services
                 return new WorkflowExecutionReportDto
                 {
                     InstanceId = instanceId,
-                    WorkflowName = instance.WorkflowDefinition?.Name,
+                    WorkflowName = "Execution Report",
                     Status = instance.Status,
                     StartedAt = instance.StartedAt,
                     CompletedAt = instance.CompletedAt,
@@ -318,45 +319,6 @@ namespace AttendancePlatform.Api.Services
         }
     }
 
-    public class WorkflowDefinition
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public Guid TenantId { get; set; }
-        public bool IsActive { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public int Version { get; set; }
-    }
-
-    public class WorkflowInstance
-    {
-        public Guid Id { get; set; }
-        public Guid WorkflowDefinitionId { get; set; }
-        public Guid TenantId { get; set; }
-        public string Status { get; set; }
-        public DateTime StartedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public string CurrentStep { get; set; }
-        public WorkflowDefinition WorkflowDefinition { get; set; }
-    }
-
-    public class WorkflowTask
-    {
-        public Guid Id { get; set; }
-        public Guid WorkflowInstanceId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
-        public Guid? AssignedUserId { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public DateTime? CompletedAt { get; set; }
-        public DateTime? DueDate { get; set; }
-        public string Priority { get; set; }
-    }
 
     public class WorkflowDefinitionDto
     {

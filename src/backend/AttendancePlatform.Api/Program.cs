@@ -116,15 +116,28 @@ builder.Services.AddAuthorization();
 // Disable antiforgery for deployment
 // builder.Services.AddAntiforgery();
 
-// Add CORS
+// Add CORS with specific frontend origin
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
+        policy.WithOrigins(
+                "https://attendancepro-fixapp-jur4spo0.devinapps.com",
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "https://localhost:5173"
+              )
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials()
+              .WithExposedHeaders("*");
+    });
+    
+    options.AddPolicy("AllowAllOrigins", policy =>
+    {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader()
-              .SetIsOriginAllowed(_ => true)
               .WithExposedHeaders("*");
     });
 });
@@ -176,30 +189,34 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     KnownProxies = { }
 });
 
-// Accept tunnel hostnames and localhost for deployment
+// Accept all hostnames for deployment
 app.Use(async (context, next) =>
 {
-    var host = context.Request.Host.Host;
-    if (host.Contains("devinapps.com") || host.Contains("tunnel") || host == "localhost" || host == "127.0.0.1")
-    {
-        await next();
-    }
-    else
-    {
-        context.Request.Host = new HostString("localhost", 5002);
-        await next();
-    }
+    await next();
 });
 
 app.Use(async (context, next) =>
 {
-    context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+    var origin = context.Request.Headers["Origin"].ToString();
+    
+    if (!string.IsNullOrEmpty(origin))
+    {
+        context.Response.Headers.Add("Access-Control-Allow-Origin", origin);
+    }
+    else
+    {
+        context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+    }
+    
+    context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
+    context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token");
+    context.Response.Headers.Add("Access-Control-Expose-Headers", "*");
     
     if (context.Request.Method == "OPTIONS")
     {
         context.Response.StatusCode = 200;
+        await context.Response.WriteAsync("");
         return;
     }
     
