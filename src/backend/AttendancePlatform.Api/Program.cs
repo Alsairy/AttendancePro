@@ -226,6 +226,13 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader()
               .AllowCredentials();
     });
+    
+    options.AddPolicy("AllowTunnel", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 });
 
 builder.Services.AddHudurTelemetry("Hudur Enterprise Platform");
@@ -319,7 +326,7 @@ app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.RateLimiti
 // Disable CSRF validation for deployment
 // app.UseMiddleware<CsrfValidationMiddleware>();
 
-app.UseCors("AllowCredentials");
+app.UseCors("AllowAll");
 
 if (!app.Environment.IsDevelopment())
 {
