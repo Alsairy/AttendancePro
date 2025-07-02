@@ -70,7 +70,7 @@ class AuthService {
 
   async login(email: string, password: string, twoFactorCode?: string): Promise<LoginResponse> {
     try {
-      const response: AxiosResponse<{success: boolean; data: LoginResponse; message: string}> = await this.api.post('/auth/login', {
+      const response: AxiosResponse<{success: boolean; data: LoginResponse; message: string}> = await this.api.post('/api/auth/login', {
         email,
         password,
         twoFactorCode,
@@ -88,7 +88,7 @@ class AuthService {
 
   async register(userData: RegisterData): Promise<void> {
     try {
-      const response: AxiosResponse<{success: boolean; data: any; message: string}> = await this.api.post('/auth/register', userData)
+      const response: AxiosResponse<{success: boolean; data: any; message: string}> = await this.api.post('/api/auth/register', userData)
       if (response.data.success) {
         return
       } else {
@@ -101,7 +101,7 @@ class AuthService {
 
   async logout(userId: string): Promise<void> {
     try {
-      await this.api.post('/auth/logout', { userId })
+      await this.api.post('/api/auth/logout', { userId })
     } catch (error: any) {
       console.error('Logout error:', error)
     }
@@ -109,7 +109,7 @@ class AuthService {
 
   async refreshToken(refreshToken: string): Promise<LoginResponse> {
     try {
-      const response: AxiosResponse<{success: boolean; data: LoginResponse; message: string}> = await this.api.post('/auth/refresh-token', {
+      const response: AxiosResponse<{success: boolean; data: LoginResponse; message: string}> = await this.api.post('/api/auth/refresh', {
         refreshToken,
       })
       
@@ -125,7 +125,7 @@ class AuthService {
 
   async getCurrentUser(): Promise<User> {
     try {
-      const response: AxiosResponse<{success: boolean; data: User; message: string}> = await this.api.get('/auth/me')
+      const response: AxiosResponse<{success: boolean; data: User; message: string}> = await this.api.get('/api/auth/me')
       if (response.data.success && response.data.data) {
         return response.data.data
       } else {
@@ -138,7 +138,7 @@ class AuthService {
 
   async forgotPassword(email: string): Promise<void> {
     try {
-      await this.api.post('/auth/forgot-password', { email })
+      await this.api.post('/api/auth/forgot-password', { email })
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to send reset email')
     }
@@ -146,7 +146,7 @@ class AuthService {
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
     try {
-      await this.api.post('/auth/reset-password', { token, newPassword })
+      await this.api.post('/api/auth/reset-password', { token, newPassword })
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Password reset failed')
     }
@@ -154,7 +154,7 @@ class AuthService {
 
   async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
     try {
-      await this.api.post('/auth/change-password', {
+      await this.api.post('/api/auth/change-password', {
         userId,
         currentPassword,
         newPassword,

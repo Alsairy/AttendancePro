@@ -35,11 +35,13 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
 });
 
-// Configure host filtering to allow any host
+// Disable host filtering completely for deployment
 builder.Services.Configure<HostFilteringOptions>(options =>
 {
     options.AllowedHosts.Clear();
+    options.AllowedHosts.Add("*");
     options.AllowEmptyHosts = true;
+    options.IncludeFailureMessage = false;
 });
 
 // Add infrastructure services with in-memory database for deployment
@@ -279,6 +281,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 // Disable host filtering for deployment - accept any hostname
 app.Use(async (context, next) =>
 {
+    context.Request.Host = new HostString("localhost", 7001);
     await next();
 });
 
