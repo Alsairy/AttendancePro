@@ -16,6 +16,7 @@ using StackExchange.Redis;
 using AttendancePlatform.Api.Services;
 using AttendancePlatform.Api.Middleware;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.HostFiltering;
 
 [assembly: InternalsVisibleTo("AttendancePlatform.Tests.Integration")]
 
@@ -29,6 +30,16 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.AllowSynchronousIO = true;
     options.Limits.MaxRequestBodySize = null;
+    options.Listen(System.Net.IPAddress.Any, 7001);
+    options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+    options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
+});
+
+// Configure host filtering to allow any host
+builder.Services.Configure<HostFilteringOptions>(options =>
+{
+    options.AllowedHosts.Clear();
+    options.AllowEmptyHosts = true;
 });
 
 // Add infrastructure services with in-memory database for deployment
@@ -208,7 +219,7 @@ builder.Services.AddCors(options =>
     
     options.AddPolicy("AllowCredentials", policy =>
     {
-        policy.SetIsOriginAllowed(origin => true)
+        policy.WithOrigins("https://attendancepro-fixapp-jur4spo0.devinapps.com", "http://localhost:3000", "http://localhost:5173")
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
@@ -265,7 +276,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     KnownProxies = { }
 });
 
-// Accept all hostnames for deployment
+// Disable host filtering for deployment - accept any hostname
 app.Use(async (context, next) =>
 {
     await next();
