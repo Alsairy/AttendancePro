@@ -70,16 +70,20 @@ class AuthService {
 
   async login(email: string, password: string, twoFactorCode?: string): Promise<LoginResponse> {
     try {
-      const response: AxiosResponse<{success: boolean; data: LoginResponse; message: string}> = await this.api.post('/api/auth/login', {
+      const response: AxiosResponse<{access_token: string; token_type: string; user: any}> = await this.api.post('/login', {
         email,
         password,
         twoFactorCode,
       })
       
-      if (response.data.success && response.data.data) {
-        return response.data.data
+      if (response.data.access_token) {
+        return {
+          access_token: response.data.access_token,
+          token_type: response.data.token_type,
+          user: response.data.user
+        }
       } else {
-        throw new Error(response.data.message || 'Login failed')
+        throw new Error('Login failed')
       }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Login failed')
