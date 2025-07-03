@@ -8,10 +8,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY app/ ./app/
-COPY start_server.py ./
+COPY main.py ./
 
 # Expose port
 EXPOSE 8080
 
-# Start the application with custom entry point to avoid FastAPI CLI detection
-CMD ["python", "start_server.py"]
+# Start the application with main.py to avoid FastAPI CLI detection
+CMD ["python", "main.py"]
