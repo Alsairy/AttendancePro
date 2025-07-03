@@ -14,13 +14,13 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 import uvicorn
 
-app = FastAPI(
+application = FastAPI(
     title="Hudur Enterprise Platform Backend",
     description="Enterprise attendance and workforce management platform",
     version="1.0.0"
 )
 
-app.add_middleware(
+application.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=False,
@@ -109,7 +109,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     token = credentials.credentials
     return verify_jwt_token(token)
 
-@app.get("/")
+@application.get("/")
 async def root():
     """Root endpoint"""
     return {
@@ -118,7 +118,7 @@ async def root():
         "status": "running"
     }
 
-@app.get("/health")
+@application.get("/health")
 async def health_check():
     """Health check endpoint"""
     return {
@@ -127,7 +127,7 @@ async def health_check():
         "service": "hudur-enterprise-platform"
     }
 
-@app.post("/login")
+@application.post("/login")
 async def login(request: LoginRequest):
     """Authenticate user and return JWT token"""
     print(f"Login attempt for email: {request.email}")
@@ -1206,7 +1206,7 @@ def main():
     """Entry point for the application"""
     import os
     port = int(os.environ.get("PORT", 8080))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(application, host="0.0.0.0", port=port)
 
 if __name__ == "__main__":
     main()
