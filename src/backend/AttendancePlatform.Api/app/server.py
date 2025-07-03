@@ -168,12 +168,12 @@ async def login(request: LoginRequest):
         "user": user_info
     }
 
-@app.post("/api/auth/logout")
+@application.post("/api/auth/logout")
 async def logout(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Logout user (client should discard token)"""
     return {"message": "Logged out successfully"}
 
-@app.get("/api/auth/me", response_model=UserInfo)
+@application.get("/api/auth/me", response_model=UserInfo)
 async def get_user_info(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get current user information"""
     return UserInfo(
@@ -184,7 +184,7 @@ async def get_user_info(current_user: Dict[str, Any] = Depends(get_current_user)
         permissions=current_user["permissions"]
     )
 
-@app.post("/api/auth/refresh")
+@application.post("/api/auth/refresh")
 async def refresh_token(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Refresh JWT token"""
     user_data = MOCK_USERS.get(current_user["email"])
@@ -194,7 +194,7 @@ async def refresh_token(current_user: Dict[str, Any] = Depends(get_current_user)
     new_token = create_jwt_token(user_data)
     return {"token": new_token}
 
-@app.get("/api/attendance/records")
+@application.get("/api/attendance/records")
 async def get_attendance_records(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get attendance records"""
     return {
@@ -202,7 +202,7 @@ async def get_attendance_records(current_user: Dict[str, Any] = Depends(get_curr
         "message": "Attendance records endpoint - implementation in progress"
     }
 
-@app.get("/api/users")
+@application.get("/api/users")
 async def get_users(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get users list"""
     if current_user["role"] not in ["admin", "manager"]:
@@ -220,7 +220,7 @@ async def get_users(current_user: Dict[str, Any] = Depends(get_current_user)):
         ]
     }
 
-@app.get("/api/finance/dashboard")
+@application.get("/api/finance/dashboard")
 async def get_finance_dashboard(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get comprehensive financial dashboard"""
     return {
@@ -233,7 +233,7 @@ async def get_finance_dashboard(current_user: Dict[str, Any] = Depends(get_curre
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/finance/reports")
+@application.get("/api/finance/reports")
 async def get_financial_reports(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get financial reports"""
     return {
@@ -245,7 +245,7 @@ async def get_financial_reports(current_user: Dict[str, Any] = Depends(get_curre
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/finance/budget-analysis")
+@application.get("/api/finance/budget-analysis")
 async def get_budget_analysis(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get budget analysis"""
     return {
@@ -259,7 +259,7 @@ async def get_budget_analysis(current_user: Dict[str, Any] = Depends(get_current
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/finance/cash-flow")
+@application.get("/api/finance/cash-flow")
 async def get_cash_flow_analysis(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get cash flow analysis"""
     return {
@@ -275,7 +275,7 @@ async def get_cash_flow_analysis(current_user: Dict[str, Any] = Depends(get_curr
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/finance/profit-loss")
+@application.get("/api/finance/profit-loss")
 async def get_profit_loss_statement(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get profit and loss statement"""
     return {
@@ -289,7 +289,7 @@ async def get_profit_loss_statement(current_user: Dict[str, Any] = Depends(get_c
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/finance/balance-sheet")
+@application.get("/api/finance/balance-sheet")
 async def get_balance_sheet(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get balance sheet"""
     return {
@@ -310,7 +310,7 @@ async def get_balance_sheet(current_user: Dict[str, Any] = Depends(get_current_u
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/finance/expense-reports")
+@application.get("/api/finance/expense-reports")
 async def get_expense_reports(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get expense reports"""
     return {
@@ -329,7 +329,7 @@ async def get_expense_reports(current_user: Dict[str, Any] = Depends(get_current
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/finance/revenue-analysis")
+@application.get("/api/finance/revenue-analysis")
 async def get_revenue_analysis(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get revenue analysis"""
     return {
@@ -347,7 +347,7 @@ async def get_revenue_analysis(current_user: Dict[str, Any] = Depends(get_curren
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/finance/tax-compliance")
+@application.get("/api/finance/tax-compliance")
 async def get_tax_compliance_status(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get tax compliance status"""
     return {
@@ -361,7 +361,7 @@ async def get_tax_compliance_status(current_user: Dict[str, Any] = Depends(get_c
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/finance/audit-trail")
+@application.get("/api/finance/audit-trail")
 async def get_financial_audit_trail(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get financial audit trail"""
     return {
@@ -375,7 +375,7 @@ async def get_financial_audit_trail(current_user: Dict[str, Any] = Depends(get_c
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/procurement/dashboard")
+@application.get("/api/procurement/dashboard")
 async def get_procurement_dashboard(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get procurement dashboard"""
     return {
@@ -387,7 +387,7 @@ async def get_procurement_dashboard(current_user: Dict[str, Any] = Depends(get_c
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/procurement/purchase-orders")
+@application.get("/api/procurement/purchase-orders")
 async def get_purchase_orders(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get purchase orders"""
     return {
@@ -401,7 +401,7 @@ async def get_purchase_orders(current_user: Dict[str, Any] = Depends(get_current
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/procurement/vendor-analysis")
+@application.get("/api/procurement/vendor-analysis")
 async def get_vendor_analysis(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get vendor analysis"""
     return {
@@ -424,7 +424,7 @@ async def get_vendor_analysis(current_user: Dict[str, Any] = Depends(get_current
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/procurement/contract-management")
+@application.get("/api/procurement/contract-management")
 async def get_contract_management(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get contract management data"""
     return {
@@ -439,7 +439,7 @@ async def get_contract_management(current_user: Dict[str, Any] = Depends(get_cur
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/procurement/supplier-performance")
+@application.get("/api/procurement/supplier-performance")
 async def get_supplier_performance(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get supplier performance metrics"""
     return {
@@ -461,7 +461,7 @@ async def get_supplier_performance(current_user: Dict[str, Any] = Depends(get_cu
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/procurement/spend-analysis")
+@application.get("/api/procurement/spend-analysis")
 async def get_spend_analysis(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get spend analysis"""
     return {
@@ -481,7 +481,7 @@ async def get_spend_analysis(current_user: Dict[str, Any] = Depends(get_current_
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/procurement/rfq")
+@application.get("/api/procurement/rfq")
 async def get_request_for_quotations(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get request for quotations"""
     return {
@@ -498,7 +498,7 @@ async def get_request_for_quotations(current_user: Dict[str, Any] = Depends(get_
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/procurement/compliance")
+@application.get("/api/procurement/compliance")
 async def get_procurement_compliance(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get procurement compliance status"""
     return {
@@ -515,7 +515,7 @@ async def get_procurement_compliance(current_user: Dict[str, Any] = Depends(get_
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/procurement/cost-savings")
+@application.get("/api/procurement/cost-savings")
 async def get_cost_savings_analysis(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get cost savings analysis"""
     return {
@@ -531,7 +531,7 @@ async def get_cost_savings_analysis(current_user: Dict[str, Any] = Depends(get_c
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.post("/api/procurement/purchase-orders")
+@application.post("/api/procurement/purchase-orders")
 async def create_purchase_order(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Create new purchase order"""
     return {
@@ -541,7 +541,7 @@ async def create_purchase_order(current_user: Dict[str, Any] = Depends(get_curre
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/hr/dashboard")
+@application.get("/api/hr/dashboard")
 async def get_hr_dashboard(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get HR dashboard"""
     return {
@@ -556,7 +556,7 @@ async def get_hr_dashboard(current_user: Dict[str, Any] = Depends(get_current_us
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/hr/employee-lifecycle")
+@application.get("/api/hr/employee-lifecycle")
 async def get_employee_lifecycle(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get employee lifecycle data"""
     return {
@@ -575,7 +575,7 @@ async def get_employee_lifecycle(current_user: Dict[str, Any] = Depends(get_curr
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/hr/talent-acquisition")
+@application.get("/api/hr/talent-acquisition")
 async def get_talent_acquisition(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get talent acquisition metrics"""
     return {
@@ -595,7 +595,7 @@ async def get_talent_acquisition(current_user: Dict[str, Any] = Depends(get_curr
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/hr/performance-management")
+@application.get("/api/hr/performance-management")
 async def get_performance_management(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get performance management data"""
     return {
@@ -612,7 +612,7 @@ async def get_performance_management(current_user: Dict[str, Any] = Depends(get_
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/hr/compensation-analysis")
+@application.get("/api/hr/compensation-analysis")
 async def get_compensation_analysis(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get compensation analysis"""
     return {
@@ -630,7 +630,7 @@ async def get_compensation_analysis(current_user: Dict[str, Any] = Depends(get_c
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/hr/employee-engagement")
+@application.get("/api/hr/employee-engagement")
 async def get_employee_engagement(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get employee engagement metrics"""
     return {
@@ -648,7 +648,7 @@ async def get_employee_engagement(current_user: Dict[str, Any] = Depends(get_cur
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/hr/succession-planning")
+@application.get("/api/hr/succession-planning")
 async def get_succession_planning(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get succession planning data"""
     return {
@@ -665,7 +665,7 @@ async def get_succession_planning(current_user: Dict[str, Any] = Depends(get_cur
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/hr/learning-development")
+@application.get("/api/hr/learning-development")
 async def get_learning_development(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get learning and development metrics"""
     return {
@@ -687,7 +687,7 @@ async def get_learning_development(current_user: Dict[str, Any] = Depends(get_cu
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/hr/diversity-inclusion")
+@application.get("/api/hr/diversity-inclusion")
 async def get_diversity_inclusion(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get diversity and inclusion metrics"""
     return {
@@ -711,7 +711,7 @@ async def get_diversity_inclusion(current_user: Dict[str, Any] = Depends(get_cur
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/hr/workforce-analytics")
+@application.get("/api/hr/workforce-analytics")
 async def get_workforce_analytics(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get workforce analytics"""
     return {
@@ -734,7 +734,7 @@ async def get_workforce_analytics(current_user: Dict[str, Any] = Depends(get_cur
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/hr/compliance")
+@application.get("/api/hr/compliance")
 async def get_hr_compliance(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get HR compliance status"""
     return {
@@ -754,7 +754,7 @@ async def get_hr_compliance(current_user: Dict[str, Any] = Depends(get_current_u
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/supply-chain")
+@application.get("/api/supply-chain")
 async def get_supply_chain_data(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Comprehensive Supply Chain Management Service"""
     return {
@@ -770,7 +770,7 @@ async def get_supply_chain_data(current_user: Dict[str, Any] = Depends(get_curre
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/business-intelligence")
+@application.get("/api/business-intelligence")
 async def get_business_intelligence_data(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Comprehensive Business Intelligence Service"""
     return {
@@ -786,7 +786,7 @@ async def get_business_intelligence_data(current_user: Dict[str, Any] = Depends(
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/project-management")
+@application.get("/api/project-management")
 async def get_project_management_data(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Comprehensive Project Management Service"""
     return {
@@ -802,7 +802,7 @@ async def get_project_management_data(current_user: Dict[str, Any] = Depends(get
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/customer-management")
+@application.get("/api/customer-management")
 async def get_customer_management_data(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Comprehensive Customer Management Service"""
     return {
@@ -818,7 +818,7 @@ async def get_customer_management_data(current_user: Dict[str, Any] = Depends(ge
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/quality-assurance")
+@application.get("/api/quality-assurance")
 async def get_quality_assurance_data(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Comprehensive Quality Assurance Service"""
     return {
@@ -834,7 +834,7 @@ async def get_quality_assurance_data(current_user: Dict[str, Any] = Depends(get_
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/risk-management")
+@application.get("/api/risk-management")
 async def get_risk_management_data(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Comprehensive Risk Management Service"""
     return {
@@ -850,7 +850,7 @@ async def get_risk_management_data(current_user: Dict[str, Any] = Depends(get_cu
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/cybersecurity")
+@application.get("/api/cybersecurity")
 async def get_cybersecurity_data(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Comprehensive Cybersecurity Service"""
     return {
@@ -866,7 +866,7 @@ async def get_cybersecurity_data(current_user: Dict[str, Any] = Depends(get_curr
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/advanced-technology/ai-ml")
+@application.get("/api/advanced-technology/ai-ml")
 async def get_ai_ml_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get AI/ML services data"""
     return {
@@ -888,7 +888,7 @@ async def get_ai_ml_services(current_user: Dict[str, Any] = Depends(get_current_
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/advanced-technology/blockchain")
+@application.get("/api/advanced-technology/blockchain")
 async def get_blockchain_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get blockchain management data"""
     return {
@@ -911,7 +911,7 @@ async def get_blockchain_services(current_user: Dict[str, Any] = Depends(get_cur
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/advanced-technology/iot")
+@application.get("/api/advanced-technology/iot")
 async def get_iot_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get IoT management data"""
     return {
@@ -937,7 +937,7 @@ async def get_iot_services(current_user: Dict[str, Any] = Depends(get_current_us
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/advanced-technology/quantum-computing")
+@application.get("/api/advanced-technology/quantum-computing")
 async def get_quantum_computing_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get quantum computing data"""
     return {
@@ -960,7 +960,7 @@ async def get_quantum_computing_services(current_user: Dict[str, Any] = Depends(
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/advanced-technology/cloud-computing")
+@application.get("/api/advanced-technology/cloud-computing")
 async def get_cloud_computing_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get cloud computing management data"""
     return {
@@ -986,7 +986,7 @@ async def get_cloud_computing_services(current_user: Dict[str, Any] = Depends(ge
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/advanced-technology/edge-computing")
+@application.get("/api/advanced-technology/edge-computing")
 async def get_edge_computing_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get edge computing data"""
     return {
@@ -1010,7 +1010,7 @@ async def get_edge_computing_services(current_user: Dict[str, Any] = Depends(get
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/advanced-technology/robotics")
+@application.get("/api/advanced-technology/robotics")
 async def get_robotics_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get robotics automation data"""
     return {
@@ -1034,7 +1034,7 @@ async def get_robotics_services(current_user: Dict[str, Any] = Depends(get_curre
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/advanced-technology/virtual-reality")
+@application.get("/api/advanced-technology/virtual-reality")
 async def get_virtual_reality_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get virtual reality data"""
     return {
@@ -1059,7 +1059,7 @@ async def get_virtual_reality_services(current_user: Dict[str, Any] = Depends(ge
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/advanced-technology/augmented-reality")
+@application.get("/api/advanced-technology/augmented-reality")
 async def get_augmented_reality_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get augmented reality data"""
     return {
@@ -1084,7 +1084,7 @@ async def get_augmented_reality_services(current_user: Dict[str, Any] = Depends(
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/collaboration/voice-recognition")
+@application.get("/api/collaboration/voice-recognition")
 async def get_voice_recognition_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get voice recognition data"""
     return {
@@ -1109,7 +1109,7 @@ async def get_voice_recognition_services(current_user: Dict[str, Any] = Depends(
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/collaboration/team-services")
+@application.get("/api/collaboration/team-services")
 async def get_collaboration_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Get team collaboration data"""
     return {
@@ -1133,7 +1133,7 @@ async def get_collaboration_services(current_user: Dict[str, Any] = Depends(get_
         "timestamp": datetime.utcnow().isoformat()
     }
 
-@app.get("/api/services/comprehensive")
+@application.get("/api/services/comprehensive")
 async def get_comprehensive_services(current_user: Dict[str, Any] = Depends(get_current_user)):
     """List all 101+ comprehensive business services"""
     services = {

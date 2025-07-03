@@ -12,5 +12,5 @@ COPY app/ ./app/
 # Expose port
 EXPOSE 8080
 
-# Start the application directly
+# Start the application with uvicorn
 CMD ["python", "-m", "uvicorn", "app.server:application", "--host", "0.0.0.0", "--port", "8080"]
