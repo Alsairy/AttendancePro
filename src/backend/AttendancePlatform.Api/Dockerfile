@@ -7,11 +7,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY app/ ./app/
-COPY main.py ./
+COPY server.py ./
 
 # Expose port
 EXPOSE 8080
 
 # Use explicit python command to avoid any auto-detection
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT ["python", "server.py"]
