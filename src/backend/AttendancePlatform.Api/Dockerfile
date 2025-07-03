@@ -13,5 +13,5 @@ COPY main.py ./
 # Expose port
 EXPOSE 8080
 
-# Start the application with main.py to avoid FastAPI CLI detection
-CMD ["python", "main.py"]
+# Use explicit python command to avoid any auto-detection
+ENTRYPOINT ["python", "main.py"]

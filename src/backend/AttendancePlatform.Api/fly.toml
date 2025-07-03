@@ -7,6 +7,9 @@ primary_region = "iad"
 [env]
   PORT = "8080"
 
+[processes]
+  web = "python main.py"
+
 [http_service]
   internal_port = 8080
   force_https = true
