@@ -1,13 +1,11 @@
-app = "hudur-platform-backend-fresh"
+app = "attendanceplatform-api-qnzebxmq"
 primary_region = "iad"
 
 [build]
+  dockerfile = "Dockerfile"
 
 [env]
   PORT = "8080"
-
-[processes]
-  web = "python -m uvicorn app.main:app --host 0.0.0.0 --port 8080"
 
 [http_service]
   internal_port = 8080
@@ -17,11 +15,8 @@ primary_region = "iad"
   min_machines_running = 0
 
 [[http_service.checks]]
-  grace_period = "10s"
+  grace_period = "15s"
   interval = "30s"
   method = "GET"
-  timeout = "5s"
+  timeout = "10s"
   path = "/health"
-
-[experimental]
-  cmd = ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
