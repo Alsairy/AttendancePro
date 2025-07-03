@@ -1,4 +1,4 @@
-app = "attendanceplatform-api-qnzebxmq"
+app = "hudur-platform-backend-fresh"
 primary_region = "iad"
 
 [build]
@@ -7,7 +7,7 @@ primary_region = "iad"
   PORT = "8080"
 
 [processes]
-  web = "uvicorn app.main:app --host 0.0.0.0 --port 8080"
+  web = "python -m uvicorn app.main:app --host 0.0.0.0 --port 8080"
 
 [http_service]
   internal_port = 8080
@@ -22,3 +22,6 @@ primary_region = "iad"
   method = "GET"
   timeout = "5s"
   path = "/health"
+
+[experimental]
+  cmd = ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

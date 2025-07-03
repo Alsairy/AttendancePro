@@ -24,8 +24,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=False,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 security = HTTPBearer()
@@ -126,7 +127,7 @@ async def health_check():
         "service": "hudur-enterprise-platform"
     }
 
-@app.post("/api/auth/login", response_model=LoginResponse)
+@app.post("/login")
 async def login(request: LoginRequest):
     """Authenticate user and return JWT token"""
     print(f"Login attempt for email: {request.email}")
@@ -161,7 +162,11 @@ async def login(request: LoginRequest):
     }
     
     print(f"Login successful for {request.email}")
-    return LoginResponse(token=token, user=user_info)
+    return {
+        "access_token": token,
+        "token_type": "bearer", 
+        "user": user_info
+    }
 
 @app.post("/api/auth/logout")
 async def logout(current_user: Dict[str, Any] = Depends(get_current_user)):
