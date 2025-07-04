@@ -6,9 +6,7 @@ primary_region = "iad"
 
 [env]
   PORT = "8080"
-
-[processes]
-  web = "python comprehensive_services.py"
+  ASPNETCORE_ENVIRONMENT = "Production"
 
 [http_service]
   internal_port = 8080

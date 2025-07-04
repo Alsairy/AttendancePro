@@ -1,35 +1,19 @@
-FROM python:3.11-slim
-
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-
-# Install dependencies
-
-COPY requirements.txt .
-
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application code
-<<<<<<< HEAD
-COPY comprehensive_services.py ./
-||||||| 2945096
-COPY app/ ./app/
-=======
-
-COPY comprehensive_services.py ./
->>>>>>> eed39a60f6b5e10c305cb9316422288e04759c18
-
-# Expose port
-
 EXPOSE 8080
 
-<<<<<<< HEAD
-# Use direct python execution to avoid any auto-detection
-CMD ["python", "comprehensive_services.py"]
-||||||| 2945096
-# Start the application with uvicorn
-CMD ["python", "-m", "uvicorn", "app.server:application", "--host", "0.0.0.0", "--port", "8080"]
-=======
-# Use direct python execution to avoid any auto-detection
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["AttendancePlatform.Api.csproj", "."]
+RUN dotnet restore "./AttendancePlatform.Api.csproj"
+COPY . .
+WORKDIR "/src/."
+RUN dotnet build "AttendancePlatform.Api.csproj" -c Release -o /app/build
 
-CMD ["python", "comprehensive_services.py"]
->>>>>>> eed39a60f6b5e10c305cb9316422288e04759c18
+FROM build AS publish
+RUN dotnet publish "AttendancePlatform.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "AttendancePlatform.Api.dll"]
