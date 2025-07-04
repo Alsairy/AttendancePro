@@ -23,7 +23,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-JWT_SECRET = os.getenv("JWT_SECRET", "change-me-in-production")
+JWT_SECRET = os.getenv("JWT_SECRET", "hudur-enterprise-platform-secret-key-2024")
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
@@ -52,7 +52,7 @@ USERS_DB = {
         "name": "Admin User",
         "role": "admin",
         "department": "IT",
-        "password_hash": "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj3bp.Gm.QG2"
+        "password_hash": bcrypt.hashpw(os.getenv("ADMIN_PASSWORD", "AdminPassword123!").encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     },
     "manager@test.com": {
         "id": 2,
@@ -60,7 +60,7 @@ USERS_DB = {
         "name": "Manager User",
         "role": "manager",
         "department": "Operations",
-        "password_hash": "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj3bp.Gm.QG2"
+        "password_hash": bcrypt.hashpw(os.getenv("MANAGER_PASSWORD", "ManagerPassword123!").encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     },
     "john.doe@test.com": {
         "id": 3,
@@ -68,7 +68,7 @@ USERS_DB = {
         "name": "John Doe",
         "role": "employee",
         "department": "Sales",
-        "password_hash": "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj3bp.Gm.QG2"
+        "password_hash": bcrypt.hashpw(os.getenv("EMPLOYEE_PASSWORD", "EmployeePassword123!").encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     }
 }
 

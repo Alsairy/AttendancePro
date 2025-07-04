@@ -40,4 +40,5 @@ export default defineConfig({
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
   },
+  globalSetup: require.resolve('./src/test/setup.ts'),
 });
