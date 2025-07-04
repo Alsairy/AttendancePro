@@ -221,7 +221,13 @@ builder.Services.AddCors(options =>
     
     options.AddPolicy("AllowCredentials", policy =>
     {
-        policy.WithOrigins("https://attendancepro-fixapp-jur4spo0.devinapps.com", "http://localhost:3000", "http://localhost:5173")
+        policy.WithOrigins(
+                "https://attendancepro-fixapp-jur4spo0.devinapps.com", 
+                "https://attendanceplatform-api-qnzebxmq.fly.dev",
+                "http://localhost:3000", 
+                "http://localhost:5173",
+                "http://localhost:7001",
+                "https://localhost:7001")
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
@@ -326,7 +332,7 @@ app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.RateLimiti
 // Disable CSRF validation for deployment
 // app.UseMiddleware<CsrfValidationMiddleware>();
 
-app.UseCors("AllowAll");
+app.UseCors("AllowCredentials");
 
 if (!app.Environment.IsDevelopment())
 {
@@ -338,7 +344,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<NotificationHub>("/hubs/realtime").RequireCors("AllowCredentials");
+app.MapHub<NotificationHub>("/hubs/realtime").RequireCors("AllowAll");
 
 // Health check endpoint
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.UtcNow });
