@@ -87,17 +87,7 @@ builder.Services.AddHealthChecks()
     .AddDbContextCheck<AttendancePlatformDbContext>();
 
 // Shared Infrastructure
-// Configure shared infrastructure services
-builder.Services.AddDbContext<AttendancePlatformDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddScoped<IChatService, ChatService>();
-builder.Services.AddScoped<IVideoConferencingService, VideoConferencingService>();
-builder.Services.AddScoped<ITeamCollaborationService, TeamCollaborationService>();
-builder.Services.AddScoped<IDocumentCollaborationService, DocumentCollaborationService>();
-builder.Services.AddScoped<IPresenceService, PresenceService>();
-builder.Services.AddScoped<IScreenSharingService, ScreenSharingService>();
-builder.Services.AddSecurityServices(builder.Configuration);
+builder.Services.AddSharedInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
