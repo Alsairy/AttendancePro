@@ -87,7 +87,7 @@ builder.Services.AddHealthChecks()
     .AddDbContextCheck<AttendancePlatformDbContext>();
 
 // Shared Infrastructure
-builder.Services.AddSharedInfrastructure(builder.Configuration);
+builder.Services.AddSharedInfrastructure();
 
 var app = builder.Build();
 

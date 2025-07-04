@@ -147,7 +147,7 @@ namespace AttendancePlatform.Collaboration.Api.Services
             try
             {
                 var team = await _context.Teams
-                    .Include(t => t.Members)
+                    .Include(t => t.TeamMembers)
                     .ThenInclude(tm => tm.User)
                     .FirstOrDefaultAsync(t => t.Id == teamId && t.IsActive);
 
