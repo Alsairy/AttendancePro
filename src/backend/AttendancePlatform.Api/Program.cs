@@ -212,6 +212,14 @@ builder.Services.AddAuthorization();
 // Add CORS with permissive configuration for deployment
 builder.Services.AddCors(options =>
 {
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.SetIsOriginAllowed(origin => true)
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+    
     options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
