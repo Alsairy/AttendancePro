@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { ArrowLeft, Loader2, Shield, Smartphone } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { Button } from '../../components/ui/button'
+import Button from '../../components/ui/Button'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '../../components/ui/input-otp'
 import { Label } from '../../components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'

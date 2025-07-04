@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoginCredentials, AuthResponse, User } from '../types/User';
+import SecureTokenStorage from '../utils/SecureTokenStorage';
 
 export class AuthService {
   private static readonly TOKEN_KEY = 'auth_token';
@@ -23,9 +24,9 @@ export class AuthService {
 
       const authResponse: AuthResponse = await response.json();
       
-      await AsyncStorage.setItem(this.TOKEN_KEY, authResponse.token);
-      await AsyncStorage.setItem(this.REFRESH_TOKEN_KEY, authResponse.refreshToken);
-      await AsyncStorage.setItem(this.USER_KEY, JSON.stringify(authResponse.user));
+      await SecureTokenStorage.setToken(authResponse.token);
+      await SecureTokenStorage.setRefreshToken(authResponse.refreshToken);
+      await SecureTokenStorage.setUserData(authResponse.user);
 
       return authResponse;
     } catch (error) {
@@ -57,11 +58,11 @@ export class AuthService {
   }
 
   static async getToken(): Promise<string | null> {
-    return await AsyncStorage.getItem(this.TOKEN_KEY);
+    return await SecureTokenStorage.getToken();
   }
 
   static async getRefreshToken(): Promise<string | null> {
-    return await AsyncStorage.getItem(this.REFRESH_TOKEN_KEY);
+    return await SecureTokenStorage.getRefreshToken();
   }
 
   static async getUser(): Promise<User | null> {
@@ -90,8 +91,8 @@ export class AuthService {
 
       const authResponse: AuthResponse = await response.json();
       
-      await AsyncStorage.setItem(this.TOKEN_KEY, authResponse.token);
-      await AsyncStorage.setItem(this.REFRESH_TOKEN_KEY, authResponse.refreshToken);
+      await SecureTokenStorage.setToken(authResponse.token);
+      await SecureTokenStorage.setRefreshToken(authResponse.refreshToken);
 
       return authResponse;
     } catch (error) {

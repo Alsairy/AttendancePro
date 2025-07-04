@@ -38,6 +38,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
         public DbSet<Geofence> Geofences { get; set; }
         public DbSet<UserGeofence> UserGeofences { get; set; }
+        
         public DbSet<Beacon> Beacons { get; set; }
         public DbSet<Kiosk> Kiosks { get; set; }
         
@@ -77,9 +78,6 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<NotificationTemplate> NotificationTemplates { get; set; }
         public DbSet<DeviceToken> DeviceTokens { get; set; }
         public DbSet<NotificationPreference> NotificationPreferences { get; set; }
-        public DbSet<WorkflowDefinition> WorkflowDefinitions { get; set; }
-        public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
-        public DbSet<WorkflowTask> WorkflowTasks { get; set; }
         public DbSet<WorkflowExecutionLog> WorkflowExecutionLogs { get; set; }
         public DbSet<WorkflowTemplate> WorkflowTemplates { get; set; }
         public DbSet<WorkflowHistory> WorkflowHistory { get; set; }
@@ -87,9 +85,6 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<BiometricBackup> BiometricBackups { get; set; }
         public DbSet<BiometricSession> BiometricSessions { get; set; }
         public DbSet<BiometricDevice> BiometricDevices { get; set; }
-
-        public DbSet<Team> Teams { get; set; }
-        public DbSet<TeamMember> TeamMembers { get; set; }
         public DbSet<TeamProject> TeamProjects { get; set; }
         public DbSet<ProjectMember> ProjectMembers { get; set; }
         public DbSet<VideoConference> VideoConferences { get; set; }
@@ -109,6 +104,20 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
         public DbSet<IntegrationLog> IntegrationLogs { get; set; }
         public DbSet<TenantConfiguration> TenantConfigurations { get; set; }
         public DbSet<BusinessRule> BusinessRules { get; set; }
+        
+        // Voice and comprehensive feature entities
+        public DbSet<VoiceTemplate> VoiceTemplates { get; set; }
+        public DbSet<VoiceConfiguration> VoiceConfigurations { get; set; }
+        public DbSet<VoiceCommand> VoiceCommands { get; set; }
+        public DbSet<ProjectTask> ProjectTasks { get; set; }
+        public DbSet<DocumentShare> DocumentShares { get; set; }
+        public DbSet<EnterpriseIntegration> EnterpriseIntegrations { get; set; }
+        public DbSet<WorkflowDefinition> WorkflowDefinitions { get; set; }
+        public DbSet<WorkflowInstance> WorkflowInstances { get; set; }
+        public DbSet<WorkflowTask> WorkflowTasks { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<TeamMember> TeamMembers { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -487,10 +496,10 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.Property(e => e.UserId).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
-                entity.Property(e => e.Type).HasMaxLength(50).HasDefaultValue("info");
+                entity.Property(e => e.Type).HasDefaultValue(NotificationType.System);
                 entity.Property(e => e.Data).HasColumnType("nvarchar(max)");
                 entity.Property(e => e.ActionUrl).HasMaxLength(500);
-                entity.Property(e => e.Priority).HasMaxLength(20).HasDefaultValue("normal");
+                entity.Property(e => e.Priority).HasDefaultValue(NotificationPriority.Normal);
                 entity.Property(e => e.Category).HasMaxLength(100);
                 entity.Property(e => e.Source).HasMaxLength(100);
                 entity.Property(e => e.CorrelationId).HasMaxLength(50);
@@ -506,7 +515,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.Property(e => e.UserId).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
-                entity.Property(e => e.Type).HasMaxLength(50).HasDefaultValue("info");
+                entity.Property(e => e.Type).HasDefaultValue(NotificationType.System);
                 entity.Property(e => e.Data).HasColumnType("nvarchar(max)");
                 entity.Property(e => e.RecurrencePattern).HasMaxLength(100);
                 entity.Property(e => e.Status).HasMaxLength(50).HasDefaultValue("pending");

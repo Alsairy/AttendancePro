@@ -26,12 +26,16 @@ public class SecurityHeadersMiddleware
 
         context.Response.Headers.Append("Content-Security-Policy", 
             "default-src 'self'; " +
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+            "script-src 'self'; " +
             "style-src 'self' 'unsafe-inline'; " +
             "img-src 'self' data: https:; " +
-            "font-src 'self' data:; " +
-            "connect-src 'self' https://app-hgzbalgb.fly.dev; " +
-            "frame-ancestors 'none'");
+            "font-src 'self' https:; " +
+            "connect-src 'self' https:; " +
+            "frame-ancestors 'none'; " +
+            "base-uri 'self'; " +
+            "form-action 'self'");
+        
+        context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
 
         await _next(context);
     }

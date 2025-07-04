@@ -1,19 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { authService } from '../services/authService'
-
-interface User {
-  id: string
-  firstName: string
-  lastName: string
-  email: string
-  phoneNumber?: string
-  employeeId?: string
-  department?: string
-  position?: string
-  profilePictureUrl?: string
-  status: string
-  roles: string[]
-}
+import SecureStorage from '../utils/secureStorage'
+import type { User, RegisterData } from '../types/auth'
 
 interface AuthContextType {
   user: User | null
@@ -22,22 +10,9 @@ interface AuthContextType {
   login: (email: string, password: string, twoFactorCode?: string) => Promise<{ success: boolean; requiresTwoFactor?: boolean; error?: string }>
   register: (userData: RegisterData) => Promise<{ success: boolean; error?: string }>
   logout: () => Promise<void>
-
   forgotPassword: (email: string) => Promise<{ success: boolean; error?: string }>
   resetPassword: (token: string, newPassword: string) => Promise<{ success: boolean; error?: string }>
   changePassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>
-}
-
-interface RegisterData {
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  confirmPassword: string
-  phoneNumber?: string
-  employeeId?: string
-  department?: string
-  position?: string
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -56,14 +31,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const initializeAuth = async () => {
-      const token = localStorage.getItem('accessToken')
+      const token = SecureStorage.getToken()
       if (token) {
         try {
           const userData = await authService.getCurrentUser()
           setUser(userData)
         } catch (error) {
           console.error('Failed to get current user:', error)
-          localStorage.removeItem('accessToken')
+          SecureStorage.removeToken()
         }
       }
       setIsLoading(false)
@@ -81,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (response.access_token && response.user) {
-        localStorage.setItem('accessToken', response.access_token)
+        SecureStorage.setToken(response.access_token)
         setUser(response.user)
         return { success: true }
       }
@@ -111,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Logout error:', error)
     } finally {
-      localStorage.removeItem('accessToken')
+      SecureStorage.clearAll()
       setUser(null)
     }
   }

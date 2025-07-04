@@ -238,6 +238,10 @@ jobs:
       working-directory: src/frontend/attendancepro-frontend
       run: npm run type-check
     
+    - name: Install frontend dependencies
+      working-directory: src/frontend/attendancepro-frontend
+      run: npm ci
+    
     - name: Run unit tests
       working-directory: src/frontend/attendancepro-frontend
       run: npm run test:coverage
@@ -269,6 +273,10 @@ jobs:
         cache-dependency-path: src/mobile/AttendanceMobile/package-lock.json
     
     - name: Install dependencies
+      working-directory: src/mobile/AttendanceMobile
+      run: npm ci
+    
+    - name: Install mobile dependencies
       working-directory: src/mobile/AttendanceMobile
       run: npm ci
     

@@ -2,7 +2,7 @@ import React from 'react'
 import { Mail, Phone, Building } from 'lucide-react'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
-import { Button } from '../../components/ui/button'
+import Button from '../../components/ui/Button'
 import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar'
 import { useAuth } from '../../contexts/AuthContext'
 

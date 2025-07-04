@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Camera, CheckCircle, AlertCircle, Loader2, Shield, Eye } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { Button } from '../ui/button'
+import Button from '../ui/Button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Alert, AlertDescription } from '../ui/alert'
 import { Badge } from '../ui/badge'

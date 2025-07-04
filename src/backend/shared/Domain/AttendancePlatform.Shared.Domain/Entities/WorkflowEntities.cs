@@ -44,9 +44,7 @@ public class WorkflowDefinition : TenantEntity
 [Table("WorkflowTasks")]
 public class WorkflowTask : BaseEntity
 {
-    [Required]
-    [MaxLength(50)]
-    public string WorkflowInstanceId { get; set; } = string.Empty;
+    public Guid WorkflowInstanceId { get; set; }
 
     [Required]
     [MaxLength(100)]
@@ -65,8 +63,7 @@ public class WorkflowTask : BaseEntity
     [MaxLength(50)]
     public string Status { get; set; } = "pending";
 
-    [MaxLength(50)]
-    public string? AssignedTo { get; set; }
+    public Guid? AssignedUserId { get; set; }
 
     [MaxLength(50)]
     public string? AssignedBy { get; set; }
@@ -93,7 +90,9 @@ public class WorkflowTask : BaseEntity
     public string Priority { get; set; } = "normal";
 
     public virtual WorkflowInstance WorkflowInstance { get; set; } = null!;
+    public virtual User? AssignedUser { get; set; }
 }
+
 
 
 

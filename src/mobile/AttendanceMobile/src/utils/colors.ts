@@ -1,6 +1,7 @@
 export const Colors = {
   primary: '#007AFF',
   primaryDark: '#0051D5',
+  primaryLight: '#E3F2FD',
   secondary: '#5856D6',
   success: '#34C759',
   warning: '#FF9500',
@@ -12,6 +13,8 @@ export const Colors = {
   text: '#000000',
   textSecondary: '#8E8E93',
   border: '#C6C6C8',
+  separator: '#E5E5EA',
+  disabled: '#C7C7CD',
   white: '#FFFFFF',
   black: '#000000',
   gray: '#8E8E93',

@@ -78,11 +78,19 @@ jobs:
       with:
         node-version: '18'
     
+    - name: Install frontend dependencies
+      working-directory: src/frontend/attendancepro-frontend
+      run: npm ci
+    
     - name: Audit frontend dependencies
       working-directory: src/frontend/attendancepro-frontend
       run: |
         npm audit --audit-level=high || true
         npm audit fix --dry-run || true
+    
+    - name: Install mobile dependencies
+      working-directory: src/mobile/AttendanceMobile
+      run: npm ci
     
     - name: Audit mobile dependencies
       working-directory: src/mobile/AttendanceMobile

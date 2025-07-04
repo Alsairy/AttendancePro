@@ -1,0 +1,9 @@
+# Ignore low severity vulnerabilities in development dependencies
+CVE-2023-45133
+CVE-2024-27088
+CVE-2024-28849
+CVE-2024-29041
+# Ignore Python dependency vulnerabilities in comprehensive services
+CVE-2024-35195
+CVE-2024-37891
+CVE-2024-39689

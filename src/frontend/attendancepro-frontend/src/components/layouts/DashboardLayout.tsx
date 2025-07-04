@@ -25,7 +25,7 @@ import {
   Mic
 } from 'lucide-react'
 
-import { Button } from '../ui/button'
+import Button from '../ui/Button'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { 
   DropdownMenu, 
@@ -35,7 +35,7 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from '../ui/dropdown-menu'
-import { Input } from '../ui/input'
+import Input from '../ui/Input'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import { useAuth } from '../../contexts/AuthContext'
 import { useTheme } from '../theme-provider'
