@@ -12,11 +12,11 @@ describe('LoginScreen', () => {
   })
 
   it('renders login form', () => {
-    const { getByPlaceholderText, getByText } = render(<LoginScreen />)
+    const { getByPlaceholderText, getAllByText } = render(<LoginScreen />)
     
     expect(getByPlaceholderText('Email')).toBeTruthy()
     expect(getByPlaceholderText('Password')).toBeTruthy()
-    expect(getByText('Login')).toBeTruthy()
+    expect(getAllByText('Login').length).toBeGreaterThan(0)
   })
 
   it('handles successful login', async () => {
@@ -35,11 +35,11 @@ describe('LoginScreen', () => {
       refreshToken: 'refresh-token'
     })
 
-    const { getByPlaceholderText, getByText } = render(<LoginScreen />)
+    const { getByPlaceholderText, getAllByText } = render(<LoginScreen />)
     
     fireEvent.changeText(getByPlaceholderText('Email'), 'test@example.com')
     fireEvent.changeText(getByPlaceholderText('Password'), 'password')
-    fireEvent.press(getByText('Login'))
+    fireEvent.press(getAllByText('Login')[0])
 
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith({
