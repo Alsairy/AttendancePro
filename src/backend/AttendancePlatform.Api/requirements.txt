@@ -5,3 +5,5 @@ passlib[bcrypt]==1.7.4
 python-multipart==0.0.18
 pydantic==2.5.0
 bcrypt==4.1.2
+starlette==0.37.2
+anyio==4.4.0
