@@ -3,7 +3,7 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testPathIgnorePatterns: ['/node_modules/', '/android/', '/ios/'],
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|react-native-vector-icons|react-native-keychain|@react-native-community|react-native-maps)/)'
+    'node_modules/(?!(react-native|@react-native|react-native-vector-icons|react-native-keychain|@react-native-community|react-native-maps|@react-native/js-polyfills)/)'
   ],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
