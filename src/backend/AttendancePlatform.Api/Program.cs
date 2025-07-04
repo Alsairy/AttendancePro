@@ -214,10 +214,9 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.SetIsOriginAllowed(origin => true)
+        policy.AllowAnyOrigin()
               .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
+              .AllowAnyHeader();
     });
     
     options.AddPolicy("AllowAll", policy =>
@@ -235,11 +234,12 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
     
-    options.AddPolicy("AllowTunnel", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("https://attendancepro-fixapp-jur4spo0.devinapps.com")
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -340,7 +340,7 @@ app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.RateLimiti
 // Disable CSRF validation for deployment
 // app.UseMiddleware<CsrfValidationMiddleware>();
 
-app.UseCors();
+app.UseCors("AllowAll");
 
 if (!app.Environment.IsDevelopment())
 {
@@ -352,7 +352,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<NotificationHub>("/hubs/realtime").RequireCors();
+app.MapHub<NotificationHub>("/hubs/realtime").RequireCors("AllowAll");
 
 // Health check endpoint
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.UtcNow });
