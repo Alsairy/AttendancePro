@@ -326,7 +326,7 @@ app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.RateLimiti
 // Disable CSRF validation for deployment
 // app.UseMiddleware<CsrfValidationMiddleware>();
 
-app.UseCors("AllowCredentials");
+app.UseCors();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -338,7 +338,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<NotificationHub>("/hubs/realtime").RequireCors("AllowCredentials");
+app.MapHub<NotificationHub>("/hubs/realtime");
 
 // Health check endpoint
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.UtcNow });
