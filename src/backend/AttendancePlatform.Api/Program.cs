@@ -221,17 +221,10 @@ builder.Services.AddCors(options =>
     
     options.AddPolicy("AllowCredentials", policy =>
     {
-        policy.WithOrigins(
-                "https://attendancepro-fixapp-jur4spo0.devinapps.com", 
-                "https://attendanceplatform-api-qnzebxmq.fly.dev",
-                "http://localhost:3000", 
-                "http://localhost:5173",
-                "http://localhost:7001",
-                "https://localhost:7001")
+        policy.SetIsOriginAllowed(origin => true)
               .AllowAnyMethod()
               .AllowAnyHeader()
-              .AllowCredentials()
-              .SetIsOriginAllowed(origin => true);
+              .AllowCredentials();
     });
     
     options.AddPolicy("AllowTunnel", policy =>
