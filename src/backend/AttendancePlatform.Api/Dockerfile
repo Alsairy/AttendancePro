@@ -7,10 +7,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY server.py ./
+COPY comprehensive_services.py ./
 
 # Expose port
 EXPOSE 8080
 
-# Use explicit python command to avoid any auto-detection
-ENTRYPOINT ["python", "server.py"]
+# Use direct python execution to avoid any auto-detection
+CMD ["python", "comprehensive_services.py"]
