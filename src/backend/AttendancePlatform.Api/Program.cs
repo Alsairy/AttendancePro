@@ -230,7 +230,8 @@ builder.Services.AddCors(options =>
                 "https://localhost:7001")
               .AllowAnyMethod()
               .AllowAnyHeader()
-              .AllowCredentials();
+              .AllowCredentials()
+              .SetIsOriginAllowed(origin => true);
     });
     
     options.AddPolicy("AllowTunnel", policy =>
@@ -344,7 +345,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<NotificationHub>("/hubs/realtime").RequireCors("AllowAll");
+app.MapHub<NotificationHub>("/hubs/realtime").RequireCors("AllowCredentials");
 
 // Health check endpoint
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.UtcNow });
