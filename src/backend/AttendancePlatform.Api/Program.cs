@@ -250,6 +250,12 @@ builder.Services.AddSignalR(options =>
     options.EnableDetailedErrors = true;
 }).AddJsonProtocol();
 
+// Configure SignalR with CORS
+builder.Services.Configure<Microsoft.AspNetCore.SignalR.HubOptions>(options =>
+{
+    options.EnableDetailedErrors = true;
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -346,7 +352,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<NotificationHub>("/hubs/realtime");
+app.MapHub<NotificationHub>("/hubs/realtime").RequireCors();
 
 // Health check endpoint
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.UtcNow });
