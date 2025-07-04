@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-test.describe.configure({ mode: 'parallel' });
-
 test.describe('Attendance Management', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/login');

@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-test.describe.configure({ mode: 'parallel' });
-
 test.describe('Login Flow', () => {
   test('should login successfully with valid credentials', async ({ page }) => {
     await page.goto('/login');
