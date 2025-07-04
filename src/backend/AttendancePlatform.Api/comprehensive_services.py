@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List, Dict, Any
-from jose import jwt
+import jwt
 import bcrypt
 import os
 import logging
