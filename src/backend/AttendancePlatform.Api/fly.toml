@@ -8,7 +8,14 @@ primary_region = "iad"
   PORT = "8080"
 
 [processes]
+<<<<<<< HEAD
   web = "python comprehensive_services.py"
+||||||| 2945096
+  web = "python -m uvicorn app.server:application --host 0.0.0.0 --port 8080"
+=======
+web = "python comprehensive_services.py"
+
+>>>>>>> eed39a60f6b5e10c305cb9316422288e04759c18
 
 [http_service]
   internal_port = 8080
