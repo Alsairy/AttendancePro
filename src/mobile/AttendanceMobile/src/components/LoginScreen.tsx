@@ -9,11 +9,7 @@ import {
   ActivityIndicator
 } from 'react-native'
 import { AuthService } from '../services/AuthService'
-
-interface LoginCredentials {
-  email: string
-  password: string
-}
+import { LoginCredentials } from '../types/User'
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('')
@@ -28,8 +24,12 @@ const LoginScreen: React.FC = () => {
 
     setLoading(true)
     try {
-      const credentials: LoginCredentials = { email, password }
-      await AuthService.login(credentials as any)
+      const credentials: LoginCredentials = { 
+        email, 
+        password, 
+        tenantSubdomain: 'default' 
+      }
+      await AuthService.login(credentials)
       Alert.alert('Success', 'Login successful')
     } catch (error) {
       Alert.alert('Error', 'Login failed. Please check your credentials.')

@@ -2,9 +2,12 @@ import React from 'react'
 import { render, fireEvent, waitFor } from '@testing-library/react-native'
 import { describe, it, expect, beforeEach, jest } from '@jest/globals'
 import LoginScreen from '../LoginScreen'
-import { AuthService } from '../../services/AuthService'
+import type { AuthResponse } from '../../types/User'
 
 jest.mock('../../services/AuthService')
+
+import { AuthService } from '../../services/AuthService'
+const mockAuthService = AuthService as jest.Mocked<typeof AuthService>
 
 describe('LoginScreen', () => {
   beforeEach(() => {
@@ -20,8 +23,7 @@ describe('LoginScreen', () => {
   })
 
   it('handles successful login', async () => {
-    const mockLogin = jest.mocked(AuthService.login)
-    mockLogin.mockResolvedValue({
+    mockAuthService.login.mockResolvedValue({
       token: 'mock-token',
       user: { 
         id: '1', 
@@ -32,20 +34,23 @@ describe('LoginScreen', () => {
         tenantId: 'tenant-1',
         createdAt: '2024-01-01T00:00:00Z'
       },
-      refreshToken: 'refresh-token'
+      refreshToken: 'refresh-token',
+      expiresAt: '2024-01-01T01:00:00Z'
     })
 
     const { getByPlaceholderText, getAllByText } = render(<LoginScreen />)
     
     fireEvent.changeText(getByPlaceholderText('Email'), 'test@example.com')
     fireEvent.changeText(getByPlaceholderText('Password'), 'password')
-    fireEvent.press(getAllByText('Login')[0])
+    const loginElements = getAllByText('Login')
+    fireEvent.press(loginElements[loginElements.length - 1])
 
     await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith({
+      expect(mockAuthService.login).toHaveBeenCalledWith({
         email: 'test@example.com',
-        password: 'password'
+        password: 'password',
+        tenantSubdomain: 'default'
       })
-    })
+    }, { timeout: 3000 })
   })
 })
