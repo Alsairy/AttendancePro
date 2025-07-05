@@ -275,6 +275,8 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
+
 // Configure forwarded headers for proxy support
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
@@ -283,8 +285,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     KnownNetworks = { },
     KnownProxies = { }
 });
-
-app.UseCors("AllowAll");
 
 using (var scope = app.Services.CreateScope())
 {
@@ -310,8 +310,6 @@ else
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors("AllowAll");
 
 app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.GlobalExceptionMiddleware>();
 app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.InputSanitizationMiddleware>();
