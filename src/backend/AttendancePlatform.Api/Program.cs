@@ -25,12 +25,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Configure Kestrel to accept any host header
+// Configure Kestrel to accept any host header and use Fly.io port
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.AllowSynchronousIO = true;
     options.Limits.MaxRequestBodySize = null;
-    options.Listen(System.Net.IPAddress.Any, 7001);
+    var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+    options.Listen(System.Net.IPAddress.Any, int.Parse(port));
     options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
     options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
 });
@@ -225,22 +226,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
-    
-    options.AddPolicy("AllowCredentials", policy =>
-    {
-        policy.SetIsOriginAllowed(origin => true)
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
-    
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy.WithOrigins("https://attendancepro-fixapp-jur4spo0.devinapps.com")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
 });
 
 builder.Services.AddHudurTelemetry("Hudur Enterprise Platform");
@@ -290,6 +275,8 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
+
 // Configure forwarded headers for proxy support
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
@@ -302,7 +289,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 // Disable host filtering for deployment - accept any hostname
 app.Use(async (context, next) =>
 {
-    context.Request.Host = new HostString("localhost", 7001);
+    var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+    context.Request.Host = new HostString("localhost", int.Parse(port));
     await next();
 });
 
