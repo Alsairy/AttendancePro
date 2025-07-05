@@ -312,6 +312,8 @@ else
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowAll");
+
 app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.GlobalExceptionMiddleware>();
 app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.InputSanitizationMiddleware>();
 app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.HtmlSanitizationMiddleware>();
