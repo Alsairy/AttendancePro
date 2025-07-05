@@ -275,8 +275,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");
-
 // Configure forwarded headers for proxy support
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
@@ -285,6 +283,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     KnownNetworks = { },
     KnownProxies = { }
 });
+
+app.UseCors("AllowAll");
 
 // Disable host filtering for deployment - accept any hostname
 app.Use(async (context, next) =>
