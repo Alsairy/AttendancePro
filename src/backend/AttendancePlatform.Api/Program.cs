@@ -328,8 +328,6 @@ app.UseMiddleware<AttendancePlatform.Shared.Infrastructure.Middleware.RateLimiti
 // Disable CSRF validation for deployment
 // app.UseMiddleware<CsrfValidationMiddleware>();
 
-app.UseCors("AllowAll");
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseMiddleware<AttendancePlatform.Api.Middleware.RateLimitingMiddleware>();
