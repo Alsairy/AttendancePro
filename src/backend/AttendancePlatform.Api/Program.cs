@@ -286,14 +286,6 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 
 app.UseCors("AllowAll");
 
-// Disable host filtering for deployment - accept any hostname
-app.Use(async (context, next) =>
-{
-    var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-    context.Request.Host = new HostString("localhost", int.Parse(port));
-    await next();
-});
-
 
 using (var scope = app.Services.CreateScope())
 {
