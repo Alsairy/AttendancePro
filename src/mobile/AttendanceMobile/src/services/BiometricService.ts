@@ -21,9 +21,14 @@ class BiometricServiceClass {
   private isInitialized = false;
 
   constructor() {
-    this.rnBiometrics = new ReactNativeBiometrics({
-      allowDeviceCredentials: true,
-    });
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping ReactNativeBiometrics initialization on iOS simulator');
+      this.rnBiometrics = null as any;
+    } else {
+      this.rnBiometrics = new ReactNativeBiometrics({
+        allowDeviceCredentials: true,
+      });
+    }
   }
 
   async initialize(): Promise<void> {
@@ -154,6 +159,10 @@ class BiometricServiceClass {
       }
 
       // Check if keys exist, create if not
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping biometric signature authentication on iOS simulator');
+        return { success: false, error: 'Biometric authentication not available on iOS simulator' };
+      }
       const { keysExist } = await this.rnBiometrics.biometricKeysExist();
       if (!keysExist) {
         const keyResult = await this.createBiometricKeys();
@@ -198,6 +207,10 @@ class BiometricServiceClass {
 
   async createBiometricKeys(): Promise<BiometricResult> {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping biometric key creation on iOS simulator');
+        return { success: false, error: 'Biometric key creation not available on iOS simulator' };
+      }
       const { publicKey } = await this.rnBiometrics.createKeys();
       
       if (publicKey) {
@@ -225,6 +238,10 @@ class BiometricServiceClass {
 
   async deleteBiometricKeys(): Promise<BiometricResult> {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping biometric key deletion on iOS simulator');
+        return { success: true };
+      }
       const { keysDeleted } = await this.rnBiometrics.deleteKeys();
       
       if (keysDeleted) {
@@ -260,6 +277,10 @@ class BiometricServiceClass {
 
   async checkBiometricKeysExist(): Promise<boolean> {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping biometric keys existence check on iOS simulator');
+        return false;
+      }
       const { keysExist } = await this.rnBiometrics.biometricKeysExist();
       return keysExist;
     } catch (error) {

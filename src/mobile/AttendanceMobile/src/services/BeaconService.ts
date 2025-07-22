@@ -47,6 +47,11 @@ export class BeaconService {
 
   private static async requestPermissions(): Promise<boolean> {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping beacon permissions on iOS simulator');
+        return true;
+      }
+      
       const locationGranted = await PermissionService.requestLocationPermission();
       
       if (Platform.OS === 'android') {
@@ -130,14 +135,26 @@ export class BeaconService {
   }
 
   static onRegionEnter(callback: (region: BeaconRegion) => void): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping beacon region enter listener on iOS simulator');
+      return;
+    }
     DeviceEventEmitter.addListener('regionDidEnter', callback);
   }
 
   static onRegionLeave(callback: (region: BeaconRegion) => void): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping beacon region leave listener on iOS simulator');
+      return;
+    }
     DeviceEventEmitter.addListener('regionDidExit', callback);
   }
 
   static onBeaconsDetected(callback: (beacons: Beacon[]) => void): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping beacon detection listener on iOS simulator');
+      return;
+    }
     DeviceEventEmitter.addListener('beaconsDidRange', (data: any) => {
       if (data.beacons && data.beacons.length > 0) {
         callback(data.beacons);
@@ -173,6 +190,10 @@ export class BeaconService {
   }
 
   static removeAllListeners(): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping beacon listener removal on iOS simulator');
+      return;
+    }
     DeviceEventEmitter.removeAllListeners('regionDidEnter');
     DeviceEventEmitter.removeAllListeners('regionDidExit');
     DeviceEventEmitter.removeAllListeners('beaconsDidRange');
