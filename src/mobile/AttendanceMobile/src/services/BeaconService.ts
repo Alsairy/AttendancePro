@@ -25,6 +25,12 @@ export class BeaconService {
   static async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping beacon service initialization on iOS simulator');
+      this.isInitialized = true;
+      return;
+    }
+
     try {
       await this.requestPermissions();
 
@@ -65,6 +71,11 @@ export class BeaconService {
 
   static async startMonitoring(region: BeaconRegion): Promise<void> {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping beacon monitoring on iOS simulator');
+        return;
+      }
+      
       await this.initialize();
       
       await Beacons.startMonitoringForRegion(region);
@@ -93,6 +104,11 @@ export class BeaconService {
 
   static async startRanging(region: BeaconRegion): Promise<void> {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping beacon ranging on iOS simulator');
+        return;
+      }
+      
       await this.initialize();
       
       await Beacons.startRangingBeaconsInRegion(region);
