@@ -35,6 +35,7 @@ import { LocationService } from './src/services/LocationService';
 import { BiometricService } from './src/services/BiometricService';
 import { OfflineService } from './src/services/OfflineService';
 import { NotificationService } from './src/services/NotificationService';
+import { PermissionService } from './src/services/PermissionService';
 
 // Store
 import { useAuthStore } from './src/store/authStore';
@@ -128,8 +129,8 @@ function App(): JSX.Element {
 
   const initializeApp = async () => {
     try {
-      // Initialize services
-      await Promise.all([
+      // Initialize services with individual error handling
+      const results = await Promise.allSettled([
         requestPermissions(),
         checkAuthStatus(),
         initializeLocation(),
@@ -138,40 +139,35 @@ function App(): JSX.Element {
         OfflineService.initialize(),
       ]);
 
-      // Sync offline data if connected
-      if (!isOfflineMode) {
-        await syncPendingData();
+      results.forEach((result, index) => {
+        const serviceNames = ['permissions', 'auth', 'location', 'biometrics', 'notifications', 'offline'];
+        if (result.status === 'rejected') {
+          console.warn(`${serviceNames[index]} initialization failed:`, result.reason);
+        }
+      });
+
+      // Sync offline data if connected (only if offline service initialized successfully)
+      const offlineResult = results[5];
+      if (offlineResult.status === 'fulfilled' && !isOfflineMode) {
+        try {
+          await syncPendingData();
+        } catch (error) {
+          console.warn('Offline sync failed:', error);
+        }
       }
     } catch (error) {
       console.error('App initialization error:', error);
-      Alert.alert('Initialization Error', 'Failed to initialize app. Please restart.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const requestPermissions = async () => {
-    const permissions = [
-      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-      PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION,
-      PERMISSIONS.ANDROID.CAMERA,
-      PERMISSIONS.ANDROID.RECORD_AUDIO,
-      PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-      PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-      PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION,
-      PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
-      PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-    ];
-
-    for (const permission of permissions) {
-      try {
-        const result = await request(permission);
-        if (result !== RESULTS.GRANTED) {
-          console.warn(`Permission ${permission} not granted:`, result);
-        }
-      } catch (error) {
-        console.error(`Error requesting permission ${permission}:`, error);
-      }
+    try {
+      const permissions = await PermissionService.requestAllPermissions();
+      console.log('Permissions granted:', permissions);
+    } catch (error) {
+      console.error('Permission request error:', error);
     }
   };
 
@@ -205,6 +201,11 @@ function App(): JSX.Element {
 
   const initializeBiometrics = async () => {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping biometric initialization on iOS simulator');
+        return;
+      }
+      
       const isAvailable = await BiometricService.isAvailable();
       if (isAvailable) {
         await BiometricService.initialize();

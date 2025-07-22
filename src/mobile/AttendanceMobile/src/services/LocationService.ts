@@ -1,5 +1,5 @@
 import Geolocation from '@react-native-community/geolocation';
-import BackgroundJob from 'react-native-background-job';
+// import BackgroundJob from 'react-native-background-job'; // Removed - not in package.json
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform, PermissionsAndroid } from 'react-native';
 
@@ -161,24 +161,22 @@ class LocationServiceClass {
   }
 
   startBackgroundTracking(): void {
-    if (this.isBackgroundTracking) return;
-
-    BackgroundJob.start({
-      jobKey: 'locationTracking',
-      period: 30000, // 30 seconds
-    });
-
-    this.isBackgroundTracking = true;
+    console.warn('Background tracking not available - react-native-background-job not installed');
+    // if (this.isBackgroundTracking) return;
+    // BackgroundJob.start({
+    //   jobKey: 'locationTracking',
+    //   period: 30000, // 30 seconds
+    // });
+    // this.isBackgroundTracking = true;
   }
 
   stopBackgroundTracking(): void {
-    if (!this.isBackgroundTracking) return;
-
-    BackgroundJob.stop({
-      jobKey: 'locationTracking',
-    });
-
-    this.isBackgroundTracking = false;
+    console.warn('Background tracking not available - react-native-background-job not installed');
+    // if (!this.isBackgroundTracking) return;
+    // BackgroundJob.stop({
+    //   jobKey: 'locationTracking',
+    // });
+    // this.isBackgroundTracking = false;
   }
 
   private updateCurrentLocation(location: Location): void {
