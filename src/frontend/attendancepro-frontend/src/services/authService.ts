@@ -70,17 +70,22 @@ class AuthService {
 
   async login(email: string, password: string, twoFactorCode?: string): Promise<LoginResponse> {
     try {
-      const response: AxiosResponse<{access_token: string; token_type: string; user: any}> = await this.api.post('/login', {
+      const response: AxiosResponse<{success: boolean; data: {accessToken: string; refreshToken: string; user: any; requiresTwoFactor?: boolean}}> = await this.api.post('/auth/login', {
         email,
         password,
         twoFactorCode,
       })
       
-      if (response.data.access_token) {
+      if (response.data.success && response.data.data.accessToken) {
+        localStorage.setItem('accessToken', response.data.data.accessToken)
+        localStorage.setItem('refreshToken', response.data.data.refreshToken)
+        localStorage.setItem('user', JSON.stringify(response.data.data.user))
+        
         return {
-          access_token: response.data.access_token,
-          token_type: response.data.token_type,
-          user: response.data.user
+          access_token: response.data.data.accessToken,
+          token_type: 'Bearer',
+          user: response.data.data.user,
+          requiresTwoFactor: response.data.data.requiresTwoFactor
         }
       } else {
         throw new Error('Login failed')
@@ -108,6 +113,10 @@ class AuthService {
       await this.api.post('/api/auth/logout', { userId })
     } catch (error: any) {
       console.error('Logout error:', error)
+    } finally {
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
+      localStorage.removeItem('user')
     }
   }
 
