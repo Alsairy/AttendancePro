@@ -6,7 +6,6 @@ import {
   useColorScheme,
   Alert,
   Platform,
-  PermissionsAndroid,
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';

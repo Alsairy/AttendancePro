@@ -62,7 +62,7 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ navigation }) => {
   const [geofenceStatus, setGeofenceStatus] = useState<'inside' | 'outside' | 'unknown'>('unknown');
 
   const cameraRef = useRef<Camera>(null);
-  const devices = useCameraDevices();
+  const devices = __DEV__ && Platform.OS === 'ios' ? [] : useCameraDevices();
   const device = devices.find(d => d.position === 'front');
 
   useEffect(() => {
@@ -100,6 +100,11 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ navigation }) => {
 
   const requestCameraPermission = async () => {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping camera permission request on iOS simulator');
+        return;
+      }
+      
       const permission = await Camera.requestCameraPermission();
       if (permission === 'denied') {
         Alert.alert(
@@ -232,6 +237,15 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ navigation }) => {
 
   const captureFaceData = async (): Promise<any> => {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping photo capture on iOS simulator');
+        return {
+          photoPath: 'simulator-placeholder',
+          confidence: 0.95,
+          faceId: 'face-simulator-' + Date.now(),
+        };
+      }
+      
       if (!cameraRef.current) {
         throw new Error('Camera not ready');
       }
@@ -408,14 +422,38 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ navigation }) => {
   );
 
   const renderCamera = () => {
-    if (!showCamera || !device) return null;
+    if (!showCamera || (!device && !(__DEV__ && Platform.OS === 'ios'))) return null;
+    
+    if (__DEV__ && Platform.OS === 'ios') {
+      return (
+        <View style={styles.cameraContainer}>
+          <View style={[styles.camera, { backgroundColor: Colors.gray, justifyContent: 'center', alignItems: 'center' }]}>
+            <Text style={{ color: Colors.white, fontSize: 18 }}>Camera not available on iOS simulator</Text>
+          </View>
+          <View style={styles.cameraOverlay}>
+            <TouchableOpacity
+              style={styles.captureButton}
+              onPress={() => handleAttendance(currentStatus === 'checked_out' ? AttendanceType.CHECK_IN : AttendanceType.CHECK_OUT)}
+            >
+              <Icon name="camera" size={32} color={Colors.white} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => setShowCamera(false)}
+            >
+              <Icon name="close" size={24} color={Colors.white} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
 
     return (
       <View style={styles.cameraContainer}>
         <Camera
           ref={cameraRef}
           style={styles.camera}
-          device={device}
+          device={device!}
           isActive={showCamera}
           photo={true}
         />
