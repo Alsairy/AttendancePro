@@ -271,6 +271,17 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ navigation }) => {
   };
 
   const getDeviceInfo = async () => {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Using placeholder device info on iOS simulator');
+      return {
+        deviceId: 'ios-simulator-' + Date.now(),
+        deviceName: 'iOS Simulator',
+        systemVersion: '17.0',
+        appVersion: '1.0.0',
+        platform: Platform.OS,
+      };
+    }
+    
     const DeviceInfo = require('react-native-device-info');
     return {
       deviceId: await DeviceInfo.getUniqueId(),
