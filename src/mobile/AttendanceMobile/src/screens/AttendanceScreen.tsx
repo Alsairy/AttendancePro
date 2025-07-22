@@ -282,14 +282,25 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ navigation }) => {
       };
     }
     
-    const DeviceInfo = require('react-native-device-info');
-    return {
-      deviceId: await DeviceInfo.getUniqueId(),
-      deviceName: await DeviceInfo.getDeviceName(),
-      systemVersion: DeviceInfo.getSystemVersion(),
-      appVersion: DeviceInfo.getVersion(),
-      platform: Platform.OS,
-    };
+    try {
+      const DeviceInfo = require('react-native-device-info');
+      return {
+        deviceId: await DeviceInfo.getUniqueId(),
+        deviceName: await DeviceInfo.getDeviceName(),
+        systemVersion: DeviceInfo.getSystemVersion(),
+        appVersion: DeviceInfo.getVersion(),
+        platform: Platform.OS,
+      };
+    } catch (error) {
+      console.error('DeviceInfo error:', error);
+      return {
+        deviceId: 'unknown-device-' + Date.now(),
+        deviceName: 'Unknown Device',
+        systemVersion: 'Unknown',
+        appVersion: '1.0.0',
+        platform: Platform.OS,
+      };
+    }
   };
 
   const renderMethodSelector = () => (
