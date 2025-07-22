@@ -15,7 +15,6 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Geolocation from '@react-native-community/geolocation';
-import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // Screens
@@ -217,6 +216,11 @@ function App(): JSX.Element {
 
   const initializeNotifications = async () => {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping notification initialization on iOS simulator');
+        return;
+      }
+      
       await NotificationService.initialize();
       await NotificationService.requestPermissions();
     } catch (error) {

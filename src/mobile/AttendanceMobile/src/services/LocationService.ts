@@ -2,6 +2,7 @@ import Geolocation from '@react-native-community/geolocation';
 // import BackgroundJob from 'react-native-background-job'; // Removed - not in package.json
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform, PermissionsAndroid } from 'react-native';
+import { PermissionService } from './PermissionService';
 
 export interface Location {
   latitude: number;
@@ -42,24 +43,14 @@ class LocationServiceClass {
   }
 
   private async requestLocationPermissions(): Promise<void> {
-    if (Platform.OS === 'android') {
-      try {
-        const granted = await PermissionsAndroid.requestMultiple([
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-          PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
-        ]);
-
-        const fineLocationGranted = granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
-        const coarseLocationGranted = granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
-
-        if (!fineLocationGranted && !coarseLocationGranted) {
-          throw new Error('Location permissions not granted');
-        }
-      } catch (error) {
-        console.error('Permission request error:', error);
-        throw error;
+    try {
+      const granted = await PermissionService.requestLocationPermission();
+      if (!granted) {
+        throw new Error('Location permissions not granted');
       }
+    } catch (error) {
+      console.error('Permission request error:', error);
+      throw error;
     }
   }
 

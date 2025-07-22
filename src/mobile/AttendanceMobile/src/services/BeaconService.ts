@@ -1,5 +1,6 @@
 import Beacons from '@hkpuits/react-native-beacons-manager';
 import { Platform, PermissionsAndroid, DeviceEventEmitter } from 'react-native';
+import { PermissionService } from './PermissionService';
 
 export interface BeaconRegion {
   identifier: string;
@@ -39,24 +40,27 @@ export class BeaconService {
   }
 
   private static async requestPermissions(): Promise<boolean> {
-    if (Platform.OS === 'android') {
-      try {
+    try {
+      const locationGranted = await PermissionService.requestLocationPermission();
+      
+      if (Platform.OS === 'android') {
         const granted = await PermissionsAndroid.requestMultiple([
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
         ]);
-
-        return Object.values(granted).every(
+        
+        const bluetoothGranted = Object.values(granted).every(
           permission => permission === PermissionsAndroid.RESULTS.GRANTED
         );
-      } catch (error) {
-        console.error('Permission request failed:', error);
-        return false;
+        
+        return locationGranted && bluetoothGranted;
       }
+      
+      return locationGranted;
+    } catch (error) {
+      console.error('Permission request failed:', error);
+      return false;
     }
-    return true;
   }
 
   static async startMonitoring(region: BeaconRegion): Promise<void> {
