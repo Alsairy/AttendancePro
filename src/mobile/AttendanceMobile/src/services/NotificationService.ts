@@ -16,6 +16,12 @@ export class NotificationService {
   static initialize(): void {
     if (this.isInitialized) return;
 
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping push notification initialization on iOS simulator');
+      this.isInitialized = true;
+      return;
+    }
+
     PushNotification.configure({
       onRegister: (token: any) => {
         console.log('Push notification token:', token);

@@ -28,6 +28,12 @@ class BiometricServiceClass {
 
   async initialize(): Promise<void> {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping biometric initialization on iOS simulator');
+        this.isInitialized = true;
+        return;
+      }
+      
       const capabilities = await this.getCapabilities();
       if (!capabilities.isAvailable) {
         throw new Error('Biometric authentication not available on this device');
@@ -41,6 +47,11 @@ class BiometricServiceClass {
 
   async isAvailable(): Promise<boolean> {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping biometric availability check on iOS simulator');
+        return false;
+      }
+      
       const { available } = await this.rnBiometrics.isSensorAvailable();
       return available;
     } catch (error) {
@@ -51,6 +62,16 @@ class BiometricServiceClass {
 
   async getCapabilities(): Promise<BiometricCapabilities> {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping biometric capabilities check on iOS simulator');
+        return {
+          isAvailable: false,
+          biometryType: null,
+          hasEnrolledFingerprints: false,
+          hasEnrolledFace: false,
+        };
+      }
+      
       const { available, biometryType } = await this.rnBiometrics.isSensorAvailable();
       
       return {

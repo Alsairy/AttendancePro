@@ -17,6 +17,10 @@ export class PermissionService {
         );
         return granted === PermissionsAndroid.RESULTS.GRANTED;
       } else {
+        if (__DEV__ && Platform.OS === 'ios') {
+          console.log('Skipping camera permission request on iOS simulator');
+          return true;
+        }
         const result = await request(PERMISSIONS.IOS.CAMERA);
         return result === RESULTS.GRANTED;
       }
@@ -41,6 +45,10 @@ export class PermissionService {
         );
         return granted === PermissionsAndroid.RESULTS.GRANTED;
       } else {
+        if (__DEV__ && Platform.OS === 'ios') {
+          console.log('Skipping location permission request on iOS simulator');
+          return true;
+        }
         const result = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
         return result === RESULTS.GRANTED;
       }
