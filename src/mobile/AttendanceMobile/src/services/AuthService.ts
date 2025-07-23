@@ -13,7 +13,8 @@ export class AuthService {
     console.log('====================================');
     console.warn('login ------- ', this.BASE_URL);
     console.log('====================================');
- 
+    console.warn('credentials ------- ', JSON.stringify(credentials));
+
     try {
       const response = await fetch(`${this.BASE_URL}/login`, {
         method: 'POST',
@@ -22,6 +23,7 @@ export class AuthService {
         },
         body: JSON.stringify(credentials),
       });
+    console.warn('response ------- ', response);
 
       if (!response.ok) {
         throw new Error('Invalid credentials');
