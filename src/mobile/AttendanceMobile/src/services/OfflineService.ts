@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import { Platform } from 'react-native';
 import SecureTokenStorage from '../utils/SecureTokenStorage';
 import { useOfflineStore } from '../store/offlineStore';
 
@@ -9,6 +10,14 @@ export class OfflineService {
 
   static async initialize(): Promise<void> {
     if (this.isInitialized) return;
+
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping NetInfo initialization on iOS simulator');
+      useOfflineStore.getState().setOnlineStatus(true); // Assume online for iOS simulator
+      await this.loadPendingData();
+      this.isInitialized = true;
+      return;
+    }
 
     NetInfo.addEventListener(state => {
       const isOnline = state.isConnected && state.isInternetReachable;
@@ -25,6 +34,11 @@ export class OfflineService {
   }
 
   static async isOnline(): Promise<boolean> {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Assuming online status on iOS simulator');
+      return true;
+    }
+
     const state = await NetInfo.fetch();
     return state.isConnected && state.isInternetReachable || false;
   }
