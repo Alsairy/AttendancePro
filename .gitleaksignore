@@ -1,50 +1,34 @@
-# Ignore legitimate configuration values that GitLeaks incorrectly identifies as secrets
-appsettings.json:*
-appsettings.Development.json:*
-appsettings.Production.json:*
-appsettings.Staging.json:*
+# GitLeaks ignore file - using fingerprint format
+# Ignore specific detected secrets that are placeholder values
 
-# Ignore example/template values
-**/example/**
-**/template/**
-**/samples/**
+# Ignore the ENCRYPTION_KEY placeholder from commit history
+71cd0343797341f9e31d8d2f2e48f5414d045680:.env:generic-api-key:14
 
-# Ignore test data
-**/test/**
-**/tests/**
-**/Test/**
-**/Tests/**
-
-# Ignore documentation
-**/docs/**
-**/documentation/**
-README.md
-*.md
-
-# Ignore configuration templates
-*.template
-*.example
-*.sample
-
-# Ignore Kubernetes manifests with placeholder values
-k8s/**/*.yaml
-k8s/**/*.yml
-
-# Ignore Docker compose files with placeholder values
-docker-compose*.yml
-docker-compose*.yaml
-
-# Ignore CI/CD configuration files
-.github/**/*.yml
-.github/**/*.yaml
-
-# Ignore package files
-package.json
-package-lock.json
-*.csproj
-*.sln
-
-# Ignore environment variable examples
-.env.example
-.env.template
-.env.sample
+# Path-based ignores for template and example files
+path:.env.example
+path:.env.template
+path:.env.sample
+path:**/example/**
+path:**/template/**
+path:**/samples/**
+path:**/test/**
+path:**/tests/**
+path:**/Test/**
+path:**/Tests/**
+path:**/docs/**
+path:**/documentation/**
+path:README.md
+path:*.md
+path:*.template
+path:*.example
+path:*.sample
+path:k8s/**/*.yaml
+path:k8s/**/*.yml
+path:docker-compose*.yml
+path:docker-compose*.yaml
+path:.github/**/*.yml
+path:.github/**/*.yaml
+path:package.json
+path:package-lock.json
+path:*.csproj
+path:*.sln
