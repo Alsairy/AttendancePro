@@ -6,7 +6,7 @@ export class AuthService {
   private static readonly TOKEN_KEY = 'auth_token';
   private static readonly REFRESH_TOKEN_KEY = 'refresh_token';
   private static readonly USER_KEY = 'user_data';
-  private static readonly BASE_URL = 'https://app-hgzbalgb.fly.dev/api/auth';
+  private static readonly BASE_URL = 'http://localhost:5001/api/auth';
 
   static async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
