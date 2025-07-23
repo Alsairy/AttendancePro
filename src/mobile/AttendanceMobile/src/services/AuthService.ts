@@ -9,6 +9,11 @@ export class AuthService {
   private static readonly BASE_URL = 'http://localhost:5001/api/auth';
 
   static async login(credentials: LoginCredentials): Promise<AuthResponse> {
+     
+    console.log('====================================');
+    console.warn('login ------- ', this.BASE_URL);
+    console.log('====================================');
+ 
     try {
       const response = await fetch(`${this.BASE_URL}/login`, {
         method: 'POST',
