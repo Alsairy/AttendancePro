@@ -134,6 +134,8 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
             ConfigureAudit(modelBuilder);
             ConfigureNotification(modelBuilder);
             ConfigureCompliance(modelBuilder);
+            ConfigureWorkflowEntities(modelBuilder);
+            ConfigureTeam(modelBuilder);
 
             // Apply global query filters for multi-tenancy
             ApplyGlobalFilters(modelBuilder);
@@ -191,7 +193,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.Tenant)
                       .WithMany(e => e.Users)
                       .HasForeignKey(e => e.TenantId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 // One-to-one relationship with UserBiometrics
                 entity.HasOne(e => e.Biometrics)
@@ -221,12 +223,12 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.User)
                       .WithMany(e => e.UserRoles)
                       .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(e => e.Role)
                       .WithMany(e => e.UserRoles)
                       .HasForeignKey(e => e.RoleId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Permission>(entity =>
@@ -247,12 +249,12 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.Role)
                       .WithMany(e => e.RolePermissions)
                       .HasForeignKey(e => e.RoleId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(e => e.Permission)
                       .WithMany(e => e.RolePermissions)
                       .HasForeignKey(e => e.PermissionId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
             });
         }
 
@@ -276,7 +278,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.User)
                       .WithMany(e => e.AttendanceRecords)
                       .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(e => e.Geofence)
                       .WithMany(e => e.AttendanceRecords)
@@ -286,6 +288,11 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.ApprovedByUser)
                       .WithMany()
                       .HasForeignKey(e => e.ApprovedBy)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<Tenant>()
+                      .WithMany()
+                      .HasForeignKey(e => e.TenantId)
                       .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasIndex(e => new { e.UserId, e.Timestamp });
@@ -317,12 +324,18 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.User)
                       .WithMany()
                       .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(e => e.Geofence)
                       .WithMany(e => e.UserGeofences)
                       .HasForeignKey(e => e.GeofenceId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<Tenant>()
+                      .WithMany()
+                      .HasForeignKey(e => e.TenantId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
             });
 
             modelBuilder.Entity<Beacon>(entity =>
@@ -340,6 +353,12 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                       .WithMany(e => e.Beacons)
                       .HasForeignKey(e => e.GeofenceId)
                       .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasOne<Tenant>()
+                      .WithMany()
+                      .HasForeignKey(e => e.TenantId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
             });
         }
 
@@ -367,7 +386,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.User)
                       .WithMany(e => e.LeaveRequests)
                       .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(e => e.LeaveType)
                       .WithMany(e => e.LeaveRequests)
@@ -393,12 +412,18 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.User)
                       .WithMany()
                       .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(e => e.LeaveType)
                       .WithMany(e => e.UserLeaveBalances)
                       .HasForeignKey(e => e.LeaveTypeId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<Tenant>()
+                      .WithMany()
+                      .HasForeignKey(e => e.TenantId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
             });
 
             modelBuilder.Entity<PermissionRequest>(entity =>
@@ -411,7 +436,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.User)
                       .WithMany(e => e.PermissionRequests)
                       .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(e => e.ApprovedByUser)
                       .WithMany()
@@ -432,7 +457,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.LeaveRequest)
                       .WithMany(e => e.LeaveApprovals)
                       .HasForeignKey(e => e.LeaveRequestId)
-                      .OnDelete(DeleteBehavior.Cascade);
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(e => e.Approver)
                       .WithMany()
@@ -480,7 +505,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
                 entity.HasOne(e => e.User)
                       .WithMany()
                       .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.SetNull);
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasIndex(e => e.Timestamp);
                 entity.HasIndex(e => new { e.EntityType, e.Action });
@@ -702,6 +727,7 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
             return filter;
         }
 
+
         private void SeedInitialData(ModelBuilder modelBuilder)
         {
             // Seed system permissions
@@ -794,6 +820,288 @@ namespace AttendancePlatform.Shared.Infrastructure.Data
 
             modelBuilder.Entity<UserRole>().HasData(userRoles);
         }
+
+        private void ConfigureWorkflowEntities(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<WorkflowInstance>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Tenant)
+                      .WithMany()
+                      .HasForeignKey(e => e.TenantId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.InitiatedByUser)
+                      .WithMany()
+                      .HasForeignKey(e => e.InitiatedBy)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.WorkflowTemplate)
+                      .WithMany(e => e.WorkflowInstances)
+                      .HasForeignKey(e => e.WorkflowTemplateId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+        }
+
+        private void ConfigureTeam(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TeamMember>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Team)
+                      .WithMany(e => e.TeamMembers)
+                      .HasForeignKey(e => e.TeamId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.User)
+                      .WithMany()
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<TeamProject>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Team)
+                      .WithMany(e => e.Projects)
+                      .HasForeignKey(e => e.TeamId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.CreatedBy)
+                      .WithMany()
+                      .HasForeignKey(e => e.CreatedById)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ProjectMember>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Project)
+                      .WithMany(e => e.ProjectMembers)
+                      .HasForeignKey(e => e.ProjectId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.User)
+                      .WithMany()
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<VideoConference>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Host)
+                      .WithMany()
+                      .HasForeignKey(e => e.HostId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ConferenceParticipant>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Conference)
+                      .WithMany(e => e.Participants)
+                      .HasForeignKey(e => e.ConferenceId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.User)
+                      .WithMany()
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ChatMessage>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Sender)
+                      .WithMany()
+                      .HasForeignKey(e => e.SenderId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Channel)
+                      .WithMany(e => e.Messages)
+                      .HasForeignKey(e => e.ChannelId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Conference)
+                      .WithMany()
+                      .HasForeignKey(e => e.ConferenceId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Team)
+                      .WithMany()
+                      .HasForeignKey(e => e.TeamId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ChatChannel>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.CreatedBy)
+                      .WithMany()
+                      .HasForeignKey(e => e.CreatedById)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Team)
+                      .WithMany()
+                      .HasForeignKey(e => e.TeamId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ChannelMember>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Channel)
+                      .WithMany(e => e.Members)
+                      .HasForeignKey(e => e.ChannelId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.User)
+                      .WithMany()
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Document>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.UploadedBy)
+                      .WithMany()
+                      .HasForeignKey(e => e.UploadedById)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Team)
+                      .WithMany()
+                      .HasForeignKey(e => e.TeamId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Project)
+                      .WithMany()
+                      .HasForeignKey(e => e.ProjectId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<DocumentVersion>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Document)
+                      .WithMany(e => e.Versions)
+                      .HasForeignKey(e => e.DocumentId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.CreatedBy)
+                      .WithMany()
+                      .HasForeignKey(e => e.CreatedById)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ScreenSharingSession>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Host)
+                      .WithMany()
+                      .HasForeignKey(e => e.HostId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.Conference)
+                      .WithMany()
+                      .HasForeignKey(e => e.ConferenceId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ScreenSharingParticipant>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Session)
+                      .WithMany(e => e.Participants)
+                      .HasForeignKey(e => e.SessionId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.User)
+                      .WithMany()
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<UserPresence>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.User)
+                      .WithMany()
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<DocumentShare>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Document)
+                      .WithMany(e => e.DocumentShares)
+                      .HasForeignKey(e => e.DocumentId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.SharedWith)
+                      .WithMany()
+                      .HasForeignKey(e => e.SharedWithId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.SharedBy)
+                      .WithMany()
+                      .HasForeignKey(e => e.SharedById)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ProjectTask>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.Project)
+                      .WithMany()
+                      .HasForeignKey(e => e.ProjectId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.AssignedUser)
+                      .WithMany()
+                      .HasForeignKey(e => e.AssignedUserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<WorkflowExecutionLog>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.HasOne(e => e.WorkflowInstance)
+                      .WithMany(e => e.WorkflowExecutionLogs)
+                      .HasForeignKey(e => e.WorkflowInstanceId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.ExecutedByUser)
+                      .WithMany()
+                      .HasForeignKey(e => e.ExecutedBy)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.WorkflowStep)
+                      .WithMany()
+                      .HasForeignKey(e => e.StepId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+        }
+
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

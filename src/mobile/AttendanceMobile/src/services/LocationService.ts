@@ -1,7 +1,8 @@
 import Geolocation from '@react-native-community/geolocation';
-import BackgroundJob from 'react-native-background-job';
+// import BackgroundJob from 'react-native-background-job'; // Removed - not in package.json
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform, PermissionsAndroid } from 'react-native';
+import { PermissionService } from './PermissionService';
 
 export interface Location {
   latitude: number;
@@ -31,6 +32,12 @@ class LocationServiceClass {
   private isBackgroundTracking = false;
 
   async initialize(): Promise<void> {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping location service initialization on iOS simulator');
+      await this.loadGeofences(); // Safe to load geofences from AsyncStorage
+      return;
+    }
+
     try {
       await this.requestLocationPermissions();
       await this.loadGeofences();
@@ -42,28 +49,32 @@ class LocationServiceClass {
   }
 
   private async requestLocationPermissions(): Promise<void> {
-    if (Platform.OS === 'android') {
-      try {
-        const granted = await PermissionsAndroid.requestMultiple([
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-          PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
-        ]);
-
-        const fineLocationGranted = granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
-        const coarseLocationGranted = granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
-
-        if (!fineLocationGranted && !coarseLocationGranted) {
-          throw new Error('Location permissions not granted');
-        }
-      } catch (error) {
-        console.error('Permission request error:', error);
-        throw error;
+    try {
+      const granted = await PermissionService.requestLocationPermission();
+      if (!granted) {
+        throw new Error('Location permissions not granted');
       }
+    } catch (error) {
+      console.error('Permission request error:', error);
+      throw error;
     }
   }
 
   private setupLocationTracking(): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping Geolocation.getCurrentPosition in setupLocationTracking on iOS simulator');
+      this.updateCurrentLocation({
+        latitude: 25.2048, // Dubai coordinates as fallback
+        longitude: 55.2708,
+        accuracy: 5,
+        timestamp: Date.now(),
+        altitude: 0,
+        speed: 0,
+        heading: 0,
+      });
+      return;
+    }
+
     Geolocation.getCurrentPosition(
       (position) => {
         this.updateCurrentLocation({
@@ -89,6 +100,22 @@ class LocationServiceClass {
 
   async getCurrentPosition(): Promise<Location> {
     return new Promise((resolve, reject) => {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping Geolocation.getCurrentPosition on iOS simulator');
+        const location: Location = {
+          latitude: 25.2048, // Dubai coordinates as fallback
+          longitude: 55.2708,
+          accuracy: 5,
+          timestamp: Date.now(),
+          altitude: 0,
+          speed: 0,
+          heading: 0,
+        };
+        this.updateCurrentLocation(location);
+        resolve(location);
+        return;
+      }
+
       Geolocation.getCurrentPosition(
         (position) => {
           const location: Location = {
@@ -121,6 +148,24 @@ class LocationServiceClass {
     fastestInterval?: number;
     enableHighAccuracy?: boolean;
   }): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping Geolocation.watchPosition on iOS simulator');
+      // Simulate location updates with mock Dubai coordinates
+      this.watchId = setInterval(() => {
+        const location: Location = {
+          latitude: 25.2048 + (Math.random() - 0.5) * 0.001, // Small random variation
+          longitude: 55.2708 + (Math.random() - 0.5) * 0.001,
+          accuracy: 5,
+          timestamp: Date.now(),
+          altitude: 0,
+          speed: 0,
+          heading: 0,
+        };
+        this.updateCurrentLocation(location);
+      }, 10000) as any; // Update every 10 seconds
+      return;
+    }
+
     const defaultOptions = {
       interval: 10000, // 10 seconds
       fastestInterval: 5000, // 5 seconds
@@ -155,30 +200,33 @@ class LocationServiceClass {
 
   stopLocationUpdates(): void {
     if (this.watchId !== null) {
-      Geolocation.clearWatch(this.watchId);
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Clearing interval timer on iOS simulator');
+        clearInterval(this.watchId as any);
+      } else {
+        Geolocation.clearWatch(this.watchId);
+      }
       this.watchId = null;
     }
   }
 
   startBackgroundTracking(): void {
-    if (this.isBackgroundTracking) return;
-
-    BackgroundJob.start({
-      jobKey: 'locationTracking',
-      period: 30000, // 30 seconds
-    });
-
-    this.isBackgroundTracking = true;
+    console.warn('Background tracking not available - react-native-background-job not installed');
+    // if (this.isBackgroundTracking) return;
+    // BackgroundJob.start({
+    //   jobKey: 'locationTracking',
+    //   period: 30000, // 30 seconds
+    // });
+    // this.isBackgroundTracking = true;
   }
 
   stopBackgroundTracking(): void {
-    if (!this.isBackgroundTracking) return;
-
-    BackgroundJob.stop({
-      jobKey: 'locationTracking',
-    });
-
-    this.isBackgroundTracking = false;
+    console.warn('Background tracking not available - react-native-background-job not installed');
+    // if (!this.isBackgroundTracking) return;
+    // BackgroundJob.stop({
+    //   jobKey: 'locationTracking',
+    // });
+    // this.isBackgroundTracking = false;
   }
 
   private updateCurrentLocation(location: Location): void {
@@ -440,6 +488,12 @@ class LocationServiceClass {
 
   async isLocationServicesEnabled(): Promise<boolean> {
     return new Promise((resolve) => {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Assuming location services enabled on iOS simulator');
+        resolve(true);
+        return;
+      }
+
       Geolocation.getCurrentPosition(
         () => resolve(true),
         () => resolve(false),

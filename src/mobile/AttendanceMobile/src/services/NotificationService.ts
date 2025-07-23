@@ -16,6 +16,12 @@ export class NotificationService {
   static initialize(): void {
     if (this.isInitialized) return;
 
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping push notification initialization on iOS simulator');
+      this.isInitialized = true;
+      return;
+    }
+
     PushNotification.configure({
       onRegister: (token: any) => {
         console.log('Push notification token:', token);
@@ -28,7 +34,7 @@ export class NotificationService {
           this.handleNotificationTap(notification);
         }
 
-        if (Platform.OS === 'ios') {
+        if (Platform.OS === 'ios' && !(__DEV__ && Platform.OS === 'ios')) {
           notification.finish(PushNotificationIOS.FetchResult.NoData);
         }
       },
@@ -70,6 +76,11 @@ export class NotificationService {
   }
 
   static showLocalNotification(notification: NotificationData): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping local notification on iOS simulator:', notification.title);
+      return;
+    }
+    
     PushNotification.localNotification({
       id: notification.id,
       title: notification.title,
@@ -87,6 +98,11 @@ export class NotificationService {
       throw new Error('Scheduled time is required for scheduled notifications');
     }
 
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping scheduled notification on iOS simulator:', notification.title);
+      return;
+    }
+
     PushNotification.localNotificationSchedule({
       id: notification.id,
       title: notification.title,
@@ -101,14 +117,29 @@ export class NotificationService {
   }
 
   static cancelNotification(notificationId: string): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping notification cancellation on iOS simulator:', notificationId);
+      return;
+    }
+    
     PushNotification.cancelLocalNotifications({ id: notificationId });
   }
 
   static cancelAllNotifications(): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping all notifications cancellation on iOS simulator');
+      return;
+    }
+    
     PushNotification.cancelAllLocalNotifications();
   }
 
   static setBadgeNumber(number: number): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping badge number setting on iOS simulator:', number);
+      return;
+    }
+    
     if (Platform.OS === 'ios') {
       PushNotificationIOS.setApplicationIconBadgeNumber(number);
     } else {
@@ -117,6 +148,11 @@ export class NotificationService {
   }
 
   static async requestPermissions(): Promise<boolean> {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping notification permissions request on iOS simulator');
+      return true;
+    }
+    
     if (Platform.OS === 'ios') {
       const permissions = await PushNotificationIOS.requestPermissions({
         alert: true,

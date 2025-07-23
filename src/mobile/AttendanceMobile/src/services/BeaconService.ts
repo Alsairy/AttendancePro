@@ -1,5 +1,6 @@
 import Beacons from '@hkpuits/react-native-beacons-manager';
 import { Platform, PermissionsAndroid, DeviceEventEmitter } from 'react-native';
+import { PermissionService } from './PermissionService';
 
 export interface BeaconRegion {
   identifier: string;
@@ -24,6 +25,12 @@ export class BeaconService {
   static async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping beacon service initialization on iOS simulator');
+      this.isInitialized = true;
+      return;
+    }
+
     try {
       await this.requestPermissions();
 
@@ -39,28 +46,41 @@ export class BeaconService {
   }
 
   private static async requestPermissions(): Promise<boolean> {
-    if (Platform.OS === 'android') {
-      try {
+    try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping beacon permissions on iOS simulator');
+        return true;
+      }
+      
+      const locationGranted = await PermissionService.requestLocationPermission();
+      
+      if (Platform.OS === 'android') {
         const granted = await PermissionsAndroid.requestMultiple([
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
         ]);
-
-        return Object.values(granted).every(
+        
+        const bluetoothGranted = Object.values(granted).every(
           permission => permission === PermissionsAndroid.RESULTS.GRANTED
         );
-      } catch (error) {
-        console.error('Permission request failed:', error);
-        return false;
+        
+        return locationGranted && bluetoothGranted;
       }
+      
+      return locationGranted;
+    } catch (error) {
+      console.error('Permission request failed:', error);
+      return false;
     }
-    return true;
   }
 
   static async startMonitoring(region: BeaconRegion): Promise<void> {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping beacon monitoring on iOS simulator');
+        return;
+      }
+      
       await this.initialize();
       
       await Beacons.startMonitoringForRegion(region);
@@ -89,6 +109,11 @@ export class BeaconService {
 
   static async startRanging(region: BeaconRegion): Promise<void> {
     try {
+      if (__DEV__ && Platform.OS === 'ios') {
+        console.log('Skipping beacon ranging on iOS simulator');
+        return;
+      }
+      
       await this.initialize();
       
       await Beacons.startRangingBeaconsInRegion(region);
@@ -110,14 +135,26 @@ export class BeaconService {
   }
 
   static onRegionEnter(callback: (region: BeaconRegion) => void): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping beacon region enter listener on iOS simulator');
+      return;
+    }
     DeviceEventEmitter.addListener('regionDidEnter', callback);
   }
 
   static onRegionLeave(callback: (region: BeaconRegion) => void): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping beacon region leave listener on iOS simulator');
+      return;
+    }
     DeviceEventEmitter.addListener('regionDidExit', callback);
   }
 
   static onBeaconsDetected(callback: (beacons: Beacon[]) => void): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping beacon detection listener on iOS simulator');
+      return;
+    }
     DeviceEventEmitter.addListener('beaconsDidRange', (data: any) => {
       if (data.beacons && data.beacons.length > 0) {
         callback(data.beacons);
@@ -153,6 +190,10 @@ export class BeaconService {
   }
 
   static removeAllListeners(): void {
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Skipping beacon listener removal on iOS simulator');
+      return;
+    }
     DeviceEventEmitter.removeAllListeners('regionDidEnter');
     DeviceEventEmitter.removeAllListeners('regionDidExit');
     DeviceEventEmitter.removeAllListeners('beaconsDidRange');

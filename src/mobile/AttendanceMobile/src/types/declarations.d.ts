@@ -46,18 +46,6 @@ declare module 'react-native-push-notification' {
   }
 }
 
-declare module 'react-native-background-job' {
-  export interface BackgroundJobOptions {
-    jobKey: string;
-    period?: number;
-  }
-
-  export default class BackgroundJob {
-    static start(options: BackgroundJobOptions): void;
-    static stop(options: { jobKey: string }): void;
-    static isRunning(options: { jobKey: string }): boolean;
-  }
-}
 
 declare module '@react-native-community/push-notification-ios' {
   export interface PushNotificationPermissions {
