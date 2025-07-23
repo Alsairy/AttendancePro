@@ -1,4 +1,4 @@
-import Beacons from '@hkpuits/react-native-beacons-manager';
+// import Beacons from '@hkpuits/react-native-beacons-manager'; // Commented out - not needed for now
 import { Platform, PermissionsAndroid, DeviceEventEmitter } from 'react-native';
 import { PermissionService } from './PermissionService';
 
@@ -35,7 +35,7 @@ export class BeaconService {
       await this.requestPermissions();
 
       if (Platform.OS === 'ios') {
-        await Beacons.requestWhenInUseAuthorization();
+        // await Beacons.requestWhenInUseAuthorization(); // Commented out - beacon library not needed
       }
 
       this.isInitialized = true;
@@ -83,7 +83,7 @@ export class BeaconService {
       
       await this.initialize();
       
-      await Beacons.startMonitoringForRegion(region);
+      // await Beacons.startMonitoringForRegion(region); // Commented out - beacon library not needed
       this.monitoredRegions.push(region);
       
       console.log(`Started monitoring region: ${region.identifier}`);
@@ -95,7 +95,7 @@ export class BeaconService {
 
   static async stopMonitoring(region: BeaconRegion): Promise<void> {
     try {
-      await Beacons.stopMonitoringForRegion(region);
+      // await Beacons.stopMonitoringForRegion(region); // Commented out - beacon library not needed
       this.monitoredRegions = this.monitoredRegions.filter(
         r => r.identifier !== region.identifier
       );
@@ -116,7 +116,7 @@ export class BeaconService {
       
       await this.initialize();
       
-      await Beacons.startRangingBeaconsInRegion(region);
+      // await Beacons.startRangingBeaconsInRegion(region); // Commented out - beacon library not needed
       console.log(`Started ranging beacons in region: ${region.identifier}`);
     } catch (error) {
       console.error(`Failed to start ranging in region ${region.identifier}:`, error);
@@ -126,7 +126,7 @@ export class BeaconService {
 
   static async stopRanging(region: BeaconRegion): Promise<void> {
     try {
-      await Beacons.stopRangingBeaconsInRegion(region);
+      // await Beacons.stopRangingBeaconsInRegion(region); // Commented out - beacon library not needed
       console.log(`Stopped ranging beacons in region: ${region.identifier}`);
     } catch (error) {
       console.error(`Failed to stop ranging in region ${region.identifier}:`, error);

@@ -211,22 +211,36 @@ class LocationServiceClass {
   }
 
   startBackgroundTracking(): void {
-    console.warn('Background tracking not available - react-native-background-job not installed');
-    // if (this.isBackgroundTracking) return;
-    // BackgroundJob.start({
-    //   jobKey: 'locationTracking',
-    //   period: 30000, // 30 seconds
-    // });
-    // this.isBackgroundTracking = true;
+    if (this.isBackgroundTracking) return;
+    
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Background tracking enabled on iOS simulator (mock mode)');
+      this.isBackgroundTracking = true;
+      return;
+    }
+    
+    this.startLocationUpdates({
+      interval: 30000, // 30 seconds
+      fastestInterval: 15000, // 15 seconds
+      enableHighAccuracy: true,
+    });
+    
+    this.isBackgroundTracking = true;
+    console.log('Background location tracking started');
   }
 
   stopBackgroundTracking(): void {
-    console.warn('Background tracking not available - react-native-background-job not installed');
-    // if (!this.isBackgroundTracking) return;
-    // BackgroundJob.stop({
-    //   jobKey: 'locationTracking',
-    // });
-    // this.isBackgroundTracking = false;
+    if (!this.isBackgroundTracking) return;
+    
+    if (__DEV__ && Platform.OS === 'ios') {
+      console.log('Background tracking stopped on iOS simulator');
+      this.isBackgroundTracking = false;
+      return;
+    }
+    
+    this.stopLocationUpdates();
+    this.isBackgroundTracking = false;
+    console.log('Background location tracking stopped');
   }
 
   private updateCurrentLocation(location: Location): void {

@@ -20,7 +20,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AttendanceService } from '../services/AttendanceService';
 import { LocationService } from '../services/LocationService';
 import { FaceRecognitionService } from '../services/FaceRecognitionService';
-import { BeaconService } from '../services/BeaconService';
+// import { BeaconService } from '../services/BeaconService'; // Commented out - beacon library not needed
 import { BiometricService } from '../services/BiometricService';
 
 // Store
@@ -58,7 +58,7 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ navigation }) => {
   const [showCamera, setShowCamera] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [nearbyBeacons, setNearbyBeacons] = useState<any[]>([]);
+  // const [nearbyBeacons, setNearbyBeacons] = useState<any[]>([]); // Commented out - beacon functionality disabled
   const [geofenceStatus, setGeofenceStatus] = useState<'inside' | 'outside' | 'unknown'>('unknown');
 
   const cameraRef = useRef<Camera>(null);
@@ -71,13 +71,13 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ navigation }) => {
     return () => clearInterval(timeInterval);
   }, []);
 
-  useEffect(() => {
-    if (selectedMethod === AttendanceMethod.BEACON) {
-      startBeaconScanning();
-    } else {
-      stopBeaconScanning();
-    }
-  }, [selectedMethod]);
+  // useEffect(() => {
+  //   if (selectedMethod === AttendanceMethod.BEACON) {
+  //     startBeaconScanning();
+  //   } else {
+  //     stopBeaconScanning();
+  //   }
+  // }, [selectedMethod]); // Commented out - beacon functionality disabled
 
   useEffect(() => {
     if (currentLocation) {
@@ -118,21 +118,19 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ navigation }) => {
     }
   };
 
-  const startBeaconScanning = async () => {
-    try {
-      await BeaconService.startRanging({ identifier: 'default', uuid: 'E2C56DB5-DFFB-48D2-B060-D0F5A71096E0' });
-      BeaconService.onBeaconsDetected((beacons) => {
-        setNearbyBeacons(beacons);
-      });
-    } catch (error) {
-      console.error('Beacon scanning error:', error);
-    }
-  };
+  // const startBeaconScanning = async () => {
+  //   try {
+  //     await BeaconService.startRanging({ identifier: 'default', uuid: 'E2C56DB5-DFFB-48D2-B060-D0F5A71096E0' });
+  //     BeaconService.onBeaconsDetected((beacons) => {
+  //       setNearbyBeacons(beacons);
+  //     });
+  //   } catch (error) {
+  //     console.error('Beacon scanning error:', error);
+  //   }
 
-  const stopBeaconScanning = () => {
-    BeaconService.stopRanging({ identifier: 'default', uuid: 'E2C56DB5-DFFB-48D2-B060-D0F5A71096E0' });
-    setNearbyBeacons([]);
-  };
+  // const stopBeaconScanning = () => {
+  //   BeaconService.stopRanging({ identifier: 'default', uuid: 'E2C56DB5-DFFB-48D2-B060-D0F5A71096E0' });
+  //   setNearbyBeacons([]);
 
   const checkGeofenceStatus = async () => {
     try {
@@ -185,10 +183,11 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ navigation }) => {
           break;
 
         case AttendanceMethod.BEACON:
-          if (nearbyBeacons.length === 0) {
-            throw new Error('No authorized beacons detected');
-          }
-          attendanceData.beaconData = nearbyBeacons[0];
+          throw new Error('Beacon attendance method is currently disabled');
+          // if (nearbyBeacons.length === 0) {
+          //   throw new Error('No authorized beacons detected');
+          // }
+          // attendanceData.beaconData = nearbyBeacons[0];
           break;
 
         case AttendanceMethod.BIOMETRIC:
@@ -383,7 +382,7 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ navigation }) => {
           </View>
           {selectedMethod === AttendanceMethod.BEACON && (
             <Text style={styles.beaconText}>
-              Beacons detected: {nearbyBeacons.length}
+              Beacon functionality is currently disabled
             </Text>
           )}
         </View>

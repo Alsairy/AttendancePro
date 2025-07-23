@@ -38,7 +38,11 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when open to track attendance.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs access to location to track attendance.</string>
+	<string>This app needs access to location to track attendance and enable background location updates.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to camera for face recognition attendance.</string>
 	<key>NSMicrophoneUsageDescription</key>
